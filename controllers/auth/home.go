@@ -4,11 +4,11 @@ import (
     "github.com/astaxie/beego"
 )
 
-type Home struct {
+type AuthHome struct {
     beego.Controller
 }
 
-func (c *Home) Index() {
+func (c *AuthHome) Index() {
     c.Data["Website"] = "beego.me"
     c.Data["Email"] = "astaxie@gmail.com"
 

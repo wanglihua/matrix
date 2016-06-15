@@ -4,29 +4,29 @@ import (
     "github.com/astaxie/beego"
 )
 
-type Admin struct {
+type AuthAdmin struct {
     beego.Controller
 }
 
-func (c *Admin) Index() {
+func (c *AuthAdmin) Index() {
     //beego.URLFor()
     c.Layout = "layout/layout.tpl"
     c.TplName = "auth/user/user_index.tpl"
 }
 
-func (c *Admin) List() {
+func (c *AuthAdmin) List() {
 
 }
 
-func (c *Admin) Detail() {
+func (c *AuthAdmin) Detail() {
 
 }
 
-func (c *Admin) Save() {
+func (c *AuthAdmin) Save() {
 
 }
 
-func (c *Admin) Delete() {
+func (c *AuthAdmin) Delete() {
 
 }
 

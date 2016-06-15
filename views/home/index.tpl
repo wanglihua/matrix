@@ -3,9 +3,9 @@
 </div>
 
 <div>
-    <a href="{{urlfor "auth.User.Index"}}">User</a>
-    <a href="{{urlfor "auth.Admin.Index"}}">Admin</a>
+    <a href="{{urlfor "AuthUser.Index"}}">User</a>
+    <a href="{{urlfor "AuthAdmin.Index"}}">Admin</a>
 
     {{urlfor "Home.Index"}}
-    {{urlfor "auth.Home.Index"}}
+    {{urlfor "auth.AuthHome.Index"}}
 </div>
