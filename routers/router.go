@@ -1,10 +1,10 @@
 package routers
 
 import (
-	"matrix/controllers"
-	"github.com/astaxie/beego"
+    "matrix/controllers"
+    "github.com/astaxie/beego"
 )
 
 func init() {
-    beego.Router("/", &controllers.MainController{})
+    beego.Router("/", &controllers.HomeController{}, "get:Index")
 }

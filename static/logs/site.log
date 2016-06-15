@@ -1,0 +1,182 @@
+ERROR 2016-06-12 11:21:15,675 copy_bill_entry() got an unexpected keyword argument 'amount'
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 353, in stockbillentry_copy_save
+    dc_stock_num=dc_stock_num
+TypeError: copy_bill_entry() got an unexpected keyword argument 'amount'
+ERROR 2016-06-12 11:22:02,765 ('22012', '[22012] [Microsoft][ODBC SQL Server Driver][SQL Server]Divide by zero error encountered. (8134) (SQLExecDirectW)')
+Traceback (most recent call last):
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django_pyodbc_azure-1.9.6.0-py3.4.egg\sql_server\pyodbc\base.py", line 538, in execute
+    return self.cursor.execute(sql, params)
+pyodbc.DataError: ('22012', '[22012] [Microsoft][ODBC SQL Server Driver][SQL Server]Divide by zero error encountered. (8134) (SQLExecDirectW)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 294, in stockbillentry_edit_save
+    dc_stock_num=dc_stock_num,
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\query.py", line 628, in update
+    rows = query.get_compiler(self.db).execute_sql(CURSOR)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\compiler.py", line 1149, in execute_sql
+    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\compiler.py", line 848, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\utils.py", line 95, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django_pyodbc_azure-1.9.6.0-py3.4.egg\sql_server\pyodbc\base.py", line 538, in execute
+    return self.cursor.execute(sql, params)
+django.db.utils.DataError: ('22012', '[22012] [Microsoft][ODBC SQL Server Driver][SQL Server]Divide by zero error encountered. (8134) (SQLExecDirectW)')
+ERROR 2016-06-12 11:22:12,629 copy_bill_entry() got an unexpected keyword argument 'amount'
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 353, in stockbillentry_copy_save
+    dc_stock_num=dc_stock_num
+TypeError: copy_bill_entry() got an unexpected keyword argument 'amount'
+ERROR 2016-06-12 12:49:45,777 ('22012', '[22012] [Microsoft][ODBC SQL Server Driver][SQL Server]Divide by zero error encountered. (8134) (SQLExecDirectW)')
+Traceback (most recent call last):
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django_pyodbc_azure-1.9.6.0-py3.4.egg\sql_server\pyodbc\base.py", line 538, in execute
+    return self.cursor.execute(sql, params)
+pyodbc.DataError: ('22012', '[22012] [Microsoft][ODBC SQL Server Driver][SQL Server]Divide by zero error encountered. (8134) (SQLExecDirectW)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 294, in stockbillentry_edit_save
+    dc_stock_num=dc_stock_num,
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\query.py", line 628, in update
+    rows = query.get_compiler(self.db).execute_sql(CURSOR)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\compiler.py", line 1149, in execute_sql
+    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\compiler.py", line 848, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\utils.py", line 95, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django_pyodbc_azure-1.9.6.0-py3.4.egg\sql_server\pyodbc\base.py", line 538, in execute
+    return self.cursor.execute(sql, params)
+django.db.utils.DataError: ('22012', '[22012] [Microsoft][ODBC SQL Server Driver][SQL Server]Divide by zero error encountered. (8134) (SQLExecDirectW)')
+ERROR 2016-06-12 12:55:25,658 ('42S22', "[42S22] [Microsoft][ODBC SQL Server Driver][SQL Server]Invalid column name 'None'. (207) (SQLExecDirectW)")
+Traceback (most recent call last):
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 62, in execute
+    return self.cursor.execute(sql)
+  File "C:\Python\lib\site-packages\django_pyodbc_azure-1.9.6.0-py3.4.egg\sql_server\pyodbc\base.py", line 538, in execute
+    return self.cursor.execute(sql, params)
+pyodbc.ProgrammingError: ('42S22', "[42S22] [Microsoft][ODBC SQL Server Driver][SQL Server]Invalid column name 'None'. (207) (SQLExecDirectW)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 353, in stockbillentry_copy_save
+    dc_stock_num=dc_stock_num
+  File "D:\projects\RoyalcoverSync\sync\service\stockbill.py", line 49, in copy_bill_entry
+    cursor.execute(sql)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 79, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 64, in execute
+    return self.cursor.execute(sql, params)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\utils.py", line 95, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\utils\six.py", line 685, in reraise
+    raise value.with_traceback(tb)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\backends\utils.py", line 62, in execute
+    return self.cursor.execute(sql)
+  File "C:\Python\lib\site-packages\django_pyodbc_azure-1.9.6.0-py3.4.egg\sql_server\pyodbc\base.py", line 538, in execute
+    return self.cursor.execute(sql, params)
+django.db.utils.ProgrammingError: ('42S22', "[42S22] [Microsoft][ODBC SQL Server Driver][SQL Server]Invalid column name 'None'. (207) (SQLExecDirectW)")
+ERROR 2016-06-12 12:58:44,714 ['’null‘ 必须为十进制数字。']
+Traceback (most recent call last):
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\fields\__init__.py", line 1582, in to_python
+    return decimal.Decimal(value)
+decimal.InvalidOperation: [<class 'decimal.ConversionSyntax'>]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 294, in stockbillentry_edit_save
+    dc_stock_num=dc_stock_num,
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\query.py", line 628, in update
+    rows = query.get_compiler(self.db).execute_sql(CURSOR)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\compiler.py", line 1149, in execute_sql
+    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\compiler.py", line 837, in execute_sql
+    sql, params = self.as_sql()
+  File "C:\Python\lib\site-packages\django_pyodbc_azure-1.9.6.0-py3.4.egg\sql_server\pyodbc\compiler.py", line 267, in as_sql
+    sql, params = super(SQLUpdateCompiler, self).as_sql()
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\compiler.py", line 1117, in as_sql
+    val = field.get_db_prep_save(val, connection=self.connection)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\fields\__init__.py", line 1611, in get_db_prep_save
+    return connection.ops.adapt_decimalfield_value(self.to_python(value),
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\fields\__init__.py", line 1587, in to_python
+    params={'value': value},
+django.core.exceptions.ValidationError: ['’null‘ 必须为十进制数字。']
+ERROR 2016-06-13 12:04:20,223 Related Field got invalid lookup: contains
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 40, in stockbillentry_list_data
+    stockbillentry_query = stockbillentry_query.filter(request_param.get_filter())
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\query.py", line 790, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\query.py", line 808, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1243, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1263, in _add_q
+    current_negated, allow_joins, split_subq)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1269, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1194, in build_filter
+    lookup_class = field.get_lookup(lookups[0])
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\fields\related.py", line 693, in get_lookup
+    raise TypeError('Related Field got invalid lookup: %s' % lookup_name)
+TypeError: Related Field got invalid lookup: contains
+ERROR 2016-06-13 12:04:20,467 Related Field got invalid lookup: contains
+Traceback (most recent call last):
+  File "D:\projects\RoyalcoverSync\common\service\util.py", line 116, in __handle_error
+    return view_func(request, *args, **kwargs)
+  File "D:\projects\RoyalcoverSync\sync\views\stockbillentry.py", line 40, in stockbillentry_list_data
+    stockbillentry_query = stockbillentry_query.filter(request_param.get_filter())
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\query.py", line 790, in filter
+    return self._filter_or_exclude(False, *args, **kwargs)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\query.py", line 808, in _filter_or_exclude
+    clone.query.add_q(Q(*args, **kwargs))
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1243, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1263, in _add_q
+    current_negated, allow_joins, split_subq)
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1269, in _add_q
+    allow_joins=allow_joins, split_subq=split_subq,
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\sql\query.py", line 1194, in build_filter
+    lookup_class = field.get_lookup(lookups[0])
+  File "C:\Python\lib\site-packages\django-1.9.6-py3.4.egg\django\db\models\fields\related.py", line 693, in get_lookup
+    raise TypeError('Related Field got invalid lookup: %s' % lookup_name)
+TypeError: Related Field got invalid lookup: contains

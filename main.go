@@ -1,11 +1,17 @@
 package main
 
 import (
-	_ "matrix/routers"
-	"github.com/astaxie/beego"
+    _ "matrix/routers"
+    "github.com/astaxie/beego"
 )
 
 func main() {
-	beego.Run()
+    test()
+
+    beego.SetStaticPath("/static", "static")
+    beego.Run()
 }
 
+func test() {
+    //just simple test code
+}
