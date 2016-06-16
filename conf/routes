@@ -4,9 +4,12 @@
 
 module:testrunner
 
-GET     /favicon.ico                            Static.Serve("static","images/favicon.png")
-GET     /                                       Home.Index
-GET     /static/*filepath                       Static.Serve("static")
+GET  /favicon.ico               Static.Serve("static","images/favicon.png")
+GET  /                          Home.Index
+GET  /static/*filepath          Static.Serve("static")
+
+GET  /login                     Login.Index
+POST /login                     Login.Login
 
 # Catch all
-*       /:controller/:action                    :controller.:action
+*    /:controller/:action       :controller.:a

@@ -119,6 +119,25 @@ func main() {
 
         })
 
+    revel.RegisterController((*controllers.Login)(nil),
+        []*revel.MethodType{
+            &revel.MethodType{
+                Name: "Index",
+                Args: []*revel.MethodArg{
+                },
+                RenderArgNames: map[int][]string{
+                },
+            },
+            &revel.MethodType{
+                Name: "Login",
+                Args: []*revel.MethodArg{
+                },
+                RenderArgNames: map[int][]string{
+                },
+            },
+
+        })
+
     revel.DefaultValidationKeys = map[string]map[int]string{
     }
     testing.TestSuites = []interface{}{
