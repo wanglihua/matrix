@@ -1,10 +1,10 @@
 {{set . "title" "Home"}}
-{{template "layout\header.html" .}}
+{{template "layout/header.html" .}}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
         <li>
-            <a href="/"><i class="ace-icon fa fa-home home-icon"></i></a>
+            <a href='{{url "Home.Index"}}'><i class="ace-icon fa fa-home home-icon"></i></a>
         </li>
         <li class="active">Home</li>
     </ul>
@@ -18,4 +18,4 @@
         </div>
     </div>
 </div>
-{{template "layout\footer.html" .}}
+{{template "layout/footer.html" .}}
