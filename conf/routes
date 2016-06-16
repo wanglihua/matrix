@@ -1,0 +1,12 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+module:testrunner
+
+GET     /favicon.ico                            Static.Serve("static","images/favicon.png")
+GET     /                                       Home.Index
+GET     /static/*filepath                       Static.Serve("static")
+
+# Catch all
+*       /:controller/:action                    :controller.:action
