@@ -1,6 +1,8 @@
 package controllers
 
-import "github.com/revel/revel"
+import (
+    "github.com/revel/revel"
+)
 
 type Login struct {
     *revel.Controller
@@ -11,5 +13,5 @@ func (c Login) Index() revel.Result {
 }
 
 func (c Login) Login() revel.Result {
-    return c.RenderTemplate("")
+    return c.RenderJson(JsonResult{Success:true, Message:"success!"})
 }

@@ -155,12 +155,12 @@
                                        type: "POST",
                                        data: form.serialize(),
                                        success: function (data) {
-                                           if (data.success == true) {
+                                           if (data.Success == true) {
                                                window.location.href = '{{url "Home.Index"}}';
                                                //return;
                                            }
                                            else {
-                                               $.msg.error(data.message);
+                                               $.msg.error(data.Message);
                                                //return;
                                            }
                                        }
