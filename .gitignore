@@ -3,3 +3,4 @@
 .idea
 .svn
 test-results/
+/log/*.log
