@@ -3,10 +3,13 @@ package app
 import (
     "github.com/revel/revel"
     "runtime"
+    "fmt"
 )
 
 func init() {
     runtime.GOMAXPROCS(runtime.NumCPU())
+
+    revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
 
     // Filters is the default set of global filters.
     revel.Filters = []revel.Filter{
@@ -24,6 +27,8 @@ func init() {
         revel.ActionInvoker, // Invoke the action.
     }
 
+
+
     // register startup functions with OnAppStart
     // ( order dependent )
     // revel.OnAppStart(InitDB)
@@ -40,4 +45,25 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
     c.Response.Out.Header().Add("X-Content-Type-Options", "nosniff")
 
     fc[0](c, fc[1:]) // Execute the next filter stage.
+}
+
+func userAuthInterceptor(c *revel.Controller) revel.Result {
+    //if user := connected(c); user == nil {
+    //    c.Flash.Error("请先登录")
+    //    return c.Redirect(App.Index)
+    //}
+
+    //var excludeCheckActions = []string{};
+
+    /*
+    Static.Serve
+    Static.ServeModule
+    TestRunner.Index
+    TestRunner.Run
+     */
+    if (c.Name != "Static" && c.Name != "TestRunner") {
+        fmt.Println(c.Action)
+    }
+
+    return nil
 }

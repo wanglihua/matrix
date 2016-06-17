@@ -1,11 +1,14 @@
 package controllers
 
-import "github.com/revel/revel"
+import (
+    "github.com/revel/revel"
+)
 
 type Home struct {
     *revel.Controller
 }
 
 func (c Home) Index() revel.Result {
+
     return c.RenderTemplate("home/home_index.html")
 }

@@ -15,3 +15,7 @@ func (c Login) Index() revel.Result {
 func (c Login) Login() revel.Result {
     return c.RenderJson(JsonResult{Success:true, Message:"success!"})
 }
+
+func (c Login) Logout() revel.Result {
+    return c.RenderJson(JsonResult{Success:true, Message:"success!"})
+}
