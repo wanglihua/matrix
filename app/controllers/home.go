@@ -9,6 +9,5 @@ type Home struct {
 }
 
 func (c Home) Index() revel.Result {
-
     return c.RenderTemplate("home/home_index.html")
 }

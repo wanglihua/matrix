@@ -12,4 +12,4 @@ GET  /login                     Login.Index
 POST /login                     Login.Login
 
 # Catch all
-*    /:controller/:action       :controller.:a
+*    /:controller/:action       :controller.:action

@@ -3,18 +3,6 @@ package routes
 import "github.com/revel/revel"
 
 
-type tHome struct {}
-var Home tHome
-
-
-func (_ tHome) Index(
-        ) string {
-    args := make(map[string]string)
-    
-    return revel.MainRouter.Reverse("Home.Index", args).Url
-}
-
-
 type tLogin struct {}
 var Login tLogin
 
@@ -38,6 +26,57 @@ func (_ tLogin) Logout(
     args := make(map[string]string)
     
     return revel.MainRouter.Reverse("Login.Logout", args).Url
+}
+
+
+type tHome struct {}
+var Home tHome
+
+
+func (_ tHome) Index(
+        ) string {
+    args := make(map[string]string)
+    
+    return revel.MainRouter.Reverse("Home.Index", args).Url
+}
+
+
+type tTestRunner struct {}
+var TestRunner tTestRunner
+
+
+func (_ tTestRunner) Index(
+        ) string {
+    args := make(map[string]string)
+    
+    return revel.MainRouter.Reverse("TestRunner.Index", args).Url
+}
+
+func (_ tTestRunner) Suite(
+        suite string,
+        ) string {
+    args := make(map[string]string)
+    
+    revel.Unbind(args, "suite", suite)
+    return revel.MainRouter.Reverse("TestRunner.Suite", args).Url
+}
+
+func (_ tTestRunner) Run(
+        suite string,
+        test string,
+        ) string {
+    args := make(map[string]string)
+    
+    revel.Unbind(args, "suite", suite)
+    revel.Unbind(args, "test", test)
+    return revel.MainRouter.Reverse("TestRunner.Run", args).Url
+}
+
+func (_ tTestRunner) List(
+        ) string {
+    args := make(map[string]string)
+    
+    return revel.MainRouter.Reverse("TestRunner.List", args).Url
 }
 
 

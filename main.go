@@ -4,9 +4,12 @@ import (
     "flag"
     "reflect"
     "github.com/revel/revel"
-    controllers0 "github.com/revel/modules/static/app/controllers"
+    controllers1 "github.com/revel/modules/static/app/controllers"
+    _ "github.com/revel/modules/testrunner/app"
+    controllers0 "github.com/revel/modules/testrunner/app/controllers"
     _ "matrix/app"
     controllers "matrix/app/controllers"
+    tests "matrix/tests"
     "github.com/revel/revel/testing"
     "path/filepath"
     "os"
@@ -36,18 +39,6 @@ func main() {
     revel.Init(*runMode, *importPath, *srcPath)
     revel.INFO.Println("Running revel server")
     
-    revel.RegisterController((*controllers.Home)(nil),
-        []*revel.MethodType{
-            &revel.MethodType{
-                Name: "Index",
-                Args: []*revel.MethodArg{ 
-                },
-                RenderArgNames: map[int][]string{ 
-                },
-            },
-            
-        })
-    
     revel.RegisterController((*controllers.Login)(nil),
         []*revel.MethodType{
             &revel.MethodType{
@@ -74,7 +65,60 @@ func main() {
             
         })
     
-    revel.RegisterController((*controllers0.Static)(nil),
+    revel.RegisterController((*controllers.Home)(nil),
+        []*revel.MethodType{
+            &revel.MethodType{
+                Name: "Index",
+                Args: []*revel.MethodArg{ 
+                },
+                RenderArgNames: map[int][]string{ 
+                },
+            },
+            
+        })
+    
+    revel.RegisterController((*controllers0.TestRunner)(nil),
+        []*revel.MethodType{
+            &revel.MethodType{
+                Name: "Index",
+                Args: []*revel.MethodArg{ 
+                },
+                RenderArgNames: map[int][]string{ 
+                    72: []string{ 
+                        "testSuites",
+                    },
+                },
+            },
+            &revel.MethodType{
+                Name: "Suite",
+                Args: []*revel.MethodArg{ 
+                    &revel.MethodArg{Name: "suite", Type: reflect.TypeOf((*string)(nil)) },
+                },
+                RenderArgNames: map[int][]string{ 
+                },
+            },
+            &revel.MethodType{
+                Name: "Run",
+                Args: []*revel.MethodArg{ 
+                    &revel.MethodArg{Name: "suite", Type: reflect.TypeOf((*string)(nil)) },
+                    &revel.MethodArg{Name: "test", Type: reflect.TypeOf((*string)(nil)) },
+                },
+                RenderArgNames: map[int][]string{ 
+                    125: []string{ 
+                    },
+                },
+            },
+            &revel.MethodType{
+                Name: "List",
+                Args: []*revel.MethodArg{ 
+                },
+                RenderArgNames: map[int][]string{ 
+                },
+            },
+            
+        })
+    
+    revel.RegisterController((*controllers1.Static)(nil),
         []*revel.MethodType{
             &revel.MethodType{
                 Name: "Serve",
@@ -101,6 +145,7 @@ func main() {
     revel.DefaultValidationKeys = map[string]map[int]string{ 
     }
     testing.TestSuites = []interface{}{ 
+        (*tests.HomeTest)(nil),
     }
 
     revel.Run(*port)
