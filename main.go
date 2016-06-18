@@ -11,9 +11,11 @@ import (
     controllers "matrix/app/controllers"
     tests "matrix/tests"
     "github.com/revel/revel/testing"
+
     "path/filepath"
     "os"
     "log"
+
 )
 
 var (
@@ -27,7 +29,8 @@ var (
 )
 
 func main() {
-    if *runMode != "dev" {
+
+    if *runMode == "prod" {
         currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
         if err != nil {
             log.Fatal(err)

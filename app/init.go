@@ -4,6 +4,7 @@ import (
     "github.com/revel/revel"
     "runtime"
     "fmt"
+    "html/template"
 )
 
 func init() {
@@ -27,7 +28,7 @@ func init() {
         revel.ActionInvoker, // Invoke the action.
     }
 
-
+    revel.TemplateFuncs["test"] = testTemplateFunc
 
     // register startup functions with OnAppStart
     // ( order dependent )
@@ -66,4 +67,8 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
     }
 
     return nil
+}
+
+func testTemplateFunc() template.HTML {
+    return template.HTML("<span style='color:red;'>Hello World Just a test!</span>")
 }

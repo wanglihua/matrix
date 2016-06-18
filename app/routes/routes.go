@@ -109,3 +109,21 @@ func (_ tStatic) ServeModule(
 }
 
 
+
+var ActionList = []string{
+
+    "Login.Index",
+    "Login.Login",
+    "Login.Logout",
+
+    "Home.Index",
+
+    "TestRunner.Index",
+    "TestRunner.Suite",
+    "TestRunner.Run",
+    "TestRunner.List",
+
+    "Static.Serve",
+    "Static.ServeModule",
+
+}
