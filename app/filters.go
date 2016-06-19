@@ -42,5 +42,9 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
     c.Response.Out.Header().Add("X-XSS-Protection", "1; mode=block")
     c.Response.Out.Header().Add("X-Content-Type-Options", "nosniff")
 
+    //add copyright
+    c.Response.Out.Header().Add("copyright", "Jiaxing Huadu Information Technolony Co.,Ltd")
+    //add email and mobile
+
     fc[0](c, fc[1:]) // Execute the next filter stage.
 }

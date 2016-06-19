@@ -5,11 +5,11 @@ import (
     "fmt"
 )
 
-type User struct {
+type AuthUser struct {
     *revel.Controller
 }
 
-func (c User) Index() revel.Result {
+func (c AuthUser) Index() revel.Result {
     fmt.Println(c.Session.Id())
     return c.RenderTemplate("user/user_index.html")
 }
