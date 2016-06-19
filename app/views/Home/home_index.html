@@ -18,6 +18,16 @@
                 {{raw "Hello world"}}
                 <a href='{{url "TestRunner.Index"}}'>Tests</a>
             </div>
+            <div>
+                <button id="btnHello" onclick="hello()">Hello</button>
+                <script type="text/javascript">
+                    function hello(){
+                        $.post("/login", function () {
+
+                        });
+                    }
+                </script>
+            </div>
         </div>
     </div>
 </div>
