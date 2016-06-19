@@ -1,9 +1,11 @@
 # *    /testrunner     module:testrunner
 module:testrunner
+module:auth
 
 GET  /favicon.ico               Static.Serve("static","images/favicon.png")
-GET  /                          Home.Index
 GET  /static/*filepath          Static.Serve("static")
+
+GET  /                          Home.Index
 
 GET  /login                     Login.Index
 POST /login                     Login.Login

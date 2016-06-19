@@ -31,7 +31,7 @@ func handleInvocationPanic(c *revel.Controller, err interface{}) {
 
     //c.Result = c.RenderText("ddddddddddd")
 
-    fmt.Println(c.Request.Header["X-Requested-With"]) //判定是不是 ajax 请求
+    fmt.Println(c.Request.Header["X-Requested-With"]) //判定是不是 ajax 请求，XMLHttpRequest
 
     //c.Result = c.RenderJson(controllers.JsonResult{Success:true, Message:"Hello"})
 }

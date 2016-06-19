@@ -27,7 +27,7 @@ func init() {
         revel.ActionInvoker, // Invoke the action.
     }
 
-    revel.TemplateFuncs["test"] = testTemplateFunc
+    registerTags()
 
     // register startup functions with OnAppStart
     // ( order dependent )

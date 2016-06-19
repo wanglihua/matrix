@@ -4,3 +4,5 @@
 .svn
 test-results/
 /log/*.log
+/main.go
+/app/routes/routes.go
