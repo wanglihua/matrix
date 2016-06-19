@@ -4,11 +4,11 @@ import (
     "flag"
     "reflect"
     "github.com/revel/revel"
-    controllers1 "github.com/revel/modules/static/app/controllers"
-    _ "github.com/revel/modules/testrunner/app"
-    controllers0 "github.com/revel/modules/testrunner/app/controllers"
     _ "matrix/app"
     controllers "matrix/app/controllers"
+    controllers1 "matrix/modules/static/app/controllers"
+    _ "matrix/modules/testrunner/app"
+    controllers0 "matrix/modules/testrunner/app/controllers"
     tests "matrix/tests"
     "github.com/revel/revel/testing"
 
@@ -42,6 +42,18 @@ func main() {
     revel.Init(*runMode, *importPath, *srcPath)
     revel.INFO.Println("Running revel server")
     
+    revel.RegisterController((*controllers.Home)(nil),
+        []*revel.MethodType{
+            &revel.MethodType{
+                Name: "Index",
+                Args: []*revel.MethodArg{ 
+                },
+                RenderArgNames: map[int][]string{ 
+                },
+            },
+            
+        })
+    
     revel.RegisterController((*controllers.Login)(nil),
         []*revel.MethodType{
             &revel.MethodType{
@@ -60,18 +72,6 @@ func main() {
             },
             &revel.MethodType{
                 Name: "Logout",
-                Args: []*revel.MethodArg{ 
-                },
-                RenderArgNames: map[int][]string{ 
-                },
-            },
-            
-        })
-    
-    revel.RegisterController((*controllers.Home)(nil),
-        []*revel.MethodType{
-            &revel.MethodType{
-                Name: "Index",
                 Args: []*revel.MethodArg{ 
                 },
                 RenderArgNames: map[int][]string{ 

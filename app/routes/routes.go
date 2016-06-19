@@ -3,6 +3,18 @@ package routes
 import "github.com/revel/revel"
 
 
+type tHome struct {}
+var Home tHome
+
+
+func (_ tHome) Index(
+        ) string {
+    args := make(map[string]string)
+    
+    return revel.MainRouter.Reverse("Home.Index", args).Url
+}
+
+
 type tLogin struct {}
 var Login tLogin
 
@@ -26,18 +38,6 @@ func (_ tLogin) Logout(
     args := make(map[string]string)
     
     return revel.MainRouter.Reverse("Login.Logout", args).Url
-}
-
-
-type tHome struct {}
-var Home tHome
-
-
-func (_ tHome) Index(
-        ) string {
-    args := make(map[string]string)
-    
-    return revel.MainRouter.Reverse("Home.Index", args).Url
 }
 
 
@@ -112,11 +112,11 @@ func (_ tStatic) ServeModule(
 
 var ActionList = []string{
 
+    "Home.Index",
+
     "Login.Index",
     "Login.Login",
     "Login.Logout",
-
-    "Home.Index",
 
     "TestRunner.Index",
     "TestRunner.Suite",
