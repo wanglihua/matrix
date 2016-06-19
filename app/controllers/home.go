@@ -10,6 +10,6 @@ type Home struct {
 }
 
 func (c Home) Index() revel.Result {
-    fmt.Println("Hello World!")
+    fmt.Println(c.Session.Id())
     return c.RenderTemplate("home/home_index.html")
 }

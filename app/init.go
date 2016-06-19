@@ -69,6 +69,8 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
     return nil
 }
 
-func testTemplateFunc() template.HTML {
-    return template.HTML("<span style='color:red;'>Hello World Just a test!</span>")
+func testTemplateFunc(renderArgs map[string]interface{}) template.HTML {
+    session := renderArgs["session"].(revel.Session)
+    return template.HTML("<span style='color:red;'>Hello World Just a test " + session.Id() + "!</span>")
+    //return template.HTML("<span style='color:red;'>Hello World Just a test!</span>")
 }
