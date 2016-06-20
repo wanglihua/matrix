@@ -5,6 +5,7 @@ import (
     "fmt"
     "matrix/db"
     "matrix/modules/auth/models"
+    "matrix/serice/gridrequest"
 )
 
 type AuthUser struct {
@@ -33,8 +34,14 @@ func (c AuthUser) ListData() revel.Result {
     session := db.Engine.NewSession()
     defer session.Close()
 
+    filter, order, offset, limit := GridRequest.GetParam(c.Request)
+    fmt.Println(filter)
+    fmt.Println(order)
+    fmt.Println(offset)
+    fmt.Println(limit)
+
     users := make([]models.User, 0)
-    session.Limit(10, 0).Find(&users)
+    session.Limit(limit, offset).Find(&users)
     user := new(models.User)
     count, _ := session.Count(user)
 

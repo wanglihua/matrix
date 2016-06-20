@@ -9,6 +9,8 @@ import (
 func init() {
     runtime.GOMAXPROCS(runtime.NumCPU())
 
+    revel.TimeFormats = append(revel.TimeFormats, "2016-01-01 12:00")
+
     revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
 
     // Filters is the default set of global filters.
