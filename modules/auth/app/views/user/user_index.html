@@ -13,9 +13,111 @@
 <div class="page-content">
     <div class="row">
         <div class="col-xs-12" style="padding: 0;">
-            <div style="width:600px;height:200px;margin:100px auto;text-align:center;">
-                <span style="font-size:38px;font-weight:bold;color:#3482AD;">用户列表！</span>
+            <div class="gridToolBar clearfix">
+                <button class="btn btn-primary btn-sm" onclick="reloadList('#userList')">
+                    <i class="ace-icon fa fa-refresh"></i>
+                    刷新
+                </button>
+                <button class="btn btn-success btn-sm" onclick="showUserDetail(0)">
+                    <i class="ace-icon fa fa-plus"></i>
+                    新增
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser()">
+                    <i class="ace-icon fa fa-trash-o"></i>
+                    删除
+                </button>
             </div>
+            <div>
+                <table id="userList" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div id="userDetailDialogWrapper"></div>
+            <script type="text/javascript">
+                function showUserDetail(id) {
+                    $.ajax({
+                               url: "{% url 'auth:user_detail' %}",
+                               type: "POST",
+                               data: {
+                                   "id": id
+                               },
+                               success: function (result) {
+                                   $("#userDetailDialogWrapper").html(result);
+                                   $('#userDetailDialog').modal(modalOptions);
+                               }
+                           }
+                    );
+                }
+
+                function deleteUser() {
+                    var id_list = [];
+                    $('#userList tbody tr>td:first-child input:checkbox').each(function () {
+                        if (this.checked) {
+                            id_list.push($(this).val());
+                        }
+                    });
+
+                    if (id_list.length == 0) {
+                        $.msg.alert("请选择数据！");
+                        return;
+                    }
+
+                    $.msg.confirm("确认要删除吗？", function () {
+                        $.ajax({
+                                   url: '{% url "auth: user_delete" %}',
+                                   type: "POST",
+                                   data: {"id_list": id_list},
+                                   success: function (data) {
+                                       if (data.success == false) {
+                                           $.msg.error(data.message);
+                                           return;
+                                       }
+                                       else {
+                                           $.msg.show(data.message);
+                                       }
+                                       reloadList('#userList');
+                                   }
+                               });
+                    });
+                }
+
+                $(function () {
+                    initDataTable(
+                            '#userList',
+                            {
+                                "sAjaxSource": '{{url "AuthUser.ListData"}}',
+                                "aaSorting": [[1, "asc"]],
+                                "aoColumns": [
+                                    {
+                                        "mDataProp": "Id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                        "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                        "render": function (data, type, row) {
+                                            return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                        }
+                                    },
+                                    {"mDataProp": "LoginName", "title": "<span id='col_login_name'>登录名</span>"},
+                                    {"mDataProp": "NickName", "title": "<span id='col_nick_name'>用户名</span>"},
+                                    {
+                                        "mDataProp": "Created", "title": "<span id='col_create_time'>创建时间</span>", "bSearchable": false, "width": 120,
+                                        "render": function (data, type, row) {
+                                            return dtFormatDateTime(data);
+                                        }
+                                    },
+                                    {
+                                        "mDataProp": "Updated", "title": "<span id='col_modify_time'>修改时间</span>", "bSearchable": false, "width": 120,
+                                        "render": function (data, type, row) {
+                                            return dtFormatDateTime(data);
+                                        }
+                                    }
+                                ]
+                            }
+                    );
+
+                    $('#userList tbody').on('dblclick', 'tr', function () {
+                        var id = $(this).find('td:first-child input:checkbox').val();
+                        showUserDetail(id);
+                    });
+                });
+            </script>
+
         </div>
     </div>
 </div>

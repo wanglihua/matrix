@@ -1,2 +1,5 @@
-GET /auth/user                    AuthUser.Index
 GET /auth/static/*filepath        Static.ServeModule(auth, static)
+
+GET  /auth/user                    AuthUser.Index
+POST /auth/user/listdata           AuthUser.ListData
+

@@ -1,9 +1,8 @@
-
 function dtFormatDate(data) {
     if (!data) {
         return "";
     }
-    data = data.replace(/T/g, ' ');
+    data = data.replace(/T|Z/g, ' ');
     return stringToDate(data).format("yyyy-MM-dd");
 }
 
@@ -11,7 +10,7 @@ function dtFormatDateTime(data) {
     if (!data) {
         return "";
     }
-    data = data.replace(/T/g, ' ');
+    data = data.replace(/T|Z/g, ' ');
     return stringToDate(data).format("yyyy-MM-dd hh:mm");
 }
 
@@ -19,19 +18,28 @@ function dtFormatDateTime2(data) {
     if (!data) {
         return "";
     }
-    data = data.replace(/T/g, ' ');
+    data = data.replace(/T|Z/g, ' ');
     return stringToDate(data).format("yyyy-MM-dd hh:mm:ss");
 }
 
 function dtFormatFloat(data) {
+    if (!data) {
+        return "";
+    }
     return $.formatNumber(data, {format: "#,##0.00", locale: "cn"});
 }
 
 function dtFormatFloat4(data) {
+    if (!data) {
+        return "";
+    }
     return $.formatNumber(data, {format: "#,##0.0000", locale: "cn"});
 }
 
 function dtFormatInt(data) {
+    if (!data) {
+        return "";
+    }
     return $.formatNumber(data, {format: "#,##0", locale: "cn"});
 }
 
@@ -350,21 +358,21 @@ function validate(form, rules, errorPlacement) {
 
 
 /*
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
+ function csrfSafeMethod(method) {
+ // these HTTP methods do not require CSRF protection
+ return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+ }
 
-$.ajaxSetup({
-                beforeSend: function (xhr, settings) {
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        var csrftoken = Cookies.get('csrftoken');
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                }
-            });
+ $.ajaxSetup({
+ beforeSend: function (xhr, settings) {
+ if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+ var csrftoken = Cookies.get('csrftoken');
+ xhr.setRequestHeader("X-CSRFToken", csrftoken);
+ }
+ }
+ });
 
-*/
+ */
 
 function isEmptyStr(str) {
     if (!str || str.length === 0 || str === "" || typeof str == 'undefined' || !/[^\s]/.test(str) || /^\s*$/.test(str) || str.replace(/\s/g, "") === "") {
