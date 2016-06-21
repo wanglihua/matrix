@@ -34,9 +34,10 @@ func (c AuthUser) ListData() revel.Result {
     session := db.Engine.NewSession()
     defer session.Close()
 
-    filter, order, offset, limit := GridRequest.GetParam(c.Request)
+    filter, orderList, offset, limit := GridRequest.GetParam(c.Request)
     fmt.Println(filter)
-    fmt.Println(order)
+    fmt.Println(orderList)
+    fmt.Println("orderList len ", len(orderList))
     fmt.Println(offset)
     fmt.Println(limit)
 
