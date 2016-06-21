@@ -19,14 +19,9 @@ func (c AuthUser) Index() revel.Result {
     fmt.Println(c.Session.Id())
 
     db.Engine.Sync2(&models.User{}, &models.Group{}, &models.UserGroup{})
-    db.Engine.CreateIndexes(&models.User{})
-    db.Engine.CreateUniques(&models.User{})
 
     return c.RenderTemplate("user/user_index.html")
 }
-
-//type GridResponse map[string]interface{}
-
 
 func (c AuthUser) ListData() revel.Result {
     session := db.Engine.NewSession()
@@ -37,8 +32,6 @@ func (c AuthUser) ListData() revel.Result {
     query := session.Where(filter)
     dataQuery := *query
     countQuery := *query
-
-    fmt.Println(orderList)
 
     for _, orderParam := range orderList {
         if orderParam.OrderAsc {

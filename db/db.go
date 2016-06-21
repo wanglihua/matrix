@@ -5,7 +5,7 @@ import (
     _ "github.com/mattn/go-sqlite3"
     //_ "github.com/denisenkom/go-mssqldb"
     "github.com/revel/revel"
-    "github.com/go-xorm/core"
+    //"github.com/go-xorm/core"
 )
 
 var Engine *xorm.Engine = nil
@@ -22,9 +22,10 @@ func init() {
         Engine.ShowExecTime()
         Engine.ShowSQL()
 
-        tableMapper := core.NewPrefixMapper(core.SameMapper{}, "hd_")
-        Engine.SetTableMapper(tableMapper)
-        Engine.SetColumnMapper(core.SameMapper{})
+        //实体定义时明确指明了表名和列名，下面这些定义就不起作用了
+        //tableMapper := core.NewPrefixMapper(core.SameMapper{}, "hd_")
+        //Engine.SetTableMapper(tableMapper)
+        //Engine.SetColumnMapper(core.SameMapper{})
 
         if err != nil {
             revel.ERROR.Println(err)

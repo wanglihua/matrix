@@ -24,7 +24,7 @@ func handleInvocationPanic(c *revel.Controller, err interface{}) {
         //revel.ERROR.Print(siteError, "\n", siteError.Stack)
 
         if c.Request.Header["X-Requested-With"][0] == "XMLHttpRequest" {
-            c.Result = c.RenderJson(service.JsonResult{Success:false, Message:"操作失败，程序错误！"})
+            c.Result = c.RenderJson(service.JsonResult{Success:false, Message:"操作失败！详细:" + siteError.Description})
         } else {
             c.Response.Out.WriteHeader(500)
             c.Response.Out.Write(debug.Stack())

@@ -1,4 +1,4 @@
-{{header "Home" .}}
+{{header "用户管理" .}}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
@@ -87,22 +87,22 @@
                                 "aaSorting": [[1, "asc"]],
                                 "aoColumns": [
                                     {
-                                        "mDataProp": "Id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                        "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
                                         "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
                                         "render": function (data, type, row) {
                                             return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                         }
                                     },
-                                    {"mDataProp": "LoginName", "title": "<span id='col_login_name'>登录名</span>"},
-                                    {"mDataProp": "NickName", "title": "<span id='col_nick_name'>用户名</span>"},
+                                    {"mDataProp": "login_name", "title": "<span id='col_login_name'>登录名</span>"},
+                                    {"mDataProp": "nick_name", "title": "<span id='col_nick_name'>用户名</span>"},
                                     {
-                                        "mDataProp": "CreateTime", "title": "<span id='col_create_time'>创建时间</span>", "bSearchable": false, "width": 120,
+                                        "mDataProp": "create_time", "title": "<span id='col_create_time'>创建时间</span>", "bSearchable": false, "width": 120,
                                         "render": function (data, type, row) {
                                             return dtFormatDateTime(data);
                                         }
                                     },
                                     {
-                                        "mDataProp": "UpdateTime", "title": "<span id='col_modify_time'>修改时间</span>", "bSearchable": false, "width": 120,
+                                        "mDataProp": "update_time", "title": "<span id='col_modify_time'>修改时间</span>", "bSearchable": false, "width": 120,
                                         "render": function (data, type, row) {
                                             return dtFormatDateTime(data);
                                         }

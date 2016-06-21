@@ -3,7 +3,7 @@
 .idea
 .svn
 test-results/
-/log/*.log
+/log
 /main.go
 /app/routes/routes.go
 /*.db

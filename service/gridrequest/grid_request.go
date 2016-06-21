@@ -13,7 +13,7 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
 
     condition := ""
     colCount, _ := strconv.Atoi(request.Form["iColumns"][0])
-    gridColumnList := make([]gridColumn, colCount)
+    gridColumnList := make([]gridColumn, 0)
     for colIndex := 0; colIndex < colCount; colIndex++ {
         colName := request.Form["mDataProp_" + strconv.Itoa(colIndex)][0]
         colSearchable := request.Form["bSearchable_" + strconv.Itoa(colIndex)][0]
@@ -35,7 +35,7 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
     }
 
     orderCount, _ := strconv.Atoi(request.Form["iSortingCols"][0])
-    gridOrderList := make([]GridOrder, orderCount)
+    gridOrderList := make([]GridOrder, 0)
     for orderIndex := 0; orderIndex < orderCount; orderIndex++ {
         orderColIndex, _ := strconv.Atoi(request.Form["iSortCol_" + strconv.Itoa(orderIndex)][0])
         orderDir := strings.ToLower(request.Form["sSortDir_" + strconv.Itoa(orderIndex)][0])
