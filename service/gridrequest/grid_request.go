@@ -3,7 +3,6 @@ package GridRequest
 import (
     "github.com/revel/revel"
     "strconv"
-    "fmt"
     "strings"
 )
 
@@ -41,12 +40,9 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
         orderDir := strings.ToLower(request.Form["sSortDir_" + strconv.Itoa(orderIndex)][0])
 
         gridCol := gridColumnList[orderColIndex]
-        fmt.Println("*Order " + strconv.Itoa(orderColIndex))
-        fmt.Println("*Order " + gridCol.ColName)
-        fmt.Println("*Order " + gridCol.ColSortable)
         if gridCol.ColSortable == "true" {
             gridOrder := GridOrder{
-                OrderColumn: gridCol.ColName,
+                ColName: gridCol.ColName,
                 OrderAsc: strings.ToLower(orderDir) != "desc",
             }
 
@@ -70,6 +66,6 @@ type gridColumn struct {
 }
 
 type GridOrder struct {
-    OrderColumn string // column name
-    OrderAsc    bool   // asc true, desc false
+    ColName  string // column name
+    OrderAsc bool   // asc true, desc false
 }

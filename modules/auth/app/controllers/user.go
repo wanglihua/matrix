@@ -36,18 +36,22 @@ func (c AuthUser) ListData() revel.Result {
 
     for _, orderParam := range orderList {
         if orderParam.OrderAsc {
-            dataQuery = *dataQuery.Asc(orderParam.OrderColumn)
+            dataQuery = *dataQuery.Asc(orderParam.ColName)
         } else {
-            dataQuery = *dataQuery.Desc(orderParam.OrderColumn)
+            dataQuery = *dataQuery.Desc(orderParam.ColName)
         }
     }
 
     users := make([]models.User, 0)
     err := dataQuery.Limit(limit, offset).Find(&users)
-    if (err != nil) {
+    if err != nil {
         panic(err)
     }
-    count, _ := countQuery.Count(new(models.User))
+
+    count, err := countQuery.Count(new(models.User))
+    if err != nil {
+        panic(err)
+    }
 
     return c.RenderJson(service.GridResult{
         Data: users,
