@@ -11,8 +11,7 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
 
     searchValue := request.Form["sSearch"][0]
 
-    fmt.Println(searchValue)
-
+    condition := ""
     colCount, _ := strconv.Atoi(request.Form["iColumns"][0])
     gridColumnList := make([]gridColumn, colCount)
     for colIndex := 0; colIndex < colCount; colIndex++ {
@@ -28,33 +27,35 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
 
         gridColumnList = append(gridColumnList, gridCol)
 
-        fmt.Println(colName)
-        fmt.Println(colSearchable)
-        fmt.Println(colSortable)
+        if (searchValue != "" && colSearchable == "true") {
+            condition += " or (" + colName + " like '%" + searchValue + "%'" + ") "
+        }
+    }
+    if condition != "" {
+        condition = " ((1=0) " + condition + " ) "
     }
 
     orderCount, _ := strconv.Atoi(request.Form["iSortingCols"][0])
-    fmt.Println("OrderCount: ", orderCount)
     gridOrderList := make([]GridOrder, orderCount)
     for orderIndex := 0; orderIndex < orderCount; orderIndex++ {
         orderColIndex, _ := strconv.Atoi(request.Form["iSortCol_" + strconv.Itoa(orderIndex)][0])
         orderDir := strings.ToLower(request.Form["sSortDir_" + strconv.Itoa(orderIndex)][0])
 
         gridCol := gridColumnList[orderColIndex]
+        fmt.Println("*Order " + strconv.Itoa(orderColIndex))
+        fmt.Println("*Order " + gridCol.ColName)
+        fmt.Println("*Order " + gridCol.ColSortable)
         if gridCol.ColSortable == "true" {
             gridOrder := GridOrder{
                 OrderColumn: gridCol.ColName,
-                OrderDir: orderDir,
+                OrderAsc: strings.ToLower(orderDir) != "desc",
             }
 
             gridOrderList = append(gridOrderList, gridOrder)
         }
-
-        fmt.Println(orderColIndex)
-        fmt.Println(orderDir)
     }
 
-    filter = "" // return todo:加入SQL防注入
+    filter = condition // return todo:加入SQL防注入
     orderList = gridOrderList // return todo:加入SQL防注入
 
     offset, _ = strconv.Atoi(request.Form["iDisplayStart"][0]) // return
@@ -71,5 +72,5 @@ type gridColumn struct {
 
 type GridOrder struct {
     OrderColumn string // column name
-    OrderDir    string // asc desc
+    OrderAsc    bool   // asc true, desc false
 }

@@ -35,16 +35,25 @@ func (c AuthUser) ListData() revel.Result {
     defer session.Close()
 
     filter, orderList, offset, limit := GridRequest.GetParam(c.Request)
-    fmt.Println(filter)
+
+    query := session.Where(filter)
+    dataQuery := *query
+    countQuery := *query
+
     fmt.Println(orderList)
-    fmt.Println("orderList len ", len(orderList))
-    fmt.Println(offset)
-    fmt.Println(limit)
+    /*
+    for _, orderParam := range orderList {
+        if orderParam.OrderAsc {
+            dataQuery = *dataQuery.Asc(orderParam.OrderColumn)
+        } else {
+            dataQuery = *dataQuery.Desc(orderParam.OrderColumn)
+        }
+    }
+    */
 
     users := make([]models.User, 0)
-    session.Limit(limit, offset).Find(&users)
-    user := new(models.User)
-    count, _ := session.Count(user)
+    dataQuery.Limit(limit, offset).Find(&users)
+    count, _ := countQuery.Count(new(models.User))
 
     gridResult := map[string]interface{}{
         "aaData": users,
