@@ -54,8 +54,8 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
         fmt.Println(orderDir)
     }
 
-    filter = ""
-    orderList = gridOrderList // return
+    filter = "" // return todo:加入SQL防注入
+    orderList = gridOrderList // return todo:加入SQL防注入
 
     offset, _ = strconv.Atoi(request.Form["iDisplayStart"][0]) // return
     limit, _ = strconv.Atoi(request.Form["iDisplayLength"][0]) // return

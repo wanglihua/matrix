@@ -8,18 +8,13 @@ func GetHeader(title string) string {
     <meta charset="utf-8"/>
     <title>` + title + `- 系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap.min.css"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/font-awesome.min.css"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-fonts.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/all.css"/>
     <!--[if lte IE 9]>
     <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-part2.min.css" class="ace-main-stylesheet"/>
     <![endif]-->
     <!--[if lte IE 9]>
     <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-ie.min.css"/>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap-datetimepicker.min.css"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap-multiselect.min.css"/>
     <link type="text/css" rel="stylesheet" href="/static/site.css"/>
     <!--[if !IE]> -->
     <script type="text/javascript">
@@ -34,34 +29,12 @@ func GetHeader(title string) string {
     <script type="text/javascript">
         if ('ontouchstart' in document.documentElement) document.write("<script type='text/javascript' src='/static/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     </script>
-    <script type="text/javascript" src="/static/ace/js/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery-ui.custom.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.ba-resize.js"></script>
-    <script type="text/javascript" src="/static/ace/js/ace.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/ace-elements.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/ace-extra.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/all1.js"></script>
     <!--[if lte IE 8]>
     <script type="text/javascript" src="/static/ace/js/html5shiv.min.js"></script>
     <script type="text/javascript" src="/static/ace/js/respond.min.js"></script>
     <![endif]-->
-    <script type="text/javascript" src="/static/ace/js/dataTables/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/jquery.dataTables.bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/buttons/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/buttons/buttons.colVis.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/select/dataTables.select.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/date-time/moment.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.dataTables.fixedHeader.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.dataTables.fixedColumns.js"></script>
-    <script type="text/javascript" src="/static/ace/js/extend.datetime.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.numberformatter.js"></script>
-    <script type="text/javascript" src="/static/ace/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-    <script type="text/javascript" src="/static/ace/js/bootstrap-multiselect.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/fuelux/fuelux.spinner.min.js"></script>
-    <script type="text/javascript" src="/static/js/js.cookie.js"></script>
+    <script type="text/javascript" src="/static/ace/js/all2.js"></script>
     <script type="text/javascript" src="/static/site.js"></script>
 </head>
 
@@ -208,3 +181,61 @@ func GetHeader(title string) string {
     <div class="main-content">
 `
 }
+
+/*
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-fonts.min.css"/>
+    <!--[if lte IE 9]>
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-part2.min.css" class="ace-main-stylesheet"/>
+    <![endif]-->
+    <!--[if lte IE 9]>
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-ie.min.css"/>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap-datetimepicker.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap-multiselect.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/site.css"/>
+    <!--[if !IE]> -->
+    <script type="text/javascript">
+        window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery.min.js'>" + "<" + "/script>");
+    </script>
+    <!-- <![endif]-->
+    <!--[if IE]>
+    <script type="text/javascript">
+        window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery1x.min.js'>" + "<" + "/script>");
+    </script>
+    <![endif]-->
+    <script type="text/javascript">
+        if ('ontouchstart' in document.documentElement) document.write("<script type='text/javascript' src='/static/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+    </script>
+    <script type="text/javascript" src="/static/ace/js/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/jquery-ui.custom.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/jquery.bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/jquery.ba-resize.js"></script>
+    <script type="text/javascript" src="/static/ace/js/ace.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/ace-elements.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/ace-extra.min.js"></script>
+    <!--[if lte IE 8]>
+    <script type="text/javascript" src="/static/ace/js/html5shiv.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/static/ace/js/dataTables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/dataTables/jquery.dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/buttons/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/buttons/buttons.colVis.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/select/dataTables.select.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/date-time/moment.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/jquery.dataTables.fixedHeader.js"></script>
+    <script type="text/javascript" src="/static/ace/js/jquery.dataTables.fixedColumns.js"></script>
+    <script type="text/javascript" src="/static/ace/js/extend.datetime.js"></script>
+    <script type="text/javascript" src="/static/ace/js/jquery.numberformatter.js"></script>
+    <script type="text/javascript" src="/static/ace/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript" src="/static/ace/js/bootstrap-multiselect.min.js"></script>
+    <script type="text/javascript" src="/static/ace/js/fuelux/fuelux.spinner.min.js"></script>
+    <script type="text/javascript" src="/static/js/js.cookie.js"></script>
+    <script type="text/javascript" src="/static/site.js"></script>
+*/
