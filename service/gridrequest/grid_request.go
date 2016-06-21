@@ -12,7 +12,7 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
 
     condition := ""
     colCount, _ := strconv.Atoi(request.Form["iColumns"][0])
-    gridColumnList := make([]gridColumn, 0)
+    gridColumnList := make([]gridColumn, 0, colCount)
     for colIndex := 0; colIndex < colCount; colIndex++ {
         colName := request.Form["mDataProp_" + strconv.Itoa(colIndex)][0]
         colSearchable := request.Form["bSearchable_" + strconv.Itoa(colIndex)][0]
@@ -34,7 +34,7 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
     }
 
     orderCount, _ := strconv.Atoi(request.Form["iSortingCols"][0])
-    gridOrderList := make([]GridOrder, 0)
+    gridOrderList := make([]GridOrder, 0, orderCount)
     for orderIndex := 0; orderIndex < orderCount; orderIndex++ {
         orderColIndex, _ := strconv.Atoi(request.Form["iSortCol_" + strconv.Itoa(orderIndex)][0])
         orderDir := strings.ToLower(request.Form["sSortDir_" + strconv.Itoa(orderIndex)][0])
@@ -42,7 +42,7 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
         gridCol := gridColumnList[orderColIndex]
         if gridCol.ColSortable == "true" {
             gridOrder := GridOrder{
-                ColName: gridCol.ColName,
+                ColName:  strings.Replace(strings.Replace(strings.Replace(gridCol.ColName, "--", "", -1), "#", "", -1), ";", "", -1),
                 OrderAsc: strings.ToLower(orderDir) != "desc",
             }
 
@@ -50,8 +50,8 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
         }
     }
 
-    filter = condition // return todo:加入SQL防注入
-    orderList = gridOrderList // return todo:加入SQL防注入
+    filter = strings.Replace(strings.Replace(strings.Replace(condition, "--", "", -1), "#", "", -1), ";", "", -1) // return
+    orderList = gridOrderList // return
 
     offset, _ = strconv.Atoi(request.Form["iDisplayStart"][0]) // return
     limit, _ = strconv.Atoi(request.Form["iDisplayLength"][0]) // return

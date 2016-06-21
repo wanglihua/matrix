@@ -42,7 +42,7 @@ func (c AuthUser) ListData() revel.Result {
         }
     }
 
-    users := make([]models.User, 0)
+    users := make([]models.User, 0, limit)
     err := dataQuery.Limit(limit, offset).Find(&users)
     if err != nil {
         panic(err)
