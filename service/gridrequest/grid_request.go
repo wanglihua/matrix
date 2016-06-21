@@ -20,11 +20,10 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
         colSortable := request.Form["bSortable_" + strconv.Itoa(colIndex)][0]
 
         gridCol := gridColumn{
-            ColName: colName,
-            ColSearchable: colSearchable,
-            ColSortable: colSortable,
+            ColName :colName,
+            ColSearchable : colSearchable,
+            ColSortable : colSortable,
         }
-
         gridColumnList = append(gridColumnList, gridCol)
 
         if (searchValue != "" && colSearchable == "true") {

@@ -5,7 +5,7 @@ import (
     "fmt"
     "matrix/db"
     "matrix/modules/auth/models"
-    "matrix/serice/gridrequest"
+    "matrix/service/gridrequest"
 )
 
 type AuthUser struct {
@@ -18,11 +18,9 @@ func (c AuthUser) Index() revel.Result {
 
     fmt.Println(c.Session.Id())
 
-    /*
     db.Engine.Sync2(&models.User{}, &models.Group{}, &models.UserGroup{})
     db.Engine.CreateIndexes(&models.User{})
     db.Engine.CreateUniques(&models.User{})
-    */
 
     return c.RenderTemplate("user/user_index.html")
 }
@@ -41,7 +39,7 @@ func (c AuthUser) ListData() revel.Result {
     countQuery := *query
 
     fmt.Println(orderList)
-    /*
+
     for _, orderParam := range orderList {
         if orderParam.OrderAsc {
             dataQuery = *dataQuery.Asc(orderParam.OrderColumn)
@@ -49,10 +47,12 @@ func (c AuthUser) ListData() revel.Result {
             dataQuery = *dataQuery.Desc(orderParam.OrderColumn)
         }
     }
-    */
 
     users := make([]models.User, 0)
-    dataQuery.Limit(limit, offset).Find(&users)
+    err := dataQuery.Limit(limit, offset).Find(&users)
+    if (err != nil) {
+        panic(err)
+    }
     count, _ := countQuery.Count(new(models.User))
 
     gridResult := map[string]interface{}{
