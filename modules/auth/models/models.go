@@ -25,8 +25,8 @@ func (e User) TableName() string {
 //---------------------------------------------------------------------------------------------------------------
 
 type Group struct {
-    Id         int64            `xorm:"bigint notnull pk autoincr 'Id'"`
-    GroupName  string           `xorm:"nvarchar(255) notnull unique index 'GroupName'"`
+    Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+    GroupName  string           `xorm:"nvarchar(255) notnull unique index 'group_name'" json:"group_name"`
     CreateTime *time.Time       `xorm:"created 'create_time'" json:"create_time"`
     UpdateTime *time.Time       `xorm:"updated 'update_time'" json:"update_time"`
     Version    int              `xorm:"version 'version'" json:"version"`
@@ -39,9 +39,9 @@ func (e Group) TableName() string {
 //---------------------------------------------------------------------------------------------------------------
 
 type UserGroup struct {
-    Id         int64            `xorm:"bigint notnull pk autoincr 'Id'"`
-    UserId     int64            `xorm:"bigint notnull index 'UserId'"`
-    GroupId    int64            `xorm:"bigint notnull index 'GroupId'"`
+    Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+    UserId     int64            `xorm:"bigint notnull index 'user_id'" json:"user_id"`
+    GroupId    int64            `xorm:"bigint notnull index 'group_id'" json:"group_id"`
     CreateTime *time.Time       `xorm:"created 'create_time'" json:"create_time"`
     UpdateTime *time.Time       `xorm:"updated 'update_time'" json:"update_time"`
     Version    int              `xorm:"version 'version'" json:"version"`

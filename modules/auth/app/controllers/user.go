@@ -6,6 +6,7 @@ import (
     "matrix/db"
     "matrix/modules/auth/models"
     "matrix/service/gridrequest"
+    "matrix/service"
 )
 
 type AuthUser struct {
@@ -48,11 +49,8 @@ func (c AuthUser) ListData() revel.Result {
     }
     count, _ := countQuery.Count(new(models.User))
 
-    gridResult := map[string]interface{}{
-        "aaData": users,
-        "iTotalDisplayRecords":count,
-        "iTotalRecords":count,
-    }
-
-    return c.RenderJson(gridResult)
+    return c.RenderJson(service.GridResult{
+        Data: users,
+        Total: count,
+    })
 }
