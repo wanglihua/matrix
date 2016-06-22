@@ -5,7 +5,7 @@
         <li>
             <a href='{{url "Home.Index"}}'><i class="ace-icon fa fa-home home-icon"></i></a>
         </li>
-        <li class="active">Home</li>
+        <li>Home</li>
         <li class="parent" data-menu="auth-menu">权限管理</li>
         <li class="active" data-menu="auth-user-menu">用户管理</li>
     </ul>
@@ -34,12 +34,16 @@
             <script type="text/javascript">
                 function showUserDetail(id) {
                     $.ajax({
-                               url: "{% url 'auth:user_detail' %}",
+                               url: '{{url "AuthUser.Detail" }}',
                                type: "POST",
                                data: {
                                    "id": id
                                },
                                success: function (result) {
+                                   if (result.success == false) {
+                                       $.msg.error(result.message);
+                                       return;
+                                   }
                                    $("#userDetailDialogWrapper").html(result);
                                    $('#userDetailDialog').modal(modalOptions);
                                }
@@ -62,7 +66,7 @@
 
                     $.msg.confirm("确认要删除吗？", function () {
                         $.ajax({
-                                   url: '{% url "auth: user_delete" %}',
+                                   url: '{{url "AuthUser.Delete"}}',
                                    type: "POST",
                                    data: {"id_list": id_list},
                                    success: function (data) {

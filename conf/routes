@@ -6,6 +6,8 @@ GET  /favicon.ico               Static.Serve("static","images/favicon.png")
 GET  /static/*filepath          Static.Serve("static")
 
 GET  /                          Home.Index
+GET  /syncdb                    Home.SyncDb
+POST /syncdb/post               Home.SyncDbPost
 
 GET  /login                     Login.Index
 POST /login                     Login.Login

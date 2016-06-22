@@ -6,7 +6,7 @@ import (
     "strings"
 )
 
-func GetParam(request *revel.Request) (filter string, orderList []GridOrder, offset int, limit int) {
+func GetParam(request *revel.Request) (filter string, order string, offset int, limit int) {
 
     searchValue := request.Form["sSearch"][0]
 
@@ -34,38 +34,45 @@ func GetParam(request *revel.Request) (filter string, orderList []GridOrder, off
     }
 
     orderCount, _ := strconv.Atoi(request.Form["iSortingCols"][0])
-    gridOrderList := make([]GridOrder, 0, orderCount)
+    //gridOrderList := make([]GridOrder, 0, orderCount)
+    gridOrderList := make([]string, 0, orderCount)
     for orderIndex := 0; orderIndex < orderCount; orderIndex++ {
         orderColIndex, _ := strconv.Atoi(request.Form["iSortCol_" + strconv.Itoa(orderIndex)][0])
         orderDir := strings.ToLower(request.Form["sSortDir_" + strconv.Itoa(orderIndex)][0])
 
         gridCol := gridColumnList[orderColIndex]
         if gridCol.ColSortable == "true" {
-            gridOrder := GridOrder{
-                ColName:  strings.Replace(strings.Replace(strings.Replace(gridCol.ColName, "--", "", -1), "#", "", -1), ";", "", -1),
-                OrderAsc: strings.ToLower(orderDir) != "desc",
+            if strings.ToLower(orderDir) == "desc" {
+                gridOrderList = append(gridOrderList, gridCol.ColName + " desc")
+            } else {
+                //不能识别为 desc 的排序，均视为 asc
+                gridOrderList = append(gridOrderList, gridCol.ColName + " asc")
             }
-
-            gridOrderList = append(gridOrderList, gridOrder)
         }
     }
 
-    filter = strings.Replace(strings.Replace(strings.Replace(condition, "--", "", -1), "#", "", -1), ";", "", -1) // return
-    orderList = gridOrderList // return
-
+    filter = preventSQLInjection(condition) // return
+    order = preventSQLInjection(strings.Join(gridOrderList, ",")) // return
     offset, _ = strconv.Atoi(request.Form["iDisplayStart"][0]) // return
     limit, _ = strconv.Atoi(request.Form["iDisplayLength"][0]) // return
 
     return
 }
 
+func preventSQLInjection(sqlStr string) string {
+    sqlStr = strings.Replace(sqlStr, "--", "", -1)
+    sqlStr = strings.Replace(sqlStr, "#", "", -1)
+    sqlStr = strings.Replace(sqlStr, ";", "", -1)
+    sqlStr = strings.Replace(sqlStr, "\n", "", -1)
+    sqlStr = strings.Replace(sqlStr, "\r", "", -1)
+    sqlStr = strings.Replace(sqlStr, "'", "", -1)
+    sqlStr = strings.Replace(sqlStr, "\"", "", -1)
+
+    return sqlStr
+}
+
 type gridColumn struct {
     ColName       string
     ColSearchable string
     ColSortable   string
-}
-
-type GridOrder struct {
-    ColName  string // column name
-    OrderAsc bool   // asc true, desc false
 }

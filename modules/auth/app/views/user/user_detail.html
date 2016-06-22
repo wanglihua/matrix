@@ -1,0 +1,97 @@
+<div class="modal fade" id="userDetailDialog">
+    <div class="modal-dialog" style="width: 440px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                <h4 class="modal-title">用户详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" role="form" id="userDetailForm">
+                            {{.Id}}
+                            <input id="Id" name="Id" type="hidden" value="{{.user.Id}}"/>
+                            <div class="form-group">
+                                <label for="LoginName" class="col-xs-2 control-label no-padding-right">登录名</label>
+                                <div class="col-xs-10">
+                                    <input id="LoginName" name="LoginName" type="text" class="input-sm form-control" value="{{.user.LoginName}}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="NickName" class="col-xs-2 control-label no-padding-right">用户名</label>
+                                <div class="col-xs-10">
+                                    <input id="NickName" name="NickName" type="text" class="input-sm form-control" value="{{.user.NickName}}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Password" class="col-xs-2 control-label no-padding-right">密码</label>
+                                <div class="col-xs-10">
+                                    <input id="Password" name="Password" type="text" class="input-sm form-control" value="{{.user.Password}}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="NewPassword" class="col-xs-2 control-label no-padding-right">新密码</label>
+                                <div class="col-xs-10">
+                                    <input id="NewPassword" name="NewPassword" type="text" class="input-sm form-control" value=""/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="submitForm()">
+                    <i class="ace-icon fa fa-floppy-o"></i>保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function submitForm() {
+        showMask("提交中...");
+        var form = $("#userDetailForm");
+        var valid = validate(form, {
+            'login_name': {
+                required: true,
+                maxlength: 20
+            },
+            'nick_name': {
+                required: true,
+                maxlength: 20
+            },
+            'password': {
+                required: true,
+                maxlength: 100
+            },
+            'new_password': {
+                maxlength: 100
+            }
+        });
+
+        if (valid) {
+            $.ajax({
+                       url: '{{url "AuthUser.Save"}}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#userDetailDialog').modal('hide');
+                               reloadList('#userList');
+                               //return;
+                           }
+                       }
+                   }
+            );
+        }
+    }
+</script>

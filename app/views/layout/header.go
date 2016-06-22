@@ -128,7 +128,7 @@ func GetHeader(title string) string {
         <ul class="nav nav-list">
             <li id="sync-menu" class="">
                 <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-users"></i>
+                    <i class="menu-icon fa fa-cogs"></i>
                     <span class="menu-text">数据同步</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>

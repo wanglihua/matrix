@@ -2,4 +2,7 @@ GET /auth/static/*filepath        Static.ServeModule(auth, static)
 
 GET  /auth/user                    AuthUser.Index
 POST /auth/user/listdata           AuthUser.ListData
+POST /auth/user/detail             AuthUser.Detail
+POST /auth/user/save               AuthUser.Save
+POST /auth/user/delete             AuthUser.Delete
 

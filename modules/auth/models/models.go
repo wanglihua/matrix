@@ -9,7 +9,7 @@ var tablePrefix = "hd_auth_"
 //---------------------------------------------------------------------------------------------------------------
 
 type User struct {
-    Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"Id"`
+    Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
     LoginName  string           `xorm:"nvarchar(255) notnull unique index 'login_name'" json:"login_name"`
     NickName   string           `xorm:"nvarchar(255) notnull 'nick_name'" json:"nick_name"`
     Password   string           `xorm:"nvarchar(255) notnull 'password'" json:"password"`
