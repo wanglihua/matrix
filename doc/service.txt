@@ -1,0 +1,2 @@
+nginx 可以用winsw安装成服务
+matrix可以用nssm安装成服务
