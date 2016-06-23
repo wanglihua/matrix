@@ -29,20 +29,20 @@ a { color: #0088cc; }
 
 	</head>
 	<body>
-		<header class="{{if .Passed}}passed{{else}}failed{{end}}">
+		<header class="{%if .Passed%}passed{%else%}failed{%end%}">
 			<div class="container">
-				<h1>{{.Name}}</h1>
-				<p>{{if .Passed}}PASSED{{else}}FAILED{{end}}</p>
+				<h1>{%.Name%}</h1>
+				<p>{%if .Passed%}PASSED{%else%}FAILED{%end%}</p>
 			</div>
 		</header>
 
 		<div class="container">
-			{{range .Results}}
-				<div class="result {{if .Passed}}passed{{else}}failed{{end}}">
-					<div><h2>{{.Name}}</h2></div>
-					<div class="info">{{if .ErrorHTML}}{{.ErrorHTML}}{{else}}PASSED{{end}}</div>
+			{%range .Results%}
+				<div class="result {%if .Passed%}passed{%else%}failed{%end%}">
+					<div><h2>{%.Name%}</h2></div>
+					<div class="info">{%if .ErrorHTML%}{%.ErrorHTML%}{%else%}PASSED{%end%}</div>
 				</div>
-			{{end}}
+			{%end%}
 		</div>
 	</body>
 </html>

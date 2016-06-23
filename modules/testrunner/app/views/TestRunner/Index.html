@@ -3,11 +3,11 @@
     <head>
         <title>Matrix Test Runner</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <link href="{{url `Root`}}/@tests/public/css/bootstrap.min.css" type="text/css" rel="stylesheet"></link>
-        <link href="{{url `Root`}}/@tests/public/css/github.css" type="text/css" rel="stylesheet"></link>
-        <script src="{{url `Root`}}/@tests/public/js/jquery-1.9.1.min.js" type="text/javascript"></script>
-        <script src="{{url `Root`}}/@tests/public/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="{{url `Root`}}/@tests/public/js/highlight.pack.js" type="text/javascript"></script>
+        <link href="{%url `Root`%}/@tests/public/css/bootstrap.min.css" type="text/css" rel="stylesheet"></link>
+        <link href="{%url `Root`%}/@tests/public/css/github.css" type="text/css" rel="stylesheet"></link>
+        <script src="{%url `Root`%}/@tests/public/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+        <script src="{%url `Root`%}/@tests/public/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="{%url `Root`%}/@tests/public/js/highlight.pack.js" type="text/javascript"></script>
         <style>
         header { background-color:#ADD8E6 }
         header h1 {margin-top: 10px; margin-bottom:20px;}
@@ -38,40 +38,40 @@
                     <a href="/@tests" class="logo">Test Runner</a> <small>- Run your tests here.</small>
                 </h1>
                 <div style="margin-top:16px" class="pull-right">
-                    <button class="btn btn-success {{if not .suiteFound}}disabled{{end}}" all-tests="">Run All Tests</button>
+                    <button class="btn btn-success {%if not .suiteFound%}disabled{%end%}" all-tests="">Run All Tests</button>
                     <div><a class="small" href="#" id="allTestResults"></a></div>
                 </div>
             </div>
         </header>
         <div class="panel-group container">
-            {{if not .suiteFound}}
+            {%if not .suiteFound%}
             <div style="margin-top:20px;padding:15px;" class="panel panel-default">
-              <span style="font-weight:bold;color:#777;">Suite "{{.suiteName}}" is not found.</span>
+              <span style="font-weight:bold;color:#777;">Suite "{%.suiteName%}" is not found.</span>
             </div>
-            {{end}}
+            {%end%}
 
-            {{range .testSuites}}
-            {{ $testFile := .Name }}
+            {%range .testSuites%}
+            {% $testFile := .Name %}
             <div style="margin-top:20px;" class="panel panel-default">
-                <div class="panel-heading collapseLnk" style="cursor:pointer" data-toggle="collapse" data-target="#{{.Name}}">
-                    <button id="suite{{.Name}}" class="btn btn-xs btn-success" test-file="{{.Name}}">Run</button>
-                    <span class="h5">&nbsp;<a href="/@tests/{{ .Name }}">{{.Name}}</a></span>
-                    <span id="pointTriangle{{.Name}}" class="pnt-triangle pull-right" data-tri-open="open">&#9660</span>
+                <div class="panel-heading collapseLnk" style="cursor:pointer" data-toggle="collapse" data-target="#{%.Name%}">
+                    <button id="suite{%.Name%}" class="btn btn-xs btn-success" test-file="{%.Name%}">Run</button>
+                    <span class="h5">&nbsp;<a href="/@tests/{% .Name %}">{%.Name%}</a></span>
+                    <span id="pointTriangle{%.Name%}" class="pnt-triangle pull-right" data-tri-open="open">&#9660</span>
                 </div>
-                <div id="{{.Name}}" class="panel-collapse collapse in">
-                    <table class="panel-body table table-condensed tests" suite="{{.Name}}">
-                        {{range .Tests}}
-                            <tr id="testRow{{.Name}}">
-                                <td class="leftCol"><button data-test-file="{{$testFile}}" test="{{.Name}}" class="leftbutton btn btn-success btn-xs">Run</button></td>
-                                <td class="name">{{ .Name }}</td>
+                <div id="{%.Name%}" class="panel-collapse collapse in">
+                    <table class="panel-body table table-condensed tests" suite="{%.Name%}">
+                        {%range .Tests%}
+                            <tr id="testRow{%.Name%}">
+                                <td class="leftCol"><button data-test-file="{%$testFile%}" test="{%.Name%}" class="leftbutton btn btn-success btn-xs">Run</button></td>
+                                <td class="name">{% .Name %}</td>
                                 <td class="result"><a href="#"></a></td>
-                                <td class="rightCol"><button data-test-file="{{$testFile}}" test="{{.Name}}" class="pull-right btn btn-success btn-xs">Run</button></td>
+                                <td class="rightCol"><button data-test-file="{%$testFile%}" test="{%.Name%}" class="pull-right btn btn-success btn-xs">Run</button></td>
                             </tr>
-                        {{end}}
+                        {%end%}
                     </table>
                 </div>
             </div>
-            {{end}}
+            {%end%}
         </div>
 
     <script>
@@ -194,7 +194,7 @@
         $("div.panel-default", resultCell).remove();
         $.ajax({
             dataType: "json",
-            url: "{{url `Root`}}/@tests/"+suite+"/"+test,
+            url: "{%url `Root`%}/@tests/"+suite+"/"+test,
             success: function(result) {
                 row.attr("class", result.Passed ? "passed" : "failed");
                 if (result.Passed) {

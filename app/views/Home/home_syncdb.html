@@ -1,9 +1,9 @@
-{{header "Home" .}}
+{%header "Home" .%}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
         <li>
-            <a href='{{url "Home.Index"}}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
         </li>
         <li>Home</li>
         <li class="active">数据库同步</li>
@@ -22,7 +22,7 @@
                 function syncdb() {
                     $.msg.confirm("确认要同步数据库吗？", function () {
                         $.ajax({
-                                   url: '{{url "Home.SyncDbPost"}}',
+                                   url: '{%url "Home.SyncDbPost"%}',
                                    type: "POST",
                                    success: function (data) {
                                        if (data.success == false) {
@@ -41,4 +41,4 @@
         </div>
     </div>
 </div>
-{{footer}}
+{%footer%}

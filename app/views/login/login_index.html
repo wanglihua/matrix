@@ -78,7 +78,7 @@
     <div class="navbar-container" id="navbar-container">
 
         <div class="navbar-header pull-left" style="height: 80px;line-height: 80px;">
-            <a href='{{url "Home.Index"}}' class="navbar-brand clearfix" style="font-size:36px;">
+            <a href='{%url "Home.Index"%}' class="navbar-brand clearfix" style="font-size:36px;">
                 <div class="pull-left" style="margin-left: 20px;margin-top: 15px;">
                     应用系统
                 </div>
@@ -151,12 +151,12 @@
 
                         if (valid) {
                             $.ajax({
-                                       url: '{{url "Login.Login"}}',
+                                       url: '{%url "Login.Login"%}',
                                        type: "POST",
                                        data: form.serialize(),
                                        success: function (data) {
                                            if (data.success == true) {
-                                               window.location.href = '{{url "Home.Index"}}';
+                                               window.location.href = '{%url "Home.Index"%}';
                                                //return;
                                            }
                                            else {

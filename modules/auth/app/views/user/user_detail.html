@@ -9,24 +9,24 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <form class="form-horizontal" role="form" id="userDetailForm">
-                            {{.Id}}
-                            <input id="Id" name="Id" type="hidden" value="{{.user.Id}}"/>
+                            {%.Id%}
+                            <input id="Id" name="Id" type="hidden" value="{%.user.Id%}"/>
                             <div class="form-group">
                                 <label for="LoginName" class="col-xs-2 control-label no-padding-right">登录名</label>
                                 <div class="col-xs-10">
-                                    <input id="LoginName" name="LoginName" type="text" class="input-sm form-control" value="{{.user.LoginName}}"/>
+                                    <input id="LoginName" name="LoginName" type="text" class="input-sm form-control" value="{%.user.LoginName%}"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="NickName" class="col-xs-2 control-label no-padding-right">用户名</label>
                                 <div class="col-xs-10">
-                                    <input id="NickName" name="NickName" type="text" class="input-sm form-control" value="{{.user.NickName}}"/>
+                                    <input id="NickName" name="NickName" type="text" class="input-sm form-control" value="{%.user.NickName%}"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="Password" class="col-xs-2 control-label no-padding-right">密码</label>
                                 <div class="col-xs-10">
-                                    <input id="Password" name="Password" type="text" class="input-sm form-control" value="{{.user.Password}}"/>
+                                    <input id="Password" name="Password" type="text" class="input-sm form-control" value="{%.user.Password%}"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -74,7 +74,7 @@
 
         if (valid) {
             $.ajax({
-                       url: '{{url "AuthUser.Save"}}',
+                       url: '{%url "AuthUser.Save"%}',
                        type: "POST",
                        data: form.serialize(),
                        success: function (data) {

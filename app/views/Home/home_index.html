@@ -1,9 +1,9 @@
-{{header "Home" .}}
+{%header "Home" .%}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
         <li>
-            <a href='{{url "Home.Index"}}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
         </li>
         <li class="active">Home</li>
     </ul>
@@ -13,9 +13,9 @@
         <div class="col-xs-12" style="padding: 0;">
             <div style="width:600px;height:200px;margin:100px auto;text-align:center;">
                 <span style="font-size:38px;font-weight:bold;color:#3482AD;">Hello, 欢迎进入系统！</span>
-                {{test .}}
-                {{raw "Hello world"}}
-                <a href='{{url "TestRunner.Index"}}'>Tests</a>
+                {%test .%}
+                {%raw "Hello world"%}
+                <a href='{%url "TestRunner.Index"%}'>Tests</a>
             </div>
             <div>
                 <button id="btnHello" onclick="hello()">Hello</button>
@@ -30,4 +30,4 @@
         </div>
     </div>
 </div>
-{{footer}}
+{%footer%}
