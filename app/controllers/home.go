@@ -9,7 +9,7 @@ import (
 )
 
 type Home struct {
-    *revel.Controller
+    service.BaseController
 }
 
 func (c Home) Index() revel.Result {

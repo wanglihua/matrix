@@ -1,4 +1,4 @@
-package GridRequest
+package service
 
 import (
     "github.com/revel/revel"
@@ -6,7 +6,7 @@ import (
     "strings"
 )
 
-func GetParam(request *revel.Request) (filter string, order string, offset int, limit int) {
+func GetGridRequestParam(request *revel.Request) (filter string, order string, offset int, limit int) {
 
     searchValue := request.Form["sSearch"][0]
 

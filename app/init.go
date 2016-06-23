@@ -4,12 +4,17 @@ import (
     "github.com/revel/revel"
     "runtime"
     "fmt"
+    "matrix/service"
 )
 
 func init() {
     runtime.GOMAXPROCS(runtime.NumCPU())
 
     revel.TimeFormats = append(revel.TimeFormats, "2016-01-01 12:00")
+
+    revel.InterceptMethod((*service.BaseController).Before, revel.BEFORE)
+    revel.InterceptMethod((*service.BaseController).After, revel.AFTER)
+    revel.InterceptMethod((*service.BaseController).Panic, revel.PANIC)
 
     revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
 
@@ -52,7 +57,7 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
     TestRunner.Run
      */
     if (c.Name != "Static" && c.Name != "TestRunner") {
-        fmt.Println(c.Action)
+        fmt.Println("userAuthInterceptor " + c.Action)
     }
 
     return nil

@@ -6,7 +6,7 @@ import (
 )
 
 type Login struct {
-    *revel.Controller
+    service.BaseController
 }
 
 func (c Login) Index() revel.Result {

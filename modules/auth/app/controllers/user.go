@@ -2,22 +2,20 @@ package controllers
 
 import (
     "fmt"
-    "matrix/db"
     "matrix/modules/auth/models"
     "matrix/service"
-    "matrix/service/gridrequest"
+
+    "strconv"
 
     "github.com/revel/revel"
-    "strconv"
 )
 
 type AuthUser struct {
-    *revel.Controller
+    service.BaseController
 }
 
 func (c AuthUser) Index() revel.Result {
-    //session := db.Engine.NewSession()
-    //defer session.Close()
+    //session := c.DbSession
 
     fmt.Println(c.Session.Id())
 
@@ -25,10 +23,9 @@ func (c AuthUser) Index() revel.Result {
 }
 
 func (c AuthUser) ListData() revel.Result {
-    session := db.Engine.NewSession()
-    defer session.Close()
+    session := c.DbSession
 
-    filter, order, offset, limit := GridRequest.GetParam(c.Request)
+    filter, order, offset, limit := service.GetGridRequestParam(c.Request)
     query := session.Where(filter)
 
     //query extra filter here
@@ -55,8 +52,7 @@ func (c AuthUser) ListData() revel.Result {
 }
 
 func (c AuthUser) Detail() revel.Result {
-    session := db.Engine.NewSession()
-    defer session.Close()
+    session := c.DbSession
 
     userId, err := strconv.ParseInt(c.Request.Form["id"][0], 10, 64) //可以做成一个通用函数 service package
     service.HandleError(err)
@@ -69,17 +65,18 @@ func (c AuthUser) Detail() revel.Result {
             panic("指定的用户不存在！")
         }
     }
-
-    c.Render(user)
+    fmt.Println(userId)
+    fmt.Println(user.NickName)
+    c.RenderArgs["user"] = user
     return c.RenderTemplate("user/user_detail.html")
 }
 
 func (c AuthUser) Save() revel.Result {
 
-    return c.RenderJson(service.JsonResult{Success:true, Message:"保存成功!"})
+    return c.RenderJson(service.JsonResult{Success: true, Message: "保存成功!"})
 }
 
 func (c AuthUser) Delete() revel.Result {
 
-    return c.RenderJson(service.JsonResult{Success:true, Message:"删除成功!"})
+    return c.RenderJson(service.JsonResult{Success: true, Message: "删除成功!"})
 }
