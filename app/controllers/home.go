@@ -9,6 +9,7 @@ import (
 )
 
 type Home struct {
+    *revel.Controller
     service.BaseController
 }
 

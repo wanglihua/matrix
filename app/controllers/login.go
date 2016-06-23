@@ -6,6 +6,7 @@ import (
 )
 
 type Login struct {
+    *revel.Controller
     service.BaseController
 }
 

@@ -11,6 +11,7 @@ import (
 )
 
 type AuthUser struct {
+    *revel.Controller
     service.BaseController
 }
 
