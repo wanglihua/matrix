@@ -73,11 +73,36 @@ func (c AuthUser) Detail() revel.Result {
 }
 
 func (c AuthUser) Save() revel.Result {
+    session := c.DbSession
+
+    user := new(models.User)
+    c.Params.Bind(&user, "user")
+
+    if user.Id == 0 {
+        _, err := session.Insert(user)
+        service.HandleError(err)
+    } else {
+        _, err := session.Id(user.Id).Update(user)
+        //_, err := session.Table(new(User)).Id(user.Id).Update(map[string]interface{}{"password":"123456"})
+        service.HandleError(err)
+    }
+
+    fmt.Println("user save")
+    fmt.Println(user.Id)
+    fmt.Println(user.NickName)
 
     return c.RenderJson(service.JsonResult{Success: true, Message: "保存成功!"})
 }
 
 func (c AuthUser) Delete() revel.Result {
+    session := c.DbSession
+
+    userIdList := make([]int, 0)
+    c.Params.Bind(&userIdList, "id_list")
+
+    user := new(models.User)
+    _, err := session.In("id", userIdList).Delete(user)
+    service.HandleError(err)
 
     return c.RenderJson(service.JsonResult{Success: true, Message: "删除成功!"})
 }
