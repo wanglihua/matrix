@@ -3,7 +3,7 @@ package app
 import (
     "github.com/revel/revel"
     "html/template"
-    "matrix/app/views/layout"
+    "matrix/app/layout"
     //"bytes"
     //"fmt"
 )
