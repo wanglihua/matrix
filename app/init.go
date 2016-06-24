@@ -10,7 +10,7 @@ import (
 func init() {
     runtime.GOMAXPROCS(runtime.NumCPU())
 
-    revel.TimeFormats = append(revel.TimeFormats, "2016-01-01 12:00")
+    revel.TimeFormats = append(revel.TimeFormats, "2006-01-02 15:04:05")
 
     revel.InterceptMethod((*service.BaseController).Before, revel.BEFORE)
     revel.InterceptMethod((*service.BaseController).After, revel.AFTER)
