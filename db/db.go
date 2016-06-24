@@ -6,6 +6,7 @@ import (
     //_ "github.com/denisenkom/go-mssqldb"
     "github.com/revel/revel"
     //"github.com/go-xorm/core"
+    "time"
 )
 
 var Engine *xorm.Engine = nil
@@ -19,6 +20,12 @@ func InitDatabase() {
         Engine, err = xorm.NewEngine(dbDriver, dbUrl)
         //Engine, err = xorm.NewEngine("sqlite3", "./matrix.db")
         //Engine, err = xorm.NewEngine("mssql", "server=localhost;database=Matrix;user id=sa;password=sa;")
+        if err != nil {
+            panic(err)
+        }
+
+        Engine.TZLocation, err = time.LoadLocation("Asia/Shanghai") //不起作用
+
         if err != nil {
             panic(err)
         }

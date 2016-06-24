@@ -51,24 +51,12 @@ func GetGridRequestParam(request *revel.Request) (filter string, order string, o
         }
     }
 
-    filter = preventSQLInjection(condition) // return
-    order = preventSQLInjection(strings.Join(gridOrderList, ",")) // return
+    filter = PreventSQLInjection(condition) // return
+    order = PreventSQLInjection(strings.Join(gridOrderList, ",")) // return
     offset, _ = strconv.Atoi(request.Form["iDisplayStart"][0]) // return
     limit, _ = strconv.Atoi(request.Form["iDisplayLength"][0]) // return
 
     return
-}
-
-func preventSQLInjection(sqlStr string) string {
-    sqlStr = strings.Replace(sqlStr, "--", "", -1)
-    sqlStr = strings.Replace(sqlStr, "#", "", -1)
-    sqlStr = strings.Replace(sqlStr, ";", "", -1)
-    sqlStr = strings.Replace(sqlStr, "\n", "", -1)
-    sqlStr = strings.Replace(sqlStr, "\r", "", -1)
-    sqlStr = strings.Replace(sqlStr, "'", "", -1)
-    sqlStr = strings.Replace(sqlStr, "\"", "", -1)
-
-    return sqlStr
 }
 
 type gridColumn struct {

@@ -1,13 +1,10 @@
 package controllers
 
 import (
-    "fmt"
+    "github.com/revel/revel"
+
     "matrix/modules/auth/models"
     "matrix/service"
-
-    "strconv"
-
-    "github.com/revel/revel"
 )
 
 type AuthUser struct {
@@ -16,10 +13,6 @@ type AuthUser struct {
 }
 
 func (c AuthUser) Index() revel.Result {
-    //session := c.DbSession
-
-    fmt.Println(c.Session.Id())
-
     return c.RenderTemplate("user/user_index.html")
 }
 
@@ -35,7 +28,7 @@ func (c AuthUser) ListData() revel.Result {
     if order != "" {
         dataQuery = *dataQuery.OrderBy(order)
     } else {
-        dataQuery = *dataQuery.Asc("Id")
+        dataQuery = *dataQuery.Asc("id")
     }
 
     users := make([]models.User, 0, limit)
@@ -55,8 +48,7 @@ func (c AuthUser) ListData() revel.Result {
 func (c AuthUser) Detail() revel.Result {
     session := c.DbSession
 
-    userId, err := strconv.ParseInt(c.Request.Form["id"][0], 10, 64) //可以做成一个通用函数 service package
-    service.HandleError(err)
+    userId := service.GetInt64FromRequest(c.Request, "id")
 
     user := new(models.User)
     if userId != 0 {
@@ -66,8 +58,7 @@ func (c AuthUser) Detail() revel.Result {
             panic("指定的用户不存在！")
         }
     }
-    fmt.Println(userId)
-    fmt.Println(user.NickName)
+
     c.RenderArgs["user"] = user
     return c.RenderTemplate("user/user_detail.html")
 }
@@ -83,13 +74,10 @@ func (c AuthUser) Save() revel.Result {
         service.HandleError(err)
     } else {
         _, err := session.Id(user.Id).Update(user)
+        //_, err := session.Id(user.Id).Cols("nick_name").Update(user)
         //_, err := session.Table(new(User)).Id(user.Id).Update(map[string]interface{}{"password":"123456"})
         service.HandleError(err)
     }
-
-    fmt.Println("user save")
-    fmt.Println(user.Id)
-    fmt.Println(user.NickName)
 
     return c.RenderJson(service.JsonResult{Success: true, Message: "保存成功!"})
 }
