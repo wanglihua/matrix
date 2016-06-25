@@ -30,19 +30,19 @@
             <div>
                 <table id="adminList" class="table table-striped table-bordered table-hover"></table>
             </div>
-            <div id="userDetailDialogWrapper"></div>
+            <div id="adminAddDialogWrapper"></div>
             <script type="text/javascript">
                 function showAdminAdd() {
                     $.ajax({
-                               url: '{%url "AuthUser.Detail" %}',
+                               url: '{%url "AuthAdmin.Add" %}',
                                type: "POST",
                                success: function (result) {
                                    if (result.success == false) {
                                        $.msg.error(result.message);
                                        return;
                                    }
-                                   $("#userDetailDialogWrapper").html(result);
-                                   $('#userDetailDialog').modal(modalOptions);
+                                   $("#adminAddDialogWrapper").html(result);
+                                   $('#adminAddDialog').modal(modalOptions);
                                }
                            }
                     );
@@ -63,7 +63,7 @@
 
                     $.msg.confirm("确认要删除吗？", function () {
                         $.ajax({
-                                   url: '{%url "AuthUser.Delete"%}',
+                                   url: '{%url "AuthAdmin.Remove"%}',
                                    type: "POST",
                                    data: {"id_list": id_list},
                                    success: function (data) {
@@ -74,7 +74,7 @@
                                        else {
                                            $.msg.show(data.message);
                                        }
-                                       reloadList('#userList');
+                                       reloadList('#adminList');
                                    }
                                });
                     });

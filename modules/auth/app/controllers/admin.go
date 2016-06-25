@@ -5,6 +5,7 @@ import (
 
     "matrix/service"
     "matrix/modules/auth/models"
+    "fmt"
 )
 
 type AuthAdmin struct {
@@ -59,12 +60,70 @@ func (c AuthAdmin) Add() revel.Result {
     return c.RenderTemplate("admin/admin_add.html")
 }
 
+func (c AuthAdmin) AddListData() revel.Result {
+    session := c.DbSession
+
+    filter, order, offset, limit := service.GetGridRequestParam(c.Request)
+    query := session.Where(filter).
+    And(fmt.Sprintf("id NOT IN (SELECT user_id FROM %sadmin)", models.TablePrefix))
+
+    //query extra filter here
+
+    dataQuery := *query
+    if order != "" {
+        dataQuery = *dataQuery.OrderBy(order)
+    } else {
+        dataQuery = *dataQuery.Asc("id")
+    }
+
+    userList := make([]models.User, 0, limit)
+    err := dataQuery.Limit(limit, offset).Find(&userList)
+    service.HandleError(err)
+
+    countQuery := *query
+    count, err := countQuery.Count(new(models.User))
+    service.HandleError(err)
+
+    return c.RenderJson(service.GridResult{
+        Data:  userList,
+        Total: count,
+    })
+}
+
 func (c AuthAdmin) AddSave() revel.Result {
-    //session := c.DbSession
+    session := c.DbSession
+
+    userIdList := make([]int64, 0)
+    c.Params.Bind(&userIdList, "id_list")
+
+    if len(userIdList) == 0 {
+        return c.RenderJson(service.JsonResult{Success: false, Message: "添加失败，请选择用户再添加!"})
+    }
+
+    for _, userId := range userIdList {
+        admin := new(models.Admin)
+        admin.UserId = userId
+        _, err := session.Insert(admin)
+        service.HandleError(err)
+    }
+
     return c.RenderJson(service.JsonResult{Success: true, Message: "添加成功!"})
 }
 
 func (c AuthAdmin) Remove() revel.Result {
-    //session := c.DbSession
+    session := c.DbSession
+
+    adminIdList := make([]int, 0)
+    c.Params.Bind(&adminIdList, "id_list")
+
+    admin := new(models.Admin)
+    count, err := session.Count(admin)
+    if int64(len(adminIdList)) == count {
+        return c.RenderJson(service.JsonResult{Success: false, Message: "移除失败，管理员不能全部移除!"})
+    }
+
+    _, err = session.In("id", adminIdList).Delete(admin)
+    service.HandleError(err)
+
     return c.RenderJson(service.JsonResult{Success: true, Message: "移除成功!"})
 }

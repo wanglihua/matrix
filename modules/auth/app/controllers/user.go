@@ -134,7 +134,7 @@ func (c AuthUser) Save() revel.Result {
         affected, err = session.Insert(user)
         service.HandleError(err)
     } else {
-        count, err := session.Where("id <> ? and login_name = ?", user.Id, user.LoginName, ).Count(new(models.User))
+        count, err := session.Where("id <> ? and login_name = ?", user.Id, user.LoginName).Count(new(models.User))
         service.HandleError(err)
         if count != 0 {
             return c.RenderJson(service.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
@@ -156,7 +156,7 @@ func (c AuthUser) Save() revel.Result {
 func (c AuthUser) Delete() revel.Result {
     session := c.DbSession
 
-    userIdList := make([]int, 0)
+    userIdList := make([]int64, 0)
     c.Params.Bind(&userIdList, "id_list")
 
     user := new(models.User)

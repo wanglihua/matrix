@@ -1,35 +1,20 @@
-<div class="modal fade" id="userDetailDialog">
-    <div class="modal-dialog" style="width: 440px;">
+<div class="modal fade" id="adminAddDialog">
+    <div class="modal-dialog" style="width: 660px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
-                <h4 class="modal-title">用户详细</h4>
+                <h4 class="modal-title">选择用户</h4>
             </div>
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="userDetailForm">
-                            <input id="user_id" name="user.Id" type="hidden" value="{%.user.Id%}"/>
-                            <input id="user_version" name="user.Version" type="hidden" value="{%.user.Version%}"/>
-                            <div class="form-group">
-                                <label for="user_login_name" class="col-xs-2 control-label no-padding-right">登录名</label>
-                                <div class="col-xs-10">
-                                    <input id="user_login_name" name="user.LoginName" type="text" class="input-sm form-control" value="{%.user.LoginName%}"/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="user_nick_name" class="col-xs-2 control-label no-padding-right">用户名</label>
-                                <div class="col-xs-10">
-                                    <input id="user_nick_name" name="user.NickName" type="text" class="input-sm form-control" value="{%.user.NickName%}"/>
-                                </div>
-                            </div>
-                        </form>
+                        <table id="userList" class="table table-striped table-bordered table-hover"></table>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-sm" onclick="submitForm()">
-                    <i class="ace-icon fa fa-floppy-o"></i>保存
+                <button type="button" class="btn btn-success btn-sm" onclick="adminAddSave()">
+                    <i class="ace-icon fa fa-floppy-o"></i>添加
                 </button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
                     <i class="ace-icon fa fa-times"></i>关闭
@@ -39,45 +24,68 @@
     </div>
 </div>
 <script type='text/javascript'>
-function submitForm() {
-    showMask("提交中...");
-    var form = $("#userDetailForm");
-    var valid = validate(form, {
-        'user.LoginName': {
-            required: true,
-            minlength: 3,
-            maxlength: 10
-        },
-        'user.NickName': {
-            required: true,
-            minlength: 3,
-            maxlength: 10
-        }
+    $(function () {
+        initDataTable(
+                '#userList',
+                {
+                    "sAjaxSource": '{%url "AuthAdmin.AddListData"%}',
+                    "bAutoWidth": false,
+                    "aaSorting": [[1, "asc"]],
+                    "aoColumns": [
+                        {
+                            "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                            "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                            "render": function (data, type, row) {
+                                return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                            }
+                        },
+                        {"mDataProp": "login_name", "title": "登录名", "bSearchable": true},
+                        {"mDataProp": "nick_name", "title": "用户名", "bSearchable": true},
+                        {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                        {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                    ]
+                }
+        );
+
+        $('#userList tbody').on('dblclick', 'tr', function () {
+            var id = $(this).find('td:first-child input:checkbox').val();
+            showUserDetail(id);
+        });
     });
 
-    if (!valid) {
-        hideMask();
-    }
-    else {
-        $.ajax({
-                   url: '{%url "AuthUser.Save"%}',
-                   type: "POST",
-                   data: form.serialize(),
-                   success: function (data) {
-                       hideMask();
-                       if (data.success == false) {
-                           $.msg.error(data.message);
-                           //return;
+    function adminAddSave() {
+
+        var id_list = [];
+        $('#userList tbody tr>td:first-child input:checkbox').each(function () {
+            if (this.checked) {
+                id_list.push($(this).val());
+            }
+        });
+
+        if (id_list.length == 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要添加吗？", function () {
+            showMask("提交中...");
+            $.ajax({
+                       url: '{%url "AuthAdmin.AddSave"%}',
+                       type: "POST",
+                       data: {"id_list": id_list},
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#adminAddDialog').modal('hide');
+                           }
+                           reloadList('#adminList');
                        }
-                       else {
-                           $.msg.show(data.message);
-                           $('#userDetailDialog').modal('hide');
-                           reloadList('#userList');
-                           //return;
-                       }
-                   }
-               }
-        );
+                   });
+        });
     }
-}
 </script>

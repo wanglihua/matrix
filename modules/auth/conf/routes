@@ -11,6 +11,7 @@ POST /auth/user/delete             AuthUser.Delete
 
 GET  /auth/admin                   AuthAdmin.Index
 POST /auth/admin/listdata          AuthAdmin.ListData
-GET  /auth/admin/add               AuthAdmin.Add
+POST /auth/admin/add               AuthAdmin.Add
+POST /auth/admin/add/listdata      AuthAdmin.AddListData
 POST /auth/admin/add/save          AuthAdmin.AddSave
 POST /auth/admin/remove            AuthAdmin.Remove
