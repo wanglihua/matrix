@@ -4,7 +4,7 @@ import (
     "matrix/core"
 )
 
-var tablePrefix = "hd_auth_"
+var TablePrefix = "hd_auth_"
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ type User struct {
 }
 
 func (e User) TableName() string {
-    return tablePrefix + "user"
+    return TablePrefix + "user"
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -27,13 +27,11 @@ func (e User) TableName() string {
 type Admin struct {
     Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
     UserId     int64            `xorm:"bigint notnull unique index 'user_id'" json:"user_id"`
-    CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
-    UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
-    Version    int              `xorm:"version notnull 'version'" json:"version"`
+    AddTime    core.Time        `xorm:"created notnull 'add_time'" json:"add_time"`
 }
 
 func (e Admin) TableName() string {
-    return tablePrefix + "admin"
+    return TablePrefix + "admin"
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -47,7 +45,7 @@ type Group struct {
 }
 
 func (e Group) TableName() string {
-    return tablePrefix + "group"
+    return TablePrefix + "group"
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -62,7 +60,7 @@ type UserGroup struct {
 }
 
 func (e UserGroup) TableName() string {
-    return tablePrefix + "user_group"
+    return TablePrefix + "user_group"
 }
 
 //---------------------------------------------------------------------------------------------------------------

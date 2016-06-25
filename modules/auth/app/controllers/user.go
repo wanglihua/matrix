@@ -33,8 +33,8 @@ func (c AuthUser) ListData() revel.Result {
         dataQuery = *dataQuery.Asc("id")
     }
 
-    users := make([]models.User, 0, limit)
-    err := dataQuery.Limit(limit, offset).Find(&users)
+    userList := make([]models.User, 0, limit)
+    err := dataQuery.Limit(limit, offset).Find(&userList)
     service.HandleError(err)
 
     countQuery := *query
@@ -42,7 +42,7 @@ func (c AuthUser) ListData() revel.Result {
     service.HandleError(err)
 
     return c.RenderJson(service.GridResult{
-        Data:  users,
+        Data:  userList,
         Total: count,
     })
 }

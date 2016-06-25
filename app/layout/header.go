@@ -179,6 +179,13 @@ func GetHeader(title string) string {
                         </a>
                         <b class="arrow"></b>
                     </li>
+                    <li id="auth-admin-menu" class="">
+                        <a href="/auth/admin">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            管理员组
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
                 </ul>
             </li>
         </ul>

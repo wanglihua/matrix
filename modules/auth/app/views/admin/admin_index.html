@@ -7,38 +7,35 @@
         </li>
         <li>Home</li>
         <li class="parent" data-menu="auth-menu">权限管理</li>
-        <li class="active" data-menu="auth-user-menu">用户管理</li>
+        <li class="active" data-menu="auth-admin-menu">管理员组</li>
     </ul>
 </div>
 <div class="page-content">
     <div class="row">
         <div class="col-xs-12" style="padding: 0;">
             <div class="gridToolBar clearfix">
-                <button class="btn btn-primary btn-sm" onclick="reloadList('#userList')">
+                <button class="btn btn-primary btn-sm" onclick="reloadList('#adminList')">
                     <i class="ace-icon fa fa-refresh"></i>
                     刷新
                 </button>
-                <button class="btn btn-success btn-sm" onclick="showUserDetail(0)">
+                <button class="btn btn-success btn-sm" onclick="showAdminAdd()">
                     <i class="ace-icon fa fa-plus"></i>
-                    新增
+                    添加
                 </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser()">
+                <button class="btn btn-danger btn-sm" onclick="removeAdmin()">
                     <i class="ace-icon fa fa-trash-o"></i>
-                    删除
+                    移除
                 </button>
             </div>
             <div>
-                <table id="userList" class="table table-striped table-bordered table-hover"></table>
+                <table id="adminList" class="table table-striped table-bordered table-hover"></table>
             </div>
             <div id="userDetailDialogWrapper"></div>
             <script type="text/javascript">
-                function showUserDetail(id) {
+                function showAdminAdd() {
                     $.ajax({
                                url: '{%url "AuthUser.Detail" %}',
                                type: "POST",
-                               data: {
-                                   "id": id
-                               },
                                success: function (result) {
                                    if (result.success == false) {
                                        $.msg.error(result.message);
@@ -51,9 +48,9 @@
                     );
                 }
 
-                function deleteUser() {
+                function removeAdmin() {
                     var id_list = [];
-                    $('#userList tbody tr>td:first-child input:checkbox').each(function () {
+                    $('#adminList tbody tr>td:first-child input:checkbox').each(function () {
                         if (this.checked) {
                             id_list.push($(this).val());
                         }
@@ -85,30 +82,24 @@
 
                 $(function () {
                     initDataTable(
-                            '#userList',
+                            '#adminList',
                             {
-                                "sAjaxSource": '{%url "AuthUser.ListData"%}',
+                                "sAjaxSource": '{%url "AuthAdmin.ListData"%}',
                                 "aaSorting": [[1, "asc"]],
                                 "aoColumns": [
                                     {
-                                        "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                        "mDataProp": "a.id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
                                         "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
                                         "render": function (data, type, row) {
                                             return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                         }
                                     },
-                                    {"mDataProp": "login_name", "title": "登录名", "bSearchable": true},
-                                    {"mDataProp": "nick_name", "title": "用户名", "bSearchable": true},
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                                    {"mDataProp": "u.login_name", "title": "登录名", "bSearchable": true},
+                                    {"mDataProp": "u.nick_name", "title": "用户名", "bSearchable": true},
+                                    {"mDataProp": "a.add_time", "title": "添加时间", "bSearchable": false, "width": 120}
                                 ]
                             }
                     );
-
-                    $('#userList tbody').on('dblclick', 'tr', function () {
-                        var id = $(this).find('td:first-child input:checkbox').val();
-                        showUserDetail(id);
-                    });
                 });
             </script>
 
