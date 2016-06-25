@@ -1,0 +1,65 @@
+<script type='text/javascript'>
+function submitForm() {
+    showMask("提交中...");
+    var form = $("#userDetailForm");
+    var valid = validate(form, {
+        'user.LoginName': {
+            required: true,
+            minlength: 3,
+            maxlength: 10
+        },
+        'user.NickName': {
+            required: true,
+            minlength: 3,
+            maxlength: 10
+        },
+        {%if .is_create%}
+        'user.Password': {
+            required: true,
+            minlength: 6,
+            maxlength: 12
+        },
+        'PasswordAgain': {
+            minlength: 6,
+            maxlength: 12,
+            equalTo: "#user_password"
+        }
+        {%else%}
+        'NewPassword': {
+            minlength: 6,
+            maxlength: 12
+        },
+        'NewPasswordAgain': {
+            minlength: 6,
+            maxlength: 12,
+            equalTo: "#new_password"
+        }
+        {%end%}
+    });
+
+    if (!valid) {
+        hideMask();
+    }
+    else {
+        $.ajax({
+                   url: '{%url "AuthUser.Save"%}',
+                   type: "POST",
+                   data: form.serialize(),
+                   success: function (data) {
+                       hideMask();
+                       if (data.success == false) {
+                           $.msg.error(data.message);
+                           //return;
+                       }
+                       else {
+                           $.msg.show(data.message);
+                           $('#userDetailDialog').modal('hide');
+                           reloadList('#userList');
+                           //return;
+                       }
+                   }
+               }
+        );
+    }
+}
+</script>

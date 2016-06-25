@@ -11,5 +11,6 @@ POST /syncdb/post               Home.SyncDbPost
 
 GET  /login                     Login.Index
 POST /login                     Login.Login
+POST /logout                    Login.Logout
 
 *    /:controller/:action       :controller.:action

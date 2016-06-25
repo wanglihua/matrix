@@ -78,7 +78,7 @@ func GetHeader(title string) string {
                     </a>
                     <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
                         <li>
-                            <a href="#">
+                            <a href="/auth/profile">
                                 <i class="ace-icon fa fa-cog"></i>
                                 个人设置
                             </a>
@@ -92,7 +92,21 @@ func GetHeader(title string) string {
                             <script type="text/javascript">
                                 function logout() {
                                     $.msg.confirm('确认要退出系统吗？', function () {
-                                        window.location.href = '{{url "Login.Index"}}';
+                                        $.ajax({
+                                                   url: '/logout',
+                                                   type: "POST",
+                                                   success: function (data) {
+                                                       if (data.success == true) {
+                                                           window.location.href = '/login';
+                                                           //return;
+                                                       }
+                                                       else {
+                                                           $.msg.error(data.message);
+                                                           //return;
+                                                       }
+                                                   }
+                                               }
+                                        );
                                     });
                                 }
                             </script>

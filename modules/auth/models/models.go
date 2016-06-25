@@ -13,7 +13,6 @@ type User struct {
     LoginName  string           `xorm:"nvarchar(255) notnull unique index 'login_name'" json:"login_name"`
     NickName   string           `xorm:"nvarchar(255) notnull 'nick_name'" json:"nick_name"`
     Password   string           `xorm:"nvarchar(255) notnull 'password'" json:"password"`
-    AddTime    core.Time        `xorm:"datetime notnull 'add_time'" json:"add_time"`
     CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
     UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
     Version    int              `xorm:"version notnull 'version'" json:"version"`
@@ -21,6 +20,20 @@ type User struct {
 
 func (e User) TableName() string {
     return tablePrefix + "user"
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+type Admin struct {
+    Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+    UserId     int64            `xorm:"bigint notnull unique index 'user_id'" json:"user_id"`
+    CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
+    UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
+    Version    int              `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e Admin) TableName() string {
+    return tablePrefix + "admin"
 }
 
 //---------------------------------------------------------------------------------------------------------------

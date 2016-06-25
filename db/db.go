@@ -2,11 +2,12 @@ package db
 
 import (
     "github.com/go-xorm/xorm"
-    _ "github.com/mattn/go-sqlite3"
-    //_ "github.com/denisenkom/go-mssqldb"
+    //_ "github.com/mattn/go-sqlite3"
+    _ "github.com/denisenkom/go-mssqldb"
     "github.com/revel/revel"
     //"github.com/go-xorm/core"
     "time"
+    "fmt"
 )
 
 var Engine *xorm.Engine = nil
@@ -31,15 +32,15 @@ func InitDatabase() {
 
         //Engine.TZLocation = time.UTC //设置时区
 
-        if revel.DevMode == false {
-            //连接池
-            Engine.SetMaxIdleConns(3) //最小
-            Engine.SetMaxOpenConns(100) //最大
-        }
+        //连接池
+        fmt.Println("not devmode")
+        Engine.SetMaxIdleConns(3) //最小
+        Engine.SetMaxOpenConns(100) //最大
+
 
         if revel.DevMode == true {
-            Engine.ShowExecTime()
             Engine.ShowSQL()
+            Engine.ShowExecTime()
         }
 
         //实体定义时明确指明了表名和列名，下面这些定义就不起作用了

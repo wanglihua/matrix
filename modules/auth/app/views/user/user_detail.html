@@ -23,18 +23,33 @@
                                     <input id="user_nick_name" name="user.NickName" type="text" class="input-sm form-control" value="{%.user.NickName%}"/>
                                 </div>
                             </div>
+                            {%if .is_create%}
                             <div class="form-group">
                                 <label for="user_password" class="col-xs-2 control-label no-padding-right">密码</label>
                                 <div class="col-xs-10">
-                                    <input id="user_password" name="user.Password" type="text" class="input-sm form-control" value="{%.user.Password%}"/>
+                                    <input id="user_password" name="user.Password" type="password" class="input-sm form-control" value="{%.user.Password%}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="user_new_password" class="col-xs-2 control-label no-padding-right">新密码</label>
+                                <label for="password_again" class="col-xs-2 control-label no-padding-right">密码重输</label>
                                 <div class="col-xs-10">
-                                    <input id="user_new_password" name="user.NewPassword" type="text" class="input-sm form-control" value=""/>
+                                    <input id="password_again" name="PasswordAgain" type="password" class="input-sm form-control" value=""/>
                                 </div>
                             </div>
+                            {%else%}
+                            <div class="form-group">
+                                <label for="new_password" class="col-xs-2 control-label no-padding-right">新密码</label>
+                                <div class="col-xs-10">
+                                    <input id="new_password" name="NewPassword" type="password" class="input-sm form-control" value=""/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password_again" class="col-xs-2 control-label no-padding-right">密码重输</label>
+                                <div class="col-xs-10">
+                                    <input id="new_password_again" name="NewPasswordAgain" type="password" class="input-sm form-control" value=""/>
+                                </div>
+                            </div>
+                            {%end%}
                         </form>
                     </div>
                 </div>
@@ -50,51 +65,4 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    function submitForm() {
-        showMask("提交中...");
-        var form = $("#userDetailForm");
-        var valid = validate(form, {
-            'user_login_name': {
-                required: true,
-                maxlength: 20
-            },
-            'user.NickName': {
-                required: true,
-                maxlength: 20
-            },
-            'user_password': {
-                required: true,
-                maxlength: 100
-            },
-            'user_new_password': {
-                maxlength: 100
-            }
-        });
-
-        if (!valid) {
-            hideMask();
-        }
-        else {
-            $.ajax({
-                       url: '{%url "AuthUser.Save"%}',
-                       type: "POST",
-                       data: form.serialize(),
-                       success: function (data) {
-                           hideMask();
-                           if (data.success == false) {
-                               $.msg.error(data.message);
-                               //return;
-                           }
-                           else {
-                               $.msg.show(data.message);
-                               $('#userDetailDialog').modal('hide');
-                               reloadList('#userList');
-                               //return;
-                           }
-                       }
-                   }
-            );
-        }
-    }
-</script>
+{%template "user/user_detail_submit.func" .%}

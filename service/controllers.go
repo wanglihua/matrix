@@ -22,8 +22,10 @@ func (c *BaseController) Before() revel.Result {
         fmt.Println("BaseController Before")
 
         c.DbSession = db.Engine.NewSession() // begin transaction
-        err := c.DbSession.Begin()
-        HandleError(err)
+
+        //先不启用
+        //err := c.DbSession.Begin()
+        //HandleError(err)
     }
 
     return nil
@@ -33,8 +35,9 @@ func (c *BaseController) After() revel.Result {
     if (isStaticRequest(c) == false) {
         fmt.Println("BaseController After")
 
-        err := c.DbSession.Commit()
-        HandleError(err)
+        //先不启用
+        //err := c.DbSession.Commit()
+        //HandleError(err)
 
         c.DbSession.Close()
     }
@@ -46,11 +49,20 @@ func (c *BaseController) Panic() revel.Result {
     if (isStaticRequest(c) == false) {
         fmt.Println("BaseController Panic")
 
-        err := c.DbSession.Rollback()
-        HandleError(err)
+        //先不启用
+        //err := c.DbSession.Rollback()
+        //HandleError(err)
     }
 
     return nil
+}
+
+func (c *BaseController) GetValidationErrorMessage() string {
+    errorMessage := ""
+    for _, validationError := range c.Validation.Errors {
+        errorMessage += "<p>" + validationError.Message + "</p>"
+    }
+    return errorMessage
 }
 
 func isStaticRequest(c *BaseController) bool {

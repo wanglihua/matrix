@@ -6,9 +6,7 @@ import (
     "matrix/modules/auth/models"
     "matrix/service"
     "strconv"
-    "time"
-    "matrix/core"
-    "fmt"
+    "strings"
 )
 
 type AuthUser struct {
@@ -54,7 +52,6 @@ func (c AuthUser) Detail() revel.Result {
 
     userId := service.GetInt64FromRequest(c.Request, "id")
 
-
     user := new(models.User)
     if userId != 0 {
         has, err := session.Id(userId).Get(user)
@@ -64,11 +61,7 @@ func (c AuthUser) Detail() revel.Result {
         }
     }
 
-
-    fmt.Println(time.Now())
-    fmt.Println(time.Time(user.AddTime).Format("2006-01-02 15:04"))
-    fmt.Println(time.Time(user.AddTime))
-
+    c.RenderArgs["is_create"] = userId == 0
     c.RenderArgs["user"] = user
     return c.RenderTemplate("user/user_detail.html")
 }
@@ -79,18 +72,82 @@ func (c AuthUser) Save() revel.Result {
     user := new(models.User)
     c.Params.Bind(&user, "user")
 
-    user.AddTime = core.Time(time.Now())
+    isCreate := user.Id == 0
+
+    c.Validation.Required(user.LoginName).Message("登录名不能为空！")
+    c.Validation.MinSize(user.LoginName, 3).Message("登录名长度不能小于3！")
+    c.Validation.MaxSize(user.LoginName, 10).Message("登录名长度不能大于10！")
+
+    c.Validation.Required(user.NickName).Message("用户名不能为空！")
+    c.Validation.MinSize(user.NickName, 3).Message("用户名长度不能小于3！")
+    c.Validation.MaxSize(user.NickName, 10).Message("用户名长度不能大于10！")
+
+    if isCreate {
+        var passwordAgain string
+        c.Params.Bind(&passwordAgain, "PasswordAgain")
+
+        c.Validation.Required(user.Password).Message("密码不能为空！")
+        c.Validation.MinSize(user.Password, 6).Message("密码长度不能小于6！")
+        c.Validation.MaxSize(user.Password, 12).Message("密码长度不能大于12！")
+
+        if user.Password != passwordAgain {
+            c.Validation.Errors = append(c.Validation.Errors, &revel.ValidationError{
+                Key:"password_again_not_match",
+                Message:"两次输入的密码不一致！",
+            })
+        }
+
+        user.Password = service.EncryptPassword(user.Password)
+
+    } else {
+        var newPassword, newPasswordAgain string
+        c.Params.Bind(&newPassword, "NewPassword")
+        c.Params.Bind(&newPasswordAgain, "NewPasswordAgain")
+
+        if newPassword != "" || newPasswordAgain != "" {
+            c.Validation.MinSize(newPassword, 6).Message("密码长度不能小于6！")
+            c.Validation.MaxSize(newPassword, 12).Message("密码长度不能大于12！")
+
+            if strings.Trim(newPassword, " ") != "" || strings.Trim(newPasswordAgain, " ") != "" {
+                c.Validation.Errors = append(c.Validation.Errors, &revel.ValidationError{
+                    Key:"password_again_not_match",
+                    Message:"两次输入的密码不一致！",
+                })
+            }
+
+            user.Password = service.EncryptPassword(newPassword)
+        }
+    }
+
+    if c.Validation.HasErrors() {
+        return c.RenderJson(service.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+    }
 
     var affected int64
-    var err error
-    if user.Id == 0 {
+    if isCreate {
+        count, err := session.Where("login_name = ?", user.LoginName).Count(new(models.User))
+        service.HandleError(err)
+        if count != 0 {
+            return c.RenderJson(service.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
+        }
+
         affected, err = session.Insert(user)
         service.HandleError(err)
     } else {
+        count, err := session.Where("id <> ? and login_name = ?", user.Id, user.LoginName, ).Count(new(models.User))
+        service.HandleError(err)
+        if count != 0 {
+            return c.RenderJson(service.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
+        }
+
         affected, err = session.Id(user.Id).Update(user)
         //affected, err := session.Id(user.Id).Cols("nick_name").Update(user)
         //affected, err := session.Table(new(User)).Id(user.Id).Update(map[string]interface{}{"password":"123456"})
         service.HandleError(err)
+
+        if affected == 0 {
+            return c.RenderJson(service.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+        }
     }
 
     return c.RenderJson(service.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
