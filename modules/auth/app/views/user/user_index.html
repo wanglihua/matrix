@@ -99,18 +99,8 @@
                                     },
                                     {"mDataProp": "login_name", "title": "<span id='col_login_name'>登录名</span>"},
                                     {"mDataProp": "nick_name", "title": "<span id='col_nick_name'>用户名</span>"},
-                                    {
-                                        "mDataProp": "create_time", "title": "<span id='col_create_time'>创建时间</span>", "bSearchable": false, "width": 120,
-                                        "render": function (data, type, row) {
-                                            return dtFormatDateTime(data);
-                                        }
-                                    },
-                                    {
-                                        "mDataProp": "update_time", "title": "<span id='col_modify_time'>修改时间</span>", "bSearchable": false, "width": 120,
-                                        "render": function (data, type, row) {
-                                            return dtFormatDateTime(data);
-                                        }
-                                    }
+                                    {"mDataProp": "create_time", "title": "<span id='col_create_time'>创建时间</span>", "bSearchable": false, "width": 120},
+                                    {"mDataProp": "update_time", "title": "<span id='col_modify_time'>修改时间</span>", "bSearchable": false, "width": 120}
                                 ]
                             }
                     );

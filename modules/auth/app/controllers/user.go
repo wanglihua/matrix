@@ -5,6 +5,10 @@ import (
 
     "matrix/modules/auth/models"
     "matrix/service"
+    "strconv"
+    "time"
+    "matrix/core"
+    "fmt"
 )
 
 type AuthUser struct {
@@ -50,6 +54,7 @@ func (c AuthUser) Detail() revel.Result {
 
     userId := service.GetInt64FromRequest(c.Request, "id")
 
+
     user := new(models.User)
     if userId != 0 {
         has, err := session.Id(userId).Get(user)
@@ -58,6 +63,11 @@ func (c AuthUser) Detail() revel.Result {
             panic("指定的用户不存在！")
         }
     }
+
+
+    fmt.Println(time.Now())
+    fmt.Println(time.Time(user.AddTime).Format("2006-01-02 15:04"))
+    fmt.Println(time.Time(user.AddTime))
 
     c.RenderArgs["user"] = user
     return c.RenderTemplate("user/user_detail.html")
@@ -69,17 +79,21 @@ func (c AuthUser) Save() revel.Result {
     user := new(models.User)
     c.Params.Bind(&user, "user")
 
+    user.AddTime = core.Time(time.Now())
+
+    var affected int64
+    var err error
     if user.Id == 0 {
-        _, err := session.Insert(user)
+        affected, err = session.Insert(user)
         service.HandleError(err)
     } else {
-        _, err := session.Id(user.Id).Update(user)
-        //_, err := session.Id(user.Id).Cols("nick_name").Update(user)
-        //_, err := session.Table(new(User)).Id(user.Id).Update(map[string]interface{}{"password":"123456"})
+        affected, err = session.Id(user.Id).Update(user)
+        //affected, err := session.Id(user.Id).Cols("nick_name").Update(user)
+        //affected, err := session.Table(new(User)).Id(user.Id).Update(map[string]interface{}{"password":"123456"})
         service.HandleError(err)
     }
 
-    return c.RenderJson(service.JsonResult{Success: true, Message: "保存成功!"})
+    return c.RenderJson(service.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
 }
 
 func (c AuthUser) Delete() revel.Result {
@@ -89,8 +103,8 @@ func (c AuthUser) Delete() revel.Result {
     c.Params.Bind(&userIdList, "id_list")
 
     user := new(models.User)
-    _, err := session.In("id", userIdList).Delete(user)
+    affected, err := session.In("id", userIdList).Delete(user)
     service.HandleError(err)
 
-    return c.RenderJson(service.JsonResult{Success: true, Message: "删除成功!"})
+    return c.RenderJson(service.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
