@@ -104,11 +104,11 @@ func (c AuthUser) Save() revel.Result {
         c.Params.Bind(&newPassword, "NewPassword")
         c.Params.Bind(&newPasswordAgain, "NewPasswordAgain")
 
-        if newPassword != "" || newPasswordAgain != "" {
+        if strings.Trim(newPassword, " ") != "" || strings.Trim(newPasswordAgain, " ") != "" {
             c.Validation.MinSize(newPassword, 6).Message("密码长度不能小于6！")
             c.Validation.MaxSize(newPassword, 12).Message("密码长度不能大于12！")
 
-            if strings.Trim(newPassword, " ") != "" || strings.Trim(newPasswordAgain, " ") != "" {
+            if newPassword != newPasswordAgain {
                 c.Validation.Errors = append(c.Validation.Errors, &revel.ValidationError{
                     Key:"password_again_not_match",
                     Message:"两次输入的密码不一致！",
@@ -158,6 +158,12 @@ func (c AuthUser) Delete() revel.Result {
 
     userIdList := make([]int64, 0)
     c.Params.Bind(&userIdList, "id_list")
+
+    count, err := session.In("user_id", userIdList).Count(new(models.Admin))
+    service.HandleError(err)
+    if count != 0 {
+        return c.RenderJson(service.JsonResult{Success: false, Message: "不能删除管理员！" })
+    }
 
     user := new(models.User)
     affected, err := session.In("id", userIdList).Delete(user)

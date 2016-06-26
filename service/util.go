@@ -4,6 +4,8 @@ import (
     "strconv"
     "github.com/revel/revel"
     "strings"
+    "time"
+    "fmt"
 )
 
 func HandleError(err error) {
@@ -28,4 +30,21 @@ func PreventSQLInjection(sqlStr string) string {
     sqlStr = strings.Replace(sqlStr, "\"", "", -1)
 
     return sqlStr
+}
+
+var expireAfterDuration time.Duration = -1
+
+func GetSessionExpire() time.Duration {
+    if expireAfterDuration == -1 {
+        var err error
+        if expiresString, ok := revel.Config.String("session.expires"); !ok {
+            expireAfterDuration = 30 * 24 * time.Hour
+        } else if expiresString == "session" {
+            expireAfterDuration = 0
+        } else if expireAfterDuration, err = time.ParseDuration(expiresString); err != nil {
+            panic(fmt.Errorf("session.expires invalid: %s", err))
+        }
+    }
+
+    return expireAfterDuration
 }

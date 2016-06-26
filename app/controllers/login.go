@@ -4,6 +4,8 @@ import (
     "github.com/revel/revel"
     "matrix/service"
     "matrix/modules/auth/models"
+    //"time"
+    //"net/http"
 )
 
 type Login struct {
@@ -23,7 +25,7 @@ type LoginForm struct {
 func (c Login) Login() revel.Result {
     session := c.DbSession
 
-    //clear previous sessions
+    c.makePreviousSessionExpire()
 
     loginForm := new(LoginForm)
     c.Params.Bind(&loginForm, "login")
@@ -45,19 +47,36 @@ func (c Login) Login() revel.Result {
     service.HandleError(err)
 
     if has == false {
-         return c.RenderJson(service.JsonResult{Success: false, Message: "登录名不存在！" })
+        return c.RenderJson(service.JsonResult{Success: false, Message: "登录名不存在！" })
     }
 
     if service.CompareHashAndPassword(user.Password, loginForm.Password) == false {
         return c.RenderJson(service.JsonResult{Success: false, Message: "密码错误！" })
     }
 
-    //add session context
+    //将当前登录用户信息放入Session中
+    var loginUser service.LoginUser
+    loginUser.UserId = user.Id
+    loginUser.LoginName = user.LoginName
+    loginUser.NickName = user.NickName
+
+    service.PutLoginUserToSession(c.Session, loginUser)
 
     return c.RenderJson(service.JsonResult{Success:true, Message:"登陆成功！"})
 }
 
 func (c Login) Logout() revel.Result {
-    //clear previous sessions
+    service.RemoveLoginUserInSession(c.Session)
+
+    c.makePreviousSessionExpire()
+
     return c.RenderJson(service.JsonResult{Success:true, Message:"注销成功！"})
+}
+
+func (c Login) makePreviousSessionExpire() {
+    delete(c.Session, revel.SESSION_ID_KEY)
+
+    //sessionCookie := c.Session.Cookie()
+    //sessionCookie.Expires = time.Time{}
+    //http.SetCookie(c.Response.Out, sessionCookie)
 }

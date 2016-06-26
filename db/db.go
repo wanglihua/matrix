@@ -7,7 +7,6 @@ import (
     "github.com/revel/revel"
     //"github.com/go-xorm/core"
     "time"
-    "fmt"
 )
 
 var Engine *xorm.Engine = nil
@@ -33,10 +32,8 @@ func InitDatabase() {
         //Engine.TZLocation = time.UTC //设置时区
 
         //连接池
-        fmt.Println("not devmode")
         Engine.SetMaxIdleConns(3) //最小
         Engine.SetMaxOpenConns(100) //最大
-
 
         if revel.DevMode == true {
             Engine.ShowSQL()

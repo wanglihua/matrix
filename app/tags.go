@@ -6,6 +6,7 @@ import (
     "matrix/app/layout"
     //"bytes"
     //"fmt"
+    "matrix/service"
 )
 
 func registerTags() {
@@ -16,7 +17,7 @@ func registerTags() {
 
 func testTemplateFunc(renderArgs map[string]interface{}) template.HTML {
     session := renderArgs["session"].(revel.Session)
-    return template.HTML("<span style='color:red;'>Hello World Just a test " + session.Id() + "!</span>")
+    return template.HTML("<span style='color:red;'>Session Id: " + session.Id() + "</span>")
     //return template.HTML("<span style='color:red;'>Hello World Just a test!</span>")
 }
 
@@ -43,7 +44,9 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
 
     //session := renderArgs["session"].(revel.Session) //通过session得到当前登录人信息啥的
 
-    return template.HTML(layout.GetHeader(title))
+    session := renderArgs["session"].(revel.Session)
+    loginUser := service.GetLoginUser(session)
+    return template.HTML(layout.GetHeader(title, loginUser.NickName))
 }
 
 func footerTemplateFunc() template.HTML {

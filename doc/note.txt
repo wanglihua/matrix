@@ -9,4 +9,6 @@ packages:
 * github.com/go-xorm/xorm
 * golang.org/x/net/websocket
 * golang.org/x/crypto/bcrypt
-
+* github.com/bradfitz/gomemcache/memcache
+* github.com/garyburd/redigo/redis
+* github.com/robfig/go-cache

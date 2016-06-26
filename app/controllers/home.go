@@ -2,11 +2,9 @@ package controllers
 
 import (
     "github.com/revel/revel"
-    "fmt"
     "matrix/service"
     "matrix/modules/auth/models"
     "matrix/db"
-    "time"
 )
 
 type Home struct {
@@ -15,10 +13,6 @@ type Home struct {
 }
 
 func (c Home) Index() revel.Result {
-    fmt.Println(c.Session.Id())
-    time := time.Now()
-    fmt.Println(time.Location())
-
     return c.RenderTemplate("home/home_index.html")
 }
 

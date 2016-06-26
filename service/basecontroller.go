@@ -9,19 +9,18 @@ import (
 
 type BaseController struct {
     *revel.Controller
-    DbSession *xorm.Session
-}
 
-/*
-    DbSession := db.Engine.NewSession()
-    defer DbSession.Close()
-*/
+    DbSession *xorm.Session
+    User      *LoginUser
+}
 
 func (c *BaseController) Before() revel.Result {
     if (isStaticRequest(c) == false) {
         fmt.Println("BaseController Before")
 
-        c.DbSession = db.Engine.NewSession() // begin transaction
+        c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
+
+        c.DbSession = db.Engine.NewSession()
 
         //先不启用
         //err := c.DbSession.Begin()

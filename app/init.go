@@ -3,8 +3,8 @@ package app
 import (
     "github.com/revel/revel"
     "runtime"
-    "fmt"
     "matrix/service"
+    "matrix/app/routes"
 )
 
 func init() {
@@ -43,21 +43,23 @@ func init() {
 }
 
 func userAuthInterceptor(c *revel.Controller) revel.Result {
-    //if user := connected(c); user == nil {
-    //    c.Flash.Error("请先登录")
-    //    return c.Redirect(App.Index)
-    //}
-
-    //var excludeCheckActions = []string{};
-
     /*
     Static.Serve
     Static.ServeModule
     TestRunner.Index
     TestRunner.Run
      */
-    if (c.Name != "Static" && c.Name != "TestRunner") {
-        fmt.Println("userAuthInterceptor " + c.Action)
+    if (c.Name == "Static" || c.Name == "TestRunner") {
+        return nil
+    }
+
+    if c.Action == "Login.Index" || c.Action == "Login.Login" {
+        return nil
+    }
+
+    loginuser := service.GetLoginUser(c.Session)
+    if loginuser == nil {
+        return c.Redirect(routes.Login.Index())
     }
 
     return nil

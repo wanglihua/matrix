@@ -1,6 +1,6 @@
 package layout
 
-func GetHeader(title string) string {
+func GetHeader(title string, loginUserNickName string) string {
     return `<!DOCTYPE html>
 <html>
 <head>
@@ -70,10 +70,7 @@ func GetHeader(title string) string {
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <img class="nav-user-photo" src="/static/ace/avatars/user3.jpg" alt="user photo"/>
-                                <span class="user-info">
-                                    <small>欢迎！</small>
-                                    "UserInfo"
-                                </span>
+                                <span class="user-info"><small>欢迎！</small>` + loginUserNickName + `</span>
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
                     <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
