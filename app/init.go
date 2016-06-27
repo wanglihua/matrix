@@ -57,9 +57,18 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
         return nil
     }
 
+    if c.Action == "Home.SyncDb" || c.Action == "Home.SyncDbPost" {
+        return nil
+    }
+
     loginuser := service.GetLoginUser(c.Session)
+
     if loginuser == nil {
-        return c.Redirect(routes.Login.Index())
+        if len(c.Request.Header["X-Requested-With"]) != 0 &&  c.Request.Header["X-Requested-With"][0] == "XMLHttpRequest" {
+            c.Result = c.RenderJson(service.JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
+        } else {
+            return c.Redirect(routes.Login.Index())
+        }
     }
 
     return nil

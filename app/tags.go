@@ -46,7 +46,11 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
 
     session := renderArgs["session"].(revel.Session)
     loginUser := service.GetLoginUser(session)
-    return template.HTML(layout.GetHeader(title, loginUser.NickName))
+    loginNickName := "未登录"
+    if loginUser != nil {
+        loginNickName = loginUser.NickName
+    }
+    return template.HTML(layout.GetHeader(title, loginNickName))
 }
 
 func footerTemplateFunc() template.HTML {

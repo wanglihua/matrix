@@ -27,5 +27,17 @@ func (c Home) SyncDbPost() revel.Result {
         &models.Group{},
         &models.UserGroup{},
     )
+
+    session := c.DbSession
+    user := new(models.User)
+    user.LoginName = "admin"
+    user.NickName = "管理员"
+    user.Password = service.EncryptPassword("111111")
+    session.Insert(user)
+
+    admin := new(models.Admin)
+    admin.UserId = user.Id
+    session.Insert(admin)
+
     return c.RenderJson(service.JsonResult{Success:true, Message:"数据库同步成功!"})
 }

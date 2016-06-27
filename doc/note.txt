@@ -7,8 +7,22 @@ packages:
 * github.com/mattn/go-sqlite3
 * github.com/denisenkom/go-mssqldb
 * github.com/go-xorm/xorm
-* golang.org/x/net/websocket
-* golang.org/x/crypto/bcrypt
+* golang.org/x/net/websocket                    # https://github.com/golang/net
+* golang.org/x/crypto/bcrypt                    # https://github.com/golang/crypto
 * github.com/bradfitz/gomemcache/memcache
 * github.com/garyburd/redigo/redis
 * github.com/robfig/go-cache
+
+
+memcached:
+
+version 1.4.4
+
+memcached -d install
+memcached -d uninstall
+
+[HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\memcached]
+"ImagePath"=
+
+"D:\Program Files\memcached\memcached.exe" -d runservice -m 32 -p 9211
+
