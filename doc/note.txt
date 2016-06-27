@@ -12,6 +12,8 @@ packages:
 * github.com/bradfitz/gomemcache/memcache
 * github.com/garyburd/redigo/redis
 * github.com/robfig/go-cache
+* github.com/chanxuehong/wechat.v2
+
 
 
 memcached:
