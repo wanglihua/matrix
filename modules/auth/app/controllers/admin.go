@@ -14,7 +14,7 @@ type AuthAdmin struct {
 }
 
 func (c AuthAdmin) Index() revel.Result {
-    return c.RenderTemplate("admin/admin_index.html")
+    return c.RenderTemplate("auth/admin/admin_index.html")
 }
 
 type AdminView struct {
@@ -57,7 +57,7 @@ func (c AuthAdmin) ListData() revel.Result {
 
 func (c AuthAdmin) Add() revel.Result {
     //session := c.DbSession
-    return c.RenderTemplate("admin/admin_add.html")
+    return c.RenderTemplate("auth/admin/admin_add.html")
 }
 
 func (c AuthAdmin) AddListData() revel.Result {

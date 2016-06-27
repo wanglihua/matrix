@@ -1,0 +1,4 @@
+GET /wechat/static/*filepath        Static.ServeModule(wechat, static)
+
+GET  /wechat/home                    WechatHome.Index
+GET  /wechat/sign                    WechatSign.Index

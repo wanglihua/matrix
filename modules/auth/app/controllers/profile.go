@@ -4,6 +4,7 @@ import (
     "github.com/revel/revel"
     "matrix/service"
     "strings"
+    "matrix/modules/auth/models"
 )
 
 type AuthProfile struct {
@@ -12,12 +13,20 @@ type AuthProfile struct {
 }
 
 func (c AuthProfile) Index() revel.Result {
-    //session := c.DbSession
-    return c.RenderTemplate("profile/profile_index.html")
+    session := c.DbSession
+
+    loginUserId := c.User.UserId
+    loginUser := new(models.User)
+    _, err := session.Id(loginUserId).Get(loginUser)
+    service.HandleError(err)
+
+    c.RenderArgs["user"] = loginUser
+
+    return c.RenderTemplate("auth/profile/profile_index.html")
 }
 
 func (c AuthProfile) Save() revel.Result {
-    //session := c.DbSession
+    session := c.DbSession
     var password, passwordAgain string
     c.Params.Bind(&password, "Password")
     c.Params.Bind(&passwordAgain, "PasswordAgain")
@@ -38,6 +47,16 @@ func (c AuthProfile) Save() revel.Result {
     if c.Validation.HasErrors() {
         return c.RenderJson(service.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
+
+    loginUserId := c.User.UserId
+    loginUser := new(models.User)
+    _, err := session.Id(loginUserId).Get(loginUser)
+    service.HandleError(err)
+
+    loginUser.Password = service.EncryptPassword(password)
+
+    _, err = session.Id(loginUserId).Cols("password").Update(loginUser)
+    service.HandleError(err)
 
     return c.RenderJson(service.JsonResult{Success: true, Message: "保存成功!"})
 }

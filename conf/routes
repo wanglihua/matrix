@@ -1,6 +1,7 @@
 # *    /testrunner     module:testrunner
 module:testrunner
 module:auth
+module:wechat
 
 GET  /favicon.ico               Static.Serve("static","images/favicon.png")
 GET  /static/*filepath          Static.Serve("static")

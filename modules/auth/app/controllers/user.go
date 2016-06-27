@@ -15,7 +15,7 @@ type AuthUser struct {
 }
 
 func (c AuthUser) Index() revel.Result {
-    return c.RenderTemplate("user/user_index.html")
+    return c.RenderTemplate("auth/user/user_index.html")
 }
 
 func (c AuthUser) ListData() revel.Result {
@@ -63,7 +63,7 @@ func (c AuthUser) Detail() revel.Result {
 
     c.RenderArgs["is_create"] = userId == 0
     c.RenderArgs["user"] = user
-    return c.RenderTemplate("user/user_detail.html")
+    return c.RenderTemplate("auth/user/user_detail.html")
 }
 
 func (c AuthUser) Save() revel.Result {

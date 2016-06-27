@@ -5,6 +5,7 @@ import (
     "runtime"
     "matrix/service"
     "matrix/app/routes"
+    "strings"
 )
 
 func init() {
@@ -59,6 +60,10 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
 
     if c.Action == "Home.SyncDb" || c.Action == "Home.SyncDbPost" {
         return nil
+    }
+
+    if strings.HasPrefix(c.Name, "Wechat") {
+        return nil //暂时先 return nil
     }
 
     loginuser := service.GetLoginUser(c.Session)
