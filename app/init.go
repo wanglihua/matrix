@@ -64,7 +64,7 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
     loginuser := service.GetLoginUser(c.Session)
 
     if loginuser == nil {
-        if len(c.Request.Header["X-Requested-With"]) != 0 &&  c.Request.Header["X-Requested-With"][0] == "XMLHttpRequest" {
+        if service.IsAjaxRequest(c.Request) {
             c.Result = c.RenderJson(service.JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
         } else {
             return c.Redirect(routes.Login.Index())

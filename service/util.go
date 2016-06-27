@@ -48,3 +48,11 @@ func GetSessionExpire() time.Duration {
 
     return expireAfterDuration
 }
+
+func IsAjaxRequest(request *revel.Request) bool {
+    if len(request.Header["X-Requested-With"]) != 0 &&  request.Header["X-Requested-With"][0] == "XMLHttpRequest" {
+        return true
+    } else {
+        return false
+    }
+}
