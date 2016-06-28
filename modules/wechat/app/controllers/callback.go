@@ -80,9 +80,15 @@ func (c WechatCallback) Reply() revel.Result {
 
     fmt.Println(encryptedMsg)
 
-    random, msgPlaintext, haveAppIdBytes, _ :=  wechatService.AesDecryptMsg(encryptedMsg, []byte(wechatService.GetAesKey()))
+    //aeskey base64 decode
+    encodedAesKey := []byte(wechatService.GetAesKey() + "=")
+    aesKey := make([]byte, base64.StdEncoding.DecodedLen(len(encodedAesKey)))
+    aesKeyLen, _ := base64.StdEncoding.Decode(aesKey, encodedAesKey)
+    aesKey = aesKey[: aesKeyLen]
+
+    random, msgPlaintext, haveAppIdBytes, _ := wechatService.AesDecryptMsg(encryptedMsg, aesKey)
     fmt.Println(random)
-    fmt.Println(msgPlaintext)
+    fmt.Println(string(msgPlaintext))
     fmt.Println(haveAppIdBytes)
 
     return c.RenderText("")
