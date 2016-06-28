@@ -6,7 +6,7 @@ import (
 )
 
 func Test_FormatSQL(t *testing.T) {
-    sql := FormatSQL("name1", "SQL: {{.hello}}", map[string]interface{}{
+    sql := FormatText("name1", "SQL: {{.hello}}", map[string]interface{}{
         "hello" : "Hello World!",
     })
 

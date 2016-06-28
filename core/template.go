@@ -6,7 +6,7 @@ import (
     "bytes"
 )
 
-func FormatSQL(templateName string, templateContent string, args  map[string]interface{}) string {
+func FormatText(templateName string, templateContent string, args  map[string]interface{}) string {
     template, err := textTemplate.New(templateName).Parse(templateContent)
     if err != nil {
         panic(err)

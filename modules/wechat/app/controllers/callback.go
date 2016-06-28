@@ -5,9 +5,10 @@ import (
     "github.com/revel/revel"
     matrixService "matrix/service"
     wechatService "matrix/modules/wechat/service"
-    "fmt"
     "io/ioutil"
+    "time"
     "encoding/base64"
+    "strconv"
 )
 
 type WechatCallback struct {
@@ -41,88 +42,117 @@ func (c WechatCallback) Reply() revel.Result {
     c.Params.Bind(&timestamp, "timestamp")
     c.Params.Bind(&nonce, "nonce")
 
-    fmt.Println(encrypt_type)
-    fmt.Println(signature)
-    fmt.Println(msgSignature)
-    fmt.Println(timestamp)
-    fmt.Println(nonce)
-
     signatureComputed := wechatService.Sign(wechatService.GetToken(), timestamp, nonce)
     if signature != signatureComputed {
-        fmt.Println("signature != signatureComputed")
         return c.RenderText("")
     }
 
-    /*
-    bodyBuffer := new(bytes.Buffer)
-    bodyBuffer.ReadFrom(c.Request.Body)
-    msgXml := bodyBuffer.String()
-    fmt.Println(msgXml)
-    */
+    requestMessageBody, _ := ioutil.ReadAll(c.Request.Body)
+    requestCipherMsg := new(RequestCipherMessage)
+    xml.Unmarshal(requestMessageBody, requestCipherMsg)
 
-    msgRequestBody, _ := ioutil.ReadAll(c.Request.Body)
-    msg := new(Message)
-    xml.Unmarshal(msgRequestBody, msg)
-
-    msgSignatureComputed := wechatService.MsgSign(wechatService.GetToken(), timestamp, nonce, msg.Encrypt)
+    msgSignatureComputed := wechatService.MsgSign(wechatService.GetToken(), timestamp, nonce, requestCipherMsg.Encrypt)
     if msgSignature != msgSignatureComputed {
         return c.RenderText("")
     }
 
-    fmt.Println(msg.ToUserName)
-    fmt.Println(msg.Encrypt)
+    encryptedMsg := wechatService.Base64Decode([]byte(requestCipherMsg.Encrypt))
+    aesKey := wechatService.Base64Decode([]byte(wechatService.GetAesKey() + "="))
 
-    //msg.Encrypt base64 decode
-    msgEncryptByte := []byte(msg.Encrypt)
-    encryptedMsg := make([]byte, base64.StdEncoding.DecodedLen(len(msgEncryptByte)))
-    encryptedMsgLen, _ := base64.StdEncoding.Decode(encryptedMsg, msgEncryptByte)
-    encryptedMsg = encryptedMsg[:encryptedMsgLen]
+    _, msgPlainXmlBytes, _, err := wechatService.AesDecryptMsg(encryptedMsg, aesKey)
+    matrixService.HandleError(err)
+    requestTextMessage := new(RequestTextMessage)
+    xml.Unmarshal(msgPlainXmlBytes, requestTextMessage)
 
-    fmt.Println(encryptedMsg)
+    //extra response logic here
 
-    //aeskey base64 decode
-    encodedAesKey := []byte(wechatService.GetAesKey() + "=")
-    aesKey := make([]byte, base64.StdEncoding.DecodedLen(len(encodedAesKey)))
-    aesKeyLen, _ := base64.StdEncoding.Decode(aesKey, encodedAesKey)
-    aesKey = aesKey[: aesKeyLen]
+    msgTimeStampStr := strconv.FormatInt(time.Now().Unix(), 10)
+    responseTextMessage := new(ResponseTextMessage)
+    responseTextMessage.ToUserName = requestTextMessage.FromUserName
+    responseTextMessage.FromUserName = requestTextMessage.ToUserName
+    responseTextMessage.CreateTime = msgTimeStampStr
+    responseTextMessage.MsgType = "text"
+    responseTextMessage.Content = "哈哈，你发了 " + requestTextMessage.Content + " !"
+    responseMessageBytes, _ := xml.Marshal(responseTextMessage)
 
-    random, msgPlaintext, haveAppIdBytes, _ := wechatService.AesDecryptMsg(encryptedMsg, aesKey)
-    fmt.Println(random)
-    fmt.Println(string(msgPlaintext))
-    fmt.Println(haveAppIdBytes)
+    responseTextMessageEncrypted := wechatService.AesEncryptMsg([]byte("12345678"), responseMessageBytes, wechatService.GetAppId(), aesKey)
+    responseTextMessageBase64 := base64.StdEncoding.EncodeToString(responseTextMessageEncrypted)
+    responseMsgSignature := wechatService.MsgSign(wechatService.GetToken(), msgTimeStampStr, nonce, responseTextMessageBase64)
 
-    return c.RenderText("")
+    responseCliperMessage := new(ResponseCliperMessage)
+    responseCliperMessage.Encrypt = responseTextMessageBase64
+    responseCliperMessage.MsgSignature = responseMsgSignature
+    responseCliperMessage.TimeStamp = msgTimeStampStr
+    responseCliperMessage.Nonce = nonce
+    responseMsgXMLBytes, _ := xml.Marshal(responseCliperMessage)
+
+    return  c.RenderText(string(responseMsgXMLBytes))
 }
 
 /*
 <xml>
-    <ToUserName>...</ToUserName>
-    <Encrypt>...</Encrypt>
+    <ToUserName><![CDATA[gh_c03e85cdf6af]]></ToUserName>
+    <Encrypt><![CDATA[Co42g9......3Q2aOjM9Z0IBXKBw=]]></Encrypt>
 </xml>
 */
-type Message struct {
-    ToUserName string  `xml:"ToUserName"`
-    Encrypt    string  `xml:"Encrypt"`
+type RequestCipherMessage struct {
+    ToUserName string    `xml:"ToUserName"`
+    Encrypt    string    `xml:"Encrypt"`
+}
+
+/*
+<xml>
+    <ToUserName><![CDATA[gh_c03e85cdf6af]]></ToUserName>
+    <FromUserName><![CDATA[oZhq_wr-7ZA71qZshMo_Zbj_1IJQ]]></FromUserName>
+    <CreateTime>1467115784</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[test]]></Content>
+    <MsgId>6301214312140396469</MsgId>
+</xml>
+*/
+type RequestTextMessage struct {
+    ToUserName   string    `xml:"ToUserName"`
+    FromUserName string    `xml:"FromUserName"`
+    CreateTime   string    `xml:"CreateTime"`
+    MsgType      string    `xml:"MsgType"`
+    Content      string    `xml:"Content"`
+    MsgId        string    `xml:"MsgId"`
 }
 
 
 /*
-package main
+<xml>
+    <Encrypt>...</Encrypt>
+    <MsgSignature>...</MsgSignature>
+    <TimeStamp>...</TimeStamp>
+    <Nonce>...</Nonce>
+</xml>
+*/
 
-import "fmt"
-import "crypto/aes"
+type ResponseCliperMessage struct {
+    XMLName      struct{}  `xml:"xml"`
 
-func main() {
-    bc, err := aes.NewCipher([]byte("key3456789012345"))
-    if (err != nil) {
-        fmt.Println(err);
-    }
-    fmt.Printf("The block size is %d\n", bc.BlockSize())
-
-    var dst = make([]byte, 16)
-    var src = []byte("sensitive1234567")
-
-    bc.Encrypt(dst, src)
-    fmt.Println(dst)
+    Encrypt      string    `xml:"Encrypt"`
+    MsgSignature string    `xml:"MsgSignature"`
+    TimeStamp    string    `xml:"TimeStamp"`
+    Nonce        string    `xml:"Nonce"`
 }
- */
+
+/*
+<xml>
+    <ToUserName><![CDATA[oZhq_wr-7ZA71qZshMo_Zbj_1IJQ]]></ToUserName>
+    <FromUserName><![CDATA[gh_c03e85cdf6af]]></FromUserName>
+    <CreateTime>1467115784</CreateTime>
+    <MsgType><![CDATA[text]]></MsgType>
+    <Content><![CDATA[test]]></Content>
+</xml>
+*/
+type ResponseTextMessage struct {
+    XMLName      struct{}  `xml:"xml"`
+
+    ToUserName   string    `xml:"ToUserName"`
+    FromUserName string    `xml:"FromUserName"`
+    CreateTime   string    `xml:"CreateTime"`
+    MsgType      string    `xml:"MsgType"`
+    Content      string    `xml:"Content"`
+}

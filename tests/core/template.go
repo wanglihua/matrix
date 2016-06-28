@@ -10,7 +10,7 @@ type TemplateTest struct {
 }
 
 func (t *TemplateTest) TestFormatSQL() {
-    sql := core.FormatSQL("name1", "SQL: {{.hello}}", map[string]interface{}{
+    sql := core.FormatText("name1", "SQL: {{.hello}}", map[string]interface{}{
         "hello" : "Hello World!",
     })
 

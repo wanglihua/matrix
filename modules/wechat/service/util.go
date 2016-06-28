@@ -8,6 +8,8 @@ import (
     "crypto/aes"
     "crypto/cipher"
     "fmt"
+    "encoding/base64"
+    matrixService "matrix/service"
 )
 
 
@@ -41,6 +43,14 @@ func MsgSign(token, timestamp, nonce, encryptedMsg string) (signature string) {
 
     hashsum := h.Sum(nil)
     return hex.EncodeToString(hashsum)
+}
+
+func Base64Decode(base64Str []byte) []byte {
+    decodedStr := make([]byte, base64.StdEncoding.DecodedLen(len(base64Str)))
+    encryptedMsgLen, err := base64.StdEncoding.Decode(decodedStr, base64Str)
+    matrixService.HandleError(err)
+    decodedStr = decodedStr[:encryptedMsgLen]
+    return decodedStr
 }
 
 // ciphertext = AES_Encrypt[random(16B) + msg_len(4B) + rawXMLMsg + appId]
