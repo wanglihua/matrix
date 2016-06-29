@@ -1,12 +1,13 @@
-{%header "个人中心" .%}
+{%header "微信配置" .%}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
         <li>
             <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
         </li>
-        <li>Home</li>
-        <li class="active" data-menu="profile-menu">个人设置</li>
+        <li class="active">Home</li>
+        <li class="parent" data-menu="setting-menu">系统设置</li>
+        <li class="active" data-menu="setting-weixincfg-menu">微信配置</li>
     </ul>
 </div>
 <div class="page-content">
@@ -15,58 +16,60 @@
             <div class="widget-box" style="border-style:none;width:600px; ">
                 <div class="widget-body">
                     <div class="widget-main">
-                        <form class="form-horizontal" id="profileForm" style="margin: 20px 0 30px 0;">
+                        <form class="form-horizontal" id="configForm" style="margin: 20px 0 30px 0;">
                             <div class="form-group">
-                                <label for="loginName" class="col-xs-3 control-label no-padding-right">登录名：</label>
+                                <label for="token" class="col-xs-3 control-label no-padding-right">Token：</label>
                                 <div class="col-xs-8">
-                                    <input id="loginName" name="login_name" type="text" class="form-control input-sm" readonly="readonly" value="{% .user.LoginName %}"/>
+                                    <input id="token" name="form.Token" type="text" class="form-control input-sm" value="{% .form.Token %}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="nickName" class="col-xs-3 control-label no-padding-right">用户名：</label>
+                                <label for="encoding_aes_key" class="col-xs-3 control-label no-padding-right">EncodingAESKey：</label>
                                 <div class="col-xs-8">
-                                    <input id="nickName" name="nick_name" type="text" class="form-control input-sm" readonly="readonly" value="{% .user.NickName %}"/>
+                                    <input id="encoding_aes_key" name="form.EncodingAesKey" type="text" class="form-control input-sm" value="{% .form.EncodingAesKey %}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="password" class="col-xs-3 control-label no-padding-right">密码：</label>
+                                <label for="app_id" class="col-xs-3 control-label no-padding-right">AppId：</label>
                                 <div class="col-xs-8">
-                                    <input id="password" name="form.Password" type="password" class="form-control input-sm" placeholder="如需更改密码，请输入您的新密码！"/>
+                                    <input id="app_id" name="form.AppId" type="text" class="form-control input-sm" value="{% .form.AppId %}"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="password_again" class="col-xs-3 control-label no-padding-right">密码重输：</label>
+                                <label for="app_secret" class="col-xs-3 control-label no-padding-right">AppSecret：</label>
                                 <div class="col-xs-8">
-                                    <input id="password_again" name="form.PasswordAgain" type="password" class="form-control input-sm" placeholder="密码重输！"/>
+                                    <input id="app_secret" name="form.AppSecret" type="text" class="form-control input-sm" value="{% .form.AppSecret %}"/>
                                 </div>
                             </div>
                         </form>
                         <hr>
                         <div class="wizard-actions">
-                            <button class="btn btn-sm btn-primary" onclick="submitForm()">
+                            <button class="btn btn-sm btn-primary" onclick="saveConfig()">
                                 <i class="ace-icon fa fa-floppy-o"></i>
                                 保存
                             </button>
-                            <button class="btn btn-sm btn-default" onclick="resetForm()">
-                                <i class="ace-icon fa fa-undo"></i>
-                                重置
-                            </button>
                             <script type="text/javascript">
-                                function submitForm() {
+                                function saveConfig() {
                                     showMask("提交中...");
-                                    var form = $("#profileForm");
+                                    var form = $("#configForm");
 
                                     var valid = validate(
                                             form,
                                             {
-                                                'form.Password': {
-                                                    minlength: 6,
-                                                    maxlength: 12
+                                                'form.Token': {
+                                                    required: true,
+                                                    minlength: 3,
+                                                    maxlength: 32
                                                 },
-                                                'form.PasswordAgain': {
-                                                    minlength: 6,
-                                                    maxlength: 12,
-                                                    equalTo: "#password"
+                                                'form.EncodingAesKey': {
+                                                    minlength: 43,
+                                                    maxlength: 43
+                                                },
+                                                'form.AppId': {
+                                                    maxlength: 100
+                                                },
+                                                'form.AppSecret': {
+                                                    maxlength: 100
                                                 }
                                             }
                                     );
@@ -75,7 +78,7 @@
                                         hideMask();
                                     } else {
                                         $.ajax({
-                                                   url: '{% url "AuthProfile.Save" %}',
+                                                   url: '{% url "WeixinConfig.Save" %}',
                                                    type: "POST",
                                                    data: form.serialize(),
                                                    success: function (data) {
@@ -93,10 +96,6 @@
                                                }
                                         );
                                     }
-                                }
-
-                                function resetForm() {
-                                    $('#profileForm')[0].reset();
                                 }
                             </script>
                         </div>

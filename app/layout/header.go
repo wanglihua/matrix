@@ -185,6 +185,23 @@ func GetHeader(title string, loginUserNickName string) string {
                     </li>
                 </ul>
             </li>
+            <li id="setting-menu" class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-users"></i>
+                    <span class="menu-text">系统设置</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li id="setting-weixincfg-menu" class="">
+                        <a href="/weixin/config">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            微信配置
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
         </ul>
         <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
             <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>

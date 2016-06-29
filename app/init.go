@@ -6,6 +6,7 @@ import (
     "matrix/core"
     "matrix/app/routes"
     "strings"
+    "fmt"
 )
 
 func init() {
@@ -53,6 +54,8 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
     if (c.Name == "Static" || c.Name == "TestRunner") {
         return nil
     }
+
+    fmt.Println(c.Action)
 
     if c.Action == "Login.Index" || c.Action == "Login.Login" {
         return nil

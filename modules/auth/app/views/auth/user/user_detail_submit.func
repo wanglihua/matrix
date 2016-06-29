@@ -3,33 +3,33 @@ function submitForm() {
     showMask("提交中...");
     var form = $("#userDetailForm");
     var valid = validate(form, {
-        'user.LoginName': {
+        'form.LoginName': {
             required: true,
             minlength: 3,
             maxlength: 10
         },
-        'user.NickName': {
+        'form.NickName': {
             required: true,
             minlength: 3,
             maxlength: 10
         },
         {%if .is_create%}
-        'user.Password': {
+        'form.Password': {
             required: true,
             minlength: 6,
             maxlength: 12
         },
-        'PasswordAgain': {
+        'form.PasswordAgain': {
             minlength: 6,
             maxlength: 12,
             equalTo: "#user_password"
         }
         {%else%}
-        'NewPassword': {
+        'form.NewPassword': {
             minlength: 6,
             maxlength: 12
         },
-        'NewPasswordAgain': {
+        'form.NewPasswordAgain': {
             minlength: 6,
             maxlength: 12,
             equalTo: "#new_password"
@@ -39,8 +39,7 @@ function submitForm() {
 
     if (!valid) {
         hideMask();
-    }
-    else {
+    } else {
         $.ajax({
                    url: '{%url "AuthUser.Save"%}',
                    type: "POST",

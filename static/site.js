@@ -70,11 +70,14 @@ window.onresize = function () {
     $("#huaduCover").height($(window).height()).css("line-height", $(window).height() + "px").width($(window).width());
 };
 
+/*
 $(document).ajaxStart(function () {
     showMask("数据加载中，请稍候");
 }).ajaxStop(function () {
     hideMask();
 });
+*/
+
 //显示遮照层
 function showMask(text) {
     //$('body').css("overflow", "hidden")
@@ -88,6 +91,7 @@ function hideMask() {
 }
 
 function handleJQueryAjaxError(xhr, textStatus, error) {
+    hideMask();
     if (textStatus === 'timeout') {
         $.msg.error('服务器超时！');
     }
@@ -144,12 +148,14 @@ $.extend($.fn.dataTable.defaults, {
         }
     },
     "fnServerData": function (sSource, aoData, fnCallback) {
+        showMask("数据加载中，请稍候");
         $.ajax(
             {
                 "dataType": 'json',
                 "url": sSource,
                 "data": aoData,
                 "success": function (data) {
+                    hideMask();
                     if (data.success == false) {
                         $.msg.error(data.message);
                         return;

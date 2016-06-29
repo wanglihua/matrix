@@ -4,9 +4,9 @@ import (
     "github.com/revel/revel"
 
     "matrix/modules/auth/models"
+    "matrix/modules/auth/forms"
     "matrix/core"
     "strconv"
-    "strings"
 )
 
 type AuthUser struct {
@@ -61,75 +61,34 @@ func (c AuthUser) Detail() revel.Result {
         }
     }
 
-    c.RenderArgs["is_create"] = userId == 0
-    c.RenderArgs["user"] = user
+    form := new(forms.UserDetailForm)
+    form.User = *user
+
+    c.RenderArgs["form"] = form
     return c.RenderTemplate("auth/user/user_detail.html")
 }
 
 func (c AuthUser) Save() revel.Result {
     session := c.DbSession
 
-    user := new(models.User)
-    c.Params.Bind(&user, "user")
+    form := new(forms.UserDetailForm)
+    c.Params.Bind(form, "form")
 
-    isCreate := user.Id == 0
-
-    c.Validation.Required(user.LoginName).Message("登录名不能为空！")
-    c.Validation.MinSize(user.LoginName, 3).Message("登录名长度不能小于3！")
-    c.Validation.MaxSize(user.LoginName, 10).Message("登录名长度不能大于10！")
-
-    c.Validation.Required(user.NickName).Message("用户名不能为空！")
-    c.Validation.MinSize(user.NickName, 3).Message("用户名长度不能小于3！")
-    c.Validation.MaxSize(user.NickName, 10).Message("用户名长度不能大于10！")
-
-    if isCreate {
-        var passwordAgain string
-        c.Params.Bind(&passwordAgain, "PasswordAgain")
-
-        c.Validation.Required(user.Password).Message("密码不能为空！")
-        c.Validation.MinSize(user.Password, 6).Message("密码长度不能小于6！")
-        c.Validation.MaxSize(user.Password, 12).Message("密码长度不能大于12！")
-
-        if user.Password != passwordAgain {
-            c.Validation.Errors = append(c.Validation.Errors, &revel.ValidationError{
-                Key:"password_again_not_match",
-                Message:"两次输入的密码不一致！",
-            })
-        }
-
-        user.Password = core.EncryptPassword(user.Password)
-
-    } else {
-        var newPassword, newPasswordAgain string
-        c.Params.Bind(&newPassword, "NewPassword")
-        c.Params.Bind(&newPasswordAgain, "NewPasswordAgain")
-
-        if strings.Trim(newPassword, " ") != "" || strings.Trim(newPasswordAgain, " ") != "" {
-            c.Validation.MinSize(newPassword, 6).Message("密码长度不能小于6！")
-            c.Validation.MaxSize(newPassword, 12).Message("密码长度不能大于12！")
-
-            if newPassword != newPasswordAgain {
-                c.Validation.Errors = append(c.Validation.Errors, &revel.ValidationError{
-                    Key:"password_again_not_match",
-                    Message:"两次输入的密码不一致！",
-                })
-            }
-
-            user.Password = core.EncryptPassword(newPassword)
-        }
-    }
-
-    if c.Validation.HasErrors() {
+    if form.Valid(c.Validation) == false {
         return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
 
+    user := &form.User
+
     var affected int64
-    if isCreate {
+    if form.IsCreate() {
         count, err := session.Where("login_name = ?", user.LoginName).Count(new(models.User))
         core.HandleError(err)
         if count != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
         }
+
+        user.Password = core.EncryptPassword(user.Password)
 
         affected, err = session.Insert(user)
         core.HandleError(err)
@@ -140,9 +99,11 @@ func (c AuthUser) Save() revel.Result {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
         }
 
+        user.Password = core.EncryptPassword(form.NewPassword)
+
         affected, err = session.Id(user.Id).Update(user)
-        //affected, err := session.Id(user.Id).Cols("nick_name").Update(user)
-        //affected, err := session.Table(new(User)).Id(user.Id).Update(map[string]interface{}{"password":"123456"})
+        //affected, err := session.Id(form.Id).Cols("nick_name").Update(user)
+        //affected, err := session.Table(new(User)).Id(form.Id).Update(map[string]interface{}{"password":"123456"})
         core.HandleError(err)
 
         if affected == 0 {

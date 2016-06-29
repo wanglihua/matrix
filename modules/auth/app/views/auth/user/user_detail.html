@@ -9,44 +9,44 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <form class="form-horizontal" role="form" id="userDetailForm">
-                            <input id="user_id" name="user.Id" type="hidden" value="{%.user.Id%}"/>
-                            <input id="user_version" name="user.Version" type="hidden" value="{%.user.Version%}"/>
+                            <input id="user_id" name="form.User.Id" type="hidden" value="{%.form.User.Id%}"/>
+                            <input id="user_version" name="form.User.Version" type="hidden" value="{%.form.User.Version%}"/>
                             <div class="form-group">
                                 <label for="user_login_name" class="col-xs-2 control-label no-padding-right">登录名</label>
                                 <div class="col-xs-10">
-                                    <input id="user_login_name" name="user.LoginName" type="text" class="input-sm form-control" value="{%.user.LoginName%}"/>
+                                    <input id="user_login_name" name="form.User.LoginName" type="text" class="input-sm form-control" value="{%.form.User.LoginName%}"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="user_nick_name" class="col-xs-2 control-label no-padding-right">用户名</label>
                                 <div class="col-xs-10">
-                                    <input id="user_nick_name" name="user.NickName" type="text" class="input-sm form-control" value="{%.user.NickName%}"/>
+                                    <input id="user_nick_name" name="form.User.NickName" type="text" class="input-sm form-control" value="{%.form.User.NickName%}"/>
                                 </div>
                             </div>
-                            {%if .is_create%}
+                            {%if .form.IsCreate%}
                             <div class="form-group">
                                 <label for="user_password" class="col-xs-2 control-label no-padding-right">密码</label>
                                 <div class="col-xs-10">
-                                    <input id="user_password" name="user.Password" type="password" class="input-sm form-control" value="{%.user.Password%}"/>
+                                    <input id="user_password" name="form.User.Password" type="password" class="input-sm form-control" value=""/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="password_again" class="col-xs-2 control-label no-padding-right">密码重输</label>
                                 <div class="col-xs-10">
-                                    <input id="password_again" name="PasswordAgain" type="password" class="input-sm form-control" value=""/>
+                                    <input id="password_again" name="form.PasswordAgain" type="password" class="input-sm form-control" value=""/>
                                 </div>
                             </div>
                             {%else%}
                             <div class="form-group">
                                 <label for="new_password" class="col-xs-2 control-label no-padding-right">新密码</label>
                                 <div class="col-xs-10">
-                                    <input id="new_password" name="NewPassword" type="password" class="input-sm form-control" value=""/>
+                                    <input id="new_password" name="form.NewPassword" type="password" class="input-sm form-control" value=""/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="new_password_again" class="col-xs-2 control-label no-padding-right">密码重输</label>
                                 <div class="col-xs-10">
-                                    <input id="new_password_again" name="NewPasswordAgain" type="password" class="input-sm form-control" value=""/>
+                                    <input id="new_password_again" name="form.NewPasswordAgain" type="password" class="input-sm form-control" value=""/>
                                 </div>
                             </div>
                             {%end%}
@@ -65,4 +65,4 @@
         </div>
     </div>
 </div>
-{%template "user/user_detail_submit.func" .%}
+{%template "auth/user/user_detail_submit.func" .%}

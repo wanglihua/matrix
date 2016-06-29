@@ -3,8 +3,8 @@ package controllers
 import (
     "github.com/revel/revel"
     "matrix/core"
-    "strings"
     "matrix/modules/auth/models"
+    "matrix/modules/auth/forms"
 )
 
 type AuthProfile struct {
@@ -27,24 +27,11 @@ func (c AuthProfile) Index() revel.Result {
 
 func (c AuthProfile) Save() revel.Result {
     session := c.DbSession
-    var password, passwordAgain string
-    c.Params.Bind(&password, "Password")
-    c.Params.Bind(&passwordAgain, "PasswordAgain")
 
-    if strings.Trim(password, " ") != "" || strings.Trim(passwordAgain, " ") != "" {
-        c.Validation.Required(password).Message("密码不能为空！")
-        c.Validation.MinSize(password, 6).Message("密码长度不能小于6！")
-        c.Validation.MaxSize(password, 12).Message("密码长度不能大于12！")
+    form := new(forms.ProfileForm)
+    c.Params.Bind(form, "form")
 
-        if password != passwordAgain {
-            c.Validation.Errors = append(c.Validation.Errors, &revel.ValidationError{
-                Key:"password_again_not_match",
-                Message:"两次输入的密码不一致！",
-            })
-        }
-    }
-
-    if c.Validation.HasErrors() {
+    if form.Valid(c.Validation) == false {
         return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
 
@@ -53,7 +40,7 @@ func (c AuthProfile) Save() revel.Result {
     _, err := session.Id(loginUserId).Get(loginUser)
     core.HandleError(err)
 
-    loginUser.Password = core.EncryptPassword(password)
+    loginUser.Password = core.EncryptPassword(form.Password)
 
     _, err = session.Id(loginUserId).Cols("password").Update(loginUser)
     core.HandleError(err)

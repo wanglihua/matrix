@@ -72,7 +72,7 @@
                     <div class="col-xs-8">
                             <span class="block input-icon input-icon-left">
                              <i class="ace-icon fa fa-user" style="line-height: 40px;"></i>
-                             <input id="loginName" name="login.LoginName" type="text" class="form-control" placeholder="请输入您的用户名" style="height: 40px;"/>
+                             <input id="loginName" name="form.LoginName" type="text" class="form-control" placeholder="请输入您的用户名" style="height: 40px;"/>
                             </span>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                     <div class="col-xs-8">
                             <span class="block input-icon input-icon-left">
                              <i class="ace-icon fa fa-asterisk" style="line-height: 40px;"></i>
-                             <input id="password" name="login.Password" type="password" class="form-control" placeholder="请输入您的密码" onkeydown="passwordOnKeyDown(event)" style="height: 40px;"/>
+                             <input id="password" name="form.Password" type="password" class="form-control" placeholder="请输入您的密码" onkeydown="passwordOnKeyDown(event)" style="height: 40px;"/>
                             </span>
                     </div>
                 </div>
@@ -109,12 +109,12 @@
                         var valid = validate(
                                 form,
                                 {
-                                    'login.LoginName': {
+                                    'form.LoginName': {
                                         required: true,
                                         minlength: 3,
                                         maxlength: 10
                                     },
-                                    'login.Password': {
+                                    'form.Password': {
                                         required: true,
                                         minlength: 6,
                                         maxlength: 12
