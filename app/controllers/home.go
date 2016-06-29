@@ -2,14 +2,14 @@ package controllers
 
 import (
     "github.com/revel/revel"
-    "matrix/service"
+    "matrix/core"
     "matrix/modules/auth/models"
     "matrix/db"
 )
 
 type Home struct {
     *revel.Controller
-    service.BaseController
+    core.BaseController
 }
 
 func (c Home) Index() revel.Result {
@@ -32,12 +32,12 @@ func (c Home) SyncDbPost() revel.Result {
     user := new(models.User)
     user.LoginName = "admin"
     user.NickName = "管理员"
-    user.Password = service.EncryptPassword("111111")
+    user.Password = core.EncryptPassword("111111")
     session.Insert(user)
 
     admin := new(models.Admin)
     admin.UserId = user.Id
     session.Insert(admin)
 
-    return c.RenderJson(service.JsonResult{Success:true, Message:"数据库同步成功!"})
+    return c.RenderJson(core.JsonResult{Success:true, Message:"数据库同步成功!"})
 }

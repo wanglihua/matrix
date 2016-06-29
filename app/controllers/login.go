@@ -2,7 +2,7 @@ package controllers
 
 import (
     "github.com/revel/revel"
-    "matrix/service"
+    "matrix/core"
     "matrix/modules/auth/models"
     //"time"
     //"net/http"
@@ -10,7 +10,7 @@ import (
 
 type Login struct {
     *revel.Controller
-    service.BaseController
+    core.BaseController
 }
 
 func (c Login) Index() revel.Result {
@@ -39,38 +39,38 @@ func (c Login) Login() revel.Result {
     c.Validation.MaxSize(loginForm.Password, 12).Message("密码长度不能大于12！")
 
     if c.Validation.HasErrors() {
-        return c.RenderJson(service.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+        return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
 
     user := new(models.User)
     has, err := session.Where("login_name = ?", loginForm.LoginName).Get(user)
-    service.HandleError(err)
+    core.HandleError(err)
 
     if has == false {
-        return c.RenderJson(service.JsonResult{Success: false, Message: "登录名不存在！" })
+        return c.RenderJson(core.JsonResult{Success: false, Message: "登录名不存在！" })
     }
 
-    if service.CompareHashAndPassword(user.Password, loginForm.Password) == false {
-        return c.RenderJson(service.JsonResult{Success: false, Message: "密码错误！" })
+    if core.CompareHashAndPassword(user.Password, loginForm.Password) == false {
+        return c.RenderJson(core.JsonResult{Success: false, Message: "密码错误！" })
     }
 
     //将当前登录用户信息放入Session中
-    var loginUser service.LoginUser
+    var loginUser core.LoginUser
     loginUser.UserId = user.Id
     loginUser.LoginName = user.LoginName
     loginUser.NickName = user.NickName
 
-    service.PutLoginUserToSession(c.Session, loginUser)
+    core.PutLoginUserToSession(c.Session, loginUser)
 
-    return c.RenderJson(service.JsonResult{Success:true, Message:"登陆成功！"})
+    return c.RenderJson(core.JsonResult{Success:true, Message:"登陆成功！"})
 }
 
 func (c Login) Logout() revel.Result {
-    service.RemoveLoginUserInSession(c.Session)
+    core.RemoveLoginUserInSession(c.Session)
 
     c.makePreviousSessionExpire()
 
-    return c.RenderJson(service.JsonResult{Success:true, Message:"注销成功！"})
+    return c.RenderJson(core.JsonResult{Success:true, Message:"注销成功！"})
 }
 
 func (c Login) makePreviousSessionExpire() {

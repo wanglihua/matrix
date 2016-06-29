@@ -3,7 +3,7 @@ package app
 import (
     "github.com/revel/revel"
     "runtime"
-    "matrix/service"
+    "matrix/core"
     "matrix/app/routes"
     "strings"
 )
@@ -13,9 +13,9 @@ func init() {
 
     revel.TimeFormats = append(revel.TimeFormats, "2006-01-02 15:04:05")
 
-    revel.InterceptMethod((*service.BaseController).Before, revel.BEFORE)
-    revel.InterceptMethod((*service.BaseController).After, revel.AFTER)
-    revel.InterceptMethod((*service.BaseController).Panic, revel.PANIC)
+    revel.InterceptMethod((*core.BaseController).Before, revel.BEFORE)
+    revel.InterceptMethod((*core.BaseController).After, revel.AFTER)
+    revel.InterceptMethod((*core.BaseController).Panic, revel.PANIC)
 
     revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
 
@@ -66,11 +66,11 @@ func userAuthInterceptor(c *revel.Controller) revel.Result {
         return nil //暂时先 return nil
     }
 
-    loginuser := service.GetLoginUser(c.Session)
+    loginuser := core.GetLoginUser(c.Session)
 
     if loginuser == nil {
-        if service.IsAjaxRequest(c.Request) {
-            c.Result = c.RenderJson(service.JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
+        if core.IsAjaxRequest(c.Request) {
+            c.Result = c.RenderJson(core.JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
         } else {
             return c.Redirect(routes.Login.Index())
         }

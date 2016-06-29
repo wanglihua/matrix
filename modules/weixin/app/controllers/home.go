@@ -5,11 +5,11 @@ import (
     "matrix/core"
 )
 
-type WechatHome struct {
+type WeixinHome struct {
     *revel.Controller
     core.BaseController
 }
 
-func (c WechatHome) Index() revel.Result {
-    return c.RenderTemplate("wechat/home/home_index.html")
+func (c WeixinHome) Index() revel.Result {
+    return c.RenderTemplate("weixin/home/home_index.html")
 }

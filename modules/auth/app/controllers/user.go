@@ -4,14 +4,14 @@ import (
     "github.com/revel/revel"
 
     "matrix/modules/auth/models"
-    "matrix/service"
+    "matrix/core"
     "strconv"
     "strings"
 )
 
 type AuthUser struct {
     *revel.Controller
-    service.BaseController
+    core.BaseController
 }
 
 func (c AuthUser) Index() revel.Result {
@@ -21,7 +21,7 @@ func (c AuthUser) Index() revel.Result {
 func (c AuthUser) ListData() revel.Result {
     session := c.DbSession
 
-    filter, order, offset, limit := service.GetGridRequestParam(c.Request)
+    filter, order, offset, limit := core.GetGridRequestParam(c.Request)
     query := session.Where(filter)
 
     //query extra filter here
@@ -35,13 +35,13 @@ func (c AuthUser) ListData() revel.Result {
 
     userList := make([]models.User, 0, limit)
     err := dataQuery.Limit(limit, offset).Find(&userList)
-    service.HandleError(err)
+    core.HandleError(err)
 
     countQuery := *query
     count, err := countQuery.Count(new(models.User))
-    service.HandleError(err)
+    core.HandleError(err)
 
-    return c.RenderJson(service.GridResult{
+    return c.RenderJson(core.GridResult{
         Data:  userList,
         Total: count,
     })
@@ -50,12 +50,12 @@ func (c AuthUser) ListData() revel.Result {
 func (c AuthUser) Detail() revel.Result {
     session := c.DbSession
 
-    userId := service.GetInt64FromRequest(c.Request, "id")
+    userId := core.GetInt64FromRequest(c.Request, "id")
 
     user := new(models.User)
     if userId != 0 {
         has, err := session.Id(userId).Get(user)
-        service.HandleError(err)
+        core.HandleError(err)
         if has == false {
             panic("指定的用户不存在！")
         }
@@ -97,7 +97,7 @@ func (c AuthUser) Save() revel.Result {
             })
         }
 
-        user.Password = service.EncryptPassword(user.Password)
+        user.Password = core.EncryptPassword(user.Password)
 
     } else {
         var newPassword, newPasswordAgain string
@@ -115,42 +115,42 @@ func (c AuthUser) Save() revel.Result {
                 })
             }
 
-            user.Password = service.EncryptPassword(newPassword)
+            user.Password = core.EncryptPassword(newPassword)
         }
     }
 
     if c.Validation.HasErrors() {
-        return c.RenderJson(service.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+        return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
 
     var affected int64
     if isCreate {
         count, err := session.Where("login_name = ?", user.LoginName).Count(new(models.User))
-        service.HandleError(err)
+        core.HandleError(err)
         if count != 0 {
-            return c.RenderJson(service.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
+            return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
         }
 
         affected, err = session.Insert(user)
-        service.HandleError(err)
+        core.HandleError(err)
     } else {
         count, err := session.Where("id <> ? and login_name = ?", user.Id, user.LoginName).Count(new(models.User))
-        service.HandleError(err)
+        core.HandleError(err)
         if count != 0 {
-            return c.RenderJson(service.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
+            return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
         }
 
         affected, err = session.Id(user.Id).Update(user)
         //affected, err := session.Id(user.Id).Cols("nick_name").Update(user)
         //affected, err := session.Table(new(User)).Id(user.Id).Update(map[string]interface{}{"password":"123456"})
-        service.HandleError(err)
+        core.HandleError(err)
 
         if affected == 0 {
-            return c.RenderJson(service.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+            return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
         }
     }
 
-    return c.RenderJson(service.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
+    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
 }
 
 func (c AuthUser) Delete() revel.Result {
@@ -160,14 +160,14 @@ func (c AuthUser) Delete() revel.Result {
     c.Params.Bind(&userIdList, "id_list")
 
     count, err := session.In("user_id", userIdList).Count(new(models.Admin))
-    service.HandleError(err)
+    core.HandleError(err)
     if count != 0 {
-        return c.RenderJson(service.JsonResult{Success: false, Message: "不能删除管理员！" })
+        return c.RenderJson(core.JsonResult{Success: false, Message: "不能删除管理员！" })
     }
 
     user := new(models.User)
     affected, err := session.In("id", userIdList).Delete(user)
-    service.HandleError(err)
+    core.HandleError(err)
 
-    return c.RenderJson(service.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
+    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }

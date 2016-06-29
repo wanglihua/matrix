@@ -1,5 +1,7 @@
-* 移除调试信息可以降低生成的可执行文件的大小
-    go build -ldflags "-w"
+* 把Go程序变小的办法是：  
+go build -ldflags "-s -w"   
+-s去掉符号表,panic时候的stack trace就没有任何文件名/行号信息了
+-w去掉DWARF调试信息，得到的程序就不能用gdb调试了。 -s和-w也可以分开使用.
 
 packages:
 

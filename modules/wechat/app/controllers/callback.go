@@ -3,8 +3,8 @@ package controllers
 import (
     "encoding/xml"
     "github.com/revel/revel"
-    matrixService "matrix/service"
-    wechatService "matrix/modules/wechat/service"
+    "matrix/core"
+    "matrix/modules/wechat/service"
     "io/ioutil"
     "time"
     "encoding/base64"
@@ -13,7 +13,7 @@ import (
 
 type WechatCallback struct {
     *revel.Controller
-    matrixService.BaseController
+    core.BaseController
 }
 
 func (c WechatCallback) Sign() revel.Result {
@@ -25,7 +25,7 @@ func (c WechatCallback) Sign() revel.Result {
     c.Params.Bind(&echostr, "echostr")
 
     if echostr != "" {
-        signatureComputed := wechatService.Sign(wechatService.GetToken(), timestamp, nonce)
+        signatureComputed := service.Sign(service.GetToken(), timestamp, nonce)
         if signature == signatureComputed {
             return c.RenderText(echostr)
         }
@@ -42,7 +42,7 @@ func (c WechatCallback) Reply() revel.Result {
     c.Params.Bind(&timestamp, "timestamp")
     c.Params.Bind(&nonce, "nonce")
 
-    signatureComputed := wechatService.Sign(wechatService.GetToken(), timestamp, nonce)
+    signatureComputed := service.Sign(service.GetToken(), timestamp, nonce)
     if signature != signatureComputed {
         return c.RenderText("")
     }
@@ -51,16 +51,16 @@ func (c WechatCallback) Reply() revel.Result {
     requestCipherMsg := new(RequestCipherMessage)
     xml.Unmarshal(requestMessageBody, requestCipherMsg)
 
-    msgSignatureComputed := wechatService.MsgSign(wechatService.GetToken(), timestamp, nonce, requestCipherMsg.Encrypt)
+    msgSignatureComputed := service.MsgSign(service.GetToken(), timestamp, nonce, requestCipherMsg.Encrypt)
     if msgSignature != msgSignatureComputed {
         return c.RenderText("")
     }
 
-    encryptedMsg := wechatService.Base64Decode([]byte(requestCipherMsg.Encrypt))
-    aesKey := wechatService.Base64Decode([]byte(wechatService.GetAesKey() + "="))
+    encryptedMsg := service.Base64Decode([]byte(requestCipherMsg.Encrypt))
+    aesKey := service.Base64Decode([]byte(service.GetAesKey() + "="))
 
-    _, msgPlainXmlBytes, _, err := wechatService.AesDecryptMsg(encryptedMsg, aesKey)
-    matrixService.HandleError(err)
+    _, msgPlainXmlBytes, _, err := service.AesDecryptMsg(encryptedMsg, aesKey)
+    core.HandleError(err)
     requestTextMessage := new(RequestTextMessage)
     xml.Unmarshal(msgPlainXmlBytes, requestTextMessage)
 
@@ -75,9 +75,9 @@ func (c WechatCallback) Reply() revel.Result {
     responseTextMessage.Content = "哈哈，你发了 " + requestTextMessage.Content + " !"
     responseMessageBytes, _ := xml.Marshal(responseTextMessage)
 
-    responseTextMessageEncrypted := wechatService.AesEncryptMsg([]byte("12345678"), responseMessageBytes, wechatService.GetAppId(), aesKey)
+    responseTextMessageEncrypted := service.AesEncryptMsg([]byte("12345678"), responseMessageBytes, service.GetAppId(), aesKey)
     responseTextMessageBase64 := base64.StdEncoding.EncodeToString(responseTextMessageEncrypted)
-    responseMsgSignature := wechatService.MsgSign(wechatService.GetToken(), msgTimeStampStr, nonce, responseTextMessageBase64)
+    responseMsgSignature := service.MsgSign(service.GetToken(), msgTimeStampStr, nonce, responseTextMessageBase64)
 
     responseCliperMessage := new(ResponseCliperMessage)
     responseCliperMessage.Encrypt = responseTextMessageBase64

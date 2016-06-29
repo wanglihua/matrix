@@ -3,14 +3,14 @@ package controllers
 import (
     "github.com/revel/revel"
 
-    "matrix/service"
+    "matrix/core"
     "matrix/modules/auth/models"
     "fmt"
 )
 
 type AuthAdmin struct {
     *revel.Controller
-    service.BaseController
+    core.BaseController
 }
 
 func (c AuthAdmin) Index() revel.Result {
@@ -25,7 +25,7 @@ type AdminView struct {
 func (c AuthAdmin) ListData() revel.Result {
     session := c.DbSession
 
-    filter, order, offset, limit := service.GetGridRequestParam(c.Request)
+    filter, order, offset, limit := core.GetGridRequestParam(c.Request)
     query := session.
     Select("u.*, a.*").
     Table(models.TablePrefix + "user").Alias("u").
@@ -43,13 +43,13 @@ func (c AuthAdmin) ListData() revel.Result {
 
     adminList := make([]AdminView, 0, limit)
     err := dataQuery.Limit(limit, offset).Find(&adminList)
-    service.HandleError(err)
+    core.HandleError(err)
 
     countQuery := *query
     count, err := countQuery.Count(new(AdminView))
-    service.HandleError(err)
+    core.HandleError(err)
 
-    return c.RenderJson(service.GridResult{
+    return c.RenderJson(core.GridResult{
         Data:  adminList,
         Total: count,
     })
@@ -63,7 +63,7 @@ func (c AuthAdmin) Add() revel.Result {
 func (c AuthAdmin) AddListData() revel.Result {
     session := c.DbSession
 
-    filter, order, offset, limit := service.GetGridRequestParam(c.Request)
+    filter, order, offset, limit := core.GetGridRequestParam(c.Request)
     query := session.Where(filter).
     And(fmt.Sprintf("id NOT IN (SELECT user_id FROM %sadmin)", models.TablePrefix))
 
@@ -78,13 +78,13 @@ func (c AuthAdmin) AddListData() revel.Result {
 
     userList := make([]models.User, 0, limit)
     err := dataQuery.Limit(limit, offset).Find(&userList)
-    service.HandleError(err)
+    core.HandleError(err)
 
     countQuery := *query
     count, err := countQuery.Count(new(models.User))
-    service.HandleError(err)
+    core.HandleError(err)
 
-    return c.RenderJson(service.GridResult{
+    return c.RenderJson(core.GridResult{
         Data:  userList,
         Total: count,
     })
@@ -97,17 +97,17 @@ func (c AuthAdmin) AddSave() revel.Result {
     c.Params.Bind(&userIdList, "id_list")
 
     if len(userIdList) == 0 {
-        return c.RenderJson(service.JsonResult{Success: false, Message: "添加失败，请选择用户再添加!"})
+        return c.RenderJson(core.JsonResult{Success: false, Message: "添加失败，请选择用户再添加!"})
     }
 
     for _, userId := range userIdList {
         admin := new(models.Admin)
         admin.UserId = userId
         _, err := session.Insert(admin)
-        service.HandleError(err)
+        core.HandleError(err)
     }
 
-    return c.RenderJson(service.JsonResult{Success: true, Message: "添加成功!"})
+    return c.RenderJson(core.JsonResult{Success: true, Message: "添加成功!"})
 }
 
 func (c AuthAdmin) Remove() revel.Result {
@@ -119,11 +119,11 @@ func (c AuthAdmin) Remove() revel.Result {
     admin := new(models.Admin)
     count, err := session.Count(admin)
     if int64(len(adminIdList)) == count {
-        return c.RenderJson(service.JsonResult{Success: false, Message: "移除失败，管理员不能全部移除!"})
+        return c.RenderJson(core.JsonResult{Success: false, Message: "移除失败，管理员不能全部移除!"})
     }
 
     _, err = session.In("id", adminIdList).Delete(admin)
-    service.HandleError(err)
+    core.HandleError(err)
 
-    return c.RenderJson(service.JsonResult{Success: true, Message: "移除成功!"})
+    return c.RenderJson(core.JsonResult{Success: true, Message: "移除成功!"})
 }

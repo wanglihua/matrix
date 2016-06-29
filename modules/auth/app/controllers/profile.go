@@ -2,14 +2,14 @@ package controllers
 
 import (
     "github.com/revel/revel"
-    "matrix/service"
+    "matrix/core"
     "strings"
     "matrix/modules/auth/models"
 )
 
 type AuthProfile struct {
     *revel.Controller
-    service.BaseController
+    core.BaseController
 }
 
 func (c AuthProfile) Index() revel.Result {
@@ -18,7 +18,7 @@ func (c AuthProfile) Index() revel.Result {
     loginUserId := c.User.UserId
     loginUser := new(models.User)
     _, err := session.Id(loginUserId).Get(loginUser)
-    service.HandleError(err)
+    core.HandleError(err)
 
     c.RenderArgs["user"] = loginUser
 
@@ -45,18 +45,18 @@ func (c AuthProfile) Save() revel.Result {
     }
 
     if c.Validation.HasErrors() {
-        return c.RenderJson(service.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+        return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
 
     loginUserId := c.User.UserId
     loginUser := new(models.User)
     _, err := session.Id(loginUserId).Get(loginUser)
-    service.HandleError(err)
+    core.HandleError(err)
 
-    loginUser.Password = service.EncryptPassword(password)
+    loginUser.Password = core.EncryptPassword(password)
 
     _, err = session.Id(loginUserId).Cols("password").Update(loginUser)
-    service.HandleError(err)
+    core.HandleError(err)
 
-    return c.RenderJson(service.JsonResult{Success: true, Message: "保存成功!"})
+    return c.RenderJson(core.JsonResult{Success: true, Message: "保存成功!"})
 }

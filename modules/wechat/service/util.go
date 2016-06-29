@@ -9,7 +9,7 @@ import (
     "crypto/cipher"
     "fmt"
     "encoding/base64"
-    matrixService "matrix/service"
+    "matrix/core"
 )
 
 
@@ -48,7 +48,7 @@ func MsgSign(token, timestamp, nonce, encryptedMsg string) (signature string) {
 func Base64Decode(base64Str []byte) []byte {
     decodedStr := make([]byte, base64.StdEncoding.DecodedLen(len(base64Str)))
     encryptedMsgLen, err := base64.StdEncoding.Decode(decodedStr, base64Str)
-    matrixService.HandleError(err)
+    core.HandleError(err)
     decodedStr = decodedStr[:encryptedMsgLen]
     return decodedStr
 }

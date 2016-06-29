@@ -3,7 +3,7 @@ package app
 import (
     "runtime/debug"
     "github.com/revel/revel"
-    "matrix/service"
+    "matrix/core"
 )
 //捕获和处理整站异常
 func PanicFilter(c *revel.Controller, fc []revel.Filter) {
@@ -23,8 +23,8 @@ func handleInvocationPanic(c *revel.Controller, err interface{}) {
         revel.ERROR.Print(siteError, "\n", string(debug.Stack()))
         //revel.ERROR.Print(siteError, "\n", siteError.Stack)
 
-        if service.IsAjaxRequest(c.Request) {
-            c.Result = c.RenderJson(service.JsonResult{Success:false, Message:"操作失败！详细:" + siteError.Description})
+        if core.IsAjaxRequest(c.Request) {
+            c.Result = c.RenderJson(core.JsonResult{Success:false, Message:"操作失败！详细:" + siteError.Description})
         } else {
             c.Response.Out.WriteHeader(500)
             c.Response.Out.Write(debug.Stack())
