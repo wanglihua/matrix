@@ -185,15 +185,15 @@ func GetHeader(title string, loginUserNickName string) string {
                     </li>
                 </ul>
             </li>
-            <li id="setting-menu" class="">
+            <li id="weixin-menu" class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-users"></i>
-                    <span class="menu-text">系统设置</span>
+                    <span class="menu-text">微信管理</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    <li id="setting-weixincfg-menu" class="">
+                    <li id="weixin-config-menu" class="">
                         <a href="/weixin/config">
                             <i class="menu-icon fa fa-caret-right"></i>
                             微信配置
