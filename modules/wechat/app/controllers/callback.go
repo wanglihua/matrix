@@ -17,6 +17,8 @@ type WechatCallback struct {
 }
 
 func (c WechatCallback) Sign() revel.Result {
+    session := c.DbSession
+
     var signature, timestamp, nonce, echostr string
 
     c.Params.Bind(&signature, "signature")
@@ -25,7 +27,7 @@ func (c WechatCallback) Sign() revel.Result {
     c.Params.Bind(&echostr, "echostr")
 
     if echostr != "" {
-        signatureComputed := service.Sign(service.GetToken(), timestamp, nonce)
+        signatureComputed := service.Sign(service.GetToken(session), timestamp, nonce)
         if signature == signatureComputed {
             return c.RenderText(echostr)
         }
@@ -34,6 +36,8 @@ func (c WechatCallback) Sign() revel.Result {
 }
 
 func (c WechatCallback) Reply() revel.Result {
+    session := c.DbSession
+
     var signature, msgSignature, encrypt_type, timestamp, nonce string
 
     c.Params.Bind(&encrypt_type, "encrypt_type")
@@ -42,7 +46,7 @@ func (c WechatCallback) Reply() revel.Result {
     c.Params.Bind(&timestamp, "timestamp")
     c.Params.Bind(&nonce, "nonce")
 
-    signatureComputed := service.Sign(service.GetToken(), timestamp, nonce)
+    signatureComputed := service.Sign(service.GetToken(session), timestamp, nonce)
     if signature != signatureComputed {
         return c.RenderText("")
     }
@@ -51,13 +55,13 @@ func (c WechatCallback) Reply() revel.Result {
     requestCipherMsg := new(RequestCipherMessage)
     xml.Unmarshal(requestMessageBody, requestCipherMsg)
 
-    msgSignatureComputed := service.MsgSign(service.GetToken(), timestamp, nonce, requestCipherMsg.Encrypt)
+    msgSignatureComputed := service.MsgSign(service.GetToken(session), timestamp, nonce, requestCipherMsg.Encrypt)
     if msgSignature != msgSignatureComputed {
         return c.RenderText("")
     }
 
     encryptedMsg := service.Base64Decode([]byte(requestCipherMsg.Encrypt))
-    aesKey := service.Base64Decode([]byte(service.GetAesKey() + "="))
+    aesKey := service.Base64Decode([]byte(service.GetEncodingAesKey(session) + "="))
 
     _, msgPlainXmlBytes, _, err := service.AesDecryptMsg(encryptedMsg, aesKey)
     core.HandleError(err)
@@ -75,9 +79,9 @@ func (c WechatCallback) Reply() revel.Result {
     responseTextMessage.Content = "哈哈，你发了 " + requestTextMessage.Content + " !"
     responseMessageBytes, _ := xml.Marshal(responseTextMessage)
 
-    responseTextMessageEncrypted := service.AesEncryptMsg([]byte("12345678"), responseMessageBytes, service.GetAppId(), aesKey)
+    responseTextMessageEncrypted := service.AesEncryptMsg([]byte("12345678"), responseMessageBytes, service.GetAppId(session), aesKey)
     responseTextMessageBase64 := base64.StdEncoding.EncodeToString(responseTextMessageEncrypted)
-    responseMsgSignature := service.MsgSign(service.GetToken(), msgTimeStampStr, nonce, responseTextMessageBase64)
+    responseMsgSignature := service.MsgSign(service.GetToken(session), msgTimeStampStr, nonce, responseTextMessageBase64)
 
     responseCliperMessage := new(ResponseCliperMessage)
     responseCliperMessage.Encrypt = responseTextMessageBase64

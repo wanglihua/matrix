@@ -1,4 +1,4 @@
-package weixin
+package models
 
 import (
     "matrix/core"

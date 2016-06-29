@@ -3,8 +3,9 @@ package controllers
 import (
     "github.com/revel/revel"
     "matrix/core"
-    "matrix/modules/auth/models"
     "matrix/db"
+    userModels "matrix/modules/auth/models"
+    weixinModels "matrix/modules/weixin/models"
 )
 
 type Home struct {
@@ -22,20 +23,21 @@ func (c Home) SyncDb() revel.Result {
 
 func (c Home) SyncDbPost() revel.Result {
     db.Engine.Sync2(
-        &models.User{},
-        &models.Admin{},
-        &models.Group{},
-        &models.UserGroup{},
+        &userModels.User{},
+        &userModels.Admin{},
+        &userModels.Group{},
+        &userModels.UserGroup{},
+        &weixinModels.Config{},
     )
 
     session := c.DbSession
-    user := new(models.User)
+    user := new(userModels.User)
     user.LoginName = "admin"
     user.NickName = "管理员"
     user.Password = core.EncryptPassword("111111")
     session.Insert(user)
 
-    admin := new(models.Admin)
+    admin := new(userModels.Admin)
     admin.UserId = user.Id
     session.Insert(admin)
 

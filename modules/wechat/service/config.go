@@ -1,19 +1,63 @@
 package service
 
-var token = "matrix_dev_token"
-var appId = "wx585f067807412f0d"
-var appSecret = ""
-var aesKey = "bTmRqUZk8WGdImCAqN45u0Hw5LngZb983HGqZF5KLDE"
+import (
+    "github.com/go-xorm/xorm"
+    "matrix/core"
+    "matrix/modules/weixin/models"
+)
 
-func GetToken() string {
+var token = ""
+var encodingAesKey = ""
+var appId = ""
+var appSecret = ""
+
+//从数据库配置中获取一次后，就不用获取第二次了
+
+func GetToken(session *xorm.Session) string {
+    if token == "" {
+        config := new(models.Config)
+        _, err := session.Limit(1).Get(config)
+        core.HandleError(err)
+
+        token = config.Token
+    }
+
     return token
 }
 
-func GetAppId() string {
+func GetEncodingAesKey(session *xorm.Session) string {
+    if encodingAesKey == "" {
+        config := new(models.Config)
+        _, err := session.Limit(1).Get(config)
+        core.HandleError(err)
+
+        encodingAesKey = config.EncodingAesKey
+    }
+
+    return encodingAesKey
+}
+
+func GetAppId(session *xorm.Session) string {
+    if appId == "" {
+        config := new(models.Config)
+        _, err := session.Limit(1).Get(config)
+        core.HandleError(err)
+
+        appId = config.AppId
+    }
+
     return appId
 }
 
-func GetAesKey() string {
-    return aesKey
+func GetAppSecret(session *xorm.Session) string {
+    if appSecret == "" {
+        config := new(models.Config)
+        _, err := session.Limit(1).Get(config)
+        core.HandleError(err)
+
+        appSecret = config.AppSecret
+    }
+
+    return appSecret
 }
 

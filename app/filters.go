@@ -27,7 +27,7 @@ func handleInvocationPanic(c *revel.Controller, err interface{}) {
             c.Result = c.RenderJson(core.JsonResult{Success:false, Message:"操作失败！详细:" + siteError.Description})
         } else {
             c.Response.Out.WriteHeader(500)
-            c.Response.Out.Write(debug.Stack())
+            //c.Response.Out.Write(debug.Stack())
             c.Result = c.RenderError(siteError)
         }
     }
