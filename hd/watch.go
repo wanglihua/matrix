@@ -68,7 +68,7 @@ func NewWatcher(paths []string, files []string) {
                     ColorLog("[EVEN] %s\n", e)
                     go func() {
                         // Wait 1s before autobuild util there is no file change.
-                        scheduleTime = time.Now().Add(1 * time.Second)
+                        scheduleTime = time.Now().Add(1 * time.Second) //是不是要去掉这个延迟
                         for {
                             time.Sleep(scheduleTime.Sub(time.Now()))
                             if time.Now().After(scheduleTime) {
@@ -88,14 +88,15 @@ func NewWatcher(paths []string, files []string) {
 
     ColorLog("[INFO] Initializing watcher...\n")
     for _, path := range paths {
-        ColorLog("[TRAC] Directory( %s )\n", path)
-        err = watcher.Watch(path)
-        if err != nil {
-            ColorLog("[ERRO] Fail to watch directory[ %s ]\n", err)
-            os.Exit(2)
-        }
-    }
 
+            ColorLog("[TRAC] Directory( %s )\n", path)
+            err = watcher.Watch(path)
+            if err != nil {
+                ColorLog("[ERRO] Fail to watch directory[ %s ]\n", err)
+                os.Exit(2)
+            }
+
+    }
 }
 
 // getFileModTime retuens unix timestamp of `os.File.ModTime` by given path.

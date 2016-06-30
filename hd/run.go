@@ -132,6 +132,11 @@ func readAppDirectories(directory string, paths *[]string) {
             continue
         }
 
+        if strings.HasSuffix(fileInfo.Name(), "vendor") {
+            //去掉vendor目录及其子目录
+            continue
+        }
+
         if isExcluded(path.Join(directory, fileInfo.Name())) {
             continue
         }
