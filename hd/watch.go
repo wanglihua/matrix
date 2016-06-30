@@ -68,7 +68,7 @@ func NewWatcher(paths []string, files []string) {
                     ColorLog("[EVEN] %s\n", e)
                     go func() {
                         // Wait 1s before autobuild util there is no file change.
-                        scheduleTime = time.Now().Add(1 * time.Second) //是不是要去掉这个延迟
+                        //scheduleTime = time.Now().Add(1 * time.Second) //是不是要去掉这个延迟
                         for {
                             time.Sleep(scheduleTime.Sub(time.Now()))
                             if time.Now().After(scheduleTime) {
