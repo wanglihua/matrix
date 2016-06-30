@@ -42,6 +42,10 @@ func init() {
     // ( order dependent )
     // revel.OnAppStart(InitDB)
     // revel.OnAppStart(FillCache)
+
+    revel.OnAppStart(func() {
+        revel.LoadMimeConfig()
+    })
 }
 
 func userAuthInterceptor(c *revel.Controller) revel.Result {
