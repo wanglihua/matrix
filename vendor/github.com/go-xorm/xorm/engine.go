@@ -1647,12 +1647,18 @@ func (engine *Engine) formatColTime(col *core.Column, t time.Time) (v interface{
 }
 
 func (engine *Engine) formatTime(tz *time.Location, sqlTypeName string, t time.Time) (v interface{}) {
+    //begin wanglihua 20160625
+    /*
 	if engine.dialect.DBType() == core.ORACLE {
 		return t
 	}
 	if tz != nil {
 		t = engine.TZTime(t)
 	}
+	*/
+    t = engine.TZTime(t)
+    //end wanglihua 20160625
+
 	switch sqlTypeName {
 	case core.Time:
 		s := t.Format("2006-01-02 15:04:05") //time.RFC3339
@@ -1660,6 +1666,8 @@ func (engine *Engine) formatTime(tz *time.Location, sqlTypeName string, t time.T
 	case core.Date:
 		v = t.Format("2006-01-02")
 	case core.DateTime, core.TimeStamp:
+        //begin wanglihua 20160625
+        /*
 		if engine.dialect.DBType() == "ql" {
 			v = t
 		} else if engine.dialect.DBType() == "sqlite3" {
@@ -1667,7 +1675,12 @@ func (engine *Engine) formatTime(tz *time.Location, sqlTypeName string, t time.T
 		} else {
 			v = t.Format("2006-01-02 15:04:05")
 		}
+		*/
+        v = t.Format("2006-01-02 15:04:05")
+        //end wanglihua 20160625
 	case core.TimeStampz:
+        //begin wanglihua 20160625
+        /*
 		if engine.dialect.DBType() == core.MSSQL {
 			v = t.Format("2006-01-02T15:04:05.9999999Z07:00")
 		} else if engine.DriverName() == "mssql" {
@@ -1675,6 +1688,10 @@ func (engine *Engine) formatTime(tz *time.Location, sqlTypeName string, t time.T
 		} else {
 			v = t.Format(time.RFC3339Nano)
 		}
+		*/
+        v = t.Format("2006-01-02 15:04:05.9999999")
+        //end wanglihua 20160625
+
 	case core.BigInt, core.Int:
 		v = t.Unix()
 	default:
