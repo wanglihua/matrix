@@ -19,8 +19,9 @@ func (c *BaseController) Before() revel.Result {
     if (isStaticRequest(c) == false) {
         revel.TRACE.Println("begin ------------------------------------------------------------------")
 
-        if userAuth(c) == false {
-            return  nil
+        authResult := userAuth(c)
+        if authResult != nil {
+            return authResult
         }
 
         c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
@@ -77,7 +78,7 @@ func isStaticRequest(c *BaseController) bool {
     }
 }
 
-func userAuth(c *BaseController) bool {
+func userAuth(c *BaseController) revel.Result {
     /*
     Static.Serve
     Static.ServeModule
@@ -85,21 +86,21 @@ func userAuth(c *BaseController) bool {
     TestRunner.Run
      */
     if (c.Name == "Static" || c.Name == "TestRunner") {
-        return true
+        return nil
     }
 
     revel.TRACE.Println("action: " + c.Action)
 
     if c.Action == "Login.Index" || c.Action == "Login.Login" {
-        return true
+        return nil
     }
 
     if c.Action == "Home.SyncDb" || c.Action == "Home.SyncDbPost" {
-        return true
+        return nil
     }
 
     if strings.HasPrefix(c.Name, "Wechat") {
-        return true //暂时先 return true
+        return nil //暂时先 return true
     }
 
     loginuser := GetLoginUser(c.Session)
@@ -109,13 +110,13 @@ func userAuth(c *BaseController) bool {
         revel.TRACE.Println("loginuser == nil")
 
         if IsAjaxRequest(c.Request) {
-            c.Result = c.RenderJson(JsonResult{Success: false, Message: "操作失败，未登陆或没相应权限！"})
+            //c.Result = c.RenderJson(JsonResult{Success: false, Message: "操作失败，未登陆或没相应权限！"})
+            return c.RenderJson(JsonResult{Success: false, Message: "操作失败，未登陆或没相应权限！"})
         } else {
-            c.Result = c.Redirect(routes.Login.Index())
+            //c.Result = c.Redirect(routes.Login.Index())
+            return c.Redirect(routes.Login.Index())
         }
-
-        return  false
     }
 
-    return true
+    return nil
 }

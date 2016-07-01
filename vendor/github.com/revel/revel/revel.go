@@ -16,8 +16,7 @@ import (
 )
 
 const (
-	//REVEL_IMPORT_PATH = "github.com/revel/revel"
-    REVEL_IMPORT_PATH = "matrix"
+	REVEL_IMPORT_PATH = "github.com/revel/revel"
 )
 
 type revelLogs struct {

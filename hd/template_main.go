@@ -32,11 +32,20 @@ func main() {
         if err != nil {
             log.Fatal(err)
         }
-        *srcPath = currentDir + "\\..\\";
+        *srcPath = currentDir[0 : len(currentDir) - len(filepath.Base(currentDir)) - 1]
     }
 
     revel.Init(*runMode, *importPath, *srcPath)
     revel.INFO.Println("Running revel server")
+
+    revel.TRACE.Println("AppName: " + revel.AppName)
+    revel.TRACE.Println("AppRoot: " + revel.AppRoot)
+    revel.TRACE.Println("BasePath: " + revel.BasePath)
+    revel.TRACE.Println("AppPath: " + revel.AppPath)
+    revel.TRACE.Println("ViewsPath: " + revel.ViewsPath)
+    revel.TRACE.Println("ImportPath: " + revel.ImportPath)
+    revel.TRACE.Println("SourcePath: " + revel.SourcePath)
+
     {{range $i, $c := .Controllers}}
     revel.RegisterController((*{{index $.ImportPaths .ImportPath}}.{{.StructName}})(nil),
         []*revel.MethodType{
