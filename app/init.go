@@ -4,9 +4,6 @@ import (
     "github.com/revel/revel"
     "runtime"
     "matrix/core"
-    "matrix/app/routes"
-    "strings"
-    "fmt"
 )
 
 func init() {
@@ -18,7 +15,7 @@ func init() {
     revel.InterceptMethod((*core.BaseController).After, revel.AFTER)
     revel.InterceptMethod((*core.BaseController).Panic, revel.PANIC)
 
-    revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
+    //revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
 
     // Filters is the default set of global filters.
     revel.Filters = []revel.Filter{
@@ -46,42 +43,4 @@ func init() {
     revel.OnAppStart(func() {
         revel.LoadMimeConfig()
     })
-}
-
-func userAuthInterceptor(c *revel.Controller) revel.Result {
-    /*
-    Static.Serve
-    Static.ServeModule
-    TestRunner.Index
-    TestRunner.Run
-     */
-    if (c.Name == "Static" || c.Name == "TestRunner") {
-        return nil
-    }
-
-    fmt.Println(c.Action)
-
-    if c.Action == "Login.Index" || c.Action == "Login.Login" {
-        return nil
-    }
-
-    if c.Action == "Home.SyncDb" || c.Action == "Home.SyncDbPost" {
-        return nil
-    }
-
-    if strings.HasPrefix(c.Name, "Wechat") {
-        return nil //暂时先 return nil
-    }
-
-    loginuser := core.GetLoginUser(c.Session)
-
-    if loginuser == nil {
-        if core.IsAjaxRequest(c.Request) {
-            c.Result = c.RenderJson(core.JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
-        } else {
-            return c.Redirect(routes.Login.Index())
-        }
-    }
-
-    return nil
 }

@@ -32,7 +32,7 @@ func main() {
         if err != nil {
             log.Fatal(err)
         }
-        *srcPath = currentDir + "\\src";
+        *srcPath = currentDir + "\\..\\";
     }
 
     revel.Init(*runMode, *importPath, *srcPath)

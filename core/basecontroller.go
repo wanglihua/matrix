@@ -3,8 +3,10 @@ package core
 import (
     "fmt"
     "matrix/db"
+    "matrix/app/routes"
     "github.com/revel/revel"
     "github.com/go-xorm/xorm"
+    "strings"
 )
 
 type BaseController struct {
@@ -17,6 +19,8 @@ type BaseController struct {
 func (c *BaseController) Before() revel.Result {
     if (isStaticRequest(c) == false) {
         fmt.Println("BaseController Before")
+
+        userAuth(c)
 
         c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
 
@@ -70,4 +74,43 @@ func isStaticRequest(c *BaseController) bool {
     } else {
         return true
     }
+}
+
+
+func userAuth(c * BaseController) revel.Result {
+    /*
+    Static.Serve
+    Static.ServeModule
+    TestRunner.Index
+    TestRunner.Run
+     */
+    if (c.Name == "Static" || c.Name == "TestRunner") {
+        return nil
+    }
+
+    fmt.Println(c.Action)
+
+    if c.Action == "Login.Index" || c.Action == "Login.Login" {
+        return nil
+    }
+
+    if c.Action == "Home.SyncDb" || c.Action == "Home.SyncDbPost" {
+        return nil
+    }
+
+    if strings.HasPrefix(c.Name, "Wechat") {
+        return nil //暂时先 return nil
+    }
+
+    loginuser := GetLoginUser(c.Session)
+
+    if loginuser == nil {
+        if IsAjaxRequest(c.Request) {
+            c.Result = c.RenderJson(JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
+        } else {
+            return c.Redirect(routes.Login.Index())
+        }
+    }
+
+    return nil
 }
