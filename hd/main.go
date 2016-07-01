@@ -73,6 +73,7 @@ func (c *Command) Runnable() bool {
 var commands = []*Command{
     cmdRun,
     cmdRoute,
+    cmdPackage,
 }
 
 func main() {

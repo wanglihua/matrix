@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	REVEL_IMPORT_PATH = "github.com/revel/revel"
+	//REVEL_IMPORT_PATH = "github.com/revel/revel"
+    REVEL_IMPORT_PATH = "matrix"
 )
 
 type revelLogs struct {
@@ -158,14 +159,14 @@ func Init(mode, importPath, srcPath string) {
 	// 3. user supplied configs (...) - User configs can override/add any from above
 	ConfPaths = append(
 		[]string{
-			path.Join(RevelPath, "conf"),
+			//path.Join(RevelPath, "conf"), 去掉这个配置
 			path.Join(BasePath, "conf"),
 		},
 		ConfPaths...)
 
 	TemplatePaths = []string{
 		ViewsPath,
-		path.Join(RevelPath, "templates"),
+		//ath.Join(RevelPath, "templates"), 去掉这个模板目录
 	}
 
 	// Load app.conf

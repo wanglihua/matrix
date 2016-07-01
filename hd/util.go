@@ -22,6 +22,7 @@ import (
     "runtime"
     "strings"
     "time"
+    "github.com/revel/revel"
 )
 
 // Go is a basic promise implementation: it wraps calls a function in a goroutine
@@ -257,4 +258,13 @@ func (s *strFlags) String() string {
 func (s *strFlags) Set(value string) error {
     *s = append(*s, value)
     return nil
+}
+
+type LoggedError struct{ error }
+
+func panicOnError(err error, msg string) {
+    if revErr, ok := err.(*revel.Error); (ok && revErr != nil) || (!ok && err != nil) {
+        fmt.Fprintf(os.Stderr, "Abort: %s: %s\n", msg, err)
+        panic(LoggedError{err})
+    }
 }

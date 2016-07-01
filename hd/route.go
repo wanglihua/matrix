@@ -10,7 +10,7 @@ import (
 )
 
 var cmdRoute = &Command{
-    UsageLine: "route importPath [runMode]",
+    UsageLine: "route [import path] [runMode]",
     Short:     "generate routes.go main.go",
     Long: `
     generate routes.go main.go

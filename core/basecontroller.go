@@ -17,9 +17,11 @@ type BaseController struct {
 
 func (c *BaseController) Before() revel.Result {
     if (isStaticRequest(c) == false) {
-        revel.TRACE.Println("BaseController Before")
+        revel.TRACE.Println("begin ------------------------------------------------------------------")
 
-        userAuth(c)
+        if userAuth(c) == false {
+            return  nil
+        }
 
         c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
 
@@ -35,13 +37,13 @@ func (c *BaseController) Before() revel.Result {
 
 func (c *BaseController) After() revel.Result {
     if (isStaticRequest(c) == false) {
-        revel.TRACE.Println("BaseController After")
-
         //先不启用
         //err := c.DbSession.Commit()
         //HandleError(err)
 
         c.DbSession.Close()
+
+        revel.TRACE.Println("end --------------------------------------------------------------------")
     }
 
     return nil
@@ -75,7 +77,7 @@ func isStaticRequest(c *BaseController) bool {
     }
 }
 
-func userAuth(c *BaseController) revel.Result {
+func userAuth(c *BaseController) bool {
     /*
     Static.Serve
     Static.ServeModule
@@ -83,21 +85,21 @@ func userAuth(c *BaseController) revel.Result {
     TestRunner.Run
      */
     if (c.Name == "Static" || c.Name == "TestRunner") {
-        return nil
+        return true
     }
 
     revel.TRACE.Println("action: " + c.Action)
 
     if c.Action == "Login.Index" || c.Action == "Login.Login" {
-        return nil
+        return true
     }
 
     if c.Action == "Home.SyncDb" || c.Action == "Home.SyncDbPost" {
-        return nil
+        return true
     }
 
     if strings.HasPrefix(c.Name, "Wechat") {
-        return nil //暂时先 return nil
+        return true //暂时先 return true
     }
 
     loginuser := GetLoginUser(c.Session)
@@ -107,11 +109,13 @@ func userAuth(c *BaseController) revel.Result {
         revel.TRACE.Println("loginuser == nil")
 
         if IsAjaxRequest(c.Request) {
-            c.Result = c.RenderJson(JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
+            c.Result = c.RenderJson(JsonResult{Success: false, Message: "操作失败，未登陆或没相应权限！"})
         } else {
             c.Result = c.Redirect(routes.Login.Index())
         }
+
+        return  false
     }
 
-    return nil
+    return true
 }
