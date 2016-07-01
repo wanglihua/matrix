@@ -37,7 +37,7 @@ func (opts *ListOpts) Set(value string) error {
 }
 
 var cmdRun = &Command{
-    UsageLine: "",
+    UsageLine: "run",
     Short:     "run the app and start a Web server for development",
     Long: "",
 }
@@ -56,10 +56,6 @@ var buildTags string
 func init() {
     cmdRun.Run = runApp
     cmdRun.Flag.Var(&mainFiles, "main", "specify main go files")
-    //    cmdRun.Flag.Var(&gendoc, "gendoc", "auto generate the docs")
-    //    cmdRun.Flag.Var(&downdoc, "downdoc", "auto download swagger file when not exist")
-    cmdRun.Flag.Var(&excludedPaths, "e", "Excluded paths[].")
-    cmdRun.Flag.StringVar(&buildTags, "tags", "", "Build tags (https://golang.org/pkg/go/build/)")
 }
 
 var appname string

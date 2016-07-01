@@ -20,6 +20,7 @@ import (
     "html/template"
     "os"
     "strings"
+    "github.com/revel/revel"
 )
 
 const version = "1.0.0"
@@ -69,7 +70,26 @@ func (c *Command) Runnable() bool {
     return c.Run != nil
 }
 
+var commands = []*Command{
+    cmdRun,
+    cmdRoute,
+}
+
 func main() {
-    args := [0]string{}
-    os.Exit(cmdRun.Run(cmdRun, args[:]))
+    flag.Parse()
+    args := flag.Args()
+
+    if len(args) < 1 {
+        os.Exit(cmdRun.Run(cmdRun, args))
+        return;
+    }
+
+    for _, cmd := range commands {
+        if cmd.Name() == args[0] {
+            cmd.Run(cmd, args[1:])
+            return
+        }
+    }
+
+    revel.ERROR.Println("unknow command: " + args[0])
 }

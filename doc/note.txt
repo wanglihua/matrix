@@ -1,24 +1,10 @@
 * 把Go程序变小的办法是：  
 go build -ldflags "-s -w"   
 -s去掉符号表,panic时候的stack trace就没有任何文件名/行号信息了
--w去掉DWARF调试信息，得到的程序就不能用gdb调试了。 -s和-w也可以分开使用.
-
-packages:
-
-* github.com/revel/revel
-* github.com/mattn/go-sqlite3
-* github.com/denisenkom/go-mssqldb
-* github.com/go-xorm/xorm
-* golang.org/x/net/websocket                    # https://github.com/golang/net
-* golang.org/x/crypto/bcrypt                    # https://github.com/golang/crypto
-* github.com/bradfitz/gomemcache/memcache
-* github.com/garyburd/redigo/redis
-* github.com/robfig/go-cache
-* github.com/chanxuehong/wechat.v2
+-w去掉DWARF调试信息，得到的程序就不能用gdb调试了。 -s和-w也可以分开使用，一般不同时使用
 
 
-
-memcached:
+* memcached:
 
 version 1.4.4
 

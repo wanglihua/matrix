@@ -190,6 +190,7 @@ func Start(appname string) {
     cmd = exec.Command(appname)
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
+    cmd.Args = append([]string{appname}, "-runMode=dev")
 
     go cmd.Run()
     ColorLog("[INFO] %s is running...\n", appname)
