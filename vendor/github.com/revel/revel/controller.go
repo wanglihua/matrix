@@ -399,5 +399,7 @@ func RegisterController(c interface{}, methods []*MethodType) {
 		Methods:           methods,
 		ControllerIndexes: findControllers(elem),
 	}
-	TRACE.Printf("Registered controller: %s", elem.Name())
+
+    //太多信息，先禁用
+    //TRACE.Printf("Registered controller: %s", elem.Name())
 }

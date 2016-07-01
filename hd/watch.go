@@ -92,8 +92,9 @@ func NewWatcher(paths []string, files []string) {
 
     ColorLog("[INFO] Initializing watcher...\n")
     for _, path := range paths {
+            //目录太多是会输出太多信息，先禁用
+            //ColorLog("[TRAC] Directory( %s )\n", path)
 
-            ColorLog("[TRAC] Directory( %s )\n", path)
             err = watcher.Watch(path)
             if err != nil {
                 ColorLog("[ERRO] Fail to watch directory[ %s ]\n", err)

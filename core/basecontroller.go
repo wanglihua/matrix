@@ -1,7 +1,6 @@
 package core
 
 import (
-    "fmt"
     "matrix/db"
     "matrix/app/routes"
     "github.com/revel/revel"
@@ -18,7 +17,7 @@ type BaseController struct {
 
 func (c *BaseController) Before() revel.Result {
     if (isStaticRequest(c) == false) {
-        fmt.Println("BaseController Before")
+        revel.TRACE.Println("BaseController Before")
 
         userAuth(c)
 
@@ -36,7 +35,7 @@ func (c *BaseController) Before() revel.Result {
 
 func (c *BaseController) After() revel.Result {
     if (isStaticRequest(c) == false) {
-        fmt.Println("BaseController After")
+        revel.TRACE.Println("BaseController After")
 
         //先不启用
         //err := c.DbSession.Commit()
@@ -50,7 +49,7 @@ func (c *BaseController) After() revel.Result {
 
 func (c *BaseController) Panic() revel.Result {
     if (isStaticRequest(c) == false) {
-        fmt.Println("BaseController Panic")
+        revel.TRACE.Println("BaseController Panic")
 
         //先不启用
         //err := c.DbSession.Rollback()
@@ -76,8 +75,7 @@ func isStaticRequest(c *BaseController) bool {
     }
 }
 
-
-func userAuth(c * BaseController) revel.Result {
+func userAuth(c *BaseController) revel.Result {
     /*
     Static.Serve
     Static.ServeModule
@@ -88,7 +86,7 @@ func userAuth(c * BaseController) revel.Result {
         return nil
     }
 
-    fmt.Println(c.Action)
+    revel.TRACE.Println("action: " + c.Action)
 
     if c.Action == "Login.Index" || c.Action == "Login.Login" {
         return nil
@@ -103,12 +101,15 @@ func userAuth(c * BaseController) revel.Result {
     }
 
     loginuser := GetLoginUser(c.Session)
+    revel.TRACE.Println("userAuth session id: " + c.Session.Id())
 
     if loginuser == nil {
+        revel.TRACE.Println("loginuser == nil")
+
         if IsAjaxRequest(c.Request) {
             c.Result = c.RenderJson(JsonResult{Success:false, Message:"操作失败，未登陆或没相应权限！"})
         } else {
-            return c.Redirect(routes.Login.Index())
+            c.Result = c.Redirect(routes.Login.Index())
         }
     }
 

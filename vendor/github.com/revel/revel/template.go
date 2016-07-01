@@ -248,7 +248,9 @@ func (loader *TemplateLoader) Refresh() *Error {
 
 			// addTemplate loads a template file into the Go template loader so it can be rendered later
 			addTemplate := func(templateName string) (err error) {
-				TRACE.Println("adding template: ", templateName)
+                //很多模板时，启动时的信息太多，先禁用
+				//TRACE.Println("adding template: ", templateName)
+
 				// Convert template names to use forward slashes, even on Windows.
 				if os.PathSeparator == '\\' {
 					templateName = strings.Replace(templateName, `\`, `/`, -1) // `
