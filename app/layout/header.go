@@ -187,7 +187,7 @@ func GetHeader(title string, loginUserNickName string) string {
             </li>
             <li id="weixin-menu" class="">
                 <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-users"></i>
+                    <i class="menu-icon fa fa-wechat"></i>
                     <span class="menu-text">微信管理</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
@@ -197,6 +197,51 @@ func GetHeader(title string, loginUserNickName string) string {
                         <a href="/weixin/config">
                             <i class="menu-icon fa fa-caret-right"></i>
                             微信配置
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li id="weixin-menu-menu" class="">
+                        <a href="/weixin/menu">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            微信菜单
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
+            <li id="help-menu" class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-book"></i>
+                    <span class="menu-text">帮助中心</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li id="help-index-menu" class="">
+                        <a href="/help">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            帮助中心
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li id="help-faq-menu" class="">
+                        <a href="/help/faq">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            常见问题
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li id="help-license-menu" class="">
+                        <a href="/help/license">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            使用授权
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li id="help-about-menu" class="">
+                        <a href="/help/about">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            关于
                         </a>
                         <b class="arrow"></b>
                     </li>

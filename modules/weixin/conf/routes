@@ -3,3 +3,7 @@ GET /weixin/static/*filepath         Static.ServeModule(weixin, static)
 GET  /weixin/home                    WeixinHome.Index
 GET  /weixin/config                  WeixinConfig.Index
 POST /weixin/config/save             WeixinConfig.Save
+GET  /weixin/menu                    WeixinMenu.Index
+POST /weixin/save                    WeixinMenu.Save
+POST /weixin/download                WeixinMenu.Download
+POST /weixin/upload                  WeixinMenu.Upload

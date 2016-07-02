@@ -15,4 +15,9 @@ GET  /login                     Login.Index
 POST /login                     Login.Login
 POST /logout                    Login.Logout
 
+GET /help                       Help.Index
+GET /help/faq                   Help.Faq
+GET /help/license               Help.License
+GET /help/about                 Help.About
+
 *    /:controller/:action       :controller.:action
