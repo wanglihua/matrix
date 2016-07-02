@@ -1,12 +1,12 @@
 package app
 
 import (
-    "fmt"
+    //"fmt"
     "github.com/revel/revel"
 )
 
 func init() {
     revel.OnAppStart(func() {
-        fmt.Println("weixin module start!")
+        //fmt.Println("weixin module start!")
     })
 }

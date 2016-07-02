@@ -80,6 +80,10 @@ func mustTarGzDir(destFilename, srcDir string) string {
             return nil
         }
 
+        if strings.Contains(srcPath, ".vscode") {
+            return nil
+        }
+
         if strings.Contains(srcPath, "\\vendor\\") {
             return nil
         }
@@ -105,6 +109,10 @@ func mustTarGzDir(destFilename, srcDir string) string {
         }
 
         if strings.HasSuffix(srcPath, ".log") {
+            return nil
+        }
+
+        if strings.HasSuffix(srcPath, "debug") {
             return nil
         }
 
