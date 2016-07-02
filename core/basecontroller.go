@@ -18,6 +18,7 @@ type BaseController struct {
 func (c *BaseController) Before() revel.Result {
     if (isStaticRequest(c) == false) {
         revel.TRACE.Println("begin ------------------------------------------------------------------")
+        revel.TRACE.Println("session id: " + c.Session.Id())
 
         authResult := userAuth(c)
         if authResult != nil {
@@ -44,6 +45,7 @@ func (c *BaseController) After() revel.Result {
 
         c.DbSession.Close()
 
+        revel.TRACE.Println("session id: " + c.Session.Id())
         revel.TRACE.Println("end --------------------------------------------------------------------")
     }
 
