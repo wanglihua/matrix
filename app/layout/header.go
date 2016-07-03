@@ -253,6 +253,20 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                         </a>
                         <b class="arrow"></b>
                     </li>
+                    <li id="help-bug-menu" class="">
+                        <a href="/help/bug">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            Bug提报
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li id="help-requirement-menu" class="">
+                        <a href="/help/requirement">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            需求建议
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
                     <li id="help-license-menu" class="">
                         <a href="/help/license">
                             <i class="menu-icon fa fa-caret-right"></i>

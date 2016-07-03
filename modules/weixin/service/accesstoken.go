@@ -37,7 +37,8 @@ func GetAccessToken(session *xorm.Session) string {
         }
 
         var accessTokenGot AccessToken
-        err = json.NewDecoder(httpResp.Body).Decode(&accessTokenGot)
+        //err = json.NewDecoder(httpResp.Body).Decode(&accessTokenGot) 会有EOF错误
+        err = json.NewDecoder(strings.NewReader(responeStr)).Decode(&accessTokenGot)
         core.HandleError(err)
 
         accessToken = accessTokenGot.Token

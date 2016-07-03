@@ -12,11 +12,46 @@
 <div class="page-content">
     <div class="row">
         <div class="col-xs-12" style="padding: 0;">
-            <div style="width:600px;height:200px;margin:100px auto;text-align:center;">
-                <span style="font-size:38px;font-weight:bold;color:#3482AD;">Hello,微信后台管理！</span>
-                <div style="margin: 20px;">{%test .%}</div>
+            <div class="gridToolBar clearfix">
+                <button class="btn btn-primary btn-sm" onclick="reloadList('#groupList')">
+                    <i class="ace-icon fa fa-refresh"></i>
+                    刷新
+                </button>
+                <button class="btn btn-success btn-sm" onclick="downloadMenu()">
+                    <i class="ace-icon fa fa-plus"></i>
+                    下载
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="uploadMenu()">
+                    <i class="ace-icon fa fa-trash-o"></i>
+                    上传
+                </button>
             </div>
+
         </div>
+        <script type="text/javascript">
+            function downloadMenu() {
+                $.ajax({
+                           url: '{%url "WeixinMenu.Download" %}',
+                           type: "POST",
+                           success: function (result) {
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               else {
+                                   $.msg.show(result.message);
+                                   return;
+                               }
+                           }
+                       }
+                );
+            }
+
+            function uploadMenu() {
+
+            }
+
+        </script>
     </div>
 </div>
 {%footer%}

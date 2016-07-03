@@ -20,6 +20,10 @@ POST /config/save               SysConfig.Save
 
 GET /help                       Help.Index
 GET /help/faq                   Help.Faq
+GET /help/bug                   Help.Bug
+GET /help/bug/save              Help.BugPost
+GET /help/requirement           Help.Requirement
+GET /help/requirement/save      Help.RequirementPost
 GET /help/license               Help.License
 GET /help/about                 Help.About
 
