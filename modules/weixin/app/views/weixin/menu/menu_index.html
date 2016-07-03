@@ -17,52 +17,90 @@
                     <i class="ace-icon fa fa-refresh"></i>
                     刷新
                 </button>
-                <button class="btn btn-success btn-sm" onclick="downloadMenu()">
-                    <i class="ace-icon fa fa-plus"></i>
+                <button class="btn btn-purple btn-sm" onclick="downloadMenu()">
+                    <i class="ace-icon fa fa-arrow-down"></i>
                     下载
                 </button>
-                <button class="btn btn-danger btn-sm" onclick="uploadMenu()">
-                    <i class="ace-icon fa fa-trash-o"></i>
+                <button class="btn btn-purple btn-sm" onclick="uploadMenu()">
+                    <i class="ace-icon fa fa-arrow-up"></i>
                     上传
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteMenu()">
+                    <i class="ace-icon fa fa-trash-o"></i>
+                    删除
                 </button>
             </div>
 
         </div>
         <script type="text/javascript">
             function downloadMenu() {
-                $.ajax({
-                           url: '{%url "WeixinMenu.Download" %}',
-                           type: "POST",
-                           success: function (result) {
-                               if (result.success == false) {
-                                   $.msg.error(result.message);
-                                   return;
-                               }
-                               else {
-                                   $.msg.show(result.message);
-                                   return;
+                $.msg.confirm("下载菜单将覆盖本地数据库菜单数据，确认要下载吗？", function () {
+                    $.ajax({
+                               url: '{%url "WeixinMenu.Download" %}',
+                               type: "POST",
+                               success: function (result) {
+                                   if (result.success == false) {
+                                       $.msg.error(result.message);
+                                   }
+                                   else {
+                                       $.msg.show(result.message);
+                                   }
+                                   reloadList('#menuList');
                                }
                            }
-                       }
-                );
+                    );
+                });
             }
 
             function uploadMenu() {
-                $.ajax({
-                           url: '{%url "WeixinMenu.Upload" %}',
-                           type: "POST",
-                           success: function (result) {
-                               if (result.success == false) {
-                                   $.msg.error(result.message);
-                                   return;
-                               }
-                               else {
-                                   $.msg.show(result.message);
-                                   return;
+                $.msg.confirm("上传菜单将覆盖服务器菜单数据，确认要上传吗？", function () {
+                    $.ajax({
+                               url: '{%url "WeixinMenu.Upload" %}',
+                               type: "POST",
+                               success: function (result) {
+                                   if (result.success == false) {
+                                       $.msg.error(result.message);
+                                   }
+                                   else {
+                                       $.msg.show(result.message);
+                                   }
+                                   reloadList('#menuList');
                                }
                            }
-                       }
-                );
+                    );
+                });
+            }
+
+            function deleteMenu() {
+                    var id_list = [];
+                    $('#menuList tbody tr>td:first-child input:checkbox').each(function () {
+                        if (this.checked) {
+                            id_list.push($(this).val());
+                        }
+                    });
+
+                    if (id_list.length == 0) {
+                        $.msg.alert("请选择数据！");
+                        return;
+                    }
+
+                    $.msg.confirm("确认要删除吗？", function () {
+                        $.ajax({
+                                   url: '{%url "WeixinMenu.Delete"%}',
+                                   type: "POST",
+                                   data: {"id_list": id_list},
+                                   success: function (data) {
+                                       if (data.success == false) {
+                                           $.msg.error(data.message);
+                                           return;
+                                       }
+                                       else {
+                                           $.msg.show(data.message);
+                                       }
+                                       reloadList('#menuList');
+                                   }
+                               });
+                    });
             }
 
         </script>

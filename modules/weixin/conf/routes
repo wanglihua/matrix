@@ -7,3 +7,4 @@ GET  /weixin/menu                    WeixinMenu.Index
 POST /weixin/save                    WeixinMenu.Save
 POST /weixin/download                WeixinMenu.Download
 POST /weixin/upload                  WeixinMenu.Upload
+POST /weixin/delete                  WeixinMenu.Delete

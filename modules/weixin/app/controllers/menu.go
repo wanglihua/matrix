@@ -148,3 +148,7 @@ func (c WeixinMenu) Upload() revel.Result {
 
     return c.RenderJson(core.JsonResult{Success: true, Message: "菜单上传微信成功!"})
 }
+
+func (c WeixinMenu)Delete() revel.Result {
+    return c.RenderJson(core.JsonResult{Success: true, Message: "菜单删除成功!"})
+}
