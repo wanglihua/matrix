@@ -25,13 +25,16 @@ func (c *BaseController) Before() revel.Result {
             return authResult
         }
 
+
         c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
 
+        //在这之前的数据库访问请自行开启 db session
         c.DbSession = db.Engine.NewSession()
 
-        //先不启用
-        //err := c.DbSession.Begin()
-        //HandleError(err)
+        if revel.DevMode == false {
+            err := c.DbSession.Begin()
+            HandleError(err)
+        }
     }
 
     return nil
@@ -39,11 +42,12 @@ func (c *BaseController) Before() revel.Result {
 
 func (c *BaseController) After() revel.Result {
     if (isStaticRequest(c) == false) {
-        //先不启用
-        //err := c.DbSession.Commit()
-        //HandleError(err)
+        if revel.DevMode == false {
+            err := c.DbSession.Commit()
+            HandleError(err)
+        }
 
-        c.DbSession.Close()
+        c.DbSession.Close() //模板tags中的数据库访问请自行开启 db session
 
         revel.TRACE.Println("session id: " + c.Session.Id())
         revel.TRACE.Println("end --------------------------------------------------------------------")
@@ -56,9 +60,10 @@ func (c *BaseController) Panic() revel.Result {
     if (isStaticRequest(c) == false) {
         revel.TRACE.Println("BaseController Panic")
 
-        //先不启用
-        //err := c.DbSession.Rollback()
-        //HandleError(err)
+         if revel.DevMode == false {
+             err := c.DbSession.Rollback()
+             HandleError(err)
+         }
     }
 
     return nil

@@ -4,6 +4,7 @@ import (
     "github.com/revel/revel"
     "matrix/core"
     "matrix/db"
+    models "matrix/app/models"
     userModels "matrix/modules/auth/models"
     weixinModels "matrix/modules/weixin/models"
 )
@@ -28,6 +29,7 @@ func (c Home) SyncDbPost() revel.Result {
         &userModels.Group{},
         &userModels.UserGroup{},
         &weixinModels.Config{},
+        &models.Config{},
     )
 
     session := c.DbSession

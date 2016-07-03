@@ -44,6 +44,8 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
 
     //session := renderArgs["session"].(revel.Session) //通过session得到当前登录人信息啥的
 
+    revel.TRACE.Println("headerTemplateFunc")
+
     session := renderArgs["session"].(revel.Session)
     loginUser := core.GetLoginUser(session)
     loginNickName := "未登录"

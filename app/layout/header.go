@@ -209,6 +209,23 @@ func GetHeader(title string, loginUserNickName string) string {
                     </li>
                 </ul>
             </li>
+            <li id="settings-menu" class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-cog"></i>
+                    <span class="menu-text">系统配置</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+                    <li id="settings-config-menu" class="">
+                        <a href="/config">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            参数配置
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                </ul>
+            </li>
             <li id="help-menu" class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-book"></i>

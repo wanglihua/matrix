@@ -15,6 +15,9 @@ GET  /login                     Login.Index
 POST /login                     Login.Login
 POST /logout                    Login.Logout
 
+GET  /config                    SysConfig.Index
+POST /config/save               SysConfig.Save
+
 GET /help                       Help.Index
 GET /help/faq                   Help.Faq
 GET /help/license               Help.License
