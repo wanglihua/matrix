@@ -60,5 +60,7 @@ func (c SysConfig) Save() revel.Result {
         _, err = session.Id(configInDb.Id).Update(config)
     }
 
+    core.SysName = form.Config.SysName
+
     return c.RenderJson(core.JsonResult{Success: true, Message: "保存成功!"})
 }

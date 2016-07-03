@@ -7,6 +7,8 @@ import (
     //"bytes"
     //"fmt"
     "matrix/core"
+    "matrix/app/models"
+    "matrix/db"
 )
 
 func registerTags() {
@@ -28,6 +30,19 @@ type headerTemplateData struct {
 //var headerTemplate *template.Template = nil
 
 func headerTemplateFunc(title string, renderArgs map[string]interface{}) template.HTML {
+    if core.SysName == "" {
+        session := db.Engine.NewSession()
+
+        config := new(models.Config)
+        has, err := session.Limit(1).Get(config)
+        core.HandleError(err)
+        if has {
+            core.SysName = config.SysName
+        }
+
+        session.Close()
+    }
+
     /*
     if headerTemplate == nil {
         headerTemplate, _ = template.New("site header").Parse(layout.HeaderTemplate)
@@ -52,7 +67,7 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
     if loginUser != nil {
         loginNickName = loginUser.NickName
     }
-    return template.HTML(layout.GetHeader(title, loginNickName))
+    return template.HTML(layout.GetHeader(title, core.SysName, loginNickName))
 }
 
 func footerTemplateFunc() template.HTML {

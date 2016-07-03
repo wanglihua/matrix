@@ -1,12 +1,12 @@
 package layout
 
-func GetHeader(title string, loginUserNickName string) string {
+func GetHeader(title string, sysName string, loginUserNickName string) string {
     return `<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8"/>
-    <title>` + title + `- 系统</title>
+    <title>` + title + `-` + sysName + `</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <link type="text/css" rel="stylesheet" href="/static/ace/css/all.css" class="ace-main-stylesheet" id="main-ace-style" />
     <!--[if lte IE 9]>
@@ -60,11 +60,9 @@ func GetHeader(title string, loginUserNickName string) string {
         </button>
         <div class="navbar-header pull-left">
             <a href="/" class="navbar-brand">
-                <small>
-                    应用系统
-                </small>
+                <small>` + sysName + `</small>
             </a>
-        </div>
+            </div>
         <div class="navbar-buttons navbar-header pull-right" role="navigation">
             <ul class="nav ace-nav">
                 <li class="light-blue">
@@ -108,11 +106,11 @@ func GetHeader(title string, loginUserNickName string) string {
                                 }
                             </script>
                         </li>
-                    </ul>
-                </li>
+                     </ul>
+                 </li>
             </ul>
         </div>
-    </div>
+     </div>
 </div>
 <div class="main-container" id="main-container">
     <script type="text/javascript">
@@ -180,6 +178,13 @@ func GetHeader(title string, loginUserNickName string) string {
                         <a href="/auth/admin">
                             <i class="menu-icon fa fa-caret-right"></i>
                             管理员组
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li id="auth-group-menu" class="">
+                        <a href="/auth/group">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            群组管理
                         </a>
                         <b class="arrow"></b>
                     </li>

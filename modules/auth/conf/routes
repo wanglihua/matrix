@@ -15,3 +15,9 @@ POST /auth/admin/add               AuthAdmin.Add
 POST /auth/admin/add/listdata      AuthAdmin.AddListData
 POST /auth/admin/add/save          AuthAdmin.AddSave
 POST /auth/admin/remove            AuthAdmin.Remove
+
+GET  /auth/group                    AuthGroup.Index
+POST /auth/group/listdata           AuthGroup.ListData
+POST /auth/group/detail             AuthGroup.Detail
+POST /auth/group/save               AuthGroup.Save
+POST /auth/group/delete             AuthGroup.Delete
