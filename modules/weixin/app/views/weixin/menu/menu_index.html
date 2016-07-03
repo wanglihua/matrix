@@ -1,4 +1,4 @@
-{%header "Home" .%}
+{%header "微信菜单" .%}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
@@ -48,7 +48,21 @@
             }
 
             function uploadMenu() {
-
+                $.ajax({
+                           url: '{%url "WeixinMenu.Upload" %}',
+                           type: "POST",
+                           success: function (result) {
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               else {
+                                   $.msg.show(result.message);
+                                   return;
+                               }
+                           }
+                       }
+                );
             }
 
         </script>

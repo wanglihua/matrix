@@ -7,6 +7,8 @@ import (
     "net/http"
     //"io/ioutil"
     //"github.com/yasuyuky/jsonpath"
+    "strings"
+    "io/ioutil"
 )
 
 type WeixinMenu struct {
@@ -24,10 +26,9 @@ func (c WeixinMenu) Save() revel.Result {
 
 func (c WeixinMenu) Download() revel.Result {
     session := c.DbSession
+
     //https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
-
     accessToken := service.GetAccessToken(session)
-
     url := "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=" + accessToken
     httpResp, err := http.Get(url)
     core.HandleError(err)
@@ -91,5 +92,59 @@ func (c WeixinMenu) Download() revel.Result {
 }
 
 func (c WeixinMenu) Upload() revel.Result {
+    session := c.DbSession
+
+    // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
+    accessToken := service.GetAccessToken(session)
+    url := "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken
+
+    json :=
+    `
+     {
+         "button":[
+         {
+              "type":"click",
+              "name":"今日歌曲",
+              "key":"V1001_TODAY_MUSIC"
+          },
+          {
+               "name":"菜单",
+               "sub_button":[
+               {
+                   "type":"view",
+                   "name":"搜索",
+                   "url":"http://www.soso.com/"
+                },
+                {
+                   "type":"view",
+                   "name":"视频",
+                   "url":"http://v.qq.com/"
+                },
+                {
+                   "type":"click",
+                   "name":"赞一下我们",
+                   "key":"V1001_GOOD"
+                }]
+           }]
+     }
+    `
+
+    httpResp, err := http.Post(url, "application/json", strings.NewReader(json))
+    core.HandleError(err)
+    defer httpResp.Body.Close()
+
+    responeBytes, err := ioutil.ReadAll(httpResp.Body)
+    core.HandleError(err)
+
+    /*
+    {"errcode":0,"errmsg":"ok"}
+    {"errcode":40018,"errmsg":"invalid button name size"}
+     */
+
+    var responeStr = string(responeBytes)
+    revel.TRACE.Println(responeStr)
+
+    //responeBytes, err := ioutil.ReadAll(httpResp.Body)
+
     return c.RenderJson(core.JsonResult{Success: true, Message: "菜单上传微信成功!"})
 }
