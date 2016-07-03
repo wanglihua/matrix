@@ -4,6 +4,7 @@ GET  /weixin/home                    WeixinHome.Index
 GET  /weixin/config                  WeixinConfig.Index
 POST /weixin/config/save             WeixinConfig.Save
 GET  /weixin/menu                    WeixinMenu.Index
+POST /weixin/detail                  WeixinMenu.Detail
 POST /weixin/save                    WeixinMenu.Save
 POST /weixin/download                WeixinMenu.Download
 POST /weixin/upload                  WeixinMenu.Upload

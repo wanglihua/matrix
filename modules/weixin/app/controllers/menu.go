@@ -20,6 +20,10 @@ func (c WeixinMenu) Index() revel.Result {
     return c.RenderTemplate("weixin/menu/menu_index.html")
 }
 
+func (c WeixinMenu) Detail() revel.Result{
+    return c.RenderTemplate("weixin/menu/menu_detail.html")
+}
+
 func (c WeixinMenu) Save() revel.Result {
     return c.RenderJson(core.JsonResult{Success: true, Message: "保存成功!"})
 }
