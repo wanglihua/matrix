@@ -29,6 +29,7 @@ func (c Home) SyncDbPost() revel.Result {
         &userModels.Group{},
         &userModels.UserGroup{},
         &weixinModels.Config{},
+        &weixinModels.Menu{},
         &models.Config{},
     )
 

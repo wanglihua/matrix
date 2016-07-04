@@ -1,11 +1,15 @@
 GET /weixin/static/*filepath         Static.ServeModule(weixin, static)
 
 GET  /weixin/home                    WeixinHome.Index
+
 GET  /weixin/config                  WeixinConfig.Index
 POST /weixin/config/save             WeixinConfig.Save
+
 GET  /weixin/menu                    WeixinMenu.Index
-POST /weixin/detail                  WeixinMenu.Detail
-POST /weixin/save                    WeixinMenu.Save
-POST /weixin/download                WeixinMenu.Download
-POST /weixin/upload                  WeixinMenu.Upload
-POST /weixin/delete                  WeixinMenu.Delete
+POST /weixin/menu/listdata           WeixinMenu.ListData
+POST /weixin/menu/detail             WeixinMenu.Detail
+POST /weixin/menu/save               WeixinMenu.Save
+POST /weixin/menu/download           WeixinMenu.Download
+POST /weixin/menu/upload             WeixinMenu.Upload
+POST /weixin/menu/delete             WeixinMenu.Delete
+

@@ -1,4 +1,4 @@
-<div class="modal fade" id="menuDetailDialog">
+<div class="modal fade" id="groupDetailDialog">
     <div class="modal-dialog" style="width: 440px;">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,13 +8,13 @@
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="menuDetailForm">
-                            <input id="menu_id" name="form.Menu.Id" type="hidden" value="{%.form.Menu.Id%}"/>
-                            <input id="menu_version" name="form.Menu.Version" type="hidden" value="{%.form.Menu.Version%}"/>
-                            <div class="form-menu">
-                                <label for="menu_name" class="col-xs-2 control-label no-padding-right">群组名</label>
+                        <form class="form-horizontal" role="form" id="groupDetailForm">
+                            <input id="group_id" name="form.Group.Id" type="hidden" value="{%.form.Group.Id%}"/>
+                            <input id="group_version" name="form.Group.Version" type="hidden" value="{%.form.Group.Version%}"/>
+                            <div class="form-group">
+                                <label for="group_name" class="col-xs-2 control-label no-padding-right">群组名</label>
                                 <div class="col-xs-10">
-                                    <input id="menu_name" name="form.Menu.MenuName" type="text" class="input-sm form-control" value="{%.form.Menu.MenuName%}"/>
+                                    <input id="group_name" name="form.Group.GroupName" type="text" class="input-sm form-control" value="{%.form.Group.GroupName%}"/>
                                 </div>
                             </div>
                         </form>
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-sm" onclick="saveMenu()">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveGroup()">
                     <i class="ace-icon fa fa-floppy-o"></i>保存
                 </button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
@@ -33,11 +33,11 @@
     </div>
 </div>
 <script type='text/javascript'>
-function saveMenu() {
+function saveGroup() {
     showMask("提交中...");
-    var form = $("#menuDetailForm");
+    var form = $("#groupDetailForm");
     var valid = validate(form, {
-        'form.Menu.MenuName': {
+        'form.Group.GroupName': {
             required: true,
             minlength: 3,
             maxlength: 20
@@ -48,7 +48,7 @@ function saveMenu() {
         hideMask();
     } else {
         $.ajax({
-                   url: '{%url "WeixinMenu.Save"%}',
+                   url: '{%url "AuthGroup.Save"%}',
                    type: "POST",
                    data: form.serialize(),
                    success: function (data) {
@@ -59,8 +59,8 @@ function saveMenu() {
                        }
                        else {
                            $.msg.show(data.message);
-                           $('#menuDetailDialog').modal('hide');
-                           reloadList('#menuList');
+                           $('#groupDetailDialog').modal('hide');
+                           reloadList('#groupList');
                            //return;
                        }
                    }

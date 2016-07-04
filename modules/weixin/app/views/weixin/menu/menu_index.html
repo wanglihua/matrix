@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-xs-12" style="padding: 0;">
             <div class="gridToolBar clearfix">
-                <button class="btn btn-primary btn-sm" onclick="reloadList('#groupList')">
+                <button class="btn btn-primary btn-sm" onclick="reloadList('#menuList')">
                     <i class="ace-icon fa fa-refresh"></i>
                     刷新
                 </button>
@@ -30,48 +30,69 @@
                     删除
                 </button>
             </div>
+            <div>
+                <table id="menuList" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div id="menuDetailDialogWrapper"></div>
+            <script type="text/javascript">
+                function downloadMenu() {
+                    $.msg.confirm("下载菜单将覆盖本地数据库菜单数据，确认要下载吗？", function () {
+                        $.ajax({
+                                    url: '{%url "WeixinMenu.Download" %}',
+                                    type: "POST",
+                                    success: function (result) {
+                                        if (result.success == false) {
+                                            $.msg.error(result.message);
+                                        }
+                                        else {
+                                            $.msg.show(result.message);
+                                        }
+                                        reloadList('#menuList');
+                                    }
+                                }
+                        );
+                    });
+                }
 
-        </div>
-        <script type="text/javascript">
-            function downloadMenu() {
-                $.msg.confirm("下载菜单将覆盖本地数据库菜单数据，确认要下载吗？", function () {
+                function uploadMenu() {
+                    $.msg.confirm("上传菜单将覆盖服务器菜单数据，确认要上传吗？", function () {
+                        $.ajax({
+                                    url: '{%url "WeixinMenu.Upload" %}',
+                                    type: "POST",
+                                    success: function (result) {
+                                        if (result.success == false) {
+                                            $.msg.error(result.message);
+                                        }
+                                        else {
+                                            $.msg.show(result.message);
+                                        }
+                                        reloadList('#menuList');
+                                    }
+                                }
+                        );
+                    });
+                }
+
+                function showMenuDetail(id) {
                     $.ajax({
-                               url: '{%url "WeixinMenu.Download" %}',
-                               type: "POST",
-                               success: function (result) {
-                                   if (result.success == false) {
-                                       $.msg.error(result.message);
-                                   }
-                                   else {
-                                       $.msg.show(result.message);
-                                   }
-                                   reloadList('#menuList');
-                               }
-                           }
+                                url: '{%url "WeixinMenu.Detail" %}',
+                                type: "POST",
+                                data: {
+                                    "id": id
+                                },
+                                success: function (result) {
+                                    if (result.success == false) {
+                                        $.msg.error(result.message);
+                                        return;
+                                    }
+                                    $("#menuDetailDialogWrapper").html(result);
+                                    $('#menuDetailDialog').modal(modalOptions);
+                                }
+                            }
                     );
-                });
-            }
+                }
 
-            function uploadMenu() {
-                $.msg.confirm("上传菜单将覆盖服务器菜单数据，确认要上传吗？", function () {
-                    $.ajax({
-                               url: '{%url "WeixinMenu.Upload" %}',
-                               type: "POST",
-                               success: function (result) {
-                                   if (result.success == false) {
-                                       $.msg.error(result.message);
-                                   }
-                                   else {
-                                       $.msg.show(result.message);
-                                   }
-                                   reloadList('#menuList');
-                               }
-                           }
-                    );
-                });
-            }
-
-            function deleteMenu() {
+                function deleteMenu() {
                     var id_list = [];
                     $('#menuList tbody tr>td:first-child input:checkbox').each(function () {
                         if (this.checked) {
@@ -86,24 +107,55 @@
 
                     $.msg.confirm("确认要删除吗？", function () {
                         $.ajax({
-                                   url: '{%url "WeixinMenu.Delete"%}',
-                                   type: "POST",
-                                   data: {"id_list": id_list},
-                                   success: function (data) {
-                                       if (data.success == false) {
-                                           $.msg.error(data.message);
-                                           return;
-                                       }
-                                       else {
-                                           $.msg.show(data.message);
-                                       }
-                                       reloadList('#menuList');
-                                   }
-                               });
+                            url: '{%url "WeixinMenu.Delete"%}',
+                            type: "POST",
+                            data: {"id_list": id_list},
+                            success: function (data) {
+                                if (data.success == false) {
+                                    $.msg.error(data.message);
+                                    return;
+                                }
+                                else {
+                                    $.msg.show(data.message);
+                                }
+                                reloadList('#menuList');
+                            }
+                        });
                     });
-            }
+                }
 
-        </script>
+                $(function () {
+                    initDataTable(
+                            '#menuList',
+                            {
+                                "sAjaxSource": '{%url "WeixinMenu.ListData"%}',
+                                "aaSorting": [[1, "asc"]],
+                                "aoColumns": [
+                                    {
+                                        "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                        "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                        "render": function (data, type, row) {
+                                            return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                        }
+                                    },
+                                    {"mDataProp": "menu_order", "title": "菜单排序", "bVisible": false, "bSortable": false, "bSearchable": true},
+                                    {"mDataProp": "menu_name", "title": "菜单名", "bSortable": false, "bSearchable": true, "width": 220},
+                                    {"mDataProp": "menu_type", "title": "菜单类型", "bSortable": false, "bSearchable": true, "width": 150},
+                                    {"mDataProp": "menu_data", "title": "菜单数据", "bSortable": false, "bSearchable": true},
+                                    {"mDataProp": "create_time", "title": "创建时间", "bSortable": false, "bSearchable": false, "width": 120},
+                                    {"mDataProp": "update_time", "title": "修改时间", "bSortable": false, "bSearchable": false, "width": 120}
+                                ]
+                            }
+                    );
+
+                    $('#menuList tbody').on('dblclick', 'tr', function () {
+                        var id = $(this).find('td:first-child input:checkbox').val();
+                        showMenuDetail(id);
+                    });
+                });
+
+            </script>
+        </div>
     </div>
 </div>
 {%footer%}

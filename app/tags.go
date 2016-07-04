@@ -34,8 +34,9 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
         session := db.Engine.NewSession()
 
         config := new(models.Config)
-        has, err := session.Limit(1).Get(config)
-        core.HandleError(err)
+        has, _ := session.Limit(1).Get(config)
+        //has, err := session.Limit(1).Get(config)
+        //core.HandleError(err)
         if has {
             core.SysName = config.SysName
         }

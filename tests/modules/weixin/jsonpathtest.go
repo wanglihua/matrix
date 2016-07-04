@@ -1,4 +1,4 @@
-package core
+package weixin
 
 import (
     "github.com/revel/revel/testing"
