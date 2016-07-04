@@ -129,11 +129,11 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Res
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Delete() revel.Result {
     session := c.DbSession
 
-    userIdList := make([]int64, 0)
-    c.Params.Bind(&userIdList, "id_list")
+    {{.entity.EntityLowerCase}}IdList := make([]int64, 0)
+    c.Params.Bind(&{{.entity.EntityLowerCase}}IdList, "id_list")
 
     {{.entity.EntityLowerCase}} := new(models.{{.entity.EntityTitleName}})
-    affected, err := session.In("id", userIdList).Delete({{.entity.EntityLowerCase}})
+    affected, err := session.In("id", {{.entity.EntityLowerCase}}IdList).Delete({{.entity.EntityLowerCase}})
     core.HandleError(err)
 
     return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

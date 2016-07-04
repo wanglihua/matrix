@@ -126,11 +126,11 @@ func (c AuthGroup) Save() revel.Result {
 func (c AuthGroup) Delete() revel.Result {
     session := c.DbSession
 
-    userIdList := make([]int64, 0)
-    c.Params.Bind(&userIdList, "id_list")
+    groupIdList := make([]int64, 0)
+    c.Params.Bind(&groupIdList, "id_list")
 
     group := new(models.Group)
-    affected, err := session.In("id", userIdList).Delete(group)
+    affected, err := session.In("id", groupIdList).Delete(group)
     core.HandleError(err)
 
     return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

@@ -85,6 +85,17 @@ func main() {
 
     fmt.Println(result)
 
+    result = RenderCodeTemplate("indexhtml", template.IndexHtmlTemplate, map[string]interface{}{
+        "entity": models.GroupEntity,
+    })
+
+    fmt.Println(result)
+
+    result = RenderCodeTemplate("detailhtml", template.DetailHtmlTemplate, map[string]interface{}{
+        "entity": models.GroupEntity,
+    })
+
+    fmt.Println(result)
 
     /*
     var wireteString = "测试n"
