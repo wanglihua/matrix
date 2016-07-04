@@ -23,15 +23,17 @@ func (c Home) SyncDb() revel.Result {
 }
 
 func (c Home) SyncDbPost() revel.Result {
-    db.Engine.Sync2(
-        &userModels.User{},
-        &userModels.Admin{},
-        &userModels.Group{},
-        &userModels.UserGroup{},
-        &weixinModels.Config{},
-        &weixinModels.Menu{},
-        &models.Config{},
-    )
+
+    modelList := make([]interface{}, 0)
+    modelList = append(modelList, &userModels.User{})
+    modelList = append(modelList, &userModels.Admin{})
+    modelList = append(modelList, &userModels.Group{})
+    modelList = append(modelList, &userModels.UserGroup{})
+    modelList = append(modelList, &weixinModels.Config{})
+    modelList = append(modelList, &weixinModels.Menu{})
+    modelList = append(modelList, &models.Config{})
+
+    db.Engine.Sync2(modelList...)
 
     session := c.DbSession
     user := new(userModels.User)
