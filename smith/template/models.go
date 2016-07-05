@@ -22,5 +22,4 @@ func (e {{$entity.EntityTitleName}}) TableName() string {
 }
 
 {{end}}
-
 `

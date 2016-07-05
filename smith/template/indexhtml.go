@@ -1,7 +1,7 @@
 package template
 
-var IndexHtmlTemplate = `
-{%header "{{.entity.EntityChinese}}管理" .%}
+var IndexHtmlTemplate =
+`{%header "{{.entity.EntityChinese}}管理" .%}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
