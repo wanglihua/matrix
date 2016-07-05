@@ -43,6 +43,7 @@ func packageApp(cmd *Command, args []string) int {
     appImportPath := args[0]
     revel.Init(mode, appImportPath, "")
 
+    os.MkdirAll("d:\\publish", 0777)
     destFile := "d:\\publish\\" + filepath.Base(revel.BasePath) + "_" + time.Now().Format("200601021504") + ".tar.gz"
     // Create the zip file.
     archiveName := mustTarGzDir(destFile, revel.BasePath)

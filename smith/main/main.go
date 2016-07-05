@@ -97,6 +97,12 @@ func main() {
 
     fmt.Println(result)
 
+    result = RenderCodeTemplate("route", template.RouteTemplate, map[string]interface{}{
+        "entityList": entityList,
+    })
+
+    fmt.Println(result)
+
     /*
     var wireteString = "测试n"
     var filename = "./output1.txt";
