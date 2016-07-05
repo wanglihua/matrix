@@ -10,7 +10,6 @@ type Field struct {
     Length      int
     Precision   int
     Scale       int
-    Primarykey  bool
     Unique      bool
     Index       bool
     Null        bool

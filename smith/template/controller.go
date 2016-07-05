@@ -58,9 +58,9 @@ func (f {{.entity.EntityTitleName}}Form) IsCreate() bool {
 }
 
 func (f {{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) bool {
-    validation.Required(f.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name).Message("群组名不能为空！")
-    validation.MinSize(f.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name, 3).Message("群组名长度不能小于3！")
-    validation.MaxSize(f.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name, 20).Message("群组名长度不能大于20！")
+{{range $fieldIndex, $field := .entity.FieldList}}
+{{FieldValid $.entity $field}}
+{{end}}
 
     return validation.HasErrors() == false
 }

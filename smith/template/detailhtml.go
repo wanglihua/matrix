@@ -13,13 +13,14 @@ var DetailHtmlTemplate =
                     <div class="col-xs-12">
                         <form class="form-horizontal" role="form" id="{{.entity.EntityLowerCase}}DetailForm">
                             <input id="{{.entity.EntityLowerCase}}_id" name="form.{{.entity.EntityTitleName}}.Id" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Id%}"/>
-                            <input id="{{.entity.EntityLowerCase}}_version" name="form.{{.entity.EntityTitleName}}.Version" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Version%}"/>
-                            <div class="form-{{.entity.EntityLowerCase}}">
-                                <label for="{{.entity.EntityLowerCase}}_name" class="col-xs-2 control-label no-padding-right">{{.entity.EntityChinese}}名</label>
+                            <input id="{{.entity.EntityLowerCase}}_version" name="form.{{.entity.EntityTitleName}}.Version" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Version%}"/>{{range $fieldIndex, $field := .entity.FieldList}}
+                            <div class="form-group">
+                                <label for="{{$field.Column}}" class="col-xs-2 control-label no-padding-right">{{$field.VerboseName}}</label>
                                 <div class="col-xs-10">
-                                    <input id="{{.entity.EntityLowerCase}}_name" name="form.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name" type="text" class="input-sm form-control" value="{%.form.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name%}"/>
+                                    <input id="{{$field.Column}}" name="form.{{$.entity.EntityTitleName}}.{{$field.Name}}" type="text" class="input-sm form-control" value="{%.form.{{$.entity.EntityTitleName}}.{{$field.Name}}%}"/>
                                 </div>
                             </div>
+{{end}}
                         </form>
                     </div>
                 </div>
@@ -39,12 +40,10 @@ var DetailHtmlTemplate =
 function save{{.entity.EntityTitleName}}() {
     showMask("提交中...");
     var form = $("#{{.entity.EntityLowerCase}}DetailForm");
-    var valid = validate(form, {
-        'form.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name': {
-            required: true,
-            minlength: 3,
-            maxlength: 20
-        }
+    var valid = validate(form, { {{ $fieldMaxIndex := ListMaxIndex .entity.FieldList}} {{range $fieldIndex, $field := .entity.FieldList}}
+        'form.{{$.entity.EntityTitleName}}.{{$field.Name}}': {
+            {{FieldClienValid $field}}
+        }{{if ne $fieldMaxIndex $fieldIndex}},{{end}}{{end}}
     });
 
     if (!valid) {

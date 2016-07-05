@@ -36,6 +36,7 @@ func main() {
     }
 
     modelsCode := RenderCodeTemplate("models", template.ModelsTemplate, map[string]interface{}{
+        "tagchar": "`",
         "tablePrefix": entityList[0].TablePrefix,
         "entityList": entityList,
     })
@@ -129,6 +130,10 @@ func RenderCodeTemplate(tplName string, tplContent string, args  map[string]inte
     template, err := textTemplate.New(tplName).Funcs(textTemplate.FuncMap{
         "RenderField": TemplateFuncRenderField,
         "FirstEntity": TemplateFuncFirstEntity,
+        "FieldSearchable": TemplateFuncFieldSearchable,
+        "ListMaxIndex": TemplateFuncListMaxIndex,
+        "FieldClienValid": TemplateFuncFieldClienValid,
+        "FieldValid", TemplateFuncFieldValid,
     }).Parse(tplContent)
 
     if err != nil {
@@ -158,11 +163,10 @@ func TemplateFuncRenderField(field smith.Field) string {
         fieldType += strings.Repeat(" ", typeLength - len(fieldType))
 
         fieldColumnType = "int"
-    } else if field.FieldType == fieldtype.BigInt {
-        fieldType = "int64"
-        fieldType += strings.Repeat(" ", typeLength - len(fieldType))
-
-        fieldColumnType = "bigint"
+    //} else if field.FieldType == fieldtype.BigInt {
+    //    fieldType = "int64"
+    //    fieldType += strings.Repeat(" ", typeLength - len(fieldType))
+    //    fieldColumnType = "bigint"
     } else if field.FieldType == fieldtype.Decimal {
         fieldType = "float64"
         fieldType += strings.Repeat(" ", typeLength - len(fieldType))
@@ -214,11 +218,6 @@ func TemplateFuncRenderField(field smith.Field) string {
         fieldNull += "notnull"
     }
 
-    fieldPrimaryKey := ""
-    if field.Primarykey {
-        fieldPrimaryKey = "pk autoincr "
-    }
-
     fieldUnique := ""
     if field.Unique {
         fieldUnique = "unique "
@@ -231,13 +230,12 @@ func TemplateFuncRenderField(field smith.Field) string {
 
     fieldColumn := field.Column
 
-    fieldCode := core.FormatText("field", `{{.fieldName}}{{.fieldType}}{{.tagchar}}xorm:"{{.fieldColumnType}} {{.fieldNull}} {{.fieldPrimaryKey}}{{.fieldUnique}}{{.fieldIndex}}'{{.fieldColumn}}'" json:"{{.fieldColumn}}"{{.tagchar}}`, map[string]interface{}{
+    fieldCode := core.FormatText("field", `{{.fieldName}}{{.fieldType}}{{.tagchar}}xorm:"{{.fieldColumnType}} {{.fieldNull}} {{.fieldUnique}}{{.fieldIndex}}'{{.fieldColumn}}'" json:"{{.fieldColumn}}"{{.tagchar}}`, map[string]interface{}{
         "tagchar": "`",
         "fieldName": fieldName,
         "fieldType": fieldType,
         "fieldColumnType": fieldColumnType,
         "fieldNull": fieldNull,
-        "fieldPrimaryKey": fieldPrimaryKey,
         "fieldUnique": fieldUnique,
         "fieldIndex": fieldIndex,
         "fieldColumn": fieldColumn,
@@ -252,4 +250,122 @@ func TemplateFuncFirstEntity(entityList []smith.Entity) smith.Entity {
     } else {
         return smith.Entity{} //返回个空的，防止出错
     }
+}
+
+func TemplateFuncFieldSearchable(field smith.Field) string {
+    if field.FieldType == fieldtype.NVarchar {
+        return "true"
+    } else {
+        return "false"
+    }
+}
+
+func TemplateFuncListMaxIndex(list []smith.Field) int {
+    return len(list) - 1
+}
+
+func TemplateFuncFieldClienValid(field smith.Field) string {
+    //required: true, minlength: 3, maxlength: 20
+    validRules := ""
+    if field.Blank {
+        validRules += "required: false"
+    } else {
+        validRules += "required: true"
+    }
+
+    //if field.FieldType == fieldtype.Int || field.FieldType == fieldtype.BigInt {
+    if field.FieldType == fieldtype.Int {
+        validRules += ", digits: true"
+
+        if field.Min != "" {
+            validRules += ", min: " + field.Min
+        }
+
+        if field.Max != "" {
+            validRules += ", max: " + field.Max
+        }
+    }
+
+    if field.FieldType == fieldtype.Decimal {
+        validRules += ", number: true"
+
+        if field.Min != "" {
+            validRules += ", min: " + field.Min
+        }
+
+        if field.Max != "" {
+            validRules += ", max: " + field.Max
+        }
+    }
+
+    if field.FieldType == fieldtype.NVarchar {
+        if field.Min != "" {
+            validRules += ", minlength: " + field.Min
+        }
+
+        if field.Max != "" {
+            validRules += ", maxlength: " + field.Max
+        }
+    }
+
+    return validRules
+}
+
+func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
+    /*
+    validation.Required(f.Group.GroupName).Message("群组名不能为空！")
+    validation.MinSize(f.Group.GroupName, 3).Message("群组名长度不能小于3！")
+    validation.MaxSize(f.Group.GroupName, 20).Message("群组名长度不能大于20！")
+
+    validation.Required(f.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name).Message("群组名不能为空！")
+    validation.MinSize(f.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name, 3).Message("群组名长度不能小于3！")
+    validation.MaxSize(f.{{.entity.EntityTitleName}}.{{.entity.EntityTitleName}}Name, 20).Message("群组名长度不能大于20！")
+
+     */
+
+    validRules := ""
+    if field.Blank {
+        validRules += core.FormatText("valid_required",`validation.Required(f.Group.GroupName).Message("群组名不能为空！")`,map[string]interface{}{
+
+        })
+    } else {
+        validRules += "required: true"
+    }
+
+    //if field.FieldType == fieldtype.Int || field.FieldType == fieldtype.BigInt {
+    if field.FieldType == fieldtype.Int {
+        validRules += ", digits: true"
+
+        if field.Min != "" {
+            validRules += ", min: " + field.Min
+        }
+
+        if field.Max != "" {
+            validRules += ", max: " + field.Max
+        }
+    }
+
+    if field.FieldType == fieldtype.Decimal {
+        validRules += ", number: true"
+
+        if field.Min != "" {
+            validRules += ", min: " + field.Min
+        }
+
+        if field.Max != "" {
+            validRules += ", max: " + field.Max
+        }
+    }
+
+    if field.FieldType == fieldtype.NVarchar {
+        if field.Min != "" {
+            validRules += ", minlength: " + field.Min
+        }
+
+        if field.Max != "" {
+            validRules += ", maxlength: " + field.Max
+        }
+    }
+
+    return validRules
 }

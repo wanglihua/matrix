@@ -98,10 +98,10 @@ var IndexHtmlTemplate =
                                         "render": function (data, type, row) {
                                             return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                         }
-                                    },
-                                    {"mDataProp": "{{.entity.EntityLowerCase}}_name", "title": "{{.entity.EntityChinese}}名", "bSearchable": true},
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                                    },{{range $fieldIndex, $field := .entity.FieldList}}
+                                    {"mDataProp": "{{$field.Column}}", "title": "{{$field.VerboseName}}", "bSearchable": {{FieldSearchable $field}} },{{end}}
+                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
                                 ]
                             }
                     );
