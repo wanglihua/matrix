@@ -57,11 +57,8 @@ func (f {{.entity.EntityTitleName}}Form) IsCreate() bool {
     return f.{{.entity.EntityTitleName}}.Id == 0
 }
 
-func (f {{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) bool {
-{{range $fieldIndex, $field := .entity.FieldList}}
-{{FieldValid $.entity $field}}
-{{end}}
-
+func (f {{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) bool { {{range $fieldIndex, $field := .entity.FieldList}}
+{{FieldValid $.entity $field}}{{end}}
     return validation.HasErrors() == false
 }
 
@@ -99,22 +96,12 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Res
     {{.entity.EntityLowerCase}} := &form.{{.entity.EntityTitleName}}
 
     var affected int64
-    if form.IsCreate() {
-        count, err := session.Where("{{.entity.EntityLowerCase}}_name = ?", {{.entity.EntityLowerCase}}.{{.entity.EntityTitleName}}Name).Count(new(models.{{.entity.EntityTitleName}}))
-        core.HandleError(err)
-        if count != 0 {
-            return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
-        }
-
+    if form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if $field.Unique}}
+{{CheckUniqueCreate $.entity $field}}{{end}}{{end}}
         affected, err = session.Insert({{.entity.EntityLowerCase}})
         core.HandleError(err)
-    } else {
-        count, err := session.Where("id <> ? and {{.entity.EntityLowerCase}}_name = ?", {{.entity.EntityLowerCase}}.Id, {{.entity.EntityLowerCase}}.{{.entity.EntityTitleName}}Name).Count(new(models.{{.entity.EntityTitleName}}))
-        core.HandleError(err)
-        if count != 0 {
-            return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
-        }
-
+    } else { {{range $fieldIndex, $field := .entity.FieldList}}{{if $field.Unique}}
+{{CheckUniqueUpdate $.entity $field}}{{end}}{{end}}
         affected, err = session.Id({{.entity.EntityLowerCase}}.Id).Update({{.entity.EntityLowerCase}})
         core.HandleError(err)
 
