@@ -5,8 +5,7 @@ import (
     "matrix/core"
     "matrix/modules/auth/models"
     "matrix/modules/auth/forms"
-    //"time"
-    //"net/http"
+    "matrix/app/layout"
 )
 
 type Login struct {
@@ -15,6 +14,7 @@ type Login struct {
 }
 
 func (c Login) Index() revel.Result {
+    c.RenderArgs["sys_name"] = layout.GetSysName()
     return c.RenderTemplate("login/login_index.html")
 }
 

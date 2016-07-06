@@ -135,28 +135,23 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
             }
         </script>
         <ul class="nav nav-list">
-            <li id="sync-menu" class="">
+            <li id="inventory-menu" class="">
                 <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-cogs"></i>
-                    <span class="menu-text">数据同步</span>
+                    <i class="menu-icon fa fa-users"></i>
+                    <span class="menu-text">库存管理</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    <li id="sync-customer-menu" class="">
-                        <a href="#">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            客户管理
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="sync-supplier-menu" class="">
-                        <a href="#">
+
+                    <li id="inventory-supplier-menu" class="">
+                        <a href="/inventory/supplier">
                             <i class="menu-icon fa fa-caret-right"></i>
                             供应商管理
                         </a>
                         <b class="arrow"></b>
                     </li>
+
                 </ul>
             </li>
             <li id="auth-menu" class="">

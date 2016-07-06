@@ -25,7 +25,7 @@ func main() {
     core.HandleError(err)
 
     entityList := []smith.Entity{
-        models.GroupEntity,
+        models.SupplierEntity,
     }
 
     modelsCode := RenderCodeTemplate("models", template.ModelsTemplate, map[string]interface{}{
@@ -51,7 +51,7 @@ func main() {
         WriteToFile(controllersDir + "\\" + entity.EntityLowerCase + ".go", controllerCode)
     }
 
-    viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\"
+    viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\" + entityList[0].EntityLowerCase  + "\\"
     err = os.MkdirAll(viewsDir, 0777)
     core.HandleError(err)
 

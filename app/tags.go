@@ -7,8 +7,6 @@ import (
     //"bytes"
     //"fmt"
     "matrix/core"
-    "matrix/app/models"
-    "matrix/db"
 )
 
 func registerTags() {
@@ -30,19 +28,7 @@ type headerTemplateData struct {
 //var headerTemplate *template.Template = nil
 
 func headerTemplateFunc(title string, renderArgs map[string]interface{}) template.HTML {
-    if core.SysName == "" {
-        session := db.Engine.NewSession()
-
-        config := new(models.Config)
-        has, _ := session.Limit(1).Get(config)
-        //has, err := session.Limit(1).Get(config)
-        //core.HandleError(err)
-        if has {
-            core.SysName = config.SysName
-        }
-
-        session.Close()
-    }
+    sysName := layout.GetSysName()
 
     /*
     if headerTemplate == nil {
@@ -58,8 +44,6 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
     return template.HTML(renderBuffer.String())
     */
 
-    //session := renderArgs["session"].(revel.Session) //通过session得到当前登录人信息啥的
-
     revel.TRACE.Println("headerTemplateFunc")
 
     session := renderArgs["session"].(revel.Session)
@@ -68,7 +52,7 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
     if loginUser != nil {
         loginNickName = loginUser.NickName
     }
-    return template.HTML(layout.GetHeader(title, core.SysName, loginNickName))
+    return template.HTML(layout.GetHeader(title, sysName, loginNickName))
 }
 
 func footerTemplateFunc() template.HTML {

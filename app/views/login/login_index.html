@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8"/>
-    <title>登录 - 系统</title>
+    <title>登录 - {% .sys_name %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <link type="text/css" rel="stylesheet" href="/static/ace/css/all.css" class="ace-main-stylesheet" id="main-ace-style"/>
     <!--[if lte IE 9]>
@@ -54,7 +54,7 @@
         <div class="navbar-header pull-left" style="height: 80px;line-height: 80px;">
             <a href='{%url "Home.Index"%}' class="navbar-brand clearfix" style="font-size:36px;">
                 <div class="pull-left" style="margin-left: 20px;margin-top: 15px;">
-                    应用系统
+                    {% .sys_name %}
                 </div>
             </a>
         </div>

@@ -1,0 +1,141 @@
+<div class="modal fade" id="supplierDetailDialog">
+    <div class="modal-dialog" style="width: 440px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                <h4 class="modal-title">供应商详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" role="form" id="supplierDetailForm">
+                            <input id="supplier_id" name="form.Supplier.Id" type="hidden" value="{%.form.Supplier.Id%}"/>
+                            <input id="supplier_version" name="form.Supplier.Version" type="hidden" value="{%.form.Supplier.Version%}"/>
+                            <div class="form-group">
+                                <label for="sup_name" class="col-xs-2 control-label no-padding-right">供应商名称</label>
+                                <div class="col-xs-10">
+                                    <input id="sup_name" name="form.Supplier.Name" type="text" class="input-sm form-control" value="{%.form.Supplier.Name%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sup_code" class="col-xs-2 control-label no-padding-right">供应商编号</label>
+                                <div class="col-xs-10">
+                                    <input id="sup_code" name="form.Supplier.Code" type="text" class="input-sm form-control" value="{%.form.Supplier.Code%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact" class="col-xs-2 control-label no-padding-right">联系人</label>
+                                <div class="col-xs-10">
+                                    <input id="contact" name="form.Supplier.Contact" type="text" class="input-sm form-control" value="{%.form.Supplier.Contact%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone" class="col-xs-2 control-label no-padding-right">联系电话</label>
+                                <div class="col-xs-10">
+                                    <input id="phone" name="form.Supplier.Phone" type="text" class="input-sm form-control" value="{%.form.Supplier.Phone%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address" class="col-xs-2 control-label no-padding-right">联系地址</label>
+                                <div class="col-xs-10">
+                                    <input id="address" name="form.Supplier.Address" type="text" class="input-sm form-control" value="{%.form.Supplier.Address%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bank" class="col-xs-2 control-label no-padding-right">开户银行</label>
+                                <div class="col-xs-10">
+                                    <input id="bank" name="form.Supplier.Bank" type="text" class="input-sm form-control" value="{%.form.Supplier.Bank%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bank_account" class="col-xs-2 control-label no-padding-right">银行账号</label>
+                                <div class="col-xs-10">
+                                    <input id="bank_account" name="form.Supplier.BankAccount" type="text" class="input-sm form-control" value="{%.form.Supplier.BankAccount%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="remark" class="col-xs-2 control-label no-padding-right">备注</label>
+                                <div class="col-xs-10">
+                                    <input id="remark" name="form.Supplier.Remark" type="text" class="input-sm form-control" value="{%.form.Supplier.Remark%}"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveSupplier()">
+                    <i class="ace-icon fa fa-floppy-o"></i>保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript'>
+function saveSupplier() {
+    showMask("提交中...");
+    var form = $("#supplierDetailForm");
+    var valid = validate(form, {  
+        'form.Supplier.Name': {
+            required: true, minlength: 3, maxlength: 30
+        },
+        'form.Supplier.Code': {
+            required: true, minlength: 3, maxlength: 10
+        },
+        'form.Supplier.Contact': {
+            required: false, maxlength: 20
+        },
+        'form.Supplier.Phone': {
+            required: false, minlength: 2, maxlength: 40
+        },
+        'form.Supplier.Address': {
+            required: false, minlength: 3, maxlength: 20
+        },
+        'form.Supplier.Bank': {
+            required: false, maxlength: 20
+        },
+        'form.Supplier.BankAccount': {
+            required: false, minlength: 4, maxlength: 50
+        },
+        'form.Supplier.Remark': {
+            required: false, minlength: 3, maxlength: 250
+        }
+    });
+
+    if (!valid) {
+        hideMask();
+    } else {
+        $.ajax({
+                   url: '{%url "InventorySupplier.Save"%}',
+                   type: "POST",
+                   data: form.serialize(),
+                   success: function (data) {
+                       hideMask();
+                       if (data.success == false) {
+                           $.msg.error(data.message);
+                           //return;
+                       }
+                       else {
+                           $.msg.show(data.message);
+                           $('#supplierDetailDialog').modal('hide');
+                           reloadList('#supplierList');
+                           //return;
+                       }
+                   }
+               }
+        );
+    }
+}
+</script>
+

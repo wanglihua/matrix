@@ -230,7 +230,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
     validRules := ""
     if field.Blank == false {
         validRules += core.FormatText("valid_required", `    validation.Required(f.{{.entityTitleName}}.{{.fieldName}}).Message("{{.fieldVerboseName}}不能为空！")`, map[string]interface{}{
-            "entityTitleName": entity.ModuleTitleName,
+            "entityTitleName": entity.EntityTitleName,
             "fieldName": field.Name,
             "fieldVerboseName": field.VerboseName,
         })
@@ -242,7 +242,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
     if field.FieldType == fieldtype.Int {
         if field.Min != "" {
             validRules += core.FormatText("valid_min", `    validation.Min(f.{{.entityTitleName}}.{{.fieldName}}, {{.minValue}}).Message("{{.fieldVerboseName}}不能小于{{.minValue}}！")`, map[string]interface{}{
-                "entityTitleName": entity.ModuleTitleName,
+                "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
                 "fieldVerboseName": field.VerboseName,
                 "minValue": field.Min,
@@ -253,7 +253,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
 
         if field.Max != "" {
             validRules += core.FormatText("valid_max", `    validation.Max(f.{{.entityTitleName}}.{{.fieldName}}, {{.maxValue}}).Message("{{.fieldVerboseName}}不能大于{{.maxValue}}！")`, map[string]interface{}{
-                "entityTitleName": entity.ModuleTitleName,
+                "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
                 "fieldVerboseName": field.VerboseName,
                 "maxValue": field.Max,
@@ -266,7 +266,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
     if field.FieldType == fieldtype.Decimal {
         if field.Min != "" {
             validRules += core.FormatText("valid_min", `    validation.Min(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.minValue}}).Message("{{.fieldVerboseName}}不能小于{{.minValue}}！")`, map[string]interface{}{
-                "entityTitleName": entity.ModuleTitleName,
+                "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
                 "fieldVerboseName": field.VerboseName,
                 "minValue": field.Min,
@@ -277,7 +277,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
 
         if field.Max != "" {
             validRules += core.FormatText("valid_max", `    validation.Max(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.maxValue}}).Message("{{.fieldVerboseName}}不能大于{{.maxValue}}！")`, map[string]interface{}{
-                "entityTitleName": entity.ModuleTitleName,
+                "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
                 "fieldVerboseName": field.VerboseName,
                 "maxValue": field.Max,
@@ -288,9 +288,14 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
     }
 
     if field.FieldType == fieldtype.NVarchar {
+        minSizeTemplate :=
+        `    if f.{{.entityTitleName}}.{{.fieldName}} != "" {
+        validation.MinSize(f.{{.entityTitleName}}.{{.fieldName}}, {{.minLength}}).Message("{{.fieldVerboseName}}长度不能小于{{.minLength}}！")
+    }`
+
         if field.Min != "" {
-            validRules += core.FormatText("valid_min", `    validation.MinSize(f.{{.entityTitleName}}.{{.fieldName}}, {{.minLength}}).Message("{{.fieldVerboseName}}长度不能小于{{.minLength}}！")`, map[string]interface{}{
-                "entityTitleName": entity.ModuleTitleName,
+            validRules += core.FormatText("valid_min", minSizeTemplate, map[string]interface{}{
+                "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
                 "fieldVerboseName": field.VerboseName,
                 "minLength": field.Min,
@@ -299,9 +304,14 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
             validRules += "\r\n"
         }
 
+        maxSizeTemplate :=
+        `    if f.{{.entityTitleName}}.{{.fieldName}} != "" {
+        validation.MaxSize(f.{{.entityTitleName}}.{{.fieldName}}, {{.maxLength}}).Message("{{.fieldVerboseName}}长度不能大于{{.maxLength}}！")
+    }`
+
         if field.Max != "" {
-            validRules += core.FormatText("valid_max", `    validation.MaxSize(f.{{.entityTitleName}}.{{.fieldName}}, {{.maxLength}}).Message("{{.fieldVerboseName}}长度不能大于{{.maxLength}}！")`, map[string]interface{}{
-                "entityTitleName": entity.ModuleTitleName,
+            validRules += core.FormatText("valid_max", maxSizeTemplate, map[string]interface{}{
+                "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
                 "fieldVerboseName": field.VerboseName,
                 "maxLength": field.Max,
@@ -316,12 +326,12 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
 
 func TemplateFuncCheckUniqueCreate(entity smith.Entity, field smith.Field) string {
     template :=
-`        {{.fieldCamelCase}}Count, err := session.Where("{{.field.Column}} = ?", {{.entity.EntityLowerCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
+    `        {{.fieldCamelCase}}Count, err := session.Where("{{.field.Column}} = ?", {{.entity.EntityLowerCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
         core.HandleError(err)
         if {{.fieldCamelCase}}Count != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，{{.field.VerboseName}}已存在！" })
         }
-    `
+        `
     checkUniqueCode := core.FormatText("check_unique_create", template, map[string]interface{}{
         "entity": entity,
         "field": field,
@@ -333,12 +343,12 @@ func TemplateFuncCheckUniqueCreate(entity smith.Entity, field smith.Field) strin
 
 func TemplateFuncCheckUniqueUpdate(entity smith.Entity, field smith.Field) string {
     template :=
-`        {{.fieldCamelCase}}Count, err := session.Where("id <> ? and {{.field.Column}} = ?", {{.entity.EntityLowerCase}}.Id, {{.entity.EntityLowerCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
+    `        {{.fieldCamelCase}}Count, err := session.Where("id <> ? and {{.field.Column}} = ?", {{.entity.EntityLowerCase}}.Id, {{.entity.EntityLowerCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
         core.HandleError(err)
         if {{.fieldCamelCase}}Count != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，{{.field.VerboseName}}已存在！" })
         }
-    `
+        `
     checkUniqueCode := core.FormatText("check_unique_create", template, map[string]interface{}{
         "entity": entity,
         "field": field,

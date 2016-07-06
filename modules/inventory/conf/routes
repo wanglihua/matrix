@@ -1,0 +1,8 @@
+GET /inventory/static/*filepath    Static.ServeModule(inventory, static)
+
+GET  /inventory/supplier                    InventorySupplier.Index
+POST /inventory/supplier/listdata           InventorySupplier.ListData
+POST /inventory/supplier/detail             InventorySupplier.Detail
+POST /inventory/supplier/save               InventorySupplier.Save
+POST /inventory/supplier/delete             InventorySupplier.Delete
+
