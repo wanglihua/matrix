@@ -10,7 +10,9 @@ import (
     "io"
     "compress/gzip"
     "archive/tar"
+    "archive/zip"
     "time"
+    "io/ioutil"
 )
 
 var cmdPackage = &Command{
@@ -44,13 +46,47 @@ func packageApp(cmd *Command, args []string) int {
     revel.Init(mode, appImportPath, "")
 
     os.MkdirAll("d:\\publish", 0777)
-    destFile := "d:\\publish\\" + filepath.Base(revel.BasePath) + "_" + time.Now().Format("200601021504") + ".tar.gz"
+    //destFile := "d:\\publish\\" + filepath.Base(revel.BasePath) + "_" + time.Now().Format("200601021504") + ".tar.gz"
+    destFile := "d:\\publish\\" + filepath.Base(revel.BasePath) + "_" + time.Now().Format("200601021504") + ".zip"
     // Create the zip file.
-    archiveName := mustTarGzDir(destFile, revel.BasePath)
+    //archiveName := mustTarGzDir(destFile, revel.BasePath)
+    archiveName := mustZipDir(destFile, revel.BasePath)
 
     fmt.Println("Your archive is ready:", archiveName)
 
     return 0
+}
+
+func mustZipDir(destFilename, srcDir string) string {
+    zipFile, err := os.Create(destFilename)
+    panicOnError(err, "Failed to create archive")
+    defer zipFile.Close()
+
+    zipWriter := zip.NewWriter(zipFile)
+    defer zipWriter.Close()
+
+    revel.Walk(srcDir, func(srcPath string, info os.FileInfo, err error) error {
+        if info.IsDir() {
+            return nil
+        }
+
+        if filterPathFiles(srcPath) {
+            return nil
+        }
+
+        fileWriter, err := zipWriter.Create(revel.ImportPath + "\\" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator)))
+        panicOnError(err, "Failed to create file writer")
+
+        fileContent, err := ioutil.ReadFile(srcPath)
+        panicOnError(err, "Failed to read source file")
+
+        _, err = fileWriter.Write(fileContent)
+        panicOnError(err, "Failed to write file content")
+
+        return nil
+    })
+
+    return zipFile.Name()
 }
 
 func mustTarGzDir(destFilename, srcDir string) string {
@@ -69,51 +105,7 @@ func mustTarGzDir(destFilename, srcDir string) string {
             return nil
         }
 
-        if strings.Contains(srcPath, ".svn") {
-            return nil
-        }
-
-        if strings.Contains(srcPath, ".git") {
-            return nil
-        }
-
-        if strings.Contains(srcPath, ".idea") {
-            return nil
-        }
-
-        if strings.Contains(srcPath, ".vscode") {
-            return nil
-        }
-
-        if strings.Contains(srcPath, "\\vendor\\") {
-            return nil
-        }
-
-        if strings.Contains(srcPath, "\\doc\\") {
-            return nil
-        }
-
-        if strings.HasSuffix(srcPath, ".exe~") {
-            return nil
-        }
-
-        if strings.HasSuffix(srcPath, ".go") {
-            return nil
-        }
-
-        if strings.HasSuffix(srcPath, ".less") {
-            return nil
-        }
-
-        if strings.HasSuffix(srcPath, ".py") {
-            return nil
-        }
-
-        if strings.HasSuffix(srcPath, ".log") {
-            return nil
-        }
-
-        if strings.HasSuffix(srcPath, "debug") {
+        if filterPathFiles(srcPath) {
             return nil
         }
 
@@ -122,7 +114,7 @@ func mustTarGzDir(destFilename, srcDir string) string {
         defer srcFile.Close()
 
         err = tarWriter.WriteHeader(&tar.Header{
-            Name:    strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator)),
+            Name:    revel.ImportPath + "\\" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator)),
             Size:    info.Size(),
             Mode:    int64(info.Mode()),
             ModTime: info.ModTime(),
@@ -136,4 +128,61 @@ func mustTarGzDir(destFilename, srcDir string) string {
     })
 
     return zipFile.Name()
+}
+
+func filterPathFiles(srcPath string) bool {
+
+    if strings.Contains(srcPath, ".svn") {
+        return true
+    }
+
+    if strings.Contains(srcPath, ".git") {
+        return true
+    }
+
+    if strings.Contains(srcPath, ".idea") {
+        return true
+    }
+
+    if strings.Contains(srcPath, ".vscode") {
+        return true
+    }
+
+    if strings.Contains(srcPath, "\\vendor\\") {
+        return true
+    }
+
+    if strings.Contains(srcPath, "\\doc\\") {
+        return true
+    }
+
+    if strings.Contains(srcPath, "\\smith\\") {
+        return true
+    }
+
+    if strings.HasSuffix(srcPath, ".exe~") {
+        return true
+    }
+
+    if strings.HasSuffix(srcPath, ".go") {
+        return true
+    }
+
+    if strings.HasSuffix(srcPath, ".less") {
+        return true
+    }
+
+    if strings.HasSuffix(srcPath, ".py") {
+        return true
+    }
+
+    if strings.HasSuffix(srcPath, ".log") {
+        return true
+    }
+
+    if strings.HasSuffix(srcPath, "debug") {
+        return true
+    }
+
+    return false;
 }

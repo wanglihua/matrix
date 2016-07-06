@@ -33,20 +33,20 @@
             <script type="text/javascript">
                 function showSupplierDetail(id) {
                     $.ajax({
-                               url: '{%url "InventorySupplier.Detail" %}',
-                               type: "POST",
-                               data: {
-                                   "id": id
-                               },
-                               success: function (result) {
-                                   if (result.success == false) {
-                                       $.msg.error(result.message);
-                                       return;
-                                   }
-                                   $("#supplierDetailDialogWrapper").html(result);
-                                   $('#supplierDetailDialog').modal(modalOptions);
-                               }
-                           }
+                                url: '{%url "InventorySupplier.Detail" %}',
+                                type: "POST",
+                                data: {
+                                    "id": id
+                                },
+                                success: function (result) {
+                                    if (result.success == false) {
+                                        $.msg.error(result.message);
+                                        return;
+                                    }
+                                    $("#supplierDetailDialogWrapper").html(result);
+                                    $('#supplierDetailDialog').modal(modalOptions);
+                                }
+                            }
                     );
                 }
 
@@ -65,20 +65,20 @@
 
                     $.msg.confirm("确认要删除吗？", function () {
                         $.ajax({
-                                   url: '{%url "InventorySupplier.Delete"%}',
-                                   type: "POST",
-                                   data: {"id_list": id_list},
-                                   success: function (data) {
-                                       if (data.success == false) {
-                                           $.msg.error(data.message);
-                                           return;
-                                       }
-                                       else {
-                                           $.msg.show(data.message);
-                                       }
-                                       reloadList('#supplierList');
-                                   }
-                               });
+                            url: '{%url "InventorySupplier.Delete"%}',
+                            type: "POST",
+                            data: {"id_list": id_list},
+                            success: function (data) {
+                                if (data.success == false) {
+                                    $.msg.error(data.message);
+                                    return;
+                                }
+                                else {
+                                    $.msg.show(data.message);
+                                }
+                                reloadList('#supplierList');
+                            }
+                        });
                     });
                 }
 
@@ -96,16 +96,16 @@
                                             return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                         }
                                     },
-                                    {"mDataProp": "sup_name", "title": "供应商名称", "bSearchable": true },
-                                    {"mDataProp": "sup_code", "title": "供应商编号", "bSearchable": true },
-                                    {"mDataProp": "contact", "title": "联系人", "bSearchable": true },
-                                    {"mDataProp": "phone", "title": "联系电话", "bSearchable": true },
-                                    {"mDataProp": "address", "title": "联系地址", "bSearchable": true },
-                                    {"mDataProp": "bank", "title": "开户银行", "bSearchable": true },
-                                    {"mDataProp": "bank_account", "title": "银行账号", "bSearchable": true },
-                                    {"mDataProp": "remark", "title": "备注", "bSearchable": true },
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                                    {"mDataProp": "sup_code", "title": "供应商编号", "bSearchable": true, "width": 120},
+                                    {"mDataProp": "sup_name", "title": "供应商名称", "bSearchable": true, "width": 250},
+                                    {"mDataProp": "contact", "title": "联系人", "bSearchable": true, "width": 120},
+                                    {"mDataProp": "phone", "title": "联系电话", "bSearchable": true, "width": 120},
+                                    {"mDataProp": "address", "title": "<span class='col-title'>联系地址</span>", "bSearchable": true},
+                                    //{"mDataProp": "bank", "title": "开户银行", "bSearchable": true},
+                                    //{"mDataProp": "bank_account", "title": "银行账号", "bSearchable": true},
+                                    //{"mDataProp": "remark", "title": "备注", "bSearchable": true},
+                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                                 ]
                             }
                     );
@@ -121,4 +121,3 @@
     </div>
 </div>
 {%footer%}
-
