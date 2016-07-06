@@ -49,6 +49,7 @@ func RenderCodeTemplate(tplName string, tplContent string, args  map[string]inte
         "FieldValid": TemplateFuncFieldValid,
         "CheckUniqueCreate": TemplateFuncCheckUniqueCreate,
         "CheckUniqueUpdate": TemplateFuncCheckUniqueUpdate,
+        "LowerCase": TemplateFuncLowerCase,
     }).Parse(tplContent)
 
     if err != nil {
@@ -78,10 +79,10 @@ func TemplateFuncRenderField(field smith.Field) string {
         fieldType += strings.Repeat(" ", typeLength - len(fieldType))
 
         fieldColumnType = "int"
-        //} else if field.FieldType == fieldtype.BigInt {
-        //    fieldType = "int64"
-        //    fieldType += strings.Repeat(" ", typeLength - len(fieldType))
-        //    fieldColumnType = "bigint"
+    } else if field.FieldType == fieldtype.BigInt {
+        fieldType = "int64"
+        fieldType += strings.Repeat(" ", typeLength - len(fieldType))
+        fieldColumnType = "bigint"
     } else if field.FieldType == fieldtype.Decimal {
         fieldType = "float64"
         fieldType += strings.Repeat(" ", typeLength - len(fieldType))
@@ -188,8 +189,7 @@ func TemplateFuncFieldClienValid(field smith.Field) string {
         validRules += "required: true"
     }
 
-    //if field.FieldType == fieldtype.Int || field.FieldType == fieldtype.BigInt {
-    if field.FieldType == fieldtype.Int {
+    if field.FieldType == fieldtype.Int || field.FieldType == fieldtype.BigInt {
         validRules += ", digits: true"
 
         if field.Min != "" {
@@ -263,6 +263,30 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
         }
     }
 
+    if field.FieldType == fieldtype.BigInt {
+        if field.Min != "" {
+            validRules += core.FormatText("valid_min", `    validation.Min(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.minValue}}).Message("{{.fieldVerboseName}}不能小于{{.minValue}}！")`, map[string]interface{}{
+                "entityTitleName": entity.EntityTitleName,
+                "fieldName": field.Name,
+                "fieldVerboseName": field.VerboseName,
+                "minValue": field.Min,
+            })
+
+            validRules += "\r\n"
+        }
+
+        if field.Max != "" {
+            validRules += core.FormatText("valid_max", `    validation.Max(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.maxValue}}).Message("{{.fieldVerboseName}}不能大于{{.maxValue}}！")`, map[string]interface{}{
+                "entityTitleName": entity.EntityTitleName,
+                "fieldName": field.Name,
+                "fieldVerboseName": field.VerboseName,
+                "maxValue": field.Max,
+            })
+
+            validRules += "\r\n"
+        }
+    }
+
     if field.FieldType == fieldtype.Decimal {
         if field.Min != "" {
             validRules += core.FormatText("valid_min", `    validation.Min(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.minValue}}).Message("{{.fieldVerboseName}}不能小于{{.minValue}}！")`, map[string]interface{}{
@@ -326,7 +350,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
 
 func TemplateFuncCheckUniqueCreate(entity smith.Entity, field smith.Field) string {
     template :=
-    `        {{.fieldCamelCase}}Count, err := session.Where("{{.field.Column}} = ?", {{.entity.EntityLowerCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
+    `        {{.fieldCamelCase}}Count, err := session.Where("{{.field.Column}} = ?", {{.entity.EntityCamelCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
         core.HandleError(err)
         if {{.fieldCamelCase}}Count != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，{{.field.VerboseName}}已存在！" })
@@ -343,7 +367,7 @@ func TemplateFuncCheckUniqueCreate(entity smith.Entity, field smith.Field) strin
 
 func TemplateFuncCheckUniqueUpdate(entity smith.Entity, field smith.Field) string {
     template :=
-    `        {{.fieldCamelCase}}Count, err := session.Where("id <> ? and {{.field.Column}} = ?", {{.entity.EntityLowerCase}}.Id, {{.entity.EntityLowerCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
+    `        {{.fieldCamelCase}}Count, err := session.Where("id <> ? and {{.field.Column}} = ?", {{.entity.EntityCamelCase}}.Id, {{.entity.EntityCamelCase}}.{{.field.Name}}).Count(new(models.{{.entity.EntityTitleName}}))
         core.HandleError(err)
         if {{.fieldCamelCase}}Count != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，{{.field.VerboseName}}已存在！" })
@@ -356,4 +380,8 @@ func TemplateFuncCheckUniqueUpdate(entity smith.Entity, field smith.Field) strin
     })
 
     return checkUniqueCode
+}
+
+func TemplateFuncLowerCase(name string) string {
+    return strings.ToLower(name)
 }

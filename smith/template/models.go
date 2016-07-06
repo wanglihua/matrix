@@ -23,7 +23,7 @@ type {{$entity.EntityTitleName}} struct {
 }
 
 func (e {{$entity.EntityTitleName}}) TableName() string {
-    return TablePrefix + "{{$entity.EntityLowerCase}}"
+    return TablePrefix + "{{$entity.TableName}}"
 }
 
 {{end}}

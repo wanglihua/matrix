@@ -10,7 +10,7 @@ var GroupEntity = smith.Entity{
     ModuleLowerCase     : "auth",
     ModuleChinese       : "权限管理",
     EntityTitleName     : "Group",
-    EntityLowerCase     : "group",
+    EntityCamelCase     : "group",
     EntityChinese       : "群组",
     TableName           : "group",
     TablePrefix         : "hd_auth_",

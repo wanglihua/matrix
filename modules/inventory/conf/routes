@@ -1,14 +1,22 @@
 GET /inventory/static/*filepath    Static.ServeModule(inventory, static)
 
-GET  /inventory/supplier                    InventorySupplier.Index
-POST /inventory/supplier/listdata           InventorySupplier.ListData
-POST /inventory/supplier/detail             InventorySupplier.Detail
-POST /inventory/supplier/save               InventorySupplier.Save
-POST /inventory/supplier/delete             InventorySupplier.Delete
+GET  /inventory/supplier                      InventorySupplier.Index
+POST /inventory/supplier/listdata             InventorySupplier.ListData
+POST /inventory/supplier/detail               InventorySupplier.Detail
+POST /inventory/supplier/save                 InventorySupplier.Save
+POST /inventory/supplier/delete               InventorySupplier.Delete
 
-GET  /inventory/stock                       InventoryStock.Index
-POST /inventory/stock/listdata              InventoryStock.ListData
-POST /inventory/stock/detail                InventoryStock.Detail
-POST /inventory/stock/save                  InventoryStock.Save
-POST /inventory/stock/delete                InventoryStock.Delete
+GET  /inventory/stock                         InventoryStock.Index
+POST /inventory/stock/listdata                InventoryStock.ListData
+POST /inventory/stock/detail                  InventoryStock.Detail
+POST /inventory/stock/save                    InventoryStock.Save
+POST /inventory/stock/delete                  InventoryStock.Delete
+
+GET  /inventory/storageloc                    InventoryStorageLoc.IndexWithoutStockId
+GET  /inventory/storageloc/:sotckId           InventoryStorageLoc.Index
+POST /inventory/storageloc/listdata/:sotckId  InventoryStorageLoc.ListData
+POST /inventory/storageloc/detail             InventoryStorageLoc.Detail
+POST /inventory/storageloc/save               InventoryStorageLoc.Save
+POST /inventory/storageloc/delete             InventoryStorageLoc.Delete
+
 

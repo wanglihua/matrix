@@ -10,7 +10,7 @@ var SupplierEntity = smith.Entity{
     ModuleLowerCase     : "inventory",
     ModuleChinese       : "库存管理",
     EntityTitleName     : "Supplier",
-    EntityLowerCase     : "supplier",
+    EntityCamelCase     : "supplier",
     EntityChinese       : "供应商",
     TableName           : "supplier",
     TablePrefix         : "hd_inventory_",

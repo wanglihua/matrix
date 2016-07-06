@@ -17,7 +17,7 @@ type {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}} struct {
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Index() revel.Result {
-    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{.entity.EntityLowerCase}}/{{.entity.EntityLowerCase}}_index.html")
+    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{LowerCase .entity.EntityCamelCase}}/{{LowerCase .entity.EntityCamelCase}}_index.html")
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) ListData() revel.Result {
@@ -35,8 +35,8 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) ListData() revel
         dataQuery = *dataQuery.Asc("id")
     }
 
-    {{.entity.EntityLowerCase}}List := make([]models.{{.entity.EntityTitleName}}, 0, limit)
-    err := dataQuery.Limit(limit, offset).Find(&{{.entity.EntityLowerCase}}List)
+    {{.entity.EntityCamelCase}}List := make([]models.{{.entity.EntityTitleName}}, 0, limit)
+    err := dataQuery.Limit(limit, offset).Find(&{{.entity.EntityCamelCase}}List)
     core.HandleError(err)
 
     countQuery := *query
@@ -44,7 +44,7 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) ListData() revel
     core.HandleError(err)
 
     return c.RenderJson(core.GridResult{
-        Data:  {{.entity.EntityLowerCase}}List,
+        Data:  {{.entity.EntityCamelCase}}List,
         Total: count,
     })
 }
@@ -65,11 +65,11 @@ func (f {{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) boo
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Detail() revel.Result {
     session := c.DbSession
 
-    {{.entity.EntityLowerCase}}Id := core.GetInt64FromRequest(c.Request, "id")
+    {{.entity.EntityCamelCase}}Id := core.GetInt64FromRequest(c.Request, "id")
 
-    {{.entity.EntityLowerCase}} := new(models.{{.entity.EntityTitleName}})
-    if {{.entity.EntityLowerCase}}Id != 0 {
-        has, err := session.Id({{.entity.EntityLowerCase}}Id).Get({{.entity.EntityLowerCase}})
+    {{.entity.EntityCamelCase}} := new(models.{{.entity.EntityTitleName}})
+    if {{.entity.EntityCamelCase}}Id != 0 {
+        has, err := session.Id({{.entity.EntityCamelCase}}Id).Get({{.entity.EntityCamelCase}})
         core.HandleError(err)
         if has == false {
             panic("指定的{{.entity.EntityChinese}}不存在！")
@@ -77,10 +77,10 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Detail() revel.R
     }
 
     form := new({{.entity.EntityTitleName}}Form)
-    form.{{.entity.EntityTitleName}} = *{{.entity.EntityLowerCase}}
+    form.{{.entity.EntityTitleName}} = *{{.entity.EntityCamelCase}}
 
     c.RenderArgs["form"] = form
-    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{.entity.EntityLowerCase}}/{{.entity.EntityLowerCase}}_detail.html")
+    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{LowerCase .entity.EntityCamelCase}}/{{LowerCase .entity.EntityCamelCase}}_detail.html")
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Result {
@@ -93,16 +93,16 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Res
         return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
 
-    {{.entity.EntityLowerCase}} := &form.{{.entity.EntityTitleName}}
+    {{.entity.EntityCamelCase}} := &form.{{.entity.EntityTitleName}}
 
     var affected int64
     if form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if $field.Unique}}
 {{CheckUniqueCreate $.entity $field}}{{end}}{{end}}
-        affected, err = session.Insert({{.entity.EntityLowerCase}})
+        affected, err = session.Insert({{.entity.EntityCamelCase}})
         core.HandleError(err)
     } else { {{range $fieldIndex, $field := .entity.FieldList}}{{if $field.Unique}}
 {{CheckUniqueUpdate $.entity $field}}{{end}}{{end}}
-        affected, err = session.Id({{.entity.EntityLowerCase}}.Id).Update({{.entity.EntityLowerCase}})
+        affected, err = session.Id({{.entity.EntityCamelCase}}.Id).Update({{.entity.EntityCamelCase}})
         core.HandleError(err)
 
         if affected == 0 {
@@ -116,11 +116,11 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Res
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Delete() revel.Result {
     session := c.DbSession
 
-    {{.entity.EntityLowerCase}}IdList := make([]int64, 0)
-    c.Params.Bind(&{{.entity.EntityLowerCase}}IdList, "id_list")
+    {{.entity.EntityCamelCase}}IdList := make([]int64, 0)
+    c.Params.Bind(&{{.entity.EntityCamelCase}}IdList, "id_list")
 
-    {{.entity.EntityLowerCase}} := new(models.{{.entity.EntityTitleName}})
-    affected, err := session.In("id", {{.entity.EntityLowerCase}}IdList).Delete({{.entity.EntityLowerCase}})
+    {{.entity.EntityCamelCase}} := new(models.{{.entity.EntityTitleName}})
+    affected, err := session.In("id", {{.entity.EntityCamelCase}}IdList).Delete({{.entity.EntityCamelCase}})
     core.HandleError(err)
 
     return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

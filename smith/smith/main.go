@@ -7,6 +7,7 @@ import (
     "matrix/smith"
     "matrix/smith/template"
     "matrix/smith/models/inventory"
+    "strings"
 )
 
 var outputBaseDir = "d:\\codegen_output"
@@ -26,7 +27,8 @@ func main() {
 
     entityList := []smith.Entity{
         //inventory.SupplierEntity,
-        inventory.StockEntity,
+        //inventory.StockEntity,
+        inventory.StorageLocEntity,
     }
 
     modelsCode := RenderCodeTemplate("models", template.ModelsTemplate, map[string]interface{}{
@@ -49,10 +51,10 @@ func main() {
             "entity": entity,
         })
 
-        WriteToFile(controllersDir + "\\" + entity.EntityLowerCase + ".go", controllerCode)
+        WriteToFile(controllersDir + "\\" + strings.ToLower(entity.EntityCamelCase) + ".go", controllerCode)
     }
 
-    viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\" + entityList[0].EntityLowerCase  + "\\"
+    viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\" + strings.ToLower(entityList[0].EntityCamelCase) + "\\"
     err = os.MkdirAll(viewsDir, 0777)
     core.HandleError(err)
 
@@ -62,13 +64,13 @@ func main() {
             "entity": entity,
         })
 
-        WriteToFile(viewsDir + "\\" + entity.EntityLowerCase + "_index.html", indexhtmlCode)
+        WriteToFile(viewsDir + "\\" + strings.ToLower(entity.EntityCamelCase) + "_index.html", indexhtmlCode)
 
         detailhtmlCode := RenderCodeTemplate("detailhtml", template.DetailHtmlTemplate, map[string]interface{}{
             "entity": entity,
         })
 
-        WriteToFile(viewsDir + "\\" + entity.EntityLowerCase + "_detail.html", detailhtmlCode)
+        WriteToFile(viewsDir + "\\" + strings.ToLower(entity.EntityCamelCase) + "_detail.html", detailhtmlCode)
     }
 
     confDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\conf"

@@ -9,14 +9,14 @@ var IndexHtmlTemplate =
             <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
         </li>
         <li class="parent" data-menu="{{.entity.ModuleLowerCase}}-menu">{{.entity.ModuleChinese}}</li>
-        <li class="active" data-menu="{{.entity.ModuleLowerCase}}-{{.entity.EntityLowerCase}}-menu">{{.entity.EntityChinese}}管理</li>
+        <li class="active" data-menu="{{.entity.ModuleLowerCase}}-{{LowerCase .entity.EntityCamelCase}}-menu">{{.entity.EntityChinese}}管理</li>
     </ul>
 </div>
 <div class="page-content">
     <div class="row">
         <div class="col-xs-12" style="padding: 0;">
             <div class="gridToolBar clearfix">
-                <button class="btn btn-primary btn-sm" onclick="reloadList('#{{.entity.EntityLowerCase}}List')">
+                <button class="btn btn-primary btn-sm" onclick="reloadList('#{{.entity.EntityCamelCase}}List')">
                     <i class="ace-icon fa fa-refresh"></i>
                     刷新
                 </button>
@@ -30,9 +30,9 @@ var IndexHtmlTemplate =
                 </button>
             </div>
             <div>
-                <table id="{{.entity.EntityLowerCase}}List" class="table table-striped table-bordered table-hover"></table>
+                <table id="{{.entity.EntityCamelCase}}List" class="table table-striped table-bordered table-hover"></table>
             </div>
-            <div id="{{.entity.EntityLowerCase}}DetailDialogWrapper"></div>
+            <div id="{{.entity.EntityCamelCase}}DetailDialogWrapper"></div>
             <script type="text/javascript">
                 function show{{.entity.EntityTitleName}}Detail(id) {
                     $.ajax({
@@ -46,8 +46,8 @@ var IndexHtmlTemplate =
                                        $.msg.error(result.message);
                                        return;
                                    }
-                                   $("#{{.entity.EntityLowerCase}}DetailDialogWrapper").html(result);
-                                   $('#{{.entity.EntityLowerCase}}DetailDialog').modal(modalOptions);
+                                   $("#{{.entity.EntityCamelCase}}DetailDialogWrapper").html(result);
+                                   $('#{{.entity.EntityCamelCase}}DetailDialog').modal(modalOptions);
                                }
                            }
                     );
@@ -55,7 +55,7 @@ var IndexHtmlTemplate =
 
                 function delete{{.entity.EntityTitleName}}() {
                     var id_list = [];
-                    $('#{{.entity.EntityLowerCase}}List tbody tr>td:first-child input:checkbox').each(function () {
+                    $('#{{.entity.EntityCamelCase}}List tbody tr>td:first-child input:checkbox').each(function () {
                         if (this.checked) {
                             id_list.push($(this).val());
                         }
@@ -79,7 +79,7 @@ var IndexHtmlTemplate =
                                        else {
                                            $.msg.show(data.message);
                                        }
-                                       reloadList('#{{.entity.EntityLowerCase}}List');
+                                       reloadList('#{{.entity.EntityCamelCase}}List');
                                    }
                                });
                     });
@@ -87,7 +87,7 @@ var IndexHtmlTemplate =
 
                 $(function () {
                     initDataTable(
-                            '#{{.entity.EntityLowerCase}}List',
+                            '#{{.entity.EntityCamelCase}}List',
                             {
                                 "sAjaxSource": '{%url "{{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}.ListData"%}',
                                 "aaSorting": [[1, "asc"]],
@@ -106,7 +106,7 @@ var IndexHtmlTemplate =
                             }
                     );
 
-                    $('#{{.entity.EntityLowerCase}}List tbody').on('dblclick', 'tr', function () {
+                    $('#{{.entity.EntityCamelCase}}List tbody').on('dblclick', 'tr', function () {
                         var id = $(this).find('td:first-child input:checkbox').val();
                         show{{.entity.EntityTitleName}}Detail(id);
                     });

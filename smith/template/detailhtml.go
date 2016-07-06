@@ -1,7 +1,7 @@
 package template
 
 var DetailHtmlTemplate =
-`<div class="modal fade" id="{{.entity.EntityLowerCase}}DetailDialog">
+`<div class="modal fade" id="{{.entity.EntityCamelCase}}DetailDialog">
     <div class="modal-dialog" style="width: 440px;">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,9 +11,9 @@ var DetailHtmlTemplate =
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="{{.entity.EntityLowerCase}}DetailForm">
-                            <input id="{{.entity.EntityLowerCase}}_id" name="form.{{.entity.EntityTitleName}}.Id" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Id%}"/>
-                            <input id="{{.entity.EntityLowerCase}}_version" name="form.{{.entity.EntityTitleName}}.Version" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Version%}"/>{{range $fieldIndex, $field := .entity.FieldList}}
+                        <form class="form-horizontal" role="form" id="{{.entity.EntityCamelCase}}DetailForm">
+                            <input id="{{.entity.EntityCamelCase}}_id" name="form.{{.entity.EntityTitleName}}.Id" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Id%}"/>
+                            <input id="{{.entity.EntityCamelCase}}_version" name="form.{{.entity.EntityTitleName}}.Version" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Version%}"/>{{range $fieldIndex, $field := .entity.FieldList}}
                             <div class="form-group">
                                 <label for="{{$field.Column}}" class="col-xs-2 control-label no-padding-right">{{$field.VerboseName}}</label>
                                 <div class="col-xs-10">
@@ -39,7 +39,7 @@ var DetailHtmlTemplate =
 <script type='text/javascript'>
 function save{{.entity.EntityTitleName}}() {
     showMask("提交中...");
-    var form = $("#{{.entity.EntityLowerCase}}DetailForm");
+    var form = $("#{{.entity.EntityCamelCase}}DetailForm");
     var valid = validate(form, { {{ $fieldMaxIndex := ListMaxIndex .entity.FieldList}} {{range $fieldIndex, $field := .entity.FieldList}}
         'form.{{$.entity.EntityTitleName}}.{{$field.Name}}': {
             {{FieldClienValid $field}}
@@ -61,8 +61,8 @@ function save{{.entity.EntityTitleName}}() {
                        }
                        else {
                            $.msg.show(data.message);
-                           $('#{{.entity.EntityLowerCase}}DetailDialog').modal('hide');
-                           reloadList('#{{.entity.EntityLowerCase}}List');
+                           $('#{{.entity.EntityCamelCase}}DetailDialog').modal('hide');
+                           reloadList('#{{.entity.EntityCamelCase}}List');
                            //return;
                        }
                    }

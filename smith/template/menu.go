@@ -11,8 +11,8 @@ var MenuTemplate = `
                 <b class="arrow"></b>
                 <ul class="submenu">
 {{range $entityIndex, $entity := .entityList}}
-                    <li id="{{$entity.ModuleLowerCase}}-{{$entity.EntityLowerCase}}-menu" class="">
-                        <a href="/{{$entity.ModuleLowerCase}}/{{$entity.EntityLowerCase}}">
+                    <li id="{{$entity.ModuleLowerCase}}-{{LowerCase $entity.EntityCamelCase}}-menu" class="">
+                        <a href="/{{$entity.ModuleLowerCase}}/{{LowerCase $entity.EntityCamelCase}}">
                             <i class="menu-icon fa fa-caret-right"></i>
                             {{$entity.EntityChinese}}管理
                         </a>

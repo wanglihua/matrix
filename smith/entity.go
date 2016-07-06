@@ -23,7 +23,7 @@ type Entity struct {
     ModuleLowerCase string
     ModuleChinese   string
     EntityTitleName string
-    EntityLowerCase string
+    EntityCamelCase string
     EntityChinese   string
     TableName       string
     TablePrefix     string

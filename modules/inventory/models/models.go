@@ -52,3 +52,22 @@ func (e Stock) TableName() string {
     return TablePrefix + "stock"
 }
 
+//---------------------------------------------------------------------------------------------------------------
+
+type StorageLoc struct {
+    Id             int64             `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+    Code           string            `xorm:"nvarchar(100) notnull unique 'stock_code'" json:"stock_code"`
+    Name           string            `xorm:"nvarchar(255) notnull unique 'stock_name'" json:"stock_name"`
+    StockId        int64             `xorm:"bigint notnull index 'stock_id'" json:"stock_id"`
+    Remark         string            `xorm:"nvarchar(500) null 'remark'" json:"remark"`
+
+    CreateTime     core.Time         `xorm:"created notnull 'create_time'" json:"create_time"`
+    UpdateTime     core.Time         `xorm:"updated notnull 'update_time'" json:"update_time"`
+    Version        int               `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e StorageLoc) TableName() string {
+    return TablePrefix + "storage_loc"
+}
+
