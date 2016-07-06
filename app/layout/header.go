@@ -143,7 +143,6 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-
                     <li id="inventory-supplier-menu" class="">
                         <a href="/inventory/supplier">
                             <i class="menu-icon fa fa-caret-right"></i>
@@ -151,7 +150,13 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                         </a>
                         <b class="arrow"></b>
                     </li>
-
+                    <li id="inventory-stock-menu" class="">
+                        <a href="/inventory/stock">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            仓库管理
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
                 </ul>
             </li>
             <li id="auth-menu" class="">

@@ -6,7 +6,7 @@ import (
     "matrix/core"
     "matrix/smith"
     "matrix/smith/template"
-    "matrix/smith/models"
+    "matrix/smith/models/inventory"
 )
 
 var outputBaseDir = "d:\\codegen_output"
@@ -25,7 +25,8 @@ func main() {
     core.HandleError(err)
 
     entityList := []smith.Entity{
-        models.SupplierEntity,
+        //inventory.SupplierEntity,
+        inventory.StockEntity,
     }
 
     modelsCode := RenderCodeTemplate("models", template.ModelsTemplate, map[string]interface{}{

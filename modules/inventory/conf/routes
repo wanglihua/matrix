@@ -6,3 +6,9 @@ POST /inventory/supplier/detail             InventorySupplier.Detail
 POST /inventory/supplier/save               InventorySupplier.Save
 POST /inventory/supplier/delete             InventorySupplier.Delete
 
+GET  /inventory/stock                       InventoryStock.Index
+POST /inventory/stock/listdata              InventoryStock.ListData
+POST /inventory/stock/detail                InventoryStock.Detail
+POST /inventory/stock/save                  InventoryStock.Save
+POST /inventory/stock/delete                InventoryStock.Delete
+

@@ -1,0 +1,122 @@
+{%header "仓库管理" .%}
+
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+        </li>
+        <li class="parent" data-menu="inventory-menu">库存管理</li>
+        <li class="active" data-menu="inventory-stock-menu">仓库管理</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12" style="padding: 0;">
+            <div class="gridToolBar clearfix">
+                <button class="btn btn-primary btn-sm" onclick="reloadList('#stockList')">
+                    <i class="ace-icon fa fa-refresh"></i>
+                    刷新
+                </button>
+                <button class="btn btn-success btn-sm" onclick="showStockDetail(0)">
+                    <i class="ace-icon fa fa-plus"></i>
+                    新增
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteStock()">
+                    <i class="ace-icon fa fa-trash-o"></i>
+                    删除
+                </button>
+            </div>
+            <div>
+                <table id="stockList" class="table table-striped table-bordered table-hover"></table>
+            </div>
+            <div id="stockDetailDialogWrapper"></div>
+            <script type="text/javascript">
+                function showStockDetail(id) {
+                    $.ajax({
+                               url: '{%url "InventoryStock.Detail" %}',
+                               type: "POST",
+                               data: {
+                                   "id": id
+                               },
+                               success: function (result) {
+                                   if (result.success == false) {
+                                       $.msg.error(result.message);
+                                       return;
+                                   }
+                                   $("#stockDetailDialogWrapper").html(result);
+                                   $('#stockDetailDialog').modal(modalOptions);
+                               }
+                           }
+                    );
+                }
+
+                function deleteStock() {
+                    var id_list = [];
+                    $('#stockList tbody tr>td:first-child input:checkbox').each(function () {
+                        if (this.checked) {
+                            id_list.push($(this).val());
+                        }
+                    });
+
+                    if (id_list.length == 0) {
+                        $.msg.alert("请选择数据！");
+                        return;
+                    }
+
+                    $.msg.confirm("确认要删除吗？", function () {
+                        $.ajax({
+                                   url: '{%url "InventoryStock.Delete"%}',
+                                   type: "POST",
+                                   data: {"id_list": id_list},
+                                   success: function (data) {
+                                       if (data.success == false) {
+                                           $.msg.error(data.message);
+                                           return;
+                                       }
+                                       else {
+                                           $.msg.show(data.message);
+                                       }
+                                       reloadList('#stockList');
+                                   }
+                               });
+                    });
+                }
+
+                $(function () {
+                    initDataTable(
+                            '#stockList',
+                            {
+                                "sAjaxSource": '{%url "InventoryStock.ListData"%}',
+                                "aaSorting": [[1, "asc"]],
+                                "aoColumns": [
+                                    {
+                                        "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                        "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                        "render": function (data, type, row) {
+                                            return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                        }
+                                    },
+                                    {"mDataProp": "stock_code", "title": "编号", "bSearchable": true, "width": 120 },
+                                    {"mDataProp": "stock_name", "title": "名称", "bSearchable": true, "width": 250 },
+                                    {"mDataProp": "address", "title": "仓库地址", "bSearchable": true },
+                                    {"mDataProp": "keeper", "title": "负责人", "bSearchable": true, "width": 120 },
+                                    //{"mDataProp": "phone", "title": "联系电话", "bSearchable": true },
+                                    //{"mDataProp": "remark", "title": "备注", "bSearchable": true },
+                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                                ]
+                            }
+                    );
+
+                    $('#stockList tbody').on('dblclick', 'tr', function () {
+                        var id = $(this).find('td:first-child input:checkbox').val();
+                        showStockDetail(id);
+                    });
+                });
+            </script>
+
+        </div>
+    </div>
+</div>
+{%footer%}
+

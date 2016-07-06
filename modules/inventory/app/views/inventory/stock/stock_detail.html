@@ -1,0 +1,131 @@
+<div class="modal fade" id="stockDetailDialog">
+    <div class="modal-dialog" style="width: 680px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                <h4 class="modal-title">仓库详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" role="form" id="stockDetailForm">
+                            <input id="stock_id" name="form.Stock.Id" type="hidden" value="{%.form.Stock.Id%}"/>
+                            <input id="stock_version" name="form.Stock.Version" type="hidden" value="{%.form.Stock.Version%}"/>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="stock_code" class="col-xs-2 control-label no-padding-right">编号</label>
+                                        <div class="col-xs-10">
+                                            <input id="stock_code" name="form.Stock.Code" type="text" class="input-sm form-control" value="{%.form.Stock.Code%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="stock_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                        <div class="col-xs-10">
+                                            <input id="stock_name" name="form.Stock.Name" type="text" class="input-sm form-control" value="{%.form.Stock.Name%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address" class="col-xs-1 control-label no-padding-right">仓库地址</label>
+                                <div class="col-xs-11">
+                                    <input id="address" name="form.Stock.Address" type="text" class="input-sm form-control" value="{%.form.Stock.Address%}"/>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="keeper" class="col-xs-2 control-label no-padding-right">负责人</label>
+                                        <div class="col-xs-10">
+                                            <input id="keeper" name="form.Stock.Keeper" type="text" class="input-sm form-control" value="{%.form.Stock.Keeper%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="phone" class="col-xs-2 control-label no-padding-right">联系电话</label>
+                                        <div class="col-xs-10">
+                                            <input id="phone" name="form.Stock.Phone" type="text" class="input-sm form-control" value="{%.form.Stock.Phone%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="remark" class="col-xs-1 control-label no-padding-right">备注</label>
+                                <div class="col-xs-11">
+                                    <input id="remark" name="form.Stock.Remark" type="text" class="input-sm form-control" value="{%.form.Stock.Remark%}"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveStock()">
+                    <i class="ace-icon fa fa-floppy-o"></i>保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript'>
+    function saveStock() {
+        showMask("提交中...");
+        var form = $("#stockDetailForm");
+        var valid = validate(form, {
+            'form.Stock.Code': {
+                required: true, minlength: 3, maxlength: 10
+            },
+            'form.Stock.Name': {
+                required: true, minlength: 3, maxlength: 30
+            },
+            'form.Stock.Address': {
+                required: false, minlength: 3, maxlength: 20
+            },
+            'form.Stock.Keeper': {
+                required: false, maxlength: 20
+            },
+            'form.Stock.Phone': {
+                required: false, minlength: 2, maxlength: 40
+            },
+            'form.Stock.Remark': {
+                required: false, minlength: 3, maxlength: 250
+            }
+        });
+
+        if (!valid) {
+            hideMask();
+        } else {
+            $.ajax({
+                        url: '{%url "InventoryStock.Save"%}',
+                        type: "POST",
+                        data: form.serialize(),
+                        success: function (data) {
+                            hideMask();
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                //return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                                $('#stockDetailDialog').modal('hide');
+                                reloadList('#stockList');
+                                //return;
+                            }
+                        }
+                    }
+            );
+        }
+    }
+</script>
+
