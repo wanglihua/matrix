@@ -12,9 +12,8 @@ POST /inventory/stock/detail                  InventoryStock.Detail
 POST /inventory/stock/save                    InventoryStock.Save
 POST /inventory/stock/delete                  InventoryStock.Delete
 
-GET  /inventory/storageloc                    InventoryStorageLoc.IndexWithoutStockId
-GET  /inventory/storageloc/:sotckId           InventoryStorageLoc.Index
-POST /inventory/storageloc/listdata/:sotckId  InventoryStorageLoc.ListData
+POST /inventory/storageloc                    InventoryStorageLoc.Index
+POST /inventory/storageloc/listdata           InventoryStorageLoc.ListData
 POST /inventory/storageloc/detail             InventoryStorageLoc.Detail
 POST /inventory/storageloc/save               InventoryStorageLoc.Save
 POST /inventory/storageloc/delete             InventoryStorageLoc.Delete

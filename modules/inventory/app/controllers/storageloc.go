@@ -13,22 +13,25 @@ type InventoryStorageLoc struct {
     core.BaseController
 }
 
-func (c InventoryStorageLoc) IndexWithoutStockId() revel.Result {
-    //仅仅是方便用来生成不带 stockId 的Url
-    return c.RenderText("")
-}
+func (c InventoryStorageLoc) Index() revel.Result {
+    var stockId int64
+    c.Params.Bind(&stockId, "stockId")
 
-func (c InventoryStorageLoc) Index(stockId int64) revel.Result {
+    c.RenderArgs["stockId"] = stockId
     return c.RenderTemplate("inventory/storageloc/storageloc_index.html")
 }
 
-func (c InventoryStorageLoc) ListData(stockId int64) revel.Result {
+func (c InventoryStorageLoc) ListData() revel.Result {
     session := c.DbSession
+
+    var stockId int64
+    c.Params.Bind(&stockId, "stockId")
 
     filter, order, offset, limit := core.GetGridRequestParam(c.Request)
     query := session.Where(filter)
 
     //query extra filter here
+    query = query.Where("stock_id = ?", stockId);
 
     dataQuery := *query
     if order != "" {
@@ -100,6 +103,10 @@ func (c InventoryStorageLoc) Detail() revel.Result {
         if has == false {
             panic("指定的库位不存在！")
         }
+    } else {
+        var stockId int64
+        c.Params.Bind(&stockId, "stockId")
+        storageLoc.StockId = stockId
     }
 
     form := new(StorageLocForm)

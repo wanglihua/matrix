@@ -11,6 +11,7 @@
                         <form class="form-horizontal" role="form" id="storageLocDetailForm">
                             <input id="storageLoc_id" name="form.StorageLoc.Id" type="hidden" value="{%.form.StorageLoc.Id%}"/>
                             <input id="storageLoc_version" name="form.StorageLoc.Version" type="hidden" value="{%.form.StorageLoc.Version%}"/>
+                            <input id="stock_id" name="form.StorageLoc.StockId" type="hidden" class="input-sm form-control" value="{%.form.StorageLoc.StockId%}"/>
                             <div class="form-group">
                                 <label for="stock_code" class="col-xs-2 control-label no-padding-right">编号</label>
                                 <div class="col-xs-10">
@@ -22,13 +23,6 @@
                                 <label for="stock_name" class="col-xs-2 control-label no-padding-right">名称</label>
                                 <div class="col-xs-10">
                                     <input id="stock_name" name="form.StorageLoc.Name" type="text" class="input-sm form-control" value="{%.form.StorageLoc.Name%}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="stock_id" class="col-xs-2 control-label no-padding-right">仓库</label>
-                                <div class="col-xs-10">
-                                    <input id="stock_id" name="form.StorageLoc.StockId" type="text" class="input-sm form-control" value="{%.form.StorageLoc.StockId%}"/>
                                 </div>
                             </div>
 
@@ -55,47 +49,47 @@
     </div>
 </div>
 <script type='text/javascript'>
-function saveStorageLoc() {
-    showMask("提交中...");
-    var form = $("#storageLocDetailForm");
-    var valid = validate(form, {  
-        'form.StorageLoc.Code': {
-            required: true, minlength: 3, maxlength: 10
-        },
-        'form.StorageLoc.Name': {
-            required: true, minlength: 3, maxlength: 30
-        },
-        'form.StorageLoc.StockId': {
-            required: true, digits: true
-        },
-        'form.StorageLoc.Remark': {
-            required: false, minlength: 3, maxlength: 250
-        }
-    });
+    function saveStorageLoc() {
+        showMask("提交中...");
+        var form = $("#storageLocDetailForm");
+        var valid = validate(form, {
+            'form.StorageLoc.Code': {
+                required: true, minlength: 3, maxlength: 10
+            },
+            'form.StorageLoc.Name': {
+                required: true, minlength: 3, maxlength: 30
+            },
+            'form.StorageLoc.StockId': {
+                required: true, digits: true
+            },
+            'form.StorageLoc.Remark': {
+                required: false, minlength: 3, maxlength: 250
+            }
+        });
 
-    if (!valid) {
-        hideMask();
-    } else {
-        $.ajax({
-                   url: '{%url "InventoryStorageLoc.Save"%}',
-                   type: "POST",
-                   data: form.serialize(),
-                   success: function (data) {
-                       hideMask();
-                       if (data.success == false) {
-                           $.msg.error(data.message);
-                           //return;
-                       }
-                       else {
-                           $.msg.show(data.message);
-                           $('#storageLocDetailDialog').modal('hide');
-                           reloadList('#storageLocList');
-                           //return;
-                       }
-                   }
-               }
-        );
+        if (!valid) {
+            hideMask();
+        } else {
+            $.ajax({
+                        url: '{%url "InventoryStorageLoc.Save"%}',
+                        type: "POST",
+                        data: form.serialize(),
+                        success: function (data) {
+                            hideMask();
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                //return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                                $('#storageLocDetailDialog').modal('hide');
+                                reloadList('#storageLocList');
+                                //return;
+                            }
+                        }
+                    }
+            );
+        }
     }
-}
 </script>
 

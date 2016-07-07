@@ -1,4 +1,4 @@
 {
-    "title": "{%js .Error.Title%}",
-    "description": "{%js .Error.Description%}"
+    "success": false,
+    "message": "{%js .Error.Title%} {%js .Error.Description%}"
 }

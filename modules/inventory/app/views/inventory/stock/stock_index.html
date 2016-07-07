@@ -30,6 +30,8 @@
                 <table id="stockList" class="table table-striped table-bordered table-hover"></table>
             </div>
             <div id="stockDetailDialogWrapper"></div>
+            <div id="storageLocListDialogWrapper"></div>
+            <div id="storageLocDetailDialogWrapper"></div>
             <script type="text/javascript">
                 function showStockDetail(id) {
                     $.ajax({
@@ -90,7 +92,22 @@
                         event.cancelBubble = true;
                     }
 
-                    alert(stockId);
+                    $.ajax({
+                                url: '{%url "InventoryStorageLoc.Index" %}',
+                                type: "POST",
+                                data: {
+                                    "stockId": stockId
+                                },
+                                success: function (result) {
+                                    if (result.success == false) {
+                                        $.msg.error(result.message);
+                                        return;
+                                    }
+                                    $("#storageLocListDialogWrapper").html(result);
+                                    $('#storageLocListDialog').modal(modalOptions);
+                                }
+                            }
+                    );
                 }
 
                 $(function () {
