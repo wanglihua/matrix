@@ -157,13 +157,6 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                         </a>
                         <b class="arrow"></b>
                     </li>
-                    <li id="inventory-storageloc-menu" class="">
-                        <a href="/inventory/storageloc">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            库位管理
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
                 </ul>
             </li>
             <li id="auth-menu" class="">

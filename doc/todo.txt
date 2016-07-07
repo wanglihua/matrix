@@ -1,7 +1,7 @@
+
+* revel反转路由生成的url问题，revel.template ReverseUrl
 * xorm 加事务时SQL的显示问题
-* static 在模块目录里面也 加上个模块名，就像 view 那样
 * 用户授权的实现
-* 代码生成器
 * 列表页数据复杂查询面板
 
 * (碰到的时候再调)表单两列编排时，验证显示的问题
