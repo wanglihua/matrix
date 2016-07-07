@@ -10,7 +10,7 @@ type Field struct {
     Length      int
     Precision   int
     Scale       int
-    Unique      bool
+    Unique      string // "true" or unique name
     Index       bool
     Null        bool
     Blank       bool

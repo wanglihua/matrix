@@ -13,6 +13,8 @@ import (
     "log"
     "{{.ImportPath}}/db"
     //"github.com/go-xorm/xorm"
+    "fmt"
+    "strconv"
 )
 
 var (
@@ -76,6 +78,14 @@ func main() {
         panic(err)
     }
     */
+
+    if revel.DevMode == false {
+        if revel.HttpPort == 80 {
+            fmt.Println("请打开浏览器访问 http://localhost")
+        } else {
+            fmt.Println("请打开浏览器访问 http://localhost:" + strconv.Itoa(revel.HttpPort))
+        }
+    }
 
     revel.Run(*port)
 }

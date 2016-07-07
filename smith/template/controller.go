@@ -96,11 +96,11 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Res
     {{.entity.EntityCamelCase}} := &form.{{.entity.EntityTitleName}}
 
     var affected int64
-    if form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if $field.Unique}}
+    if form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
 {{CheckUniqueCreate $.entity $field}}{{end}}{{end}}
         affected, err = session.Insert({{.entity.EntityCamelCase}})
         core.HandleError(err)
-    } else { {{range $fieldIndex, $field := .entity.FieldList}}{{if $field.Unique}}
+    } else { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
 {{CheckUniqueUpdate $.entity $field}}{{end}}{{end}}
         affected, err = session.Id({{.entity.EntityCamelCase}}.Id).Update({{.entity.EntityCamelCase}})
         core.HandleError(err)

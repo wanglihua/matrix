@@ -24,7 +24,7 @@ var GroupEntity = smith.Entity{
             Length      : 255,
             Precision   : 0,
             Scale       : 0,
-            Unique      : true,
+            Unique      : "true",
             Index       : true,
             Null        : false,
             Blank       : false,
