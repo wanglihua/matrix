@@ -13,7 +13,7 @@ type InventoryStorageLoc struct {
     core.BaseController
 }
 
-func (c InventoryStorageLoc) IndexWithoutStokId() revel.Result {
+func (c InventoryStorageLoc) IndexWithoutStockId() revel.Result {
     //仅仅是方便用来生成不带 stockId 的Url
     return c.RenderText("")
 }

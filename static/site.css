@@ -157,3 +157,8 @@ table.dataDetail td.data {
     display: inline-block;
     min-width: 100px;
 }
+
+.btn-inline {
+    border: 0;
+    padding: 1px 5px;
+}
