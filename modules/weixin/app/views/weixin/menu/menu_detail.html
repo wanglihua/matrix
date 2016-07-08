@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
-                <h4 class="modal-title">群组详细</h4>
+                <h4 class="modal-title">微信菜单详细</h4>
             </div>
             <div class="modal-body clearfix">
                 <div class="row">
@@ -11,12 +11,41 @@
                         <form class="form-horizontal" role="form" id="menuDetailForm">
                             <input id="menu_id" name="form.Menu.Id" type="hidden" value="{%.form.Menu.Id%}"/>
                             <input id="menu_version" name="form.Menu.Version" type="hidden" value="{%.form.Menu.Version%}"/>
-                            <div class="form-menu">
-                                <label for="menu_name" class="col-xs-2 control-label no-padding-right">群组名</label>
+                            <div class="form-group">
+                                <label for="menu_name" class="col-xs-2 control-label no-padding-right">菜单名</label>
                                 <div class="col-xs-10">
-                                    <input id="menu_name" name="form.Menu.MenuName" type="text" class="input-sm form-control" value="{%.form.Menu.MenuName%}"/>
+                                    <input id="menu_name" name="form.Menu.Name" type="text" class="input-sm form-control" value="{%.form.Menu.Name%}"/>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="menu_type" class="col-xs-2 control-label no-padding-right">类型</label>
+                                <div class="col-xs-10">
+                                    <input id="menu_type" name="form.Menu.Type" type="text" class="input-sm form-control" value="{%.form.Menu.Type%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="menu_data" class="col-xs-2 control-label no-padding-right">菜单数据</label>
+                                <div class="col-xs-10">
+                                    <input id="menu_data" name="form.Menu.Data" type="text" class="input-sm form-control" value="{%.form.Menu.Data%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="menu_level" class="col-xs-2 control-label no-padding-right">层级</label>
+                                <div class="col-xs-10">
+                                    <input id="menu_level" name="form.Menu.Level" type="text" class="input-sm form-control" value="{%.form.Menu.Level%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="menu_order" class="col-xs-2 control-label no-padding-right">排序</label>
+                                <div class="col-xs-10">
+                                    <input id="menu_order" name="form.Menu.Order" type="text" class="input-sm form-control" value="{%.form.Menu.Order%}"/>
+                                </div>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -36,11 +65,21 @@
 function saveMenu() {
     showMask("提交中...");
     var form = $("#menuDetailForm");
-    var valid = validate(form, {
-        'form.Menu.MenuName': {
-            required: true,
-            minlength: 3,
-            maxlength: 20
+    var valid = validate(form, {  
+        'form.Menu.Name': {
+            required: true, minlength: 0, maxlength: 12
+        },
+        'form.Menu.Type': {
+            required: false, minlength: 0, maxlength: 12
+        },
+        'form.Menu.Data': {
+            required: false, minlength: 2, maxlength: 12
+        },
+        'form.Menu.Level': {
+            required: true, digits: true, min: 1, max: 2
+        },
+        'form.Menu.Order': {
+            required: true, digits: true
         }
     });
 
@@ -69,3 +108,4 @@ function saveMenu() {
     }
 }
 </script>
+

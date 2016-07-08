@@ -1,6 +1,7 @@
 package controllers
 
 import (
+    "strconv"
     "github.com/revel/revel"
     "matrix/core"
     "matrix/core/requests"
@@ -18,21 +19,122 @@ func (c WeixinMenu) Index() revel.Result {
 }
 
 func (c WeixinMenu) ListData() revel.Result {
-    //session := c.DbSession
+    session := c.DbSession
 
+    filter, order, offset, limit := core.GetGridRequestParam(c.Request)
+    query := session.Where(filter)
+
+    //query extra filter here
+
+    dataQuery := *query
+    if order != "" {
+        dataQuery = *dataQuery.OrderBy(order)
+    } else {
+        dataQuery = *dataQuery.Asc("id")
+    }
+
+    menuList := make([]models.Menu, 0, limit)
+    err := dataQuery.Limit(limit, offset).Find(&menuList)
+    core.HandleError(err)
+
+    countQuery := *query
+    count, err := countQuery.Count(new(models.Menu))
+    core.HandleError(err)
 
     return c.RenderJson(core.GridResult{
-        Data:  make([]models.Menu, 0),
-        Total: 0,
+        Data:  menuList,
+        Total: count,
     })
 }
 
+type MenuForm struct {
+    Menu models.Menu
+}
+
+func (f MenuForm) IsCreate() bool {
+    return f.Menu.Id == 0
+}
+
+func (f MenuForm) Valid(validation *revel.Validation) bool { 
+    validation.Required(f.Menu.Name).Message("菜单名不能为空！")
+    if f.Menu.Name != "" {
+        validation.MinSize(f.Menu.Name, 0).Message("菜单名长度不能小于0！")
+    }
+    if f.Menu.Name != "" {
+        validation.MaxSize(f.Menu.Name, 12).Message("菜单名长度不能大于12！")
+    }
+
+    if f.Menu.Type != "" {
+        validation.MinSize(f.Menu.Type, 0).Message("类型长度不能小于0！")
+    }
+    if f.Menu.Type != "" {
+        validation.MaxSize(f.Menu.Type, 12).Message("类型长度不能大于12！")
+    }
+
+    if f.Menu.Data != "" {
+        validation.MinSize(f.Menu.Data, 2).Message("菜单数据长度不能小于2！")
+    }
+    if f.Menu.Data != "" {
+        validation.MaxSize(f.Menu.Data, 12).Message("菜单数据长度不能大于12！")
+    }
+
+    validation.Required(f.Menu.Level).Message("层级不能为空！")
+    validation.Min(f.Menu.Level, 1).Message("层级不能小于1！")
+    validation.Max(f.Menu.Level, 2).Message("层级不能大于2！")
+
+    validation.Required(f.Menu.Order).Message("排序不能为空！")
+
+    return validation.HasErrors() == false
+}
+
 func (c WeixinMenu) Detail() revel.Result {
+    session := c.DbSession
+
+    menuId := core.GetInt64FromRequest(c.Request, "id")
+
+    menu := new(models.Menu)
+    if menuId != 0 {
+        has, err := session.Id(menuId).Get(menu)
+        core.HandleError(err)
+        if has == false {
+            panic("指定的微信菜单不存在！")
+        }
+    }
+
+    form := new(MenuForm)
+    form.Menu = *menu
+
+    c.RenderArgs["form"] = form
     return c.RenderTemplate("weixin/menu/menu_detail.html")
 }
 
 func (c WeixinMenu) Save() revel.Result {
-    return c.RenderJson(core.JsonResult{Success: true, Message: "保存成功!"})
+    session := c.DbSession
+
+    form := new(MenuForm)
+    c.Params.Bind(form, "form")
+
+    if form.Valid(c.Validation) == false {
+        return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+    }
+
+    menu := &form.Menu
+
+    var affected int64
+    var err error
+    if form.IsCreate() { 
+        affected, err = session.Insert(menu)
+        core.HandleError(err)
+    } else { 
+        affected, err = session.Id(menu.Id).Update(menu)
+        core.HandleError(err)
+
+        if affected == 0 {
+            return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+        }
+    }
+
+    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
 }
 
 //查看服务器端菜单
@@ -161,7 +263,15 @@ func (c WeixinMenu) Upload() revel.Result {
     return c.RenderJson(core.JsonResult{Success: true, Message: "菜单上传微信成功!"})
 }
 
-func (c WeixinMenu)Delete() revel.Result {
+func (c WeixinMenu) Delete() revel.Result {
+    session := c.DbSession
 
-    return c.RenderJson(core.JsonResult{Success: true, Message: "菜单删除成功!"})
+    menuIdList := make([]int64, 0)
+    c.Params.Bind(&menuIdList, "id_list")
+
+    menu := new(models.Menu)
+    affected, err := session.In("id", menuIdList).Delete(menu)
+    core.HandleError(err)
+
+    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }

@@ -12,4 +12,3 @@ POST /weixin/menu/save               WeixinMenu.Save
 POST /weixin/menu/download           WeixinMenu.Download
 POST /weixin/menu/upload             WeixinMenu.Upload
 POST /weixin/menu/delete             WeixinMenu.Delete
-

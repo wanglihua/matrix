@@ -1,4 +1,4 @@
-{%header "微信菜单" .%}
+{%header "微信菜单管理" .%}
 
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
@@ -6,7 +6,7 @@
             <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
         </li>
         <li class="parent" data-menu="weixin-menu">微信管理</li>
-        <li class="active" data-menu="weixin-menu-menu">微信菜单</li>
+        <li class="active" data-menu="weixin-menu-menu">微信菜单管理</li>
     </ul>
 </div>
 <div class="page-content">
@@ -16,6 +16,10 @@
                 <button class="btn btn-primary btn-sm" onclick="reloadList('#menuList')">
                     <i class="ace-icon fa fa-refresh"></i>
                     刷新
+                </button>
+                <button class="btn btn-success btn-sm" onclick="showMenuDetail(0)">
+                    <i class="ace-icon fa fa-plus"></i>
+                    新增
                 </button>
                 <button class="btn btn-purple btn-sm" onclick="downloadMenu()">
                     <i class="ace-icon fa fa-arrow-down"></i>
@@ -35,6 +39,25 @@
             </div>
             <div id="menuDetailDialogWrapper"></div>
             <script type="text/javascript">
+                function showMenuDetail(id) {
+                    $.ajax({
+                                url: '{%url "WeixinMenu.Detail" %}',
+                                type: "POST",
+                                data: {
+                                    "id": id
+                                },
+                                success: function (result) {
+                                    if (result.success == false) {
+                                        $.msg.error(result.message);
+                                        return;
+                                    }
+                                    $("#menuDetailDialogWrapper").html(result);
+                                    $('#menuDetailDialog').modal(modalOptions);
+                                }
+                            }
+                    );
+                }
+
                 function downloadMenu() {
                     $.msg.confirm("下载菜单将覆盖本地数据库菜单数据，确认要下载吗？", function () {
                         $.ajax({
@@ -71,25 +94,6 @@
                                 }
                         );
                     });
-                }
-
-                function showMenuDetail(id) {
-                    $.ajax({
-                                url: '{%url "WeixinMenu.Detail" %}',
-                                type: "POST",
-                                data: {
-                                    "id": id
-                                },
-                                success: function (result) {
-                                    if (result.success == false) {
-                                        $.msg.error(result.message);
-                                        return;
-                                    }
-                                    $("#menuDetailDialogWrapper").html(result);
-                                    $('#menuDetailDialog').modal(modalOptions);
-                                }
-                            }
-                    );
                 }
 
                 function deleteMenu() {
@@ -138,12 +142,19 @@
                                             return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                         }
                                     },
-                                    {"mDataProp": "menu_order", "title": "菜单排序", "bVisible": false, "bSortable": false, "bSearchable": true},
-                                    {"mDataProp": "menu_name", "title": "菜单名", "bSortable": false, "bSearchable": true, "width": 220},
-                                    {"mDataProp": "menu_type", "title": "菜单类型", "bSortable": false, "bSearchable": true, "width": 150},
+                                    {"mDataProp": "menu_order", "title": "排序", "bVisible": false, "bSortable": true, "bSearchable": false},
+                                    {
+                                        "mDataProp": "menu_name", "title": "菜单名", "bSortable": false, "bSearchable": true, "width": 180,
+                                        "render": function (data, type, row) {
+                                            return "<div style='margin-left:" + (row.menu_level - 1) * 30 + "px;'>" + data + "</div>";
+                                        }
+                                    },
+                                    {"mDataProp": "menu_type", "title": "类型", "bSortable": false, "bSearchable": true, "width": 120},
                                     {"mDataProp": "menu_data", "title": "菜单数据", "bSortable": false, "bSearchable": true},
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSortable": false, "bSearchable": false, "width": 120},
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSortable": false, "bSearchable": false, "width": 120}
+                                    {"mDataProp": "menu_level", "title": "层级", "bSortable": false, "bSearchable": false, "width": 60},
+
+                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                                 ]
                             }
                     );
@@ -153,9 +164,10 @@
                         showMenuDetail(id);
                     });
                 });
-
             </script>
+
         </div>
     </div>
 </div>
 {%footer%}
+

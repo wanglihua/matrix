@@ -6,7 +6,7 @@ import (
     "matrix/core"
     "matrix/smith"
     "matrix/smith/template"
-    "matrix/smith/models/inventory"
+    "matrix/smith/models/weixin"
     "strings"
 )
 
@@ -28,7 +28,8 @@ func main() {
     entityList := []smith.Entity{
         //inventory.SupplierEntity,
         //inventory.StockEntity,
-        inventory.StorageLocEntity,
+        //inventory.StorageLocEntity,
+        weixin.MenuEntity,
     }
 
     modelsCode := RenderCodeTemplate("models", template.ModelsTemplate, map[string]interface{}{

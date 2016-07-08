@@ -137,7 +137,7 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
         <ul class="nav nav-list">
             <li id="inventory-menu" class="">
                 <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-users"></i>
+                    <i class="menu-icon fa fa-truck"></i>
                     <span class="menu-text">库存管理</span>
                     <b class="arrow fa fa-angle-down"></b>
                 </a>
