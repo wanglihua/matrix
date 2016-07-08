@@ -53,11 +53,11 @@ type {{.entity.EntityTitleName}}Form struct {
     {{.entity.EntityTitleName}} models.{{.entity.EntityTitleName}}
 }
 
-func (f {{.entity.EntityTitleName}}Form) IsCreate() bool {
+func (f *{{.entity.EntityTitleName}}Form) IsCreate() bool {
     return f.{{.entity.EntityTitleName}}.Id == 0
 }
 
-func (f {{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) bool { {{range $fieldIndex, $field := .entity.FieldList}}
+func (f *{{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) bool { {{range $fieldIndex, $field := .entity.FieldList}}
 {{FieldValid $.entity $field}}{{end}}
     return validation.HasErrors() == false
 }

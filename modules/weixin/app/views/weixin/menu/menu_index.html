@@ -145,10 +145,23 @@
                                     {
                                         "mDataProp": "menu_name", "title": "菜单名", "bSortable": false, "bSearchable": true, "width": 180,
                                         "render": function (data, type, row) {
-                                            return "<div style='margin-left:" + (row.menu_level - 1) * 30 + "px;'>" + data + "级菜单</div>";
+                                            return "<div style='margin-left:" + (row.menu_level - 1) * 30 + "px;'>" + data + "</div>";
                                         }
                                     },
-                                    {"mDataProp": "menu_type", "title": "类型", "bSortable": false, "bSearchable": true, "width": 120},
+                                    {
+                                        "mDataProp": "menu_type", "title": "类型", "bSortable": false, "bSearchable": false, "width": 120,
+                                        "render": function (data, type, row) {
+                                            var menuType = "";
+                                            if (data == "view") {
+                                                menuType = "跳转URL";
+                                            }
+                                            else if (data == "click") {
+                                                menuType = "单击事件";
+                                            }
+
+                                            return menuType;
+                                        }
+                                    },
                                     {"mDataProp": "menu_data", "title": "菜单数据", "bSortable": false, "bSearchable": true},
                                     {
                                         "mDataProp": "menu_level", "title": "层级", "bSortable": false, "bSearchable": false, "width": 70,

@@ -15,11 +15,11 @@ type UserDetailForm struct {
     NewPasswordAgain string
 }
 
-func (f UserDetailForm) IsCreate() bool {
+func (f *UserDetailForm) IsCreate() bool {
     return f.User.Id == 0
 }
 
-func (f UserDetailForm) Valid(validation *revel.Validation) bool {
+func (f *UserDetailForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.User.LoginName).Message("登录名不能为空！")
     validation.MinSize(f.User.LoginName, 3).Message("登录名长度不能小于3！")
     validation.MaxSize(f.User.LoginName, 10).Message("登录名长度不能大于10！")
@@ -69,7 +69,7 @@ type LoginForm struct {
     Password  string
 }
 
-func (f LoginForm) Valid(validation *revel.Validation) bool {
+func (f *LoginForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.LoginName).Message("登录名不能为空！")
     validation.MinSize(f.LoginName, 3).Message("登录名长度不能小于3！")
     validation.MaxSize(f.LoginName, 10).Message("登录名长度不能大于10！")
@@ -88,7 +88,7 @@ type ProfileForm struct {
     PasswordAgain string
 }
 
-func (f ProfileForm) Valid(validation *revel.Validation) bool {
+func (f *ProfileForm) Valid(validation *revel.Validation) bool {
     if strings.Trim(f.Password, " ") != "" || strings.Trim(f.PasswordAgain, " ") != "" {
         validation.Required(f.Password).Message("密码不能为空！")
         validation.MinSize(f.Password, 6).Message("密码长度不能小于6！")

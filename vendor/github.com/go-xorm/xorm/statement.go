@@ -311,9 +311,12 @@ func buildUpdates(engine *Engine, table *core.Table, bean interface{},
 				continue
 			}
 		case reflect.String:
-			if !requiredField && fieldValue.String() == "" {
-				continue
-			}
+			//begin wanglihua 20160708
+			//if !requiredField && fieldValue.String() == "" {
+			//	continue
+			//}
+			//end wanglihua 20160708
+
 			// for MyString, should convert to string or panic
 			if fieldType.String() != reflect.String.String() {
 				val = fieldValue.String()

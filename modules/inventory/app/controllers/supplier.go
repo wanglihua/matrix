@@ -51,11 +51,11 @@ type SupplierForm struct {
     Supplier models.Supplier
 }
 
-func (f SupplierForm) IsCreate() bool {
+func (f *SupplierForm) IsCreate() bool {
     return f.Supplier.Id == 0
 }
 
-func (f SupplierForm) Valid(validation *revel.Validation) bool { 
+func (f *SupplierForm) Valid(validation *revel.Validation) bool { 
     validation.Required(f.Supplier.Name).Message("供应商名称不能为空！")
     if f.Supplier.Name != "" {
         validation.MinSize(f.Supplier.Name, 3).Message("供应商名称长度不能小于3！")

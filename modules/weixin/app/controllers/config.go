@@ -15,7 +15,7 @@ type ConfigForm struct {
     Config models.Config
 }
 
-func (f ConfigForm) Valid(validation *revel.Validation) bool {
+func (f *ConfigForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.Config.Token).Message("Token不能为空！")
     validation.MinSize(f.Config.Token, 3).Message("Token长度不能小于3！")
     validation.MaxSize(f.Config.Token, 32).Message("Token长度不能大于32！")

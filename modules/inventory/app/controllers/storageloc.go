@@ -58,11 +58,11 @@ type StorageLocForm struct {
     StorageLoc models.StorageLoc
 }
 
-func (f StorageLocForm) IsCreate() bool {
+func (f *StorageLocForm) IsCreate() bool {
     return f.StorageLoc.Id == 0
 }
 
-func (f StorageLocForm) Valid(validation *revel.Validation) bool {
+func (f *StorageLocForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.StorageLoc.Code).Message("编号不能为空！")
     if f.StorageLoc.Code != "" {
         validation.MinSize(f.StorageLoc.Code, 3).Message("编号长度不能小于3！")

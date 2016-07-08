@@ -21,7 +21,15 @@
                             <div class="form-group">
                                 <label for="menu_type" class="col-xs-2 control-label no-padding-right">类型</label>
                                 <div class="col-xs-10">
-                                    <input id="menu_type" name="form.Menu.Type" type="text" class="input-sm form-control" value="{%.form.Menu.Type%}"/>
+                                    <select id="menu_type" name="form.Menu.Type" class="input-sm form-control">
+                                        {%range $typeIndex, $typeOption := .form.MenuTypeSelectOptions%}
+                                        {%if eq $.form.Menu.Type $typeOption.Value%}
+                                        <option value="{%$typeOption.Value%}" selected="selected">{%$typeOption.Text%}</option>
+                                        {%else%}
+                                        <option value="{%$typeOption.Value%}">{%$typeOption.Text%}</option>
+                                        {%end%}
+                                        {%end%}
+                                    </select>
                                 </div>
                             </div>
 
@@ -78,7 +86,7 @@
                 required: true, minlength: 0, maxlength: 12
             },
             'form.Menu.Type': {
-                required: false, minlength: 0, maxlength: 12
+                required: false, maxlength: 12
             },
             'form.Menu.Data': {
                 required: false, minlength: 2, maxlength: 250

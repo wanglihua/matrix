@@ -43,7 +43,7 @@ var MenuEntity = smith.Entity{
             Index       : false,
             Null        : true,
             Blank       : true,
-            Min         : "0",
+            Min         : "",
             Max         : "12",
         },
         smith.Field{

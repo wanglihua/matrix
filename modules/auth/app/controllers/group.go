@@ -50,11 +50,11 @@ type GroupForm struct {
     Group models.Group
 }
 
-func (f GroupForm) IsCreate() bool {
+func (f *GroupForm) IsCreate() bool {
     return f.Group.Id == 0
 }
 
-func (f GroupForm) Valid(validation *revel.Validation) bool {
+func (f *GroupForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.Group.GroupName).Message("群组名不能为空！")
     validation.MinSize(f.Group.GroupName, 3).Message("群组名长度不能小于3！")
     validation.MaxSize(f.Group.GroupName, 20).Message("群组名长度不能大于20！")

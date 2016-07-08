@@ -51,11 +51,11 @@ type StockForm struct {
     Stock models.Stock
 }
 
-func (f StockForm) IsCreate() bool {
+func (f *StockForm) IsCreate() bool {
     return f.Stock.Id == 0
 }
 
-func (f StockForm) Valid(validation *revel.Validation) bool { 
+func (f *StockForm) Valid(validation *revel.Validation) bool { 
     validation.Required(f.Stock.Code).Message("编号不能为空！")
     if f.Stock.Code != "" {
         validation.MinSize(f.Stock.Code, 3).Message("编号长度不能小于3！")

@@ -46,13 +46,27 @@ func (c WeixinMenu) ListData() revel.Result {
 type MenuForm struct {
     Menu                   models.Menu
     MenuLevelSelectOptions []core.SelectOption
+    MenuTypeSelectOptions  []core.SelectOption
 }
 
-func (f MenuForm) IsCreate() bool {
+func (f *MenuForm) InitData() {
+    menuLevelSelectOptions := make([]core.SelectOption, 0)
+    menuLevelSelectOptions = append(menuLevelSelectOptions, core.SelectOption{Value:"1", Text:"一级菜单"})
+    menuLevelSelectOptions = append(menuLevelSelectOptions, core.SelectOption{Value:"2", Text:"二级菜单"})
+    f.MenuLevelSelectOptions = menuLevelSelectOptions
+
+    menuTypeSelectOptions := make([]core.SelectOption, 0)
+    menuTypeSelectOptions = append(menuTypeSelectOptions, core.SelectOption{Value:"", Text:""})
+    menuTypeSelectOptions = append(menuTypeSelectOptions, core.SelectOption{Value:"click", Text:"单击事件"})
+    menuTypeSelectOptions = append(menuTypeSelectOptions, core.SelectOption{Value:"view", Text:"跳转URL"})
+    f.MenuTypeSelectOptions = menuTypeSelectOptions
+}
+
+func (f *MenuForm) IsCreate() bool {
     return f.Menu.Id == 0
 }
 
-func (f MenuForm) Valid(validation *revel.Validation) bool {
+func (f *MenuForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.Menu.Name).Message("菜单名不能为空！")
     if f.Menu.Name != "" {
         validation.MinSize(f.Menu.Name, 0).Message("菜单名长度不能小于0！")
@@ -100,12 +114,9 @@ func (c WeixinMenu) Detail() revel.Result {
     }
 
     form := new(MenuForm)
-    form.Menu = *menu
+    form.InitData()
 
-    menuLevelSelectOptions := make([]core.SelectOption, 0)
-    menuLevelSelectOptions = append(menuLevelSelectOptions, core.SelectOption{Value:"1", Text:"一级菜单"})
-    menuLevelSelectOptions = append(menuLevelSelectOptions, core.SelectOption{Value:"2", Text:"二级菜单"})
-    form.MenuLevelSelectOptions = menuLevelSelectOptions
+    form.Menu = *menu
 
     c.RenderArgs["form"] = form
     return c.RenderTemplate("weixin/menu/menu_detail.html")
@@ -123,6 +134,9 @@ func (c WeixinMenu) Save() revel.Result {
 
     menu := &form.Menu
 
+    revel.TRACE.Println(c.Request.Form["form.Menu.Type"][0])
+    revel.TRACE.Println(menu.Type)
+
     var affected int64
     var err error
     if form.IsCreate() {
@@ -133,7 +147,7 @@ func (c WeixinMenu) Save() revel.Result {
         core.HandleError(err)
 
         if affected == 0 {
-            return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+            return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
         }
     }
 
