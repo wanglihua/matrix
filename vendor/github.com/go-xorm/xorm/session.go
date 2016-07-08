@@ -1011,10 +1011,8 @@ func (session *Session) Get(bean interface{}) (bool, error) {
 	var sqlStr string
 	var args []interface{}
 
-	session.Statement.OutTable = session.Engine.TableInfo(bean)
-
 	if session.Statement.RefTable == nil {
-		session.Statement.RefTable = session.Statement.OutTable
+		session.Statement.RefTable = session.Engine.TableInfo(bean)
 	}
 
 	if session.Statement.RawSQL == "" {
@@ -1075,21 +1073,115 @@ func (session *Session) Count(bean interface{}) (int64, error) {
 		args = session.Statement.RawParams
 	}
 
-	resultsSlice, err := session.query(sqlStr, args...)
+	session.queryPreprocess(&sqlStr, args...)
+
+	var err error
+	var total int64
+	if session.IsAutoCommit {
+		err = session.DB().QueryRow(sqlStr, args...).Scan(&total)
+	} else {
+		err = session.Tx.QueryRow(sqlStr, args...).Scan(&total)
+	}
 	if err != nil {
 		return 0, err
 	}
 
-	var total int64
-	if len(resultsSlice) > 0 {
-		results := resultsSlice[0]
-		for _, value := range results {
-			total, err = strconv.ParseInt(string(value), 10, 64)
-			break
-		}
+	return total, nil
+}
+
+// Sum call sum some column. bean's non-empty fields are conditions.
+func (session *Session) Sum(bean interface{}, columnName string) (float64, error) {
+	defer session.resetStatement()
+	if session.IsAutoClose {
+		defer session.Close()
 	}
 
-	return int64(total), err
+	var sqlStr string
+	var args []interface{}
+	if len(session.Statement.RawSQL) == 0 {
+		sqlStr, args = session.Statement.genSumSql(bean, columnName)
+	} else {
+		sqlStr = session.Statement.RawSQL
+		args = session.Statement.RawParams
+	}
+
+	session.queryPreprocess(&sqlStr, args...)
+
+	var err error
+	var res float64
+	if session.IsAutoCommit {
+		err = session.DB().QueryRow(sqlStr, args...).Scan(&res)
+	} else {
+		err = session.Tx.QueryRow(sqlStr, args...).Scan(&res)
+	}
+	if err != nil {
+		return 0, err
+	}
+
+	return res, nil
+}
+
+// Sums call sum some columns. bean's non-empty fields are conditions.
+func (session *Session) Sums(bean interface{}, columnNames ...string) ([]float64, error) {
+	defer session.resetStatement()
+	if session.IsAutoClose {
+		defer session.Close()
+	}
+
+	var sqlStr string
+	var args []interface{}
+	if len(session.Statement.RawSQL) == 0 {
+		sqlStr, args = session.Statement.genSumSql(bean, columnNames...)
+	} else {
+		sqlStr = session.Statement.RawSQL
+		args = session.Statement.RawParams
+	}
+
+	session.queryPreprocess(&sqlStr, args...)
+
+	var err error
+	var res = make([]float64, len(columnNames), len(columnNames))
+	if session.IsAutoCommit {
+		err = session.DB().QueryRow(sqlStr, args...).ScanSlice(&res)
+	} else {
+		err = session.Tx.QueryRow(sqlStr, args...).ScanSlice(&res)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (session *Session) SumsInt(bean interface{}, columnNames ...string) ([]int64, error) {
+	defer session.resetStatement()
+	if session.IsAutoClose {
+		defer session.Close()
+		}
+
+	var sqlStr string
+	var args []interface{}
+	if len(session.Statement.RawSQL) == 0 {
+		sqlStr, args = session.Statement.genSumSql(bean, columnNames...)
+	} else {
+		sqlStr = session.Statement.RawSQL
+		args = session.Statement.RawParams
+	}
+
+	session.queryPreprocess(&sqlStr, args...)
+
+	var err error
+	var res = make([]int64, 0, len(columnNames))
+	if session.IsAutoCommit {
+		err = session.DB().QueryRow(sqlStr, args...).ScanSlice(&res)
+	} else {
+		err = session.Tx.QueryRow(sqlStr, args...).ScanSlice(&res)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
 // Find retrieve records from table, condiBeans's non-empty fields
@@ -1108,7 +1200,7 @@ func (session *Session) Find(rowsSlicePtr interface{}, condiBean ...interface{})
 
 	sliceElementType := sliceValue.Type().Elem()
 	var table *core.Table
-
+	if session.Statement.RefTable == nil {
 	if sliceElementType.Kind() == reflect.Ptr {
 		if sliceElementType.Elem().Kind() == reflect.Struct {
 			pv := reflect.New(sliceElementType.Elem())
@@ -1122,34 +1214,58 @@ func (session *Session) Find(rowsSlicePtr interface{}, condiBean ...interface{})
 	} else {
 		return errors.New("slice type")
 	}
-
-	session.Statement.OutTable = table
-
-	if session.Statement.RefTable == nil {
 		session.Statement.RefTable = table
+	} else {
+		table = session.Statement.RefTable
 	}
 
+	var addedTableName = (len(session.Statement.JoinStr) > 0)
 	if !session.Statement.noAutoCondition && len(condiBean) > 0 {
-		colNames, args := session.Statement.buildConditions(
-			table, condiBean[0], true, true, false, true, session.Statement.needTableName())
-
+		colNames, args := session.Statement.buildConditions(table, condiBean[0], true, true, false, true, addedTableName)
 		session.Statement.ConditionStr = strings.Join(colNames, " AND ")
 		session.Statement.BeanArgs = args
 	} else {
 		// !oinume! Add "<col> IS NULL" to WHERE whatever condiBean is given.
 		// See https://github.com/go-xorm/xorm/issues/179
-		if col := table.DeletedColumn(); col != nil && !session.Statement.unscoped {
-			// tag "deleted" is enabled
-			var colName = session.Statement.colName(col)
-			session.Statement.ConditionStr = fmt.Sprintf(
-				"(%v IS NULL OR %v = '0001-01-01 00:00:00')", colName, colName)
+		if col := table.DeletedColumn(); col != nil && !session.Statement.unscoped { // tag "deleted" is enabled
+			var colName = session.Engine.Quote(col.Name)
+			if addedTableName {
+				var nm = session.Statement.TableName()
+				if len(session.Statement.TableAlias) > 0 {
+					nm = session.Statement.TableAlias
+				}
+				colName = session.Engine.Quote(nm) + "." + colName
+			}
+			session.Statement.ConditionStr = fmt.Sprintf("(%v IS NULL OR %v = '0001-01-01 00:00:00')",
+				colName, colName)
 		}
 	}
 
 	var sqlStr string
 	var args []interface{}
 	if session.Statement.RawSQL == "" {
-		columnStr := session.Statement.genColumnStr()
+		var columnStr = session.Statement.ColumnStr
+		if len(session.Statement.selectStr) > 0 {
+			columnStr = session.Statement.selectStr
+		} else {
+			if session.Statement.JoinStr == "" {
+				if columnStr == "" {
+					if session.Statement.GroupByStr != "" {
+						columnStr = session.Statement.Engine.Quote(strings.Replace(session.Statement.GroupByStr, ",", session.Engine.Quote(","), -1))
+					} else {
+						columnStr = session.Statement.genColumnStr()
+					}
+				}
+			} else {
+				if columnStr == "" {
+					if session.Statement.GroupByStr != "" {
+						columnStr = session.Statement.Engine.Quote(strings.Replace(session.Statement.GroupByStr, ",", session.Engine.Quote(","), -1))
+					} else {
+						columnStr = "*"
+					}
+				}
+			}
+		}
 
 		session.Statement.Params = append(session.Statement.joinArgs, append(session.Statement.Params, session.Statement.BeanArgs...)...)
 
@@ -1825,8 +1941,9 @@ func (session *Session) _row2Bean(rows *core.Rows, fields []string, fieldsCount 
 								return err
 							}
 							if has {
-								v := structInter.Elem().Interface()
-								fieldValue.Set(reflect.ValueOf(v))
+								//v := structInter.Elem().Interface()
+								//fieldValue.Set(reflect.ValueOf(v))
+								fieldValue.Set(structInter.Elem())
 							} else {
 								return errors.New("cascade obj is not exist!")
 							}
@@ -3068,7 +3185,7 @@ func (session *Session) innerInsert(bean interface{}) (int64, error) {
 
 		idByte := res[0][table.AutoIncrement]
 		id, err := strconv.ParseInt(string(idByte), 10, 64)
-		if err != nil {
+		if err != nil || id <= 0 {
 			return 1, err
 		}
 
@@ -3077,7 +3194,7 @@ func (session *Session) innerInsert(bean interface{}) (int64, error) {
 			session.Engine.logger.Error(err)
 		}
 
-		if aiValue == nil || !aiValue.IsValid() /*|| aiValue. != 0*/ || !aiValue.CanSet() {
+		if aiValue == nil || !aiValue.IsValid() || !aiValue.CanSet() {
 			return 1, nil
 		}
 
@@ -3113,7 +3230,7 @@ func (session *Session) innerInsert(bean interface{}) (int64, error) {
 
 		idByte := res[0][table.AutoIncrement]
 		id, err := strconv.ParseInt(string(idByte), 10, 64)
-		if err != nil {
+		if err != nil || id <= 0 {
 			return 1, err
 		}
 
@@ -3122,7 +3239,7 @@ func (session *Session) innerInsert(bean interface{}) (int64, error) {
 			session.Engine.logger.Error(err)
 		}
 
-		if aiValue == nil || !aiValue.IsValid() /*|| aiValue. != 0*/ || !aiValue.CanSet() {
+		if aiValue == nil || !aiValue.IsValid() || !aiValue.CanSet() {
 			return 1, nil
 		}
 
@@ -3164,12 +3281,11 @@ func (session *Session) innerInsert(bean interface{}) (int64, error) {
 			session.Engine.logger.Error(err)
 		}
 
-		if aiValue == nil || !aiValue.IsValid() /*|| aiValue.Int() != 0*/ || !aiValue.CanSet() {
+		if aiValue == nil || !aiValue.IsValid() || !aiValue.CanSet() {
 			return res.RowsAffected()
 		}
 
-		v := int64ToInt(id, aiValue.Type())
-		aiValue.Set(reflect.ValueOf(v))
+		aiValue.Set(int64ToIntValue(id, aiValue.Type()))
 
 		return res.RowsAffected()
 	}
