@@ -133,7 +133,7 @@
                             '#menuList',
                             {
                                 "sAjaxSource": '{%url "WeixinMenu.ListData"%}',
-                                "aaSorting": [[1, "asc"]],
+                                "aaSorting": [[5, "asc"]],
                                 "aoColumns": [
                                     {
                                         "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
@@ -142,19 +142,31 @@
                                             return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                         }
                                     },
-                                    {"mDataProp": "menu_order", "title": "排序", "bVisible": false, "bSortable": true, "bSearchable": false},
                                     {
                                         "mDataProp": "menu_name", "title": "菜单名", "bSortable": false, "bSearchable": true, "width": 180,
                                         "render": function (data, type, row) {
-                                            return "<div style='margin-left:" + (row.menu_level - 1) * 30 + "px;'>" + data + "</div>";
+                                            return "<div style='margin-left:" + (row.menu_level - 1) * 30 + "px;'>" + data + "级菜单</div>";
                                         }
                                     },
                                     {"mDataProp": "menu_type", "title": "类型", "bSortable": false, "bSearchable": true, "width": 120},
                                     {"mDataProp": "menu_data", "title": "菜单数据", "bSortable": false, "bSearchable": true},
-                                    {"mDataProp": "menu_level", "title": "层级", "bSortable": false, "bSearchable": false, "width": 60},
+                                    {
+                                        "mDataProp": "menu_level", "title": "层级", "bSortable": false, "bSearchable": false, "width": 70,
+                                        "render": function (data, type, row) {
+                                            if (data == 1) {
+                                                return "一级菜单"
+                                            }
+                                            else if (data == 2) {
+                                                return "二级菜单";
+                                            }
 
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                                            return "";
+                                        }
+                                    },
+                                    {"mDataProp": "menu_order", "title": "排序", "bVisible": true, "bSortable": false, "bSearchable": false, "width": 60},
+
+                                    {"mDataProp": "create_time", "title": "创建时间", "bSortable": false, "bSearchable": false, "width": 120},
+                                    {"mDataProp": "update_time", "title": "修改时间", "bSortable": false, "bSearchable": false, "width": 120}
                                 ]
                             }
                     );

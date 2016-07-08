@@ -21,17 +21,13 @@ func (c WeixinMenu) Index() revel.Result {
 func (c WeixinMenu) ListData() revel.Result {
     session := c.DbSession
 
-    filter, order, offset, limit := core.GetGridRequestParam(c.Request)
+    filter, _, offset, limit := core.GetGridRequestParam(c.Request)
     query := session.Where(filter)
 
     //query extra filter here
 
     dataQuery := *query
-    if order != "" {
-        dataQuery = *dataQuery.OrderBy(order)
-    } else {
-        dataQuery = *dataQuery.Asc("id")
-    }
+    dataQuery = *dataQuery.Asc("menu_order")
 
     menuList := make([]models.Menu, 0, limit)
     err := dataQuery.Limit(limit, offset).Find(&menuList)
@@ -48,14 +44,15 @@ func (c WeixinMenu) ListData() revel.Result {
 }
 
 type MenuForm struct {
-    Menu models.Menu
+    Menu                   models.Menu
+    MenuLevelSelectOptions []core.SelectOption
 }
 
 func (f MenuForm) IsCreate() bool {
     return f.Menu.Id == 0
 }
 
-func (f MenuForm) Valid(validation *revel.Validation) bool { 
+func (f MenuForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.Menu.Name).Message("菜单名不能为空！")
     if f.Menu.Name != "" {
         validation.MinSize(f.Menu.Name, 0).Message("菜单名长度不能小于0！")
@@ -75,14 +72,15 @@ func (f MenuForm) Valid(validation *revel.Validation) bool {
         validation.MinSize(f.Menu.Data, 2).Message("菜单数据长度不能小于2！")
     }
     if f.Menu.Data != "" {
-        validation.MaxSize(f.Menu.Data, 12).Message("菜单数据长度不能大于12！")
+        validation.MaxSize(f.Menu.Data, 250).Message("菜单数据长度不能大于250！")
     }
 
     validation.Required(f.Menu.Level).Message("层级不能为空！")
     validation.Min(f.Menu.Level, 1).Message("层级不能小于1！")
     validation.Max(f.Menu.Level, 2).Message("层级不能大于2！")
 
-    validation.Required(f.Menu.Order).Message("排序不能为空！")
+    //validation.Required(f.Menu.Order).Message("排序不能为空！")
+    validation.Min(f.Menu.Order, 1).Message("排序不能小于1！")
 
     return validation.HasErrors() == false
 }
@@ -104,6 +102,11 @@ func (c WeixinMenu) Detail() revel.Result {
     form := new(MenuForm)
     form.Menu = *menu
 
+    menuLevelSelectOptions := make([]core.SelectOption, 0)
+    menuLevelSelectOptions = append(menuLevelSelectOptions, core.SelectOption{Value:"1", Text:"一级菜单"})
+    menuLevelSelectOptions = append(menuLevelSelectOptions, core.SelectOption{Value:"2", Text:"二级菜单"})
+    form.MenuLevelSelectOptions = menuLevelSelectOptions
+
     c.RenderArgs["form"] = form
     return c.RenderTemplate("weixin/menu/menu_detail.html")
 }
@@ -122,10 +125,10 @@ func (c WeixinMenu) Save() revel.Result {
 
     var affected int64
     var err error
-    if form.IsCreate() { 
+    if form.IsCreate() {
         affected, err = session.Insert(menu)
         core.HandleError(err)
-    } else { 
+    } else {
         affected, err = session.Id(menu.Id).Update(menu)
         core.HandleError(err)
 

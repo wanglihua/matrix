@@ -59,7 +59,7 @@ var MenuEntity = smith.Entity{
             Null        : true,
             Blank       : true,
             Min         : "2",
-            Max         : "12",
+            Max         : "250",
         },
         smith.Field{
             VerboseName : "层级",

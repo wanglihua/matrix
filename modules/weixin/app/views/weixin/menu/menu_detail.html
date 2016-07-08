@@ -35,7 +35,15 @@
                             <div class="form-group">
                                 <label for="menu_level" class="col-xs-2 control-label no-padding-right">层级</label>
                                 <div class="col-xs-10">
-                                    <input id="menu_level" name="form.Menu.Level" type="text" class="input-sm form-control" value="{%.form.Menu.Level%}"/>
+                                    <select id="menu_level" name="form.Menu.Level" class="input-sm form-control">
+                                        {%range $levelIndex, $levelOption := .form.MenuLevelSelectOptions%}
+                                        {%if eq (IntToStr $.form.Menu.Level) $levelOption.Value%}
+                                        <option value="{%$levelOption.Value%}" selected="selected">{%$levelOption.Text%}</option>
+                                        {%else%}
+                                        <option value="{%$levelOption.Value%}">{%$levelOption.Text%}</option>
+                                        {%end%}
+                                        {%end%}
+                                    </select>
                                 </div>
                             </div>
 
@@ -62,50 +70,50 @@
     </div>
 </div>
 <script type='text/javascript'>
-function saveMenu() {
-    showMask("提交中...");
-    var form = $("#menuDetailForm");
-    var valid = validate(form, {  
-        'form.Menu.Name': {
-            required: true, minlength: 0, maxlength: 12
-        },
-        'form.Menu.Type': {
-            required: false, minlength: 0, maxlength: 12
-        },
-        'form.Menu.Data': {
-            required: false, minlength: 2, maxlength: 12
-        },
-        'form.Menu.Level': {
-            required: true, digits: true, min: 1, max: 2
-        },
-        'form.Menu.Order': {
-            required: true, digits: true
-        }
-    });
+    function saveMenu() {
+        showMask("提交中...");
+        var form = $("#menuDetailForm");
+        var valid = validate(form, {
+            'form.Menu.Name': {
+                required: true, minlength: 0, maxlength: 12
+            },
+            'form.Menu.Type': {
+                required: false, minlength: 0, maxlength: 12
+            },
+            'form.Menu.Data': {
+                required: false, minlength: 2, maxlength: 250
+            },
+            'form.Menu.Level': {
+                required: true, digits: true, min: 1, max: 2
+            },
+            'form.Menu.Order': {
+                required: true, digits: true, min: 1
+            }
+        });
 
-    if (!valid) {
-        hideMask();
-    } else {
-        $.ajax({
-                   url: '{%url "WeixinMenu.Save"%}',
-                   type: "POST",
-                   data: form.serialize(),
-                   success: function (data) {
-                       hideMask();
-                       if (data.success == false) {
-                           $.msg.error(data.message);
-                           //return;
-                       }
-                       else {
-                           $.msg.show(data.message);
-                           $('#menuDetailDialog').modal('hide');
-                           reloadList('#menuList');
-                           //return;
-                       }
-                   }
-               }
-        );
+        if (!valid) {
+            hideMask();
+        } else {
+            $.ajax({
+                        url: '{%url "WeixinMenu.Save"%}',
+                        type: "POST",
+                        data: form.serialize(),
+                        success: function (data) {
+                            hideMask();
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                //return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                                $('#menuDetailDialog').modal('hide');
+                                reloadList('#menuList');
+                                //return;
+                            }
+                        }
+                    }
+            );
+        }
     }
-}
 </script>
 

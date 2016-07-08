@@ -7,12 +7,15 @@ import (
     //"bytes"
     //"fmt"
     "matrix/core"
+    "strconv"
 )
 
 func registerTags() {
     revel.TemplateFuncs["test"] = testTemplateFunc
     revel.TemplateFuncs["header"] = headerTemplateFunc
     revel.TemplateFuncs["footer"] = footerTemplateFunc
+
+    revel.TemplateFuncs["IntToStr"] = intToStrTemplateFunc
 }
 
 func testTemplateFunc(renderArgs map[string]interface{}) template.HTML {
@@ -58,4 +61,8 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
 func footerTemplateFunc() template.HTML {
     //just plain string
     return template.HTML(layout.FooterTemplate)
+}
+
+func intToStrTemplateFunc(val int) string {
+    return strconv.Itoa(val)
 }
