@@ -15,7 +15,7 @@
             <div class="widget-box" style="border-style:none;width:600px; ">
                 <div class="widget-body">
                     <div class="widget-main">
-                        <form class="form-horizontal" id="configForm" style="margin: 20px 0 30px 0;">
+                        <form class="form-horizontal" id="configForm" style="margin: 20px 0 30px 0;" onsubmit="saveConfig();return false;">
                             <input id="config_version" name="form.Config.Version" type="hidden" value="{%.form.Config.Version%}"/>
                             <div class="form-group">
                                 <label for="token" class="col-xs-3 control-label no-padding-right">Token：</label>

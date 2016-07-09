@@ -22,6 +22,12 @@ func (c AuthGroupUser) Index() revel.Result {
     return c.RenderTemplate("auth/groupuser/groupuser_index.html")
 }
 
+type GroupUserView struct {
+    models.Group        `xorm:"extends" json:"g"`
+    models.User         `xorm:"extends" json:"u"`
+    models.GroupUser    `xorm:"extends" json:"gu"`
+}
+
 func (c AuthGroupUser) ListData() revel.Result {
     session := c.DbSession
 
@@ -29,24 +35,29 @@ func (c AuthGroupUser) ListData() revel.Result {
     c.Params.Bind(&groupId, "groupId")
 
     filter, order, offset, limit := core.GetGridRequestParam(c.Request)
-    query := session.Where(filter)
+    query := session.
+    Select("gu.*, g.*, u.*").
+    Table(models.TablePrefix + "group_user").Alias("gu").
+    Join("inner", []string{models.TablePrefix + "group", "g"}, "gu.group_id = g.id").
+    Join("inner", []string{models.TablePrefix + "user", "u"}, "gu.user_id = u.id").
+    Where(filter)
 
     //query extra filter here
-    query = query.Where("group_id = ?", groupId)
+    query = query.Where("gu.group_id = ?", groupId)
 
     dataQuery := *query
     if order != "" {
         dataQuery = *dataQuery.OrderBy(order)
     } else {
-        dataQuery = *dataQuery.Asc("id")
+        dataQuery = *dataQuery.Asc("gu.add_time")
     }
 
-    groupUserList := make([]models.GroupUser, 0, limit)
+    groupUserList := make([]GroupUserView, 0, limit)
     err := dataQuery.Limit(limit, offset).Find(&groupUserList)
     core.HandleError(err)
 
     countQuery := *query
-    count, err := countQuery.Count(new(models.GroupUser))
+    count, err := countQuery.Count(new(GroupUserView))
     core.HandleError(err)
 
     return c.RenderJson(core.GridResult{

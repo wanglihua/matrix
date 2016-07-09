@@ -8,7 +8,7 @@
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="storageLocDetailForm">
+                        <form class="form-horizontal" role="form" id="storageLocDetailForm" onsubmit="saveStorageLoc();return false;">
                             <input id="storageLoc_id" name="form.StorageLoc.Id" type="hidden" value="{%.form.StorageLoc.Id%}"/>
                             <input id="storageLoc_version" name="form.StorageLoc.Version" type="hidden" value="{%.form.StorageLoc.Version%}"/>
                             <input id="stock_id" name="form.StorageLoc.StockId" type="hidden" class="input-sm form-control" value="{%.form.StorageLoc.StockId%}"/>
@@ -71,23 +71,23 @@
             hideMask();
         } else {
             $.ajax({
-                        url: '{%url "InventoryStorageLoc.Save"%}',
-                        type: "POST",
-                        data: form.serialize(),
-                        success: function (data) {
-                            hideMask();
-                            if (data.success == false) {
-                                $.msg.error(data.message);
-                                //return;
-                            }
-                            else {
-                                $.msg.show(data.message);
-                                $('#storageLocDetailDialog').modal('hide');
-                                reloadList('#storageLocList');
-                                //return;
-                            }
-                        }
-                    }
+                       url: '{%url "InventoryStorageLoc.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#storageLocDetailDialog').modal('hide');
+                               reloadList('#storageLocList');
+                               //return;
+                           }
+                       }
+                   }
             );
         }
     }

@@ -8,7 +8,7 @@
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="userDetailForm">
+                        <form class="form-horizontal" role="form" id="userDetailForm" onsubmit="saveUser();return false;">
                             <input id="user_id" name="form.User.Id" type="hidden" value="{%.form.User.Id%}"/>
                             <input id="user_version" name="form.User.Version" type="hidden" value="{%.form.User.Version%}"/>
                             <div class="form-group">

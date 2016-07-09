@@ -11,7 +11,7 @@ var DetailHtmlTemplate =
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="{{.entity.EntityCamelCase}}DetailForm">
+                        <form class="form-horizontal" role="form" id="{{.entity.EntityCamelCase}}DetailForm" onsubmit="save{{.entity.EntityTitleName}}();return false;">
                             <input id="{{.entity.EntityCamelCase}}_id" name="form.{{.entity.EntityTitleName}}.Id" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Id%}"/>
                             <input id="{{.entity.EntityCamelCase}}_version" name="form.{{.entity.EntityTitleName}}.Version" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Version%}"/>{{range $fieldIndex, $field := .entity.FieldList}}
                             <div class="form-group">

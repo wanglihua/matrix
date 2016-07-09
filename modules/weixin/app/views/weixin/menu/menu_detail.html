@@ -8,7 +8,7 @@
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="menuDetailForm">
+                        <form class="form-horizontal" role="form" id="menuDetailForm" onsubmit="saveMenu();return false;">
                             <input id="menu_id" name="form.Menu.Id" type="hidden" value="{%.form.Menu.Id%}"/>
                             <input id="menu_version" name="form.Menu.Version" type="hidden" value="{%.form.Menu.Version%}"/>
                             <div class="form-group">
@@ -103,23 +103,23 @@
             hideMask();
         } else {
             $.ajax({
-                        url: '{%url "WeixinMenu.Save"%}',
-                        type: "POST",
-                        data: form.serialize(),
-                        success: function (data) {
-                            hideMask();
-                            if (data.success == false) {
-                                $.msg.error(data.message);
-                                //return;
-                            }
-                            else {
-                                $.msg.show(data.message);
-                                $('#menuDetailDialog').modal('hide');
-                                reloadList('#menuList');
-                                //return;
-                            }
-                        }
-                    }
+                       url: '{%url "WeixinMenu.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#menuDetailDialog').modal('hide');
+                               reloadList('#menuList');
+                               //return;
+                           }
+                       }
+                   }
             );
         }
     }

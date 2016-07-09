@@ -14,7 +14,7 @@
             <div class="widget-box" style="border-style:none;width:600px; ">
                 <div class="widget-body">
                     <div class="widget-main">
-                        <form class="form-horizontal" id="profileForm" style="margin: 20px 0 30px 0;">
+                        <form class="form-horizontal" id="profileForm" style="margin: 20px 0 30px 0;" onsubmit="saveProfile();return false;">
                             <div class="form-group">
                                 <label for="loginName" class="col-xs-3 control-label no-padding-right">登录名：</label>
                                 <div class="col-xs-8">
@@ -42,7 +42,7 @@
                         </form>
                         <hr>
                         <div class="wizard-actions">
-                            <button class="btn btn-sm btn-primary" onclick="submitForm()">
+                            <button class="btn btn-sm btn-primary" onclick="saveProfile()">
                                 <i class="ace-icon fa fa-floppy-o"></i>
                                 保存
                             </button>
@@ -51,7 +51,7 @@
                                 重置
                             </button>
                             <script type="text/javascript">
-                                function submitForm() {
+                                function saveProfile() {
                                     showMask("提交中...");
                                     var form = $("#profileForm");
 
@@ -85,7 +85,7 @@
                                                            //return;
                                                        }
                                                        else {
-                                                            $.msg.show(data.message);
+                                                           $.msg.show(data.message);
                                                            //return;
                                                        }
                                                    }

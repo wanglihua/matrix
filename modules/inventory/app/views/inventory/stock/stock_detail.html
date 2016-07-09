@@ -8,7 +8,7 @@
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="stockDetailForm">
+                        <form class="form-horizontal" role="form" id="stockDetailForm" onsubmit="saveStock();return false;">
                             <input id="stock_id" name="form.Stock.Id" type="hidden" value="{%.form.Stock.Id%}"/>
                             <input id="stock_version" name="form.Stock.Version" type="hidden" value="{%.form.Stock.Version%}"/>
                             <div class="row">
@@ -107,23 +107,23 @@
             hideMask();
         } else {
             $.ajax({
-                        url: '{%url "InventoryStock.Save"%}',
-                        type: "POST",
-                        data: form.serialize(),
-                        success: function (data) {
-                            hideMask();
-                            if (data.success == false) {
-                                $.msg.error(data.message);
-                                //return;
-                            }
-                            else {
-                                $.msg.show(data.message);
-                                $('#stockDetailDialog').modal('hide');
-                                reloadList('#stockList');
-                                //return;
-                            }
-                        }
-                    }
+                       url: '{%url "InventoryStock.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#stockDetailDialog').modal('hide');
+                               reloadList('#stockList');
+                               //return;
+                           }
+                       }
+                   }
             );
         }
     }

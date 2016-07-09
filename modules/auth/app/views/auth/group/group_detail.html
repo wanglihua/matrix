@@ -8,7 +8,7 @@
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="groupDetailForm">
+                        <form class="form-horizontal" role="form" id="groupDetailForm" onsubmit="saveGroup();return false;">
                             <input id="group_id" name="form.Group.Id" type="hidden" value="{%.form.Group.Id%}"/>
                             <input id="group_version" name="form.Group.Version" type="hidden" value="{%.form.Group.Version%}"/>
                             <div class="form-group">
@@ -33,39 +33,39 @@
     </div>
 </div>
 <script type='text/javascript'>
-function saveGroup() {
-    showMask("提交中...");
-    var form = $("#groupDetailForm");
-    var valid = validate(form, {
-        'form.Group.GroupName': {
-            required: true,
-            minlength: 3,
-            maxlength: 20
-        }
-    });
+    function saveGroup() {
+        showMask("提交中...");
+        var form = $("#groupDetailForm");
+        var valid = validate(form, {
+            'form.Group.GroupName': {
+                required: true,
+                minlength: 3,
+                maxlength: 20
+            }
+        });
 
-    if (!valid) {
-        hideMask();
-    } else {
-        $.ajax({
-                   url: '{%url "AuthGroup.Save"%}',
-                   type: "POST",
-                   data: form.serialize(),
-                   success: function (data) {
-                       hideMask();
-                       if (data.success == false) {
-                           $.msg.error(data.message);
-                           //return;
-                       }
-                       else {
-                           $.msg.show(data.message);
-                           $('#groupDetailDialog').modal('hide');
-                           reloadList('#groupList');
-                           //return;
+        if (!valid) {
+            hideMask();
+        } else {
+            $.ajax({
+                       url: '{%url "AuthGroup.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#groupDetailDialog').modal('hide');
+                               reloadList('#groupList');
+                               //return;
+                           }
                        }
                    }
-               }
-        );
+            );
+        }
     }
-}
 </script>

@@ -91,9 +91,9 @@
                                                         return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                                     }
                                                 },
-                                                {"mDataProp": "group_id", "title": "群组", "bSearchable": false},
-                                                {"mDataProp": "user_id", "title": "用户", "bSearchable": false},
-                                                {"mDataProp": "add_time", "title": "添加时间", "bSearchable": false, "width": 120}
+                                                {"mDataProp": "g.group_name", "title": "群组名称", "bSearchable": true},
+                                                {"mDataProp": "u.nick_name", "title": "用户名称", "bSearchable": true},
+                                                {"mDataProp": "gu.add_time", "title": "添加时间", "bSearchable": false, "width": 120}
                                             ],
                                             "fnServerData": function (sSource, aoData, fnCallback) {
                                                 aoData.push({'name': 'groupId', 'value': '{% .groupId %}'});

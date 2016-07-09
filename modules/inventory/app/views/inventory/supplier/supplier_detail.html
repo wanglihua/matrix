@@ -8,7 +8,7 @@
             <div class="modal-body clearfix">
                 <div class="row">
                     <div class="col-xs-12">
-                        <form class="form-horizontal" role="form" id="supplierDetailForm">
+                        <form class="form-horizontal" role="form" id="supplierDetailForm" onsubmit="saveSupplier();return false;">
                             <input id="supplier_id" name="form.Supplier.Id" type="hidden" value="{%.form.Supplier.Id%}"/>
                             <input id="supplier_version" name="form.Supplier.Version" type="hidden" value="{%.form.Supplier.Version%}"/>
                             <div class="row">
@@ -128,23 +128,23 @@
             hideMask();
         } else {
             $.ajax({
-                        url: '{%url "InventorySupplier.Save"%}',
-                        type: "POST",
-                        data: form.serialize(),
-                        success: function (data) {
-                            hideMask();
-                            if (data.success == false) {
-                                $.msg.error(data.message);
-                                //return;
-                            }
-                            else {
-                                $.msg.show(data.message);
-                                $('#supplierDetailDialog').modal('hide');
-                                reloadList('#supplierList');
-                                //return;
-                            }
-                        }
-                    }
+                       url: '{%url "InventorySupplier.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#supplierDetailDialog').modal('hide');
+                               reloadList('#supplierList');
+                               //return;
+                           }
+                       }
+                   }
             );
         }
     }
