@@ -1,23 +1,30 @@
-GET /auth/static/*filepath        Static.ServeModule(auth, static)
+GET /auth/static/*filepath           Static.ServeModule(auth, static)
 
-GET  /auth/profile                 AuthProfile.Index
-POST /auth/profile/save            AuthProfile.Save
+GET  /auth/profile                    AuthProfile.Index
+POST /auth/profile/save               AuthProfile.Save
 
-GET  /auth/user                    AuthUser.Index
-POST /auth/user/listdata           AuthUser.ListData
-POST /auth/user/detail             AuthUser.Detail
-POST /auth/user/save               AuthUser.Save
-POST /auth/user/delete             AuthUser.Delete
+GET  /auth/user                       AuthUser.Index
+POST /auth/user/listdata              AuthUser.ListData
+POST /auth/user/detail                AuthUser.Detail
+POST /auth/user/save                  AuthUser.Save
+POST /auth/user/delete                AuthUser.Delete
 
-GET  /auth/admin                   AuthAdmin.Index
-POST /auth/admin/listdata          AuthAdmin.ListData
-POST /auth/admin/add               AuthAdmin.Add
-POST /auth/admin/add/listdata      AuthAdmin.AddListData
-POST /auth/admin/add/save          AuthAdmin.AddSave
-POST /auth/admin/remove            AuthAdmin.Remove
+GET  /auth/admin                      AuthAdmin.Index
+POST /auth/admin/listdata             AuthAdmin.ListData
+POST /auth/admin/add                  AuthAdmin.Add
+POST /auth/admin/add/listdata         AuthAdmin.AddListData
+POST /auth/admin/add/save             AuthAdmin.AddSave
+POST /auth/admin/remove               AuthAdmin.Remove
 
-GET  /auth/group                    AuthGroup.Index
-POST /auth/group/listdata           AuthGroup.ListData
-POST /auth/group/detail             AuthGroup.Detail
-POST /auth/group/save               AuthGroup.Save
-POST /auth/group/delete             AuthGroup.Delete
+GET  /auth/group                      AuthGroup.Index
+POST /auth/group/listdata             AuthGroup.ListData
+POST /auth/group/detail               AuthGroup.Detail
+POST /auth/group/save                 AuthGroup.Save
+POST /auth/group/delete               AuthGroup.Delete
+
+POST /auth/groupuser                  AuthGroupUser.Index
+POST /auth/groupuser/listdata         AuthGroupUser.ListData
+POST /auth/groupuser/add              AuthGroupUser.Add
+POST /auth/groupuser/add/listdata     AuthGroupUser.AddListData
+POST /auth/groupuser/add/save         AuthGroupUser.AddSave
+POST /auth/groupuser/remove           AuthGroupUser.Remove

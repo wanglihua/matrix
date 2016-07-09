@@ -50,17 +50,15 @@ func (e Group) TableName() string {
 
 //---------------------------------------------------------------------------------------------------------------
 
-type UserGroup struct {
-    Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
-    UserId     int64            `xorm:"bigint notnull index 'user_id'" json:"user_id"`
-    GroupId    int64            `xorm:"bigint notnull index 'group_id'" json:"group_id"`
-    CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
-    UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
-    Version    int              `xorm:"version notnull 'version'" json:"version"`
+type GroupUser struct {
+    Id             int64             `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+    GroupId        int64             `xorm:"bigint notnull index 'group_id'" json:"group_id"`
+    UserId         int64             `xorm:"bigint notnull index 'user_id'" json:"user_id"`
+
+    AddTime     core.Time         `xorm:"created notnull 'add_time'" json:"add_time"`
 }
 
-func (e UserGroup) TableName() string {
-    return TablePrefix + "user_group"
+func (e GroupUser) TableName() string {
+    return TablePrefix + "group_user"
 }
-
-//---------------------------------------------------------------------------------------------------------------

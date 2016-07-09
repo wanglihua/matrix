@@ -29,7 +29,8 @@ func (c *BaseController) Before() revel.Result {
         c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
 
         //在这之前的数据库访问请自行开启 db session
-        c.DbSession = db.Engine.NewSession()
+        //c.DbSession = db.Engine.NewSession()
+        c.DbSession = db.Engine.NoAutoCondition()
 
         if revel.DevMode == false {
             err := c.DbSession.Begin()
