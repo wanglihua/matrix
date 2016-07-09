@@ -41,38 +41,38 @@
             <script type="text/javascript">
                 function showMenuDetail(id) {
                     $.ajax({
-                                url: '{%url "WeixinMenu.Detail" %}',
-                                type: "POST",
-                                data: {
-                                    "id": id
-                                },
-                                success: function (result) {
-                                    if (result.success == false) {
-                                        $.msg.error(result.message);
-                                        return;
-                                    }
-                                    $("#menuDetailDialogWrapper").html(result);
-                                    $('#menuDetailDialog').modal(modalOptions);
-                                }
-                            }
+                               url: '{%url "WeixinMenu.Detail" %}',
+                               type: "POST",
+                               data: {
+                                   "id": id
+                               },
+                               success: function (result) {
+                                   if (result.success == false) {
+                                       $.msg.error(result.message);
+                                       return;
+                                   }
+                                   $("#menuDetailDialogWrapper").html(result);
+                                   $('#menuDetailDialog').modal(modalOptions);
+                               }
+                           }
                     );
                 }
 
                 function downloadMenu() {
-                    $.msg.confirm("下载菜单将覆盖本地数据库菜单数据，确认要下载吗？", function () {
+                    $.msg.confirm("下载菜单将合并至本地数据库菜单数据!<br/><br/>可以自行先删除本地不再需要的菜单，确认要下载吗？", function () {
                         $.ajax({
-                                    url: '{%url "WeixinMenu.Download" %}',
-                                    type: "POST",
-                                    success: function (result) {
-                                        if (result.success == false) {
-                                            $.msg.error(result.message);
-                                        }
-                                        else {
-                                            $.msg.show(result.message);
-                                        }
-                                        reloadList('#menuList');
-                                    }
-                                }
+                                   url: '{%url "WeixinMenu.Download" %}',
+                                   type: "POST",
+                                   success: function (result) {
+                                       if (result.success == false) {
+                                           $.msg.error(result.message);
+                                       }
+                                       else {
+                                           $.msg.show(result.message);
+                                       }
+                                       reloadList('#menuList');
+                                   }
+                               }
                         );
                     });
                 }
@@ -80,18 +80,18 @@
                 function uploadMenu() {
                     $.msg.confirm("上传菜单将覆盖服务器菜单数据，确认要上传吗？", function () {
                         $.ajax({
-                                    url: '{%url "WeixinMenu.Upload" %}',
-                                    type: "POST",
-                                    success: function (result) {
-                                        if (result.success == false) {
-                                            $.msg.error(result.message);
-                                        }
-                                        else {
-                                            $.msg.show(result.message);
-                                        }
-                                        reloadList('#menuList');
-                                    }
-                                }
+                                   url: '{%url "WeixinMenu.Upload" %}',
+                                   type: "POST",
+                                   success: function (result) {
+                                       if (result.success == false) {
+                                           $.msg.error(result.message);
+                                       }
+                                       else {
+                                           $.msg.show(result.message);
+                                       }
+                                       reloadList('#menuList');
+                                   }
+                               }
                         );
                     });
                 }
@@ -111,20 +111,20 @@
 
                     $.msg.confirm("确认要删除吗？", function () {
                         $.ajax({
-                            url: '{%url "WeixinMenu.Delete"%}',
-                            type: "POST",
-                            data: {"id_list": id_list},
-                            success: function (data) {
-                                if (data.success == false) {
-                                    $.msg.error(data.message);
-                                    return;
-                                }
-                                else {
-                                    $.msg.show(data.message);
-                                }
-                                reloadList('#menuList');
-                            }
-                        });
+                                   url: '{%url "WeixinMenu.Delete"%}',
+                                   type: "POST",
+                                   data: {"id_list": id_list},
+                                   success: function (data) {
+                                       if (data.success == false) {
+                                           $.msg.error(data.message);
+                                           return;
+                                       }
+                                       else {
+                                           $.msg.show(data.message);
+                                       }
+                                       reloadList('#menuList');
+                                   }
+                               });
                     });
                 }
 
@@ -157,6 +157,9 @@
                                             }
                                             else if (data == "click") {
                                                 menuType = "单击事件";
+                                            }
+                                            else if (data == "") {
+                                                menuType = "父菜单"
                                             }
 
                                             return menuType;

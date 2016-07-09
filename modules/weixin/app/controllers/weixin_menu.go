@@ -7,6 +7,7 @@ import (
     "matrix/core/requests"
     "matrix/modules/weixin/service"
     "matrix/modules/weixin/models"
+    "github.com/antonholmquist/jason"
 )
 
 type WeixinMenu struct {
@@ -56,7 +57,7 @@ func (f *MenuForm) InitData() {
     f.MenuLevelSelectOptions = menuLevelSelectOptions
 
     menuTypeSelectOptions := make([]core.SelectOption, 0)
-    menuTypeSelectOptions = append(menuTypeSelectOptions, core.SelectOption{Value:"", Text:""})
+    menuTypeSelectOptions = append(menuTypeSelectOptions, core.SelectOption{Value:"", Text:"父菜单"})
     menuTypeSelectOptions = append(menuTypeSelectOptions, core.SelectOption{Value:"click", Text:"单击事件"})
     menuTypeSelectOptions = append(menuTypeSelectOptions, core.SelectOption{Value:"view", Text:"跳转URL"})
     f.MenuTypeSelectOptions = menuTypeSelectOptions
@@ -214,10 +215,105 @@ func (c WeixinMenu) Download() revel.Result {
     }
     */
 
-    //data, err := jsonpath.DecodeString(responeStr)
+    //jason, err := jason.NewObjectFromBytes([]byte(`{"errcode":46003,"errmsg":"menu no exist hint: [mh2CUA0174vr21]"}`))
+    weixinMenuJason, err := jason.NewObjectFromBytes([]byte(responeStr))
+    core.HandleError(err)
 
+    errorCode, err := weixinMenuJason.GetInt64("errcode")
+    if err == nil && errorCode != 0 {
+        revel.TRACE.Println(errorCode)
+        errorMsg, err := weixinMenuJason.GetString("errmsg")
+        core.HandleError(err)
 
-    return c.RenderJson(core.JsonResult{Success: true, Message: "菜单微信下载成功!"})
+        return c.RenderJson(core.JsonResult{Success: false, Message: "微信菜单下载失败!详情：" + errorMsg})
+    }
+
+    weixinButtonListJason, err := weixinMenuJason.GetObjectArray("menu", "button")
+    core.HandleError(err)
+
+    menuList := make([]models.Menu, 0)
+    menuOrder := 1
+    for _, weixinButtonJason := range (weixinButtonListJason) {
+        weixinSubButtonListJason, err := weixinButtonJason.GetObjectArray("sub_button")
+        core.HandleError(err)
+
+        if len(weixinSubButtonListJason) == 0 {
+            //没有子菜单
+            menu := getWeixinMenuFromJason(weixinButtonJason)
+            menu.Order = menuOrder
+            menuOrder++
+            menu.Level = 1
+            menuList = append(menuList, menu)
+        } else {
+            //有子菜单
+            var menu models.Menu
+            menuName, err := weixinButtonJason.GetString("name")
+            core.HandleError(err)
+
+            menu.Name = menuName
+            menu.Order = menuOrder
+            menuOrder++
+            menu.Level = 1
+            menuList = append(menuList, menu)
+
+            for _, weixinSubButtonJason := range (weixinSubButtonListJason) {
+                menu := getWeixinMenuFromJason(weixinSubButtonJason)
+                menu.Order = menuOrder
+                menuOrder++
+                menu.Level = 2
+                menuList = append(menuList, menu)
+            }
+        }
+    }
+
+    err = session.Begin()
+    core.HandleError(err)
+
+    /*
+    下载时采用不删除原来菜单的方式，用户可以自行先删除本地不再需要的菜单
+    _, err = session.Where("id <> 0").Delete(new(models.Menu))
+    if err != nil {
+        core.HandleError(session.Rollback())
+        return c.RenderJson(core.JsonResult{Success: false, Message: "微信菜单下载失败!详情：" + err.Error()})
+    }
+    */
+
+    revel.TRACE.Println("menu length: "  + strconv.Itoa(len(menuList)))
+
+    for _, menu := range (menuList) {
+        affected, err := session.Insert(menu)
+        if affected != 1 || err != nil {
+            core.HandleError(session.Rollback())
+
+            return c.RenderJson(core.JsonResult{Success: false, Message: "微信菜单下载失败!详情：" + err.Error()})
+        }
+    }
+
+    err = session.Commit()
+    core.HandleError(err)
+
+    return c.RenderJson(core.JsonResult{Success: true, Message: "微信菜单下载成功!"})
+}
+
+func getWeixinMenuFromJason(jasonObject *jason.Object) models.Menu {
+    var menu models.Menu
+
+    var err error
+    menu.Name, err = jasonObject.GetString("name")
+    core.HandleError(err)
+
+    menu.Type, err = jasonObject.GetString("type")
+    core.HandleError(err)
+
+    if menu.Type == "click" {
+        menu.Data, err = jasonObject.GetString("key")
+        core.HandleError(err)
+    } else if menu.Type == "view" {
+        menu.Data, err = jasonObject.GetString("url")
+        core.HandleError(err)
+    }
+
+    return menu
 }
 
 func (c WeixinMenu) Upload() revel.Result {
