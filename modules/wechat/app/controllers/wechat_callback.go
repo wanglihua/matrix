@@ -5,10 +5,13 @@ import (
     "github.com/revel/revel"
     "matrix/core"
     "matrix/modules/weixin/service"
+    "gopkg.in/xmlpath"
     "io/ioutil"
     "time"
     "encoding/base64"
     "strconv"
+    "bytes"
+    "strings"
 )
 
 type WechatCallback struct {
@@ -65,18 +68,90 @@ func (c WechatCallback) Reply() revel.Result {
 
     _, msgPlainXmlBytes, _, err := service.AesDecryptMsg(encryptedMsg, aesKey)
     core.HandleError(err)
-    requestTextMessage := new(service.RequestTextMessage)
-    xml.Unmarshal(msgPlainXmlBytes, requestTextMessage)
+
+    revel.TRACE.Println("request plain xml: ")
+    revel.TRACE.Println(string(msgPlainXmlBytes))
+
+    replyText := ""
+
+    requestMsgNode, err := xmlpath.Parse(bytes.NewBuffer(msgPlainXmlBytes))
+    requestMsgPath := xmlpath.MustCompile("/xml/MsgType")
+    msgType, _ := requestMsgPath.String(requestMsgNode)
+
+    requestMsgFrom := ""
+    requestMsgTo := ""
+    if strings.ToLower(msgType) == "text" {
+        //解析为文本消息
+        /*
+        <xml>
+            <ToUserName><![CDATA[gh_c03e85cdf6af]]></ToUserName>
+            <FromUserName><![CDATA[oZhq_wr-7ZA71qZshMo_Zbj_1IJQ]]></FromUserName>
+            <CreateTime>1467115784</CreateTime>
+            <MsgType><![CDATA[text]]></MsgType>
+            <Content><![CDATA[test]]></Content>
+            <MsgId>6301214312140396469</MsgId>
+        </xml>
+        */
+        requestTextMessage := new(service.RequestTextMessage)
+        xml.Unmarshal(msgPlainXmlBytes, requestTextMessage)
+
+        requestMsgFrom = requestTextMessage.FromUserName
+        requestMsgTo = requestTextMessage.ToUserName
+
+        replyText = "哈哈，你发了消息 " + requestTextMessage.Content + " !"
+
+    } else if strings.ToLower(msgType) == "event" {
+        // Click 事件类型 Event
+        /*
+        <xml>
+            <ToUserName><![CDATA[gh_c03e85cdf6af]]></ToUserName>
+            <FromUserName><![CDATA[oZhq_wr-7ZA71qZshMo_Zbj_1IJQ]]></FromUserName>
+            <CreateTime>1468128180</CreateTime>
+            <MsgType><![CDATA[event]]></MsgType>
+            <Event><![CDATA[CLICK]]></Event>
+            <EventKey><![CDATA[V1001_TODAY_MUSIC]]></EventKey>
+        </xml>
+        */
+
+        requestMsgPath = xmlpath.MustCompile("/xml/Event")
+        event, _ := requestMsgPath.String(requestMsgNode)
+        if strings.ToUpper(event) == "CLICK" {
+            requestMsgPath = xmlpath.MustCompile("/xml/FromUserName")
+            requestMsgFrom, _ = requestMsgPath.String(requestMsgNode)
+
+            requestMsgPath = xmlpath.MustCompile("/xml/ToUserName")
+            requestMsgTo, _ = requestMsgPath.String(requestMsgNode)
+
+            requestMsgPath = xmlpath.MustCompile("/xml/EventKey")
+            eventKey, _ := requestMsgPath.String(requestMsgNode)
+            replyText = "哈哈，你点击了 " + eventKey + " !"
+        } else {
+            return c.RenderText("")
+        }
+
+    } else {
+        return c.RenderText("")
+    }
 
     //extra response logic here
 
+    //发送文本消息
+    /*
+    <xml>
+        <ToUserName><![CDATA[oZhq_wr-7ZA71qZshMo_Zbj_1IJQ]]></ToUserName>
+        <FromUserName><![CDATA[gh_c03e85cdf6af]]></FromUserName>
+        <CreateTime>1467115784</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[test]]></Content>
+    </xml>
+    */
     msgTimeStampStr := strconv.FormatInt(time.Now().Unix(), 10)
     responseTextMessage := new(service.ResponseTextMessage)
-    responseTextMessage.ToUserName = requestTextMessage.FromUserName
-    responseTextMessage.FromUserName = requestTextMessage.ToUserName
+    responseTextMessage.ToUserName = requestMsgFrom
+    responseTextMessage.FromUserName = requestMsgTo
     responseTextMessage.CreateTime = msgTimeStampStr
     responseTextMessage.MsgType = "text"
-    responseTextMessage.Content = "哈哈，你发了 " + requestTextMessage.Content + " !"
+    responseTextMessage.Content = replyText
     responseMessageBytes, _ := xml.Marshal(responseTextMessage)
 
     responseTextMessageEncrypted := service.AesEncryptMsg([]byte("12345678"), responseMessageBytes, service.GetAppId(session), aesKey)
@@ -90,5 +165,5 @@ func (c WechatCallback) Reply() revel.Result {
     responseCliperMessage.Nonce = nonce
     responseMsgXMLBytes, _ := xml.Marshal(responseCliperMessage)
 
-    return  c.RenderText(string(responseMsgXMLBytes))
+    return c.RenderText(string(responseMsgXMLBytes))
 }
