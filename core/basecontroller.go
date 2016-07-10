@@ -30,7 +30,7 @@ func (c *BaseController) Before() revel.Result {
         //在这之前的数据库访问请自行开启 db session
         dbSession := db.Engine.NewSession()
         c.DbSession = dbSession.NoAutoCondition(true)
-        //c.DbSession = db.Engine.NoAutoCondition()
+        //c.DbSession = db.Engine.NoAutoCondition() 这个不行，xorm会有问题
 
         if revel.DevMode == false {
             err := c.DbSession.Begin()

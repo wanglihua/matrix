@@ -8,6 +8,8 @@ import (
     "matrix/modules/weixin/service"
     "matrix/modules/weixin/models"
     "github.com/antonholmquist/jason"
+    "bytes"
+    "bufio"
 )
 
 type WeixinMenu struct {
@@ -278,7 +280,7 @@ func (c WeixinMenu) Download() revel.Result {
     }
     */
 
-    revel.TRACE.Println("menu length: "  + strconv.Itoa(len(menuList)))
+    revel.TRACE.Println("menu length: " + strconv.Itoa(len(menuList)))
 
     for _, menu := range (menuList) {
         affected, err := session.Insert(menu)
@@ -329,47 +331,153 @@ func (c WeixinMenu) Upload() revel.Result {
         {"errcode":0,"errmsg":"ok"}
     */
 
+    var err error
+    menuList := make([]models.Menu, 0)
+    err = session.Asc("menu_order").Find(&menuList)
+    core.HandleError(err)
+
+    /*
+        {"button":[
+            {
+                "type":"click",
+                "name":"今日歌曲",
+                "key":"V1001_TODAY_MUSIC"
+            },
+            {
+                "name":"菜单",
+                "sub_button":[
+                    {
+                        "type":"view",
+                        "name":"搜索",
+                        "url":"http://www.soso.com/"
+                    },
+                    {
+                        "type":"view",
+                        "name":"视频",
+                        "url":"http://v.qq.com/"
+                    },
+                    {
+                        "type":"click",
+                        "name":"赞一下我们",
+                        "key":"V1001_GOOD"
+                    }
+                ]
+            }
+        ]}
+    */
+
+    menuJsonBuffer := bytes.NewBuffer(make([]byte, 0))
+    bw := bufio.NewWriter(menuJsonBuffer)
+    bw.WriteString(`{"button":[`)
+
+    prevLevel := 0
+    currLevel := 1
+    for _, menu := range (menuList) {
+        currLevel = menu.Level
+
+        if prevLevel == 0 && currLevel == 1 {
+            bw.WriteString(`{`)
+        } else if prevLevel == 1 && currLevel == 1 {
+            bw.WriteString(`},{`)
+        } else if prevLevel == 1 && currLevel == 2 {
+            bw.WriteString(`,"sub_button":[{`)
+        } else if prevLevel == 2 && currLevel == 1 {
+            bw.WriteString(`}]},{`)
+        } else if prevLevel == 2 && currLevel == 2 {
+            bw.WriteString(`},{`)
+        }
+
+        //type
+        if menu.Type != "" {
+            bw.WriteString(`"type":"`)
+            bw.WriteString(menu.Type)
+            bw.WriteString(`",`)
+        }
+
+        //data
+        if menu.Type == "click" {
+            bw.WriteString(`"key": "`)
+            bw.WriteString(menu.Data)
+            bw.WriteString(`",`)
+        } else if menu.Type == "view" {
+            bw.WriteString(`"url": "`)
+            bw.WriteString(menu.Data)
+            bw.WriteString(`",`)
+        }
+
+        //name
+        bw.WriteString(`"name":"`)
+        bw.WriteString(menu.Name)
+        bw.WriteString(`"`) //这里可以不需要 ","
+
+        prevLevel = currLevel
+    }
+
+    if currLevel == 1 {
+        bw.WriteString(`}`)
+    } else if currLevel == 2 {
+        bw.WriteString(`}]}`)
+    }
+
+    bw.WriteString("]}")
+    bw.Flush()
+
+    menuJson := menuJsonBuffer.String()
+
     // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
     accessToken := service.GetAccessToken(session)
     url := "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken
 
-    json :=
-    `
-     {
-         "button":[
-         {
-              "type":"click",
-              "name":"今日歌曲",
-              "key":"V1001_TODAY_MUSIC"
-          },
-          {
-               "name":"菜单",
-               "sub_button":[
-               {
-                   "type":"view",
-                   "name":"搜索",
-                   "url":"http://www.soso.com/"
-                },
-                {
-                   "type":"view",
-                   "name":"视频",
-                   "url":"http://v.qq.com/"
-                },
-                {
-                   "type":"click",
-                   "name":"赞一下我们",
-                   "key":"V1001_GOOD"
-                }]
-           }]
-     }
-    `
+    /*
+        {
+            "button":[
+            {
+                "type":"click",
+                "name":"今日歌曲",
+                "key":"V1001_TODAY_MUSIC"
+            },
+            {
+                "name":"菜单",
+                "sub_button":[
+                    {
+                        "type":"view",
+                        "name":"搜索",
+                        "url":"http://www.soso.com/"
+                    },
+                    {
+                        "type":"view",
+                        "name":"视频",
+                        "url":"http://v.qq.com/"
+                    },
+                    {
+                        "type":"click",
+                        "name":"赞一下我们",
+                        "key":"V1001_GOOD"
+                    }
+                ]
+            }]
+        }
+    */
 
-    var responeStr = requests.PostJson(url, json)
+    revel.TRACE.Println(menuJson)
+
+    var responeStr = requests.PostJson(url, menuJson)
 
     /*
     {"errcode":0,"errmsg":"ok"}
     {"errcode":40018,"errmsg":"invalid button name size"}
      */
+
+    resultJason, err := jason.NewObjectFromBytes([]byte(responeStr))
+    core.HandleError(err)
+    errCode, err := resultJason.GetInt64("errcode")
+    core.HandleError(err)
+    if errCode != 0 {
+        errMsg, err := resultJason.GetString("errmsg")
+        core.HandleError(err)
+
+        return c.RenderJson(core.JsonResult{Success: true, Message: "菜单上传微信失败!详情：" + errMsg})
+    }
 
     revel.TRACE.Println(responeStr)
 
