@@ -8,7 +8,7 @@ import (
 var StorageLocEntity = smith.Entity{
     ModuleTitleName     : "Inventory",
     ModuleLowerCase     : "inventory",
-    ModuleChinese       : "库存管理",
+    ModuleChinese       : "仓储管理",
     EntityTitleName     : "StorageLoc",
     EntityCamelCase     : "storageLoc",
     EntityChinese       : "库位",

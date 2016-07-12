@@ -1,12 +1,21 @@
 package main
 
 import (
-    "strings"
     "fmt"
 )
 
 func main() {
-    str := "GroupName"
-    str = strings.ToLower(str[0:1]) + str[1:]
-    fmt.Println(str)
+    var f []func()
+
+    nums := []int{1, 2, 3, 4, 5}
+
+    for _, n := range(nums) {
+        f = append(f, func() {
+            fmt.Println(n)
+        })
+    }
+
+    for _, fn := range f {
+        fn()
+    }
 }

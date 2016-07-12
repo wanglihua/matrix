@@ -8,7 +8,7 @@ import (
 var SupplierEntity = smith.Entity{
     ModuleTitleName     : "Inventory",
     ModuleLowerCase     : "inventory",
-    ModuleChinese       : "库存管理",
+    ModuleChinese       : "仓储管理",
     EntityTitleName     : "Supplier",
     EntityCamelCase     : "supplier",
     EntityChinese       : "供应商",
