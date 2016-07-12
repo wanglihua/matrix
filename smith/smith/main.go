@@ -8,15 +8,66 @@ import (
     "matrix/smith/template"
     "matrix/smith/models/auth"
     "strings"
+    "path/filepath"
+    "log"
+    "io"
+    "gopkg.in/xmlpath"
+    "bytes"
 )
 
 var outputBaseDir = "d:\\codegen_output"
 
 func main() {
 
+    if (len(os.Args) < 2) {
+        fmt.Println("smith subdir/file.xml")
+    }
+
+    workingDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Println(workingDir)
+
+    xmlFileName := os.Args[1]
+    xmlFullFileName := filepath.Join(workingDir, xmlFileName)
+    fmt.Println(xmlFullFileName)
+
+    xmlFile, err := os.Open(xmlFullFileName)
+    core.HandleError(err)
+    defer xmlFile.Close()
+
+    xmlFileContentBytes := make([]byte, 0, 10240)
+    fileReadBuffer := make([]byte, 1024)
+    for {
+        readCount, err := xmlFile.Read(fileReadBuffer)
+        if err != nil && err != io.EOF {
+            panic(err)
+        }
+
+        if 0 == readCount {
+            break
+        }
+
+        xmlFileContentBytes = append(xmlFileContentBytes, fileReadBuffer[:readCount]...)
+    }
+
+    xmlNode, err := xmlpath.Parse(bytes.NewBuffer(xmlFileContentBytes))
+    entityPath := xmlpath.MustCompile("/xml/entity")
+    entityModuleTitleNamePath := xmlpath.MustCompile("/xml/entity/moduleTitleName")
+
+    iter := entityPath.Iter(xmlNode)
+    for iter.Next() {
+        entityModuleTitleName, _ := entityModuleTitleNamePath.String(iter.Node())
+        fmt.Println(entityModuleTitleName)
+
+        //fmt.Println(iter.Node().String())
+
+    }
+
     var outputDir = outputBaseDir + "\\matrix"
 
-    err := os.MkdirAll(outputDir, 0777) //创建目录，如果目录已经存在就不会创建，这里是保证目录存在
+    err = os.MkdirAll(outputDir, 0777) //创建目录，如果目录已经存在就不会创建，这里是保证目录存在
     core.HandleError(err)
 
     err = os.RemoveAll(outputDir) // 删除之前生成的目录和文件，这时会把 matrix 目录也删除
