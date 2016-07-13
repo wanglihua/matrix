@@ -53,72 +53,69 @@ func main() {
     }
 
     xmlNode, err := xmlpath.Parse(bytes.NewBuffer(xmlFileContentBytes))
-    //entityPath := xmlpath.MustCompile("/xml/entity")
-    entityPath := xmlpath.MustCompile("/xml/*")
+    entityPath := xmlpath.MustCompile("/xml/entity")
 
     entityList := make([]smith.Entity, 0)
     entityIter := entityPath.Iter(xmlNode)
-    entityIterIndex := 1
+    entityIterCount := 1
     for entityIter.Next() {
-
         entity := smith.Entity{}
-        entity.ModuleTitleName, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/moduleTitleName").String(entityIter.Node())
-        entity.ModuleLowerCase, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/moduleLowerCase").String(entityIter.Node())
-        entity.ModuleChinese, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/moduleChinese").String(entityIter.Node())
-        entity.EntityTitleName, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/entityTitleName").String(entityIter.Node())
-        entity.EntityCamelCase, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/entityCamelCase").String(entityIter.Node())
-        entity.EntityChinese, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/entityChinese").String(entityIter.Node())
-        entity.TableName, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/tableName").String(entityIter.Node())
-        entity.TablePrefix, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/tablePrefix").String(entityIter.Node())
+        entity.ModuleTitleName, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/moduleTitleName", entityIterCount)).String(entityIter.Node())
+        entity.ModuleLowerCase, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/moduleLowerCase", entityIterCount)).String(entityIter.Node())
+        entity.ModuleChinese, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/moduleChinese", entityIterCount)).String(entityIter.Node())
+        entity.EntityTitleName, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/entityTitleName", entityIterCount)).String(entityIter.Node())
+        entity.EntityCamelCase, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/entityCamelCase", entityIterCount)).String(entityIter.Node())
+        entity.EntityChinese, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/entityChinese", entityIterCount)).String(entityIter.Node())
+        entity.TableName, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/tableName", entityIterCount)).String(entityIter.Node())
+        entity.TablePrefix, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/tablePrefix", entityIterCount)).String(entityIter.Node())
 
-        fmt.Println(entity.EntityTitleName)
-
-        fieldPath := xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/fieldList/*")
+        fieldPath := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field", entityIterCount))
         fieldIter := fieldPath.Iter(entityIter.Node())
         entity.FieldList = make([]smith.Field, 0)
-        fieldIterIndex := 1
+        fieldIterCount := 1
         for fieldIter.Next() {
             field := smith.Field{}
-            field.VerboseName, _ = xmlpath.MustCompile("//verboseName").String(fieldIter.Node())
-            field.Name, _ = xmlpath.MustCompile("//name").String(fieldIter.Node())
-            field.Column, _ = xmlpath.MustCompile("//column").String(fieldIter.Node())
 
-            fieldFieldType, _ := xmlpath.MustCompile("//fieldType").String(fieldIter.Node())
+            field.VerboseName, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/verboseName", entityIterCount, fieldIterCount)).String(fieldIter.Node())
+            field.Name, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/name", entityIterCount, fieldIterCount)).String(fieldIter.Node())
+            field.Column, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/column", entityIterCount, fieldIterCount)).String(fieldIter.Node())
+
+            fieldFieldType, _ := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/fieldType", entityIterCount, fieldIterCount)).String(fieldIter.Node())
             field.FieldType = strToFieldType(fieldFieldType)
 
-            fieldLength, _ := xmlpath.MustCompile("//length").String(fieldIter.Node())
+            fieldLength, _ := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/length", entityIterCount, fieldIterCount)).String(fieldIter.Node())
             field.Length, err = strconv.Atoi(fieldLength)
             core.HandleError(err)
 
-            fieldPrecision, _ := xmlpath.MustCompile("//precision").String(fieldIter.Node())
+            fieldPrecision, _ := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/precision", entityIterCount, fieldIterCount)).String(fieldIter.Node())
             field.Precision, err = strconv.Atoi(fieldPrecision)
             core.HandleError(err)
 
-            fieldScale, _ := xmlpath.MustCompile("//scale").String(fieldIter.Node())
+            fieldScale, _ := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/scale", entityIterCount, fieldIterCount)).String(fieldIter.Node())
             field.Scale, err = strconv.Atoi(fieldScale)
             core.HandleError(err)
 
-            field.Unique, _ = xmlpath.MustCompile("//unique").String(fieldIter.Node())
+            field.Unique, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/unique", entityIterCount, fieldIterCount)).String(fieldIter.Node())
 
-            fieldIndex, _ := xmlpath.MustCompile("//index").String(fieldIter.Node())
+            fieldIndex, _ := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/index", entityIterCount, fieldIterCount)).String(fieldIter.Node())
             field.Index = strToBool(fieldIndex)
 
-            fieldNull, _ := xmlpath.MustCompile("//null").String(fieldIter.Node())
+            fieldNull, _ := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/null", entityIterCount, fieldIterCount)).String(fieldIter.Node())
             field.Null = strToBool(fieldNull)
 
-            fieldBlank, _ := xmlpath.MustCompile("//blank").String(fieldIter.Node())
+            fieldBlank, _ := xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/blank", entityIterCount, fieldIterCount)).String(fieldIter.Node())
             field.Blank = strToBool(fieldBlank)
 
-            field.Min, _ = xmlpath.MustCompile("//min").String(fieldIter.Node())
-            field.Max, _ = xmlpath.MustCompile("//max").String(fieldIter.Node())
+            field.Min, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/min", entityIterCount, fieldIterCount)).String(fieldIter.Node())
+            field.Max, _ = xmlpath.MustCompile(fmt.Sprintf("/xml/entity[%d]/fieldList/field[%d]/max", entityIterCount, fieldIterCount)).String(fieldIter.Node())
 
             entity.FieldList = append(entity.FieldList, field)
-            fieldIterIndex++
+            fieldIterCount++
         }
 
         //fmt.Println(iter.Node().String())
         entityList = append(entityList, entity)
-        entityIterIndex++
+        entityIterCount++
     }
 
     var outputDir = outputBaseDir + "\\matrix"
