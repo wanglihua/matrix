@@ -14,7 +14,7 @@
                 <verboseName>群组</verboseName>
                 <name>GroupId</name>
                 <column>group_id</column>
-                <fieldType>fieldtype.BigInt</fieldType>
+                <fieldType>BigInt</fieldType>
                 <length>0</length>
                 <precision>0</precision>
                 <scale>0</scale>
@@ -29,7 +29,7 @@
                 <verboseName>用户</verboseName>
                 <name>UserId</name>
                 <column>user_id</column>
-                <fieldType>fieldtype.BigInt</fieldType>
+                <fieldType>BigInt</fieldType>
                 <length>0</length>
                 <precision>0</precision>
                 <scale>0</scale>
@@ -46,42 +46,27 @@
         <moduleTitleName>Auth</moduleTitleName>
         <moduleLowerCase>auth</moduleLowerCase>
         <moduleChinese>权限管理</moduleChinese>
-        <entityTitleName>GroupUser</entityTitleName>
-        <entityCamelCase>groupUser</entityCamelCase>
-        <entityChinese>群组用户</entityChinese>
-        <tableName>group_user</tableName>
+        <entityTitleName>Group</entityTitleName>
+        <entityCamelCase>group</entityCamelCase>
+        <entityChinese>群组</entityChinese>
+        <tableName>group</tableName>
         <tablePrefix>hd_auth_</tablePrefix>
 
         <fieldList>
             <field>
-                <verboseName>群组</verboseName>
-                <name>GroupId</name>
-                <column>group_id</column>
-                <fieldType>fieldtype.BigInt</fieldType>
+                <verboseName>群组名称</verboseName>
+                <name>Name</name>
+                <column>name</column>
+                <fieldType>NVarchar</fieldType>
                 <length>0</length>
                 <precision>0</precision>
                 <scale>0</scale>
-                <unique>false</unique>
-                <index>true</index>
+                <unique>true</unique>
+                <index>false</index>
                 <null>false</null>
                 <blank>false</blank>
-                <min></min>
-                <max></max>
-            </field>
-            <field>
-                <verboseName>用户</verboseName>
-                <name>UserId</name>
-                <column>user_id</column>
-                <fieldType>fieldtype.BigInt</fieldType>
-                <length>0</length>
-                <precision>0</precision>
-                <scale>0</scale>
-                <unique>false</unique>
-                <index>true</index>
-                <null>false</null>
-                <blank>false</blank>
-                <min></min>
-                <max></max>
+                <min>3</min>
+                <max>20</max>
             </field>
         </fieldList>
     </entity>

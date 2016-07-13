@@ -6,13 +6,14 @@ import (
     "matrix/core"
     "matrix/smith"
     "matrix/smith/template"
-    "matrix/smith/models/auth"
     "strings"
     "path/filepath"
     "log"
     "io"
     "gopkg.in/xmlpath"
     "bytes"
+    "strconv"
+    "matrix/smith/fieldtype"
 )
 
 var outputBaseDir = "d:\\codegen_output"
@@ -27,11 +28,10 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    fmt.Println(workingDir)
 
     xmlFileName := os.Args[1]
     xmlFullFileName := filepath.Join(workingDir, xmlFileName)
-    fmt.Println(xmlFullFileName)
+    fmt.Println("xml file: " + xmlFullFileName)
 
     xmlFile, err := os.Open(xmlFullFileName)
     core.HandleError(err)
@@ -53,16 +53,72 @@ func main() {
     }
 
     xmlNode, err := xmlpath.Parse(bytes.NewBuffer(xmlFileContentBytes))
-    entityPath := xmlpath.MustCompile("/xml/entity")
-    entityModuleTitleNamePath := xmlpath.MustCompile("/xml/entity/moduleTitleName")
+    //entityPath := xmlpath.MustCompile("/xml/entity")
+    entityPath := xmlpath.MustCompile("/xml/*")
 
-    iter := entityPath.Iter(xmlNode)
-    for iter.Next() {
-        entityModuleTitleName, _ := entityModuleTitleNamePath.String(iter.Node())
-        fmt.Println(entityModuleTitleName)
+    entityList := make([]smith.Entity, 0)
+    entityIter := entityPath.Iter(xmlNode)
+    entityIterIndex := 1
+    for entityIter.Next() {
+
+        entity := smith.Entity{}
+        entity.ModuleTitleName, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/moduleTitleName").String(entityIter.Node())
+        entity.ModuleLowerCase, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/moduleLowerCase").String(entityIter.Node())
+        entity.ModuleChinese, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/moduleChinese").String(entityIter.Node())
+        entity.EntityTitleName, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/entityTitleName").String(entityIter.Node())
+        entity.EntityCamelCase, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/entityCamelCase").String(entityIter.Node())
+        entity.EntityChinese, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/entityChinese").String(entityIter.Node())
+        entity.TableName, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/tableName").String(entityIter.Node())
+        entity.TablePrefix, _ = xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/tablePrefix").String(entityIter.Node())
+
+        fmt.Println(entity.EntityTitleName)
+
+        fieldPath := xmlpath.MustCompile("//entity[" + strconv.Itoa(entityIterIndex) +  "]/fieldList/*")
+        fieldIter := fieldPath.Iter(entityIter.Node())
+        entity.FieldList = make([]smith.Field, 0)
+        fieldIterIndex := 1
+        for fieldIter.Next() {
+            field := smith.Field{}
+            field.VerboseName, _ = xmlpath.MustCompile("//verboseName").String(fieldIter.Node())
+            field.Name, _ = xmlpath.MustCompile("//name").String(fieldIter.Node())
+            field.Column, _ = xmlpath.MustCompile("//column").String(fieldIter.Node())
+
+            fieldFieldType, _ := xmlpath.MustCompile("//fieldType").String(fieldIter.Node())
+            field.FieldType = strToFieldType(fieldFieldType)
+
+            fieldLength, _ := xmlpath.MustCompile("//length").String(fieldIter.Node())
+            field.Length, err = strconv.Atoi(fieldLength)
+            core.HandleError(err)
+
+            fieldPrecision, _ := xmlpath.MustCompile("//precision").String(fieldIter.Node())
+            field.Precision, err = strconv.Atoi(fieldPrecision)
+            core.HandleError(err)
+
+            fieldScale, _ := xmlpath.MustCompile("//scale").String(fieldIter.Node())
+            field.Scale, err = strconv.Atoi(fieldScale)
+            core.HandleError(err)
+
+            field.Unique, _ = xmlpath.MustCompile("//unique").String(fieldIter.Node())
+
+            fieldIndex, _ := xmlpath.MustCompile("//index").String(fieldIter.Node())
+            field.Index = strToBool(fieldIndex)
+
+            fieldNull, _ := xmlpath.MustCompile("//null").String(fieldIter.Node())
+            field.Null = strToBool(fieldNull)
+
+            fieldBlank, _ := xmlpath.MustCompile("//blank").String(fieldIter.Node())
+            field.Blank = strToBool(fieldBlank)
+
+            field.Min, _ = xmlpath.MustCompile("//min").String(fieldIter.Node())
+            field.Max, _ = xmlpath.MustCompile("//max").String(fieldIter.Node())
+
+            entity.FieldList = append(entity.FieldList, field)
+            fieldIterIndex++
+        }
 
         //fmt.Println(iter.Node().String())
-
+        entityList = append(entityList, entity)
+        entityIterIndex++
     }
 
     var outputDir = outputBaseDir + "\\matrix"
@@ -76,6 +132,7 @@ func main() {
     err = os.MkdirAll(outputDir, 0777) // 把删除了的 matrix 目录再创建出来
     core.HandleError(err)
 
+    /*
     entityList := []smith.Entity{
         //inventory.SupplierEntity,
         //inventory.StockEntity,
@@ -83,6 +140,7 @@ func main() {
         //weixin.MenuEntity,
         auth.GroupUserEntity,
     }
+    */
 
     modelsCode := RenderCodeTemplate("models", template.ModelsTemplate, map[string]interface{}{
         "tagchar": "`",
@@ -145,4 +203,36 @@ func main() {
     WriteToFile(menuDir + "\\menu.html", menuCode)
 
     fmt.Println("Code Generated in " + outputDir)
+}
+
+func strToBool(val string) bool {
+    if val == "true" {
+        return true
+    } else {
+        return false
+    }
+}
+
+func strToFieldType(val string) fieldtype.FieldType {
+    if val == "Int" {
+        return fieldtype.Int
+    } else if (strings.ToLower(val) == strings.ToLower("BigInt")) {
+        return fieldtype.BigInt
+    } else if (strings.ToLower(val) == strings.ToLower("Decimal")) {
+        return fieldtype.Decimal
+    } else if (strings.ToLower(val) == strings.ToLower("NVarchar")) {
+        return fieldtype.NVarchar
+    } else if (strings.ToLower(val) == strings.ToLower("DateTime")) {
+        return fieldtype.DateTime
+    } else if (strings.ToLower(val) == strings.ToLower("Boolean")) {
+        return fieldtype.Boolean
+    } else if (strings.ToLower(val) == strings.ToLower("Create")) {
+        return fieldtype.Create
+    } else if (strings.ToLower(val) == strings.ToLower("Update")) {
+        return fieldtype.Boolean
+    } else if (strings.ToLower(val) == strings.ToLower("Version")) {
+        return fieldtype.Version
+    }
+
+    return fieldtype.Int
 }
