@@ -26,7 +26,7 @@ func InitDatabase() {
 
         //Engine.TZLocation, err = time.LoadLocation("Asia/Shanghai") //设置时区
         //Engine.TZLocation, err = time.LoadLocation("Local") //设置时区
-        Engine.TZLocation, err = time.Local //设置时区
+        Engine.TZLocation  = time.Local //设置时区
         if err != nil {
             panic(err)
         }

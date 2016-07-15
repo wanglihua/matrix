@@ -43,7 +43,7 @@ var (
 	DevMode bool   // if true, RunMode is a development mode.
 
 	// Revel installation details
-	RevelPath string // e.g. "/Users/robfig/gocode/src/revel"
+	//RevelPath string // e.g. "/Users/robfig/gocode/src/revel"
 
 	// Where to look for templates
 	// Ordered by priority. (Earlier paths take precedence over later paths.)
@@ -131,17 +131,19 @@ func Init(mode, importPath, srcPath string) {
 	}
 
 	// If the SourcePath is not specified, find it using build.Import.
-	var revelSourcePath string // may be different from the app source path
+
+    //var revelSourcePath string // may be different from the app source path
 	if SourcePath == "" {
-		revelSourcePath, SourcePath = findSrcPaths(importPath)
+		//revelSourcePath, SourcePath = findSrcPaths(importPath)
+        _, SourcePath = findSrcPaths(importPath)
 	} else {
 		// If the SourcePath was specified, assume both Revel and the app are within it.
 		SourcePath = path.Clean(SourcePath)
-		revelSourcePath = SourcePath
+		//revelSourcePath = SourcePath
 		packaged = true
 	}
 
-	RevelPath = filepath.Join(revelSourcePath, filepath.FromSlash(REVEL_IMPORT_PATH))
+	//RevelPath = filepath.Join(revelSourcePath, filepath.FromSlash(REVEL_IMPORT_PATH))
 	BasePath = filepath.Join(SourcePath, filepath.FromSlash(importPath))
 	AppPath = filepath.Join(BasePath, "app")
 	ViewsPath = filepath.Join(AppPath, "views")
@@ -313,12 +315,15 @@ func findSrcPaths(importPath string) (revelSourcePath, appSourcePath string) {
 		ERROR.Fatalln("Failed to import", importPath, "with error:", err)
 	}
 
+    /*
 	revelPkg, err := build.Import(REVEL_IMPORT_PATH, "", build.FindOnly)
 	if err != nil {
 		ERROR.Fatalln("Failed to find Revel with error:", err)
 	}
+	*/
 
-	return revelPkg.SrcRoot, appPkg.SrcRoot
+	//return revelPkg.SrcRoot, appPkg.SrcRoot
+    return "", appPkg.SrcRoot
 }
 
 type Module struct {
