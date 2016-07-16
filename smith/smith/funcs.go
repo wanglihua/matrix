@@ -64,7 +64,7 @@ func RenderCodeTemplate(tplName string, tplContent string, args  map[string]inte
 func TemplateFuncRenderField(field smith.Field) string {
     //field name
     fieldName := "    "
-    nameCharLength := 15 //15 是字段名称在代码编辑器中占的字符数
+    nameCharLength := 20 //20 是字段名称在代码编辑器中占的字符数
     fieldName += field.Name
     fieldName += strings.Repeat(" ", nameCharLength - len(field.Name))
 
