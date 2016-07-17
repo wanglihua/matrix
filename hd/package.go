@@ -184,9 +184,5 @@ func filterPathFiles(srcPath string) bool {
         return true
     }
 
-    if strings.HasSuffix(srcPath, "routes") {
-        return true
-    }
-
     return false;
 }
