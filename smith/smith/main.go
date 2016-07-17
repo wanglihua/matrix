@@ -159,7 +159,7 @@ func main() {
             "entity": entity,
         })
 
-        WriteToFile(controllersDir + "\\" + strings.ToLower(entity.EntityCamelCase) + ".go", controllerCode)
+        WriteToFile(controllersDir + "\\" + entityList[0].ModuleLowerCase + "_" + strings.ToLower(entity.EntityCamelCase) + ".go", controllerCode)
     }
 
     viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\" + strings.ToLower(entityList[0].EntityCamelCase) + "\\"
