@@ -6,6 +6,8 @@ import (
     fpath "path/filepath"
     "strings"
     "syscall"
+    "time"
+    "matrix/core"
 )
 
 type Static struct {
@@ -107,6 +109,23 @@ func serve(c Static, prefix, filepath string) revel.Result {
         return c.Forbidden("Directory listing not allowed")
     }
 
+    //如果文件没有更新过，就发送304
+    if len(c.Request.Header["If-Modified-Since"]) != 0 {
+        //revel.TRACE.Println(c.Request.Header["If-Modified-Since"][0])
+        //Tue, 12 Jul 2016 10:27:36 GMT
+        requestFileModTime, err := time.ParseInLocation("Mon, 02 Jan 2006 15:04:05 MST", c.Request.Header["If-Modified-Since"][0], time.UTC)
+        core.HandleError(err)
+
+        fileModtime := finfo.ModTime()
+        //revel.TRACE.Println(fileModtime)
+
+        if fileModtime.After(requestFileModTime) == false {
+            //文件没有更新过
+            c.Response.Status = 304
+            return nil
+        }
+    }
+
     // Open request file path
     file, err := os.Open(fname)
     if err != nil {
@@ -117,5 +136,6 @@ func serve(c Static, prefix, filepath string) revel.Result {
         revel.ERROR.Printf("Error opening '%s': %s", fname, err)
         return c.RenderError(err)
     }
+
     return c.RenderFile(file, revel.Inline)
 }
