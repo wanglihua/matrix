@@ -3,6 +3,7 @@ package main
 const MAIN_TEMPLATE = `package main
 
 import (
+    "runtime/debug"
     "flag"
     "reflect"
     "github.com/revel/revel"{{range $k, $v := $.ImportPaths}}
@@ -28,6 +29,13 @@ var (
 )
 
 func main() {
+    defer func() {
+        if err := recover(); err != nil {
+            errorDesc := fmt.Sprint(err)
+            revel.ERROR.Print(errorDesc, "\n", string(debug.Stack()))
+        }
+    }()
+
     flag.Parse()
     if *runMode == "prod" {
         currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
