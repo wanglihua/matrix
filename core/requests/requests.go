@@ -12,7 +12,9 @@ import (
 func Get(url string) string {
     httpResp, err := http.Get(url)
     core.HandleError(err)
-    defer httpResp.Body.Close()
+    if httpResp != nil {
+        defer httpResp.Body.Close()
+    }
 
     responeBytes, err := ioutil.ReadAll(httpResp.Body)
     core.HandleError(err)
@@ -23,7 +25,9 @@ func Get(url string) string {
 func Post(url string) string {
     httpResp, err := http.Post(url, "application/x-www-form-urlencoded", strings.NewReader(""))
     core.HandleError(err)
-    defer httpResp.Body.Close()
+    if httpResp != nil {
+        defer httpResp.Body.Close()
+    }
 
     responeBytes, err := ioutil.ReadAll(httpResp.Body)
     core.HandleError(err)
@@ -34,7 +38,9 @@ func Post(url string) string {
 func PostForm(url string, data url.Values) string {
     httpResp, err := http.PostForm(url, data)
     core.HandleError(err)
-    defer httpResp.Body.Close()
+    if httpResp != nil {
+        defer httpResp.Body.Close()
+    }
 
     responeBytes, err := ioutil.ReadAll(httpResp.Body)
     core.HandleError(err)
@@ -49,7 +55,9 @@ func PostJson(url string, json string) string {
 func postWithContentType(url string, bodyType string, body string) string {
     httpResp, err := http.Post(url, bodyType, strings.NewReader(body))
     core.HandleError(err)
-    defer httpResp.Body.Close()
+    if httpResp != nil {
+        defer httpResp.Body.Close()
+    }
 
     responeBytes, err := ioutil.ReadAll(httpResp.Body)
     core.HandleError(err)
