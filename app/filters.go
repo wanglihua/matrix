@@ -4,6 +4,8 @@ import (
     "runtime/debug"
     "github.com/revel/revel"
     "matrix/core"
+    "fmt"
+    "errors"
 )
 //捕获和处理整站异常
 func PanicFilter(c *revel.Controller, fc []revel.Filter) {
@@ -16,19 +18,19 @@ func PanicFilter(c *revel.Controller, fc []revel.Filter) {
 }
 
 func handleInvocationPanic(c *revel.Controller, err interface{}) {
-    siteError := revel.NewErrorFromPanic(err)
-    //if siteError != nil && revel.DevMode {
-    if siteError != nil {
-        //在生产环境下也应该把错误栈写入日志
-        revel.ERROR.Print(siteError, "\n", string(debug.Stack()))
-        //revel.ERROR.Print(siteError, "\n", siteError.Stack)
+    errorDesc := fmt.Sprint(err)
+    revel.ERROR.Print(errorDesc, "\n", string(debug.Stack()))
 
-        if core.IsAjaxRequest(c.Request) {
-            c.Result = c.RenderJson(core.JsonResult{Success:false, Message:"操作失败！详细:" + siteError.Description})
+    if core.IsAjaxRequest(c.Request) {
+        c.Result = c.RenderJson(core.JsonResult{Success:false, Message:"操作失败！详细:" + errorDesc})
+    } else {
+        if revel.DevMode == true {
+            siteError := revel.NewErrorFromPanic(err) //这个方法有点问题，在Windows下会区分不了大小写盘符，所以不在生产环境中使用
+            c.Result = c.RenderError(siteError)
         } else {
             c.Response.Out.WriteHeader(500)
-            //c.Response.Out.Write(debug.Stack())
-            c.Result = c.RenderError(siteError)
+            c.Response.Out.Write(debug.Stack())
+            c.Result = c.RenderError(errors.New(errorDesc))
         }
     }
 }
