@@ -1,5 +1,5 @@
 <div class="modal fade" id="worklogDetailDialog">
-    <div class="modal-dialog" style="width: 440px;">
+    <div class="modal-dialog" style="width: 680px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
@@ -11,52 +11,63 @@
                         <form class="form-horizontal" role="form" id="worklogDetailForm" onsubmit="saveWorklog();return false;">
                             <input id="worklog_id" name="form.Worklog.Id" type="hidden" value="{%.form.Worklog.Id%}"/>
                             <input id="worklog_version" name="form.Worklog.Version" type="hidden" value="{%.form.Worklog.Version%}"/>
-                            <div class="form-group">
-                                <label for="user_id" class="col-xs-2 control-label no-padding-right">用户</label>
-                                <div class="col-xs-10">
-                                    <input id="user_id" name="form.Worklog.UserId" type="text" class="input-sm form-control" value="{%.form.Worklog.UserId%}"/>
-                                </div>
-                            </div>
+
 
                             <div class="form-group">
-                                <label for="title" class="col-xs-2 control-label no-padding-right">日志主题</label>
-                                <div class="col-xs-10">
+                                <label for="title" class="col-xs-1 control-label no-padding-right">日志主题</label>
+                                <div class="col-xs-11">
                                     <input id="title" name="form.Worklog.Title" type="text" class="input-sm form-control" value="{%.form.Worklog.Title%}"/>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="content" class="col-xs-2 control-label no-padding-right">日志内容</label>
-                                <div class="col-xs-10">
-                                    <input id="content" name="form.Worklog.Content" type="text" class="input-sm form-control" value="{%.form.Worklog.Content%}"/>
+                                <label for="content" class="col-xs-1 control-label no-padding-right">日志内容</label>
+                                <div class="col-xs-11">
+                                    <textarea id="content" name="form.Worklog.Content" class="input-sm form-control" style="height: 80px;">{%.form.Worklog.Content%}</textarea>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="work_date" class="col-xs-2 control-label no-padding-right">工作日期</label>
-                                <div class="col-xs-10">
-                                    <input id="work_date" name="form.Worklog.WorkDate" type="text" class="input-sm form-control" value="{%.form.Worklog.WorkDate%}"/>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="user_id" class="col-xs-2 control-label no-padding-right">用户</label>
+                                        <div class="col-xs-10">
+                                            <input id="user_id" name="form.Worklog.UserId" type="text" class="input-sm form-control" value="{%.form.Worklog.UserId%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="work_date" class="col-xs-2 control-label no-padding-right">工作日期</label>
+                                        <div class="col-xs-10">
+                                            <input id="work_date" name="form.Worklog.WorkDate" type="text" class="input-sm form-control" value="{%.form.Worklog.WorkDate%}"/>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="begin_time" class="col-xs-2 control-label no-padding-right">开始时间</label>
-                                <div class="col-xs-10">
-                                    <input id="begin_time" name="form.Worklog.BeginTime" type="text" class="input-sm form-control" value="{%.form.Worklog.BeginTime%}"/>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="begin_time" class="col-xs-2 control-label no-padding-right">开始时间</label>
+                                        <div class="col-xs-10">
+                                            <input id="begin_time" name="form.Worklog.BeginTime" type="text" class="input-sm form-control" value="{%.form.Worklog.BeginTime%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="end_time" class="col-xs-2 control-label no-padding-right">结束时间</label>
+                                        <div class="col-xs-10">
+                                            <input id="end_time" name="form.Worklog.EndTime" type="text" class="input-sm form-control" value="{%.form.Worklog.EndTime%}"/>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
                             <div class="form-group">
-                                <label for="end_time" class="col-xs-2 control-label no-padding-right">结束时间</label>
-                                <div class="col-xs-10">
-                                    <input id="end_time" name="form.Worklog.EndTime" type="text" class="input-sm form-control" value="{%.form.Worklog.EndTime%}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="remark" class="col-xs-2 control-label no-padding-right">备注</label>
-                                <div class="col-xs-10">
-                                    <input id="remark" name="form.Worklog.Remark" type="text" class="input-sm form-control" value="{%.form.Worklog.Remark%}"/>
+                                <label for="remark" class="col-xs-1 control-label no-padding-right">备注</label>
+                                <div class="col-xs-11">
+                                    <textarea id="remark" name="form.Worklog.Remark" type="text" class="input-sm form-control" style="height: 50px;">{%.form.Worklog.Remark%}</textarea>
                                 </div>
                             </div>
 
@@ -76,56 +87,56 @@
     </div>
 </div>
 <script type='text/javascript'>
-function saveWorklog() {
-    showMask("提交中...");
-    var form = $("#worklogDetailForm");
-    var valid = validate(form, {  
-        'form.Worklog.UserId': {
-            required: true, digits: true
-        },
-        'form.Worklog.Title': {
-            required: true, minlength: 3, maxlength: 200
-        },
-        'form.Worklog.Content': {
-            required: true, minlength: 3, maxlength: 1000
-        },
-        'form.Worklog.WorkDate': {
-            required: false
-        },
-        'form.Worklog.BeginTime': {
-            required: false, maxlength: 15
-        },
-        'form.Worklog.EndTime': {
-            required: false, maxlength: 15
-        },
-        'form.Worklog.Remark': {
-            required: false, maxlength: 1000
-        }
-    });
+    function saveWorklog() {
+        showMask("提交中...");
+        var form = $("#worklogDetailForm");
+        var valid = validate(form, {
+            'form.Worklog.UserId': {
+                required: true, digits: true
+            },
+            'form.Worklog.Title': {
+                required: true, minlength: 3, maxlength: 200
+            },
+            'form.Worklog.Content': {
+                required: true, minlength: 3, maxlength: 1000
+            },
+            'form.Worklog.WorkDate': {
+                required: false
+            },
+            'form.Worklog.BeginTime': {
+                required: false, maxlength: 15
+            },
+            'form.Worklog.EndTime': {
+                required: false, maxlength: 15
+            },
+            'form.Worklog.Remark': {
+                required: false, maxlength: 1000
+            }
+        });
 
-    if (!valid) {
-        hideMask();
-    } else {
-        $.ajax({
-                   url: '{%url "OaWorklog.Save"%}',
-                   type: "POST",
-                   data: form.serialize(),
-                   success: function (data) {
-                       hideMask();
-                       if (data.success == false) {
-                           $.msg.error(data.message);
-                           //return;
-                       }
-                       else {
-                           $.msg.show(data.message);
-                           $('#worklogDetailDialog').modal('hide');
-                           reloadList('#worklogList');
-                           //return;
+        if (!valid) {
+            hideMask();
+        } else {
+            $.ajax({
+                       url: '{%url "OaWorklog.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#worklogDetailDialog').modal('hide');
+                               reloadList('#worklogList');
+                               //return;
+                           }
                        }
                    }
-               }
-        );
+            );
+        }
     }
-}
 </script>
 
