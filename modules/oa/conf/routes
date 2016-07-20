@@ -1,0 +1,6 @@
+GET  /oa/worklog                    OaWorklog.Index
+POST /oa/worklog/listdata           OaWorklog.ListData
+POST /oa/worklog/detail             OaWorklog.Detail
+POST /oa/worklog/save               OaWorklog.Save
+POST /oa/worklog/delete             OaWorklog.Delete
+

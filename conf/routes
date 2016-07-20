@@ -4,6 +4,7 @@ module:auth
 module:wechat
 module:weixin
 module:inventory
+module:oa
 
 GET  /favicon.ico               Static.Serve("static","images/favicon.png")
 GET  /static/*filepath          Static.Serve("static")

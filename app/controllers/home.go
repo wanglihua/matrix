@@ -8,6 +8,7 @@ import (
     authModels "matrix/modules/auth/models"
     weixinModels "matrix/modules/weixin/models"
     inventoryModels "matrix/modules/inventory/models"
+    oaModels "matrix/modules/oa/models"
 )
 
 type Home struct {
@@ -36,6 +37,7 @@ func (c Home) SyncDbPost() revel.Result {
     modelList = append(modelList, &inventoryModels.Supplier{})
     modelList = append(modelList, &inventoryModels.Stock{})
     modelList = append(modelList, &inventoryModels.StorageLoc{})
+    modelList = append(modelList, &oaModels.Worklog{})
 
     db.Engine.Sync2(modelList...)
 

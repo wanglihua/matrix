@@ -159,6 +159,25 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                     </li>
                 </ul>
             </li>
+            <li id="oa-menu" class="">
+                <a href="#" class="dropdown-toggle">
+                    <i class="menu-icon fa fa-files-o"></i>
+                    <span class="menu-text">办公系统</span>
+                    <b class="arrow fa fa-angle-down"></b>
+                </a>
+                <b class="arrow"></b>
+                <ul class="submenu">
+
+                    <li id="oa-worklog-menu" class="">
+                        <a href="/oa/worklog">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            工作日志
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+
+                </ul>
+            </li>
             <li id="auth-menu" class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-users"></i>
