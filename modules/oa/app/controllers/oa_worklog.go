@@ -93,7 +93,8 @@ func (f *WorklogForm) Valid(validation *revel.Validation) bool {
 func (c OaWorklog) Detail() revel.Result {
     session := c.DbSession
 
-    worklogId := core.GetInt64FromRequest(c.Request, "id")
+    var worklogId int64
+    c.Params.Bind(&worklogId, "id")
 
     worklog := new(models.Worklog)
     if worklogId != 0 {

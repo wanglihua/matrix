@@ -50,7 +50,8 @@ func (c AuthUser) ListData() revel.Result {
 func (c AuthUser) Detail() revel.Result {
     session := c.DbSession
 
-    userId := core.GetInt64FromRequest(c.Request, "id")
+    var userId int64
+    c.Params.Bind(&userId, "id")
 
     user := new(models.User)
     if userId != 0 {

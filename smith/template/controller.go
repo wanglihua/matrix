@@ -65,7 +65,8 @@ func (f *{{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) bo
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Detail() revel.Result {
     session := c.DbSession
 
-    {{.entity.EntityCamelCase}}Id := core.GetInt64FromRequest(c.Request, "id")
+    var {{.entity.EntityCamelCase}}Id int64
+    c.Params.Bind(&{{.entity.EntityCamelCase}}Id, "id")
 
     {{.entity.EntityCamelCase}} := new(models.{{.entity.EntityTitleName}})
     if {{.entity.EntityCamelCase}}Id != 0 {
@@ -119,8 +120,7 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Delete() revel.R
     {{.entity.EntityCamelCase}}IdList := make([]int64, 0)
     c.Params.Bind(&{{.entity.EntityCamelCase}}IdList, "id_list")
 
-    {{.entity.EntityCamelCase}} := new(models.{{.entity.EntityTitleName}})
-    affected, err := session.In("id", {{.entity.EntityCamelCase}}IdList).Delete({{.entity.EntityCamelCase}})
+    affected, err := session.In("id", {{.entity.EntityCamelCase}}IdList).Delete(new(models.{{.entity.EntityTitleName}}))
     core.HandleError(err)
 
     return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

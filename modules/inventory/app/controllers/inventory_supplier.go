@@ -114,7 +114,8 @@ func (f *SupplierForm) Valid(validation *revel.Validation) bool {
 func (c InventorySupplier) Detail() revel.Result {
     session := c.DbSession
 
-    supplierId := core.GetInt64FromRequest(c.Request, "id")
+    var supplierId int64
+    c.Params.Bind(&supplierId, "id")
 
     supplier := new(models.Supplier)
     if supplierId != 0 {

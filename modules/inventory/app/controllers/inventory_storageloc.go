@@ -94,7 +94,8 @@ func (f *StorageLocForm) Valid(validation *revel.Validation) bool {
 func (c InventoryStorageLoc) Detail() revel.Result {
     session := c.DbSession
 
-    storageLocId := core.GetInt64FromRequest(c.Request, "id")
+    var storageLocId int64
+    c.Params.Bind(&storageLocId, "id")
 
     storageLoc := new(models.StorageLoc)
     if storageLocId != 0 {

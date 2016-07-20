@@ -105,7 +105,8 @@ func (f *MenuForm) Valid(validation *revel.Validation) bool {
 func (c WeixinMenu) Detail() revel.Result {
     session := c.DbSession
 
-    menuId := core.GetInt64FromRequest(c.Request, "id")
+    var menuId int64
+    c.Params.Bind(&menuId, "id")
 
     menu := new(models.Menu)
     if menuId != 0 {

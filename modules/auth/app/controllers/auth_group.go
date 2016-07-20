@@ -65,7 +65,8 @@ func (f *GroupForm) Valid(validation *revel.Validation) bool {
 func (c AuthGroup) Detail() revel.Result {
     session := c.DbSession
 
-    groupId := core.GetInt64FromRequest(c.Request, "id")
+    var groupId int64
+    c.Params.Bind(&groupId, "id")
 
     group := new(models.Group)
     if groupId != 0 {

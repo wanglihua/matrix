@@ -26,16 +26,18 @@ func InitDatabase() {
 
         //Engine.TZLocation, err = time.LoadLocation("Asia/Shanghai") //设置时区
         //Engine.TZLocation, err = time.LoadLocation("Local") //设置时区
-        Engine.TZLocation  = time.Local //设置时区
+        Engine.TZLocation = time.Local //设置时区
         if err != nil {
             panic(err)
         }
 
         //Engine.TZLocation = time.UTC //设置时区
 
-        //连接池
-        Engine.SetMaxIdleConns(3) //最小
-        Engine.SetMaxOpenConns(100) //最大
+        if revel.DevMode == false {
+            //连接池
+            Engine.SetMaxIdleConns(3) //最小
+            Engine.SetMaxOpenConns(100) //最大
+        }
 
         if revel.DevMode == true {
             Engine.ShowSQL()

@@ -1,4 +1,3 @@
-
 package controllers
 
 import (
@@ -55,7 +54,7 @@ func (f *StockForm) IsCreate() bool {
     return f.Stock.Id == 0
 }
 
-func (f *StockForm) Valid(validation *revel.Validation) bool { 
+func (f *StockForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.Stock.Code).Message("编号不能为空！")
     if f.Stock.Code != "" {
         validation.MinSize(f.Stock.Code, 3).Message("编号长度不能小于3！")
@@ -103,7 +102,8 @@ func (f *StockForm) Valid(validation *revel.Validation) bool {
 func (c InventoryStock) Detail() revel.Result {
     session := c.DbSession
 
-    stockId := core.GetInt64FromRequest(c.Request, "id")
+    var stockId int64
+    c.Params.Bind(&stockId, "id")
 
     stock := new(models.Stock)
     if stockId != 0 {
@@ -134,34 +134,34 @@ func (c InventoryStock) Save() revel.Result {
     stock := &form.Stock
 
     var affected int64
-    if form.IsCreate() { 
+    if form.IsCreate() {
         codeCount, err := session.Where("stock_code = ?", stock.Code).Count(new(models.Stock))
         core.HandleError(err)
         if codeCount != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编号已存在！" })
         }
-        
+
         nameCount, err := session.Where("stock_name = ?", stock.Name).Count(new(models.Stock))
         core.HandleError(err)
         if nameCount != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
         }
-        
+
         affected, err = session.Insert(stock)
         core.HandleError(err)
-    } else { 
+    } else {
         codeCount, err := session.Where("id <> ? and stock_code = ?", stock.Id, stock.Code).Count(new(models.Stock))
         core.HandleError(err)
         if codeCount != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编号已存在！" })
         }
-        
+
         nameCount, err := session.Where("id <> ? and stock_name = ?", stock.Id, stock.Name).Count(new(models.Stock))
         core.HandleError(err)
         if nameCount != 0 {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
         }
-        
+
         affected, err = session.Id(stock.Id).Update(stock)
         core.HandleError(err)
 
@@ -179,8 +179,12 @@ func (c InventoryStock) Delete() revel.Result {
     stockIdList := make([]int64, 0)
     c.Params.Bind(&stockIdList, "id_list")
 
-    stock := new(models.Stock)
-    affected, err := session.In("id", stockIdList).Delete(stock)
+    //删除库位
+    _, err := session.In("stock_id", stockIdList).Delete(new(models.StorageLoc))
+    core.HandleError(err)
+
+    //删除仓库
+    affected, err := session.In("id", stockIdList).Delete(new(models.Stock))
     core.HandleError(err)
 
     return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
