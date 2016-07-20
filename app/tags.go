@@ -8,6 +8,7 @@ import (
     //"fmt"
     "matrix/core"
     "strconv"
+    //"time"
 )
 
 func registerTags() {
@@ -31,6 +32,8 @@ type headerTemplateData struct {
 //var headerTemplate *template.Template = nil
 
 func headerTemplateFunc(title string, renderArgs map[string]interface{}) template.HTML {
+    //timeBegin := time.Now()
+
     sysName := layout.GetSysName()
 
     /*
@@ -47,7 +50,7 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
     return template.HTML(renderBuffer.String())
     */
 
-    revel.TRACE.Println("headerTemplateFunc")
+    //revel.TRACE.Println("headerTemplateFunc")
 
     session := renderArgs["session"].(revel.Session)
     loginUser := core.GetLoginUser(session)
@@ -55,6 +58,11 @@ func headerTemplateFunc(title string, renderArgs map[string]interface{}) templat
     if loginUser != nil {
         loginNickName = loginUser.NickName
     }
+
+    //timeEnd := time.Now()
+    //duration :=  int64(timeEnd.Sub(timeBegin)) / 1000000
+    //revel.TRACE.Println("headerTemplateFunc duration: ", duration, "ms")
+
     return template.HTML(layout.GetHeader(title, sysName, loginNickName))
 }
 
