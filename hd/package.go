@@ -184,5 +184,9 @@ func filterPathFiles(srcPath string) bool {
         return true
     }
 
+    if strings.HasSuffix(srcPath, "test.exe") {
+        return true
+    }
+
     return false;
 }
