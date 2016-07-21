@@ -35,6 +35,8 @@ func init() {
 
     registerTags()
 
+    registerBinders()
+
     // register startup functions with OnAppStart
     // ( order dependent )
     // revel.OnAppStart(InitDB)
