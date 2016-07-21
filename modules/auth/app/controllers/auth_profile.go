@@ -20,7 +20,7 @@ func (c AuthProfile) Index() revel.Result {
     _, err := session.Id(loginUserId).Get(loginUser)
     core.HandleError(err)
 
-    c.RenderArgs["user"] = loginUser
+    c.UnbindToRenderArgs(loginUser, "user")
 
     return c.RenderTemplate("auth/profile/profile_index.html")
 }
