@@ -12,14 +12,11 @@ import (
 // NullDate
 //------------------------------------------------------------------------------------------------------------------
 
-// Time is a nullable time.Time. It supports SQL and JSON serialization.
-// It will marshal to null if null.
 type NullDate struct {
     Time  time.Time
     Valid bool
 }
 
-// Scan implements the Scanner interface.
 func (t *NullDate) Scan(value interface{}) error {
     var err error
     switch x := value.(type) {
@@ -35,7 +32,6 @@ func (t *NullDate) Scan(value interface{}) error {
     return err
 }
 
-// Value implements the driver Valuer interface.
 func (t NullDate) Value() (driver.Value, error) {
     if !t.Valid {
         return nil, nil
@@ -43,7 +39,6 @@ func (t NullDate) Value() (driver.Value, error) {
     return t.Time, nil
 }
 
-// NewNullDate creates a new Time.
 func NewNullDate(t time.Time, valid bool) NullDate {
     return NullDate{
         Time:  t,
@@ -51,12 +46,10 @@ func NewNullDate(t time.Time, valid bool) NullDate {
     }
 }
 
-// TimeFrom creates a new Time that will always be valid.
 func NullDateFrom(t time.Time) NullDate {
     return NewNullDate(t, true)
 }
 
-// TimeFromPtr creates a new Time that will be null if t is nil.
 func NullDateFromPtr(t *time.Time) NullDate {
     if t == nil {
         return NewNullDate(time.Time{}, false)
@@ -64,8 +57,6 @@ func NullDateFromPtr(t *time.Time) NullDate {
     return NewNullDate(*t, true)
 }
 
-// MarshalJSON implements json.Marshaler.
-// It will encode null if this time is null.
 func (t NullDate) MarshalJSON() ([]byte, error) {
     if !t.Valid {
         return []byte("null"), nil
@@ -75,9 +66,6 @@ func (t NullDate) MarshalJSON() ([]byte, error) {
 
 }
 
-// UnmarshalJSON implements json.Unmarshaler.
-// It supports string, object (e.g. pq.NullDate and friends)
-// and null input.
 func (t *NullDate) UnmarshalJSON(data []byte) error {
     var err error
     var v interface{}
@@ -126,13 +114,11 @@ func (t *NullDate) UnmarshalText(text []byte) error {
     return nil
 }
 
-// SetValid changes this Time's value and sets it to be non-null.
 func (t *NullDate) SetValid(v time.Time) {
     t.Time = v
     t.Valid = true
 }
 
-// Ptr returns a pointer to this Time's value, or a nil pointer if this Time is null.
 func (t NullDate) Ptr() *time.Time {
     if !t.Valid {
         return nil
@@ -143,14 +129,11 @@ func (t NullDate) Ptr() *time.Time {
 // NullTime
 //------------------------------------------------------------------------------------------------------------------
 
-// Time is a nullable time.Time. It supports SQL and JSON serialization.
-// It will marshal to null if null.
 type NullTime struct {
     Time  time.Time
     Valid bool
 }
 
-// Scan implements the Scanner interface.
 func (t *NullTime) Scan(value interface{}) error {
     var err error
     switch x := value.(type) {
@@ -166,7 +149,6 @@ func (t *NullTime) Scan(value interface{}) error {
     return err
 }
 
-// Value implements the driver Valuer interface.
 func (t NullTime) Value() (driver.Value, error) {
     if !t.Valid {
         return nil, nil
@@ -174,7 +156,6 @@ func (t NullTime) Value() (driver.Value, error) {
     return t.Time, nil
 }
 
-// NewNullTime creates a new Time.
 func NewNullTime(t time.Time, valid bool) NullTime {
     return NullTime{
         Time:  t,
@@ -182,12 +163,10 @@ func NewNullTime(t time.Time, valid bool) NullTime {
     }
 }
 
-// TimeFrom creates a new Time that will always be valid.
 func NullTimeFrom(t time.Time) NullTime {
     return NewNullTime(t, true)
 }
 
-// TimeFromPtr creates a new Time that will be null if t is nil.
 func NullTimeFromPtr(t *time.Time) NullTime {
     if t == nil {
         return NewNullTime(time.Time{}, false)
@@ -195,8 +174,6 @@ func NullTimeFromPtr(t *time.Time) NullTime {
     return NewNullTime(*t, true)
 }
 
-// MarshalJSON implements json.Marshaler.
-// It will encode null if this time is null.
 func (t NullTime) MarshalJSON() ([]byte, error) {
     if !t.Valid {
         return []byte("null"), nil
@@ -206,9 +183,6 @@ func (t NullTime) MarshalJSON() ([]byte, error) {
 
 }
 
-// UnmarshalJSON implements json.Unmarshaler.
-// It supports string, object (e.g. pq.NullTime and friends)
-// and null input.
 func (t *NullTime) UnmarshalJSON(data []byte) error {
     var err error
     var v interface{}
@@ -257,13 +231,11 @@ func (t *NullTime) UnmarshalText(text []byte) error {
     return nil
 }
 
-// SetValid changes this Time's value and sets it to be non-null.
 func (t *NullTime) SetValid(v time.Time) {
     t.Time = v
     t.Valid = true
 }
 
-// Ptr returns a pointer to this Time's value, or a nil pointer if this Time is null.
 func (t NullTime) Ptr() *time.Time {
     if !t.Valid {
         return nil
@@ -274,14 +246,11 @@ func (t NullTime) Ptr() *time.Time {
 // NullLongTime
 //------------------------------------------------------------------------------------------------------------------
 
-// Time is a nullable time.Time. It supports SQL and JSON serialization.
-// It will marshal to null if null.
 type NullLongTime struct {
     Time  time.Time
     Valid bool
 }
 
-// Scan implements the Scanner interface.
 func (t *NullLongTime) Scan(value interface{}) error {
     var err error
     switch x := value.(type) {
@@ -297,7 +266,6 @@ func (t *NullLongTime) Scan(value interface{}) error {
     return err
 }
 
-// Value implements the driver Valuer interface.
 func (t NullLongTime) Value() (driver.Value, error) {
     if !t.Valid {
         return nil, nil
@@ -305,7 +273,6 @@ func (t NullLongTime) Value() (driver.Value, error) {
     return t.Time, nil
 }
 
-// NewNullLongTime creates a new Time.
 func NewNullLongTime(t time.Time, valid bool) NullLongTime {
     return NullLongTime{
         Time:  t,
@@ -313,12 +280,10 @@ func NewNullLongTime(t time.Time, valid bool) NullLongTime {
     }
 }
 
-// TimeFrom creates a new Time that will always be valid.
 func NullLongTimeFrom(t time.Time) NullLongTime {
     return NewNullLongTime(t, true)
 }
 
-// TimeFromPtr creates a new Time that will be null if t is nil.
 func NullLongTimeFromPtr(t *time.Time) NullLongTime {
     if t == nil {
         return NewNullLongTime(time.Time{}, false)
@@ -326,8 +291,6 @@ func NullLongTimeFromPtr(t *time.Time) NullLongTime {
     return NewNullLongTime(*t, true)
 }
 
-// MarshalJSON implements json.Marshaler.
-// It will encode null if this time is null.
 func (t NullLongTime) MarshalJSON() ([]byte, error) {
     if !t.Valid {
         return []byte("null"), nil
@@ -337,9 +300,6 @@ func (t NullLongTime) MarshalJSON() ([]byte, error) {
 
 }
 
-// UnmarshalJSON implements json.Unmarshaler.
-// It supports string, object (e.g. pq.NullLongTime and friends)
-// and null input.
 func (t *NullLongTime) UnmarshalJSON(data []byte) error {
     var err error
     var v interface{}
@@ -388,13 +348,11 @@ func (t *NullLongTime) UnmarshalText(text []byte) error {
     return nil
 }
 
-// SetValid changes this Time's value and sets it to be non-null.
 func (t *NullLongTime) SetValid(v time.Time) {
     t.Time = v
     t.Valid = true
 }
 
-// Ptr returns a pointer to this Time's value, or a nil pointer if this Time is null.
 func (t NullLongTime) Ptr() *time.Time {
     if !t.Valid {
         return nil

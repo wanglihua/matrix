@@ -30,4 +30,6 @@ func main() {
 
     unix_time2 := the_time.Unix()
     fmt.Println(unix_time2)
+
+    fmt.Printf("%t", true)
 }
