@@ -128,3 +128,12 @@ func userAuth(c *BaseController) revel.Result {
 
     return nil
 }
+
+
+func (c BaseController) UnbindToRenderArgs(name string, val interface{}) {
+    datas := make(map[string]string)
+    revel.Unbind(datas, name, val)
+    for key, value := range datas {
+        c.RenderArgs[strings.Replace(key, ".", "_", -1)] = value
+    }
+}

@@ -1,4 +1,3 @@
-
 package controllers
 
 import (
@@ -55,7 +54,7 @@ func (f *WorklogForm) IsCreate() bool {
     return f.Worklog.Id == 0
 }
 
-func (f *WorklogForm) Valid(validation *revel.Validation) bool { 
+func (f *WorklogForm) Valid(validation *revel.Validation) bool {
     validation.Required(f.Worklog.UserId).Message("用户不能为空！")
 
     validation.Required(f.Worklog.Title).Message("日志主题不能为空！")
@@ -73,7 +72,6 @@ func (f *WorklogForm) Valid(validation *revel.Validation) bool {
     if f.Worklog.Content != "" {
         validation.MaxSize(f.Worklog.Content, 1000).Message("日志内容长度不能大于1000！")
     }
-
 
     if f.Worklog.BeginTime != "" {
         validation.MaxSize(f.Worklog.BeginTime, 15).Message("开始时间长度不能大于15！")
@@ -108,7 +106,10 @@ func (c OaWorklog) Detail() revel.Result {
     form := new(WorklogForm)
     form.Worklog = *worklog
 
-    c.RenderArgs["form"] = form
+    //c.RenderArgs["form"] = form
+
+    c.UnbindToRenderArgs("form", form)
+
     return c.RenderTemplate("oa/worklog/worklog_detail.html")
 }
 
@@ -126,10 +127,10 @@ func (c OaWorklog) Save() revel.Result {
 
     var affected int64
     var err error
-    if form.IsCreate() { 
+    if form.IsCreate() {
         affected, err = session.Insert(worklog)
         core.HandleError(err)
-    } else { 
+    } else {
         affected, err = session.Id(worklog.Id).Update(worklog)
         core.HandleError(err)
 
