@@ -9,18 +9,18 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <form class="form-horizontal" role="form" id="userDetailForm" onsubmit="saveUser();return false;">
-                            <input id="user_id" name="form.User.Id" type="hidden" value="{%.form.User.Id%}"/>
-                            <input id="user_version" name="form.User.Version" type="hidden" value="{%.form.User.Version%}"/>
+                            <input id="user_id" name="form.User.Id" type="hidden" value="{%.form_User_Id%}"/>
+                            <input id="user_version" name="form.User.Version" type="hidden" value="{%.form_User_Version%}"/>
                             <div class="form-group">
                                 <label for="user_login_name" class="col-xs-2 control-label no-padding-right">登录名</label>
                                 <div class="col-xs-10">
-                                    <input id="user_login_name" name="form.User.LoginName" type="text" class="input-sm form-control" value="{%.form.User.LoginName%}"/>
+                                    <input id="user_login_name" name="form.User.LoginName" type="text" class="input-sm form-control" value="{%.form_User_LoginName%}"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="user_nick_name" class="col-xs-2 control-label no-padding-right">用户名</label>
                                 <div class="col-xs-10">
-                                    <input id="user_nick_name" name="form.User.NickName" type="text" class="input-sm form-control" value="{%.form.User.NickName%}"/>
+                                    <input id="user_nick_name" name="form.User.NickName" type="text" class="input-sm form-control" value="{%.form_User_NickName%}"/>
                                 </div>
                             </div>
                             {%if .form.IsCreate%}

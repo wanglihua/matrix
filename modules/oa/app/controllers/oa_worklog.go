@@ -106,9 +106,7 @@ func (c OaWorklog) Detail() revel.Result {
     form := new(WorklogForm)
     form.Worklog = *worklog
 
-    //c.RenderArgs["form"] = form
-
-    c.UnbindToRenderArgs("form", form)
+    c.UnbindToRenderArgs(form, "form")
 
     return c.RenderTemplate("oa/worklog/worklog_detail.html")
 }

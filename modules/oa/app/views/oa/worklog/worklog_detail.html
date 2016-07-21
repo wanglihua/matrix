@@ -9,8 +9,8 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <form class="form-horizontal" role="form" id="worklogDetailForm" onsubmit="saveWorklog();return false;">
-                            <input id="worklog_id" name="form.Worklog.Id" type="hidden" value="{%.form.Worklog.Id%}"/>
-                            <input id="worklog_version" name="form.Worklog.Version" type="hidden" value="{%.form.Worklog.Version%}"/>
+                            <input id="worklog_id" name="form.Worklog.Id" type="hidden" value="{%.form_Worklog_Id%}"/>
+                            <input id="worklog_version" name="form.Worklog.Version" type="hidden" value="{%.form_Worklog_Version%}"/>
 
 
                             <div class="form-group">
@@ -23,7 +23,7 @@
                             <div class="form-group">
                                 <label for="content" class="col-xs-1 control-label no-padding-right">日志内容</label>
                                 <div class="col-xs-11">
-                                    <textarea id="content" name="form.Worklog.Content" class="input-sm form-control" style="height: 80px;">{%.form.Worklog.Content%}</textarea>
+                                    <textarea id="content" name="form.Worklog.Content" class="input-sm form-control" style="height: 80px;">{%.form_Worklog_Content%}</textarea>
                                 </div>
                             </div>
 
@@ -32,7 +32,7 @@
                                     <div class="form-group">
                                         <label for="user_id" class="col-xs-2 control-label no-padding-right">用户</label>
                                         <div class="col-xs-10">
-                                            <input id="user_id" name="form.Worklog.UserId" type="text" class="input-sm form-control" value="{%.form.Worklog.UserId%}"/>
+                                            <input id="user_id" name="form.Worklog.UserId" type="text" class="input-sm form-control" value="{%.form_Worklog_UserId%}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -51,7 +51,7 @@
                                     <div class="form-group">
                                         <label for="begin_time" class="col-xs-2 control-label no-padding-right">开始时间</label>
                                         <div class="col-xs-10">
-                                            <input id="begin_time" name="form.Worklog.BeginTime" type="text" class="input-sm form-control" value="{%.form.Worklog.BeginTime%}"/>
+                                            <input id="begin_time" name="form.Worklog.BeginTime" type="text" class="input-sm form-control" value="{%.form_Worklog_BeginTime%}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -59,7 +59,7 @@
                                     <div class="form-group">
                                         <label for="end_time" class="col-xs-2 control-label no-padding-right">结束时间</label>
                                         <div class="col-xs-10">
-                                            <input id="end_time" name="form.Worklog.EndTime" type="text" class="input-sm form-control" value="{%.form.Worklog.EndTime%}"/>
+                                            <input id="end_time" name="form.Worklog.EndTime" type="text" class="input-sm form-control" value="{%.form_Worklog_EndTime%}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -67,7 +67,7 @@
                             <div class="form-group">
                                 <label for="remark" class="col-xs-1 control-label no-padding-right">备注</label>
                                 <div class="col-xs-11">
-                                    <textarea id="remark" name="form.Worklog.Remark" type="text" class="input-sm form-control" style="height: 50px;">{%.form.Worklog.Remark%}</textarea>
+                                    <textarea id="remark" name="form.Worklog.Remark" type="text" class="input-sm form-control" style="height: 50px;">{%.form_Worklog_Remark%}</textarea>
                                 </div>
                             </div>
 

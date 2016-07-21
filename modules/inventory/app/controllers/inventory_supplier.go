@@ -129,7 +129,7 @@ func (c InventorySupplier) Detail() revel.Result {
     form := new(SupplierForm)
     form.Supplier = *supplier
 
-    c.RenderArgs["form"] = form
+    c.UnbindToRenderArgs(form, "form")
     return c.RenderTemplate("inventory/supplier/supplier_detail.html")
 }
 

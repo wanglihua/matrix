@@ -65,7 +65,7 @@ func (c AuthUser) Detail() revel.Result {
     form := new(forms.UserDetailForm)
     form.User = *user
 
-    c.RenderArgs["form"] = form
+    c.UnbindToRenderArgs(form, "form")
     return c.RenderTemplate("auth/user/user_detail.html")
 }
 

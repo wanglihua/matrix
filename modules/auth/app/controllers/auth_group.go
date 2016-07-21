@@ -80,7 +80,8 @@ func (c AuthGroup) Detail() revel.Result {
     form := new(GroupForm)
     form.Group = *group
 
-    c.RenderArgs["form"] = form
+    c.UnbindToRenderArgs(form, "form")
+
     return c.RenderTemplate("auth/group/group_detail.html")
 }
 

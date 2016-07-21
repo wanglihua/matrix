@@ -34,7 +34,7 @@ func (c SysConfig) Index() revel.Result {
     form := new(ConfigForm)
     form.Config = *config
 
-    c.RenderArgs["form"] = form
+    c.UnbindToRenderArgs(form, "form")
     return c.RenderTemplate("config/config_index.html")
 }
 

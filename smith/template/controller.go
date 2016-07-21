@@ -79,8 +79,8 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Detail() revel.R
 
     form := new({{.entity.EntityTitleName}}Form)
     form.{{.entity.EntityTitleName}} = *{{.entity.EntityCamelCase}}
+    c.UnbindToRenderArgs(form, "form")
 
-    c.RenderArgs["form"] = form
     return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{LowerCase .entity.EntityCamelCase}}/{{LowerCase .entity.EntityCamelCase}}_detail.html")
 }
 

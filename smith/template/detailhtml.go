@@ -12,12 +12,12 @@ var DetailHtmlTemplate =
                 <div class="row">
                     <div class="col-xs-12">
                         <form class="form-horizontal" role="form" id="{{.entity.EntityCamelCase}}DetailForm" onsubmit="save{{.entity.EntityTitleName}}();return false;">
-                            <input id="{{.entity.EntityCamelCase}}_id" name="form.{{.entity.EntityTitleName}}.Id" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Id%}"/>
-                            <input id="{{.entity.EntityCamelCase}}_version" name="form.{{.entity.EntityTitleName}}.Version" type="hidden" value="{%.form.{{.entity.EntityTitleName}}.Version%}"/>{{range $fieldIndex, $field := .entity.FieldList}}
+                            <input id="{{.entity.EntityCamelCase}}_id" name="form.{{.entity.EntityTitleName}}.Id" type="hidden" value="{%.form_{{.entity.EntityTitleName}}_Id%}"/>
+                            <input id="{{.entity.EntityCamelCase}}_version" name="form.{{.entity.EntityTitleName}}.Version" type="hidden" value="{%.form_{{.entity.EntityTitleName}}_Version%}"/>{{range $fieldIndex, $field := .entity.FieldList}}
                             <div class="form-group">
                                 <label for="{{$field.Column}}" class="col-xs-2 control-label no-padding-right">{{$field.VerboseName}}</label>
                                 <div class="col-xs-10">
-                                    <input id="{{$field.Column}}" name="form.{{$.entity.EntityTitleName}}.{{$field.Name}}" type="text" class="input-sm form-control" value="{%.form.{{$.entity.EntityTitleName}}.{{$field.Name}}%}"/>
+                                    <input id="{{$field.Column}}" name="form.{{$.entity.EntityTitleName}}.{{$field.Name}}" type="text" class="input-sm form-control" value="{%.form_{{$.entity.EntityTitleName}}_{{$field.Name}}%}"/>
                                 </div>
                             </div>
 {{end}}

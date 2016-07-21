@@ -122,7 +122,7 @@ func (c WeixinMenu) Detail() revel.Result {
 
     form.Menu = *menu
 
-    c.RenderArgs["form"] = form
+    c.UnbindToRenderArgs(form, "form")
     return c.RenderTemplate("weixin/menu/menu_detail.html")
 }
 
@@ -156,11 +156,6 @@ func (c WeixinMenu) Save() revel.Result {
     }
 
     return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
-}
-
-//查看服务器端菜单
-func (c WeixinMenu) Server() revel.Result {
-    return c.RenderTemplate("weixin/menu/menu_server.html")
 }
 
 func (c WeixinMenu) Download() revel.Result {

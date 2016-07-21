@@ -113,7 +113,7 @@ func (c InventoryStorageLoc) Detail() revel.Result {
     form := new(StorageLocForm)
     form.StorageLoc = *storageLoc
 
-    c.RenderArgs["form"] = form
+    c.UnbindToRenderArgs(form, "form")
     return c.RenderTemplate("inventory/storageloc/storageloc_detail.html")
 }
 

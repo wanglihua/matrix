@@ -129,8 +129,7 @@ func userAuth(c *BaseController) revel.Result {
     return nil
 }
 
-
-func (c BaseController) UnbindToRenderArgs(name string, val interface{}) {
+func (c BaseController) UnbindToRenderArgs(val interface{}, name string) {
     datas := make(map[string]string)
     revel.Unbind(datas, name, val)
     for key, value := range datas {
