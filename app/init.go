@@ -34,7 +34,6 @@ func init() {
     }
 
     registerTags()
-
     registerBinders()
 
     // register startup functions with OnAppStart
