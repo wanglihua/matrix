@@ -1,6 +1,8 @@
 package core
 
-import "time"
+import (
+    "time"
+)
 
 type Date time.Time
 
@@ -12,10 +14,22 @@ func (t Date) MarshalJSON() ([]byte, error) {
     return []byte(`"` + time.Time(t).Format("2006-01-02") + `"`), nil
 }
 
+func (t Date) String() string {
+    return time.Time(t).Format("2006-01-02")
+}
+
 func (t Time) MarshalJSON() ([]byte, error) {
     return []byte(`"` + time.Time(t).Format("2006-01-02 15:04") + `"`), nil
 }
 
+func (t Time) String() string {
+    return time.Time(t).Format("2006-01-02 15:04")
+}
+
 func (t LongTime) MarshalJSON() ([]byte, error) {
     return []byte(`"` + time.Time(t).Format("2006-01-02 15:04:05") + `"`), nil
+}
+
+func (t LongTime) String() string {
+    return time.Time(t).Format("2006-01-02 15:04:05")
 }
