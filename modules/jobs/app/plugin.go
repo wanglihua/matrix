@@ -4,7 +4,7 @@ import (
     //"fmt"
     "github.com/revel/revel"
     //"time"
-    "matrix/modules/jobs/app/jobs"
+    //"matrix/modules/jobs/app/jobs"
 )
 
 func init() {
@@ -19,7 +19,7 @@ func init() {
         */
 
         //cron.test = * * * * * ?
-        jobs.Schedule("cron.test", TestTask{})
+        //jobs.Schedule("cron.test", TestTask{}) //测试
     })
 }
 

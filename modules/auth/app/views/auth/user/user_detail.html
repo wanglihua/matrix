@@ -23,7 +23,7 @@
                                     <input id="user_nick_name" name="form.User.NickName" type="text" class="input-sm form-control" value="{%.form_User_NickName%}"/>
                                 </div>
                             </div>
-                            {%if .form.IsCreate%}
+                            {%if .is_create%}
                             <div class="form-group">
                                 <label for="user_password" class="col-xs-2 control-label no-padding-right">密码</label>
                                 <div class="col-xs-10">
@@ -49,6 +49,7 @@
                                     <input id="new_password_again" name="form.NewPasswordAgain" type="password" class="input-sm form-control" value=""/>
                                 </div>
                             </div>
+                            <input id="user_password_old" name="form.User.Password" type="hidden" class="input-sm form-control" value="{%.form_User_Password%}"/>
                             {%end%}
                         </form>
                     </div>

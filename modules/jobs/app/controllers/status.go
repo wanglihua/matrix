@@ -4,7 +4,7 @@ import (
     "strings"
 
     "github.com/revel/cron"
-    "github.com/revel/modules/jobs/app/jobs"
+    "matrix/modules/jobs/app/jobs"
     "github.com/revel/revel"
 )
 

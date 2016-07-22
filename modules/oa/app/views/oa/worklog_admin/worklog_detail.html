@@ -32,7 +32,7 @@
                                     <div class="form-group">
                                         <label for="user_nick_name" class="col-xs-2 control-label no-padding-right">用户</label>
                                         <div class="col-xs-10">
-                                            <input id="user_nick_name" type="text" class="input-sm form-control" value="{%.user_nick_name%}" disabled="disabled" />
+                                            <input id="user_nick_name" type="text" class="input-sm form-control" value="{%.user_nick_name%}" />
                                             <input id="user_id" name="form.Worklog.UserId" type="hidden" value="{%.form_Worklog_UserId%}"/>
                                         </div>
                                     </div>
@@ -77,9 +77,6 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success btn-sm" onclick="saveWorklog()">
-                    <i class="ace-icon fa fa-floppy-o"></i>保存
-                </button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
                     <i class="ace-icon fa fa-times"></i>关闭
                 </button>
@@ -87,57 +84,3 @@
         </div>
     </div>
 </div>
-<script type='text/javascript'>
-    function saveWorklog() {
-        showMask("提交中...");
-        var form = $("#worklogDetailForm");
-        var valid = validate(form, {
-            'form.Worklog.UserId': {
-                required: true, digits: true
-            },
-            'form.Worklog.Title': {
-                required: true, minlength: 3, maxlength: 200
-            },
-            'form.Worklog.Content': {
-                required: true, minlength: 3, maxlength: 1000
-            },
-            'form.Worklog.WorkDate': {
-                required: false
-            },
-            'form.Worklog.BeginTime': {
-                required: false, maxlength: 15
-            },
-            'form.Worklog.EndTime': {
-                required: false, maxlength: 15
-            },
-            'form.Worklog.Remark': {
-                required: false, maxlength: 1000
-            }
-        });
-
-        if (!valid) {
-            hideMask();
-        } else {
-            $.ajax({
-                       url: '{%url "OaWorklog.Save"%}',
-                       type: "POST",
-                       data: form.serialize(),
-                       success: function (data) {
-                           hideMask();
-                           if (data.success == false) {
-                               $.msg.error(data.message);
-                               //return;
-                           }
-                           else {
-                               $.msg.show(data.message);
-                               $('#worklogDetailDialog').modal('hide');
-                               reloadList('#worklogList');
-                               //return;
-                           }
-                       }
-                   }
-            );
-        }
-    }
-</script>
-

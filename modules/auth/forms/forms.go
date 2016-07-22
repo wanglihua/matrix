@@ -3,7 +3,6 @@ package forms
 import (
     "github.com/revel/revel"
     "strings"
-    "matrix/core"
     "matrix/modules/auth/models"
 )
 
@@ -39,9 +38,6 @@ func (f *UserDetailForm) Valid(validation *revel.Validation) bool {
                 Message:"两次输入的密码不一致！",
             })
         }
-
-        f.User.Password = core.EncryptPassword(f.User.Password)
-
     } else {
 
         if strings.Trim(f.NewPassword, " ") != "" || strings.Trim(f.NewPasswordAgain, " ") != "" {
@@ -54,8 +50,6 @@ func (f *UserDetailForm) Valid(validation *revel.Validation) bool {
                     Message:"两次输入的密码不一致！",
                 })
             }
-
-            f.User.Password = core.EncryptPassword(f.NewPassword)
         }
     }
 

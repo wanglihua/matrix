@@ -1,19 +1,20 @@
 <html>
 <head>
-    <style>
+    <style type="text/css">
         body {
-            font-size: 12px;
+            font-size: 11px;
             font-family: sans-serif;
         }
 
         table {
+            font-size: 10px;
             border-collapse: collapse;
-            border: none;
+            border: 1px solid lightgray;
         }
 
         table td, table th {
             padding: 4px 10px;
-            border: none;
+            border: 1px solid lightgray;
         }
 
         table tr:nth-child(odd) {
@@ -22,6 +23,8 @@
 
         th {
             text-align: left;
+            border: 1px solid lightgray;
+            padding: 4px 10px;
         }
     </style>
 </head>
@@ -31,18 +34,18 @@
 
 <table>
     <tr>
-        <th>Name</th>
-        <th>Status</th>
-        <th>Last run</th>
-        <th>Next run</th>
+        <th style="width: 280px;">Name</th>
+        <th style="width: 50px;">Status</th>
+        <th style="width: 120px;">Last run</th>
+        <th style="width: 120px;">Next run</th>
     </tr>
-{%range .entries%}
-{%$job := castjob .Job%}
+    {%range .entries%}
+    {%$job := castjob .Job%}
     <tr>
         <td>{%$job.Name%}</td>
         <td>{%$job.Status%}</td>
         <td>{%if not .Prev.IsZero%}{%.Prev.Format "2006-01-02 15:04:05"%}{%end%}</td>
         <td>{%if not .Next.IsZero%}{%.Next.Format "2006-01-02 15:04:05"%}{%end%}</td>
     </tr>
-{%end%}
+    {%end%}
 </table>

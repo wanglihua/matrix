@@ -6,6 +6,9 @@ import (
 
     "matrix/core"
     "matrix/modules/oa/models"
+    authModels "matrix/modules/auth/models"
+    "fmt"
+    "strings"
 )
 
 type OaWorklog struct {
@@ -24,6 +27,9 @@ func (c OaWorklog) ListData() revel.Result {
     query := session.Where(filter)
 
     //query extra filter here
+    //只查看自己的工作日志
+    loginUserId := core.GetLoginUser(c.Session).UserId
+    query = query.Where("user_id = ?", loginUserId)
 
     dataQuery := *query
     if order != "" {
@@ -101,12 +107,29 @@ func (c OaWorklog) Detail() revel.Result {
         if has == false {
             panic("指定的工作日志不存在！")
         }
+
+        userId := core.GetLoginUser(c.Session).UserId
+        if worklog.UserId != userId {
+            return c.RenderJson(core.JsonResult{Success: false, Message: "自能查看自己的工作日志！" })
+        }
     }
 
     form := new(WorklogForm)
     form.Worklog = *worklog
 
     c.UnbindToRenderArgs(form, "form")
+
+    user_nick_name := ""
+    if form.IsCreate() {
+        user_nick_name = core.GetLoginUser(c.Session).NickName
+    } else {
+        user := new(authModels.User)
+        _, err := session.Id(worklog.UserId).Get(user)
+        core.HandleError(err)
+
+        user_nick_name = user.NickName
+    }
+    c.RenderArgs["user_nick_name"] = user_nick_name
 
     return c.RenderTemplate("oa/worklog/worklog_detail.html")
 }
@@ -123,12 +146,21 @@ func (c OaWorklog) Save() revel.Result {
 
     worklog := &form.Worklog
 
+    loginUserId := core.GetLoginUser(c.Session).UserId
+
     var affected int64
     var err error
     if form.IsCreate() {
+        //新增保存为当前登录人的工作日志
+        worklog.UserId = loginUserId
         affected, err = session.Insert(worklog)
         core.HandleError(err)
     } else {
+        //只能更新自己的
+        if worklog.UserId != loginUserId {
+            return c.RenderJson(core.JsonResult{Success: false, Message: "只能保存自己的工作日志！" })
+        }
+
         affected, err = session.Id(worklog.Id).Update(worklog)
         core.HandleError(err)
 
@@ -146,8 +178,19 @@ func (c OaWorklog) Delete() revel.Result {
     worklogIdList := make([]int64, 0)
     c.Params.Bind(&worklogIdList, "id_list")
 
-    worklog := new(models.Worklog)
-    affected, err := session.In("id", worklogIdList).Delete(worklog)
+    loginUserId := core.GetLoginUser(c.Session).UserId
+    worklogIdStrList := make([]string, 0, len(worklogIdList))
+    for _, worklogId := range worklogIdList {
+        worklogIdStrList = append(worklogIdStrList, fmt.Sprint(worklogId))
+    }
+    filter := fmt.Sprintf("user_id = %d and id in(%s)", loginUserId, strings.Join(worklogIdStrList, ","))
+    count, err := session.Where(filter).Count(new(models.Worklog))
+    core.HandleError(err)
+    if count < int64(len(worklogIdList)) {
+        return c.RenderJson(core.JsonResult{Success: false, Message: "部分工作日志不存在或不属于当前登录人！" })
+    }
+
+    affected, err := session.In("id", worklogIdList).Delete(new(models.Worklog))
     core.HandleError(err)
 
     return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

@@ -175,6 +175,13 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                         </a>
                         <b class="arrow"></b>
                     </li>
+                    <li id="oa-worklogadmin-menu" class="">
+                        <a href="/oa/worklog/admin">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            日志管理
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
 
                 </ul>
             </li>

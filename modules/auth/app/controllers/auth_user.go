@@ -7,6 +7,7 @@ import (
     "matrix/modules/auth/forms"
     "matrix/core"
     "strconv"
+    "strings"
 )
 
 type AuthUser struct {
@@ -66,6 +67,7 @@ func (c AuthUser) Detail() revel.Result {
     form.User = *user
 
     c.UnbindToRenderArgs(form, "form")
+    c.RenderArgs["is_create"] = form.IsCreate()
     return c.RenderTemplate("auth/user/user_detail.html")
 }
 
@@ -100,7 +102,9 @@ func (c AuthUser) Save() revel.Result {
             return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，登录名已存在！" })
         }
 
-        user.Password = core.EncryptPassword(form.NewPassword)
+        if strings.TrimSpace(form.NewPassword) != "" {
+            user.Password = core.EncryptPassword(form.NewPassword)
+        }
 
         affected, err = session.Id(user.Id).Update(user)
         //affected, err := session.Id(form.Id).Cols("nick_name").Update(user)

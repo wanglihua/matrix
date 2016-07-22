@@ -18,7 +18,7 @@ type BaseController struct {
 func (c *BaseController) Before() revel.Result {
     if (isStaticRequest(c) == false) {
         revel.TRACE.Println("begin ------------------------------------------------------------------")
-        revel.TRACE.Println("session id: " + c.Session.Id())
+        //revel.TRACE.Println("session id: " + c.Session.Id())
 
         //在这之前的数据库访问请自行开启 db session
         dbSession := db.Engine.NewSession()
@@ -51,7 +51,7 @@ func (c *BaseController) Finally() revel.Result {
 
         c.DbSession.Close() //模板tags中的数据库访问请自行开启 db session
 
-        revel.TRACE.Println("session id: " + c.Session.Id())
+        //revel.TRACE.Println("session id: " + c.Session.Id())
         revel.TRACE.Println("end --------------------------------------------------------------------")
     }
 
@@ -113,7 +113,7 @@ func userAuth(c *BaseController) revel.Result {
     }
 
     loginuser := GetLoginUser(c.Session)
-    revel.TRACE.Println("userAuth session id: " + c.Session.Id())
+    //revel.TRACE.Println("userAuth session id: " + c.Session.Id())
 
     if loginuser == nil {
         revel.TRACE.Println("loginuser == nil")

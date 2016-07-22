@@ -4,3 +4,6 @@ POST /oa/worklog/detail             OaWorklog.Detail
 POST /oa/worklog/save               OaWorklog.Save
 POST /oa/worklog/delete             OaWorklog.Delete
 
+GET  /oa/worklog/admin              OaworklogAdmin.Index
+POST /oa/worklog/admin/listdata     OaworklogAdmin.ListData
+POST /oa/worklog/admin/detail       OaworklogAdmin.Detail
