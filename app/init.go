@@ -12,7 +12,7 @@ func init() {
     revel.TimeFormats = append(revel.TimeFormats, "2006-01-02 15:04:05")
 
     revel.InterceptMethod((*core.BaseController).Before, revel.BEFORE)
-    revel.InterceptMethod((*core.BaseController).After, revel.AFTER)
+    revel.InterceptMethod((*core.BaseController).Finally, revel.FINALLY)
     revel.InterceptMethod((*core.BaseController).Panic, revel.PANIC)
 
     //revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)

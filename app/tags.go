@@ -2,6 +2,7 @@ package app
 
 import (
     "github.com/revel/revel"
+    "github.com/go-xorm/xorm"
     "html/template"
     "matrix/app/layout"
     //"bytes"
@@ -34,7 +35,9 @@ type headerTemplateData struct {
 func headerTemplateFunc(title string, renderArgs map[string]interface{}) template.HTML {
     //timeBegin := time.Now()
 
-    sysName := layout.GetSysName()
+    dbsession := renderArgs["dbsession"].(*xorm.Session)
+
+    sysName := layout.GetSysName(dbsession)
 
     /*
     if headerTemplate == nil {

@@ -1,23 +1,19 @@
 package layout
 
 import (
-    "matrix/db"
     "matrix/app/models"
+    "github.com/go-xorm/xorm"
 )
 
 var sysName = ""
 
-func GetSysName() string {
+func GetSysName(dbsession *xorm.Session) string {
     if sysName == "" {
-        session := db.Engine.NewSession()
-
         config := new(models.Config)
-        has, _ := session.Limit(1).Get(config)
+        has, _ := dbsession.Limit(1).Get(config)
         if has {
             sysName = config.SysName
         }
-
-        session.Close()
     }
 
     return sysName

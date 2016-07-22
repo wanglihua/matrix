@@ -20,28 +20,29 @@ func (c *BaseController) Before() revel.Result {
         revel.TRACE.Println("begin ------------------------------------------------------------------")
         revel.TRACE.Println("session id: " + c.Session.Id())
 
+        //在这之前的数据库访问请自行开启 db session
+        dbSession := db.Engine.NewSession()
+        c.DbSession = dbSession.NoAutoCondition(true)
+        //c.DbSession = db.Engine.NoAutoCondition() 这个不行，xorm会有问题
+        c.RenderArgs["dbsession"] = dbSession
+
+        if revel.DevMode == false {
+            err := c.DbSession.Begin()
+            HandleError(err)
+        }
+
         authResult := userAuth(c)
         if authResult != nil {
             return authResult
         }
 
         c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
-
-        //在这之前的数据库访问请自行开启 db session
-        dbSession := db.Engine.NewSession()
-        c.DbSession = dbSession.NoAutoCondition(true)
-        //c.DbSession = db.Engine.NoAutoCondition() 这个不行，xorm会有问题
-
-        if revel.DevMode == false {
-            err := c.DbSession.Begin()
-            HandleError(err)
-        }
     }
 
     return nil
 }
 
-func (c *BaseController) After() revel.Result {
+func (c *BaseController) Finally() revel.Result {
     if (isStaticRequest(c) == false) {
         if revel.DevMode == false {
             err := c.DbSession.Commit()
