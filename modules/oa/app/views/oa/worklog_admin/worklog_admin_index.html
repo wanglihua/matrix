@@ -47,23 +47,24 @@
                             '#worklogList',
                             {
                                 "sAjaxSource": '{%url "OaWorklogAdmin.ListData"%}',
-                                "aaSorting": [[5, "desc"]],
+                                "aaSorting": [[6, "desc"]],
                                 "aoColumns": [
                                     {
-                                        "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                        "mDataProp": "l.id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
                                         "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
                                         "render": function (data, type, row) {
                                             return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                         }
                                     },
-                                    {"mDataProp": "title", "title": "日志主题", "bSearchable": true},
+                                    {"mDataProp": "u.nick_name", "title": "用户", "bSearchable": true},
+                                    {"mDataProp": "l.title", "title": "日志主题", "bSearchable": true},
                                     //{"mDataProp": "content", "title": "日志内容", "bSearchable": true },
-                                    {"mDataProp": "work_date", "title": "工作日期", "bSearchable": false, "width": 85},
-                                    {"mDataProp": "begin_time", "title": "开始时间", "bSearchable": true, "width": 120},
-                                    {"mDataProp": "end_time", "title": "结束时间", "bSearchable": true, "width": 120},
+                                    {"mDataProp": "l.work_date", "title": "工作日期", "bSearchable": false, "width": 85},
+                                    {"mDataProp": "l.begin_time", "title": "开始时间", "bSearchable": true, "width": 120},
+                                    {"mDataProp": "l.end_time", "title": "结束时间", "bSearchable": true, "width": 120},
                                     //{"mDataProp": "remark", "title": "备注", "bSearchable": true },
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                                    {"mDataProp": "l.create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                                    {"mDataProp": "l.update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                                 ]
                             }
                     );

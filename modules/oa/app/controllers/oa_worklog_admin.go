@@ -14,14 +14,23 @@ type OaWorklogAdmin struct {
 }
 
 func (c OaWorklogAdmin) Index() revel.Result {
-    return c.RenderTemplate("oa/worklog_admin/worklog_index.html")
+    return c.RenderTemplate("oa/worklog_admin/worklog_admin_index.html")
+}
+
+type WorklogAdminView struct {
+    models.Worklog      `xorm:"extends" json:"l"`
+    authModels.User     `xorm:"extends" json:"u"`
 }
 
 func (c OaWorklogAdmin) ListData() revel.Result {
     session := c.DbSession
 
     filter, order, offset, limit := core.GetGridRequestParam(c.Request)
-    query := session.Where(filter)
+    query := session.
+    Select("l.*, u.*").
+    Table(authModels.TablePrefix + "user").Alias("u").
+    Join("inner", []string{models.TablePrefix + "worklog", "l"}, "u.id = l.user_id").
+    Where(filter)
 
     //query extra filter here
 
@@ -29,11 +38,11 @@ func (c OaWorklogAdmin) ListData() revel.Result {
     if order != "" {
         dataQuery = *dataQuery.OrderBy(order)
     } else {
-        dataQuery = *dataQuery.Asc("id")
+        dataQuery = *dataQuery.Asc("l.id")
     }
 
-    worklogList := make([]models.Worklog, 0, limit)
-    err := dataQuery.Limit(limit, offset).Find(&worklogList)
+    worklogAdminViewList := make([]WorklogAdminView, 0, limit)
+    err := dataQuery.Limit(limit, offset).Find(&worklogAdminViewList)
     core.HandleError(err)
 
     countQuery := *query
@@ -41,7 +50,7 @@ func (c OaWorklogAdmin) ListData() revel.Result {
     core.HandleError(err)
 
     return c.RenderJson(core.GridResult{
-        Data:  worklogList,
+        Data:  worklogAdminViewList,
         Total: count,
     })
 }
@@ -112,5 +121,5 @@ func (c OaWorklogAdmin) Detail() revel.Result {
 
     c.RenderArgs["user_nick_name"] = user.NickName
 
-    return c.RenderTemplate("oa/worklog_admin/worklog_detail.html")
+    return c.RenderTemplate("oa/worklog_admin/worklog_admin_detail.html")
 }

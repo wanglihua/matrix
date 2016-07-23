@@ -1,2 +1,18 @@
 nginx 可以用winsw安装成服务
 matrix可以用nssm安装成服务
+
+<service>  
+ <id>nginx</id>  
+ <name>nginx</name>  
+ <description>nginx</description>  
+ <executable>c:\nginx\nginx.exe</executable>  
+ <logpath>c:\nginx\</logpath>  
+ <logmode>roll</logmode>  
+ <depend></depend>  
+ <startargument>-p c:\nginx</startargument>  
+ <stopargument>-p c:\nginx -s stop</stopargument>  
+</service>
+
+winsw install
+winsw uninstall
+
