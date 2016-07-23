@@ -162,7 +162,7 @@ func main() {
         WriteToFile(controllersDir + "\\" + entityList[0].ModuleLowerCase + "_" + ToUnderscore(entity.EntityCamelCase) + ".go", controllerCode)
     }
 
-    viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\" + strings.ToLower(entityList[0].EntityCamelCase) + "\\"
+    viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\" + ToUnderscore(entityList[0].EntityCamelCase) + "\\"
     err = os.MkdirAll(viewsDir, 0777)
     core.HandleError(err)
 
