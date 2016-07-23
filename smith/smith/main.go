@@ -159,7 +159,7 @@ func main() {
             "entity": entity,
         })
 
-        WriteToFile(controllersDir + "\\" + entityList[0].ModuleLowerCase + "_" + strings.ToLower(entity.EntityCamelCase) + ".go", controllerCode)
+        WriteToFile(controllersDir + "\\" + entityList[0].ModuleLowerCase + "_" + ToUnderscore(entity.EntityCamelCase) + ".go", controllerCode)
     }
 
     viewsDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\app\\views\\" + entityList[0].ModuleLowerCase + "\\" + strings.ToLower(entityList[0].EntityCamelCase) + "\\"
@@ -172,13 +172,13 @@ func main() {
             "entity": entity,
         })
 
-        WriteToFile(viewsDir + "\\" + strings.ToLower(entity.EntityCamelCase) + "_index.html", indexhtmlCode)
+        WriteToFile(viewsDir + "\\" + ToUnderscore(entity.EntityCamelCase) + "_index.html", indexhtmlCode)
 
         detailhtmlCode := RenderCodeTemplate("detailhtml", template.DetailHtmlTemplate, map[string]interface{}{
             "entity": entity,
         })
 
-        WriteToFile(viewsDir + "\\" + strings.ToLower(entity.EntityCamelCase) + "_detail.html", detailhtmlCode)
+        WriteToFile(viewsDir + "\\" + ToUnderscore(entity.EntityCamelCase) + "_detail.html", detailhtmlCode)
     }
 
     confDir := outputDir + "\\modules\\" + entityList[0].ModuleLowerCase + "\\conf"

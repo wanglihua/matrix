@@ -29,14 +29,6 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
     <script type="text/javascript">
         if ('ontouchstart' in document.documentElement) document.write("<script type='text/javascript' src='/static/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     </script>
-    <script type="text/javascript" src="/static/ace/js/all1.js"></script>
-    <!--[if lte IE 8]>
-    <script type="text/javascript" src="/static/ace/js/html5shiv.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/respond.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript" src="/static/ace/js/all2.js"></script>
-    <script type="text/javascript" src="/static/js/js.cookie.js"></script>
-    <script type="text/javascript" src="/static/site.js"></script>
 </head>
 
 <body class="no-skin">

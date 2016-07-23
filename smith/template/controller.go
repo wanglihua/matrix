@@ -17,7 +17,7 @@ type {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}} struct {
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Index() revel.Result {
-    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{LowerCase .entity.EntityCamelCase}}/{{LowerCase .entity.EntityCamelCase}}_index.html")
+    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{Underscore .entity.EntityCamelCase}}/{{Underscore .entity.EntityCamelCase}}_index.html")
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) ListData() revel.Result {
@@ -81,7 +81,7 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Detail() revel.R
     form.{{.entity.EntityTitleName}} = *{{.entity.EntityCamelCase}}
     c.UnbindToRenderArgs(form, "form")
 
-    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{LowerCase .entity.EntityCamelCase}}/{{LowerCase .entity.EntityCamelCase}}_detail.html")
+    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{Underscore .entity.EntityCamelCase}}/{{Underscore .entity.EntityCamelCase}}_detail.html")
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Result {

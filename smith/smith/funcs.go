@@ -50,6 +50,7 @@ func RenderCodeTemplate(tplName string, tplContent string, args  map[string]inte
         "CheckUniqueCreate": TemplateFuncCheckUniqueCreate,
         "CheckUniqueUpdate": TemplateFuncCheckUniqueUpdate,
         "LowerCase": TemplateFuncLowerCase,
+        "Underscore": TemplateFuncUnderscore,
     }).Parse(tplContent)
 
     if err != nil {
@@ -201,11 +202,11 @@ func TemplateFuncFieldClienValid(field smith.Field) string {
     if field.FieldType == fieldtype.Int || field.FieldType == fieldtype.BigInt {
         validRules += ", digits: true"
 
-        if field.Min != "" && field.Min != "0"   {
+        if field.Min != "" && field.Min != "0" {
             validRules += ", min: " + field.Min
         }
 
-        if field.Max != "" && field.Max != "0"   {
+        if field.Max != "" && field.Max != "0" {
             validRules += ", max: " + field.Max
         }
     }
@@ -213,21 +214,21 @@ func TemplateFuncFieldClienValid(field smith.Field) string {
     if field.FieldType == fieldtype.Decimal {
         validRules += ", number: true"
 
-        if field.Min != "" && field.Min != "0"   {
+        if field.Min != "" && field.Min != "0" {
             validRules += ", min: " + field.Min
         }
 
-        if field.Max != "" && field.Max != "0"   {
+        if field.Max != "" && field.Max != "0" {
             validRules += ", max: " + field.Max
         }
     }
 
     if field.FieldType == fieldtype.NVarchar {
-        if field.Min != "" && field.Min != "0"   {
+        if field.Min != "" && field.Min != "0" {
             validRules += ", minlength: " + field.Min
         }
 
-        if field.Max != "" && field.Max != "0"   {
+        if field.Max != "" && field.Max != "0" {
             validRules += ", maxlength: " + field.Max
         }
     }
@@ -249,7 +250,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
 
     //if field.FieldType == fieldtype.Int || field.FieldType == fieldtype.BigInt {
     if field.FieldType == fieldtype.Int {
-        if field.Min != "" && field.Min != "0"   {
+        if field.Min != "" && field.Min != "0" {
             validRules += core.FormatText("valid_min", `    validation.Min(f.{{.entityTitleName}}.{{.fieldName}}, {{.minValue}}).Message("{{.fieldVerboseName}}不能小于{{.minValue}}！")`, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -260,7 +261,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
             validRules += "\r\n"
         }
 
-        if field.Max != "" && field.Max != "0"   {
+        if field.Max != "" && field.Max != "0" {
             validRules += core.FormatText("valid_max", `    validation.Max(f.{{.entityTitleName}}.{{.fieldName}}, {{.maxValue}}).Message("{{.fieldVerboseName}}不能大于{{.maxValue}}！")`, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -273,7 +274,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
     }
 
     if field.FieldType == fieldtype.BigInt {
-        if field.Min != "" && field.Min != "0"   {
+        if field.Min != "" && field.Min != "0" {
             validRules += core.FormatText("valid_min", `    validation.Min(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.minValue}}).Message("{{.fieldVerboseName}}不能小于{{.minValue}}！")`, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -284,7 +285,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
             validRules += "\r\n"
         }
 
-        if field.Max != "" && field.Max != "0"   {
+        if field.Max != "" && field.Max != "0" {
             validRules += core.FormatText("valid_max", `    validation.Max(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.maxValue}}).Message("{{.fieldVerboseName}}不能大于{{.maxValue}}！")`, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -297,7 +298,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
     }
 
     if field.FieldType == fieldtype.Decimal {
-        if field.Min != "" && field.Min != "0"   {
+        if field.Min != "" && field.Min != "0" {
             validRules += core.FormatText("valid_min", `    validation.Min(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.minValue}}).Message("{{.fieldVerboseName}}不能小于{{.minValue}}！")`, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -308,7 +309,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
             validRules += "\r\n"
         }
 
-        if field.Max != "" && field.Max != "0"   {
+        if field.Max != "" && field.Max != "0" {
             validRules += core.FormatText("valid_max", `    validation.Max(int(f.{{.entityTitleName}}.{{.fieldName}}), {{.maxValue}}).Message("{{.fieldVerboseName}}不能大于{{.maxValue}}！")`, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -326,7 +327,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
         validation.MinSize(f.{{.entityTitleName}}.{{.fieldName}}, {{.minLength}}).Message("{{.fieldVerboseName}}长度不能小于{{.minLength}}！")
     }`
 
-        if field.Min != "" && field.Min != "0"   {
+        if field.Min != "" && field.Min != "0" {
             validRules += core.FormatText("valid_min", minSizeTemplate, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -342,7 +343,7 @@ func TemplateFuncFieldValid(entity smith.Entity, field smith.Field) string {
         validation.MaxSize(f.{{.entityTitleName}}.{{.fieldName}}, {{.maxLength}}).Message("{{.fieldVerboseName}}长度不能大于{{.maxLength}}！")
     }`
 
-        if field.Max != "" && field.Max != "0"   {
+        if field.Max != "" && field.Max != "0" {
             validRules += core.FormatText("valid_max", maxSizeTemplate, map[string]interface{}{
                 "entityTitleName": entity.EntityTitleName,
                 "fieldName": field.Name,
@@ -559,4 +560,24 @@ func TemplateFuncCheckUniqueUpdate(entity smith.Entity, field smith.Field) strin
 
 func TemplateFuncLowerCase(name string) string {
     return strings.ToLower(name)
+}
+
+func ToUnderscore(str string) string {
+    charArray := strings.Split(str, "")
+    newCharArray := make([]string, 0)
+    for index, char := range charArray {
+        if strings.ToUpper(char) == char {
+            if index != 0 {
+                newCharArray = append(newCharArray, "_")
+            }
+            newCharArray = append(newCharArray, strings.ToLower(char))
+        } else {
+            newCharArray = append(newCharArray, char)
+        }
+    }
+    return strings.Join(newCharArray, "")
+}
+
+func TemplateFuncUnderscore(name string) string {
+    return ToUnderscore(name)
 }
