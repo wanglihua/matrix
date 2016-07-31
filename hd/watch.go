@@ -127,6 +127,9 @@ func Autobuild(files []string) {
     state.Lock()
     defer state.Unlock()
 
+    Debugf("kill running process")
+    Kill()
+
     ColorLog("[INFO] Start building...\n")
     path, _ := os.Getwd()
     os.Chdir(path)
@@ -177,8 +180,8 @@ func Kill() {
 }
 
 func Restart(appname string) {
-    Debugf("kill running process")
-    Kill()
+    //Debugf("kill running process")
+    //Kill()
     go Start(appname)
 }
 
