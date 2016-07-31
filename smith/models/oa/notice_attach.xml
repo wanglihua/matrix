@@ -1,0 +1,46 @@
+<xml>
+    <entity>
+        <moduleTitleName>Oa</moduleTitleName>
+        <moduleLowerCase>oa</moduleLowerCase>
+        <moduleChinese>办公系统</moduleChinese>
+        <entityTitleName>NoticeAttach</entityTitleName>
+        <entityCamelCase>noticeAttach</entityCamelCase>
+        <entityChinese>公告附件</entityChinese>
+        <tableName>notice_attach</tableName>
+        <tablePrefix>hd_oa_</tablePrefix>
+
+        <fieldList>
+            <field>
+                <verboseName>公告</verboseName>
+                <name>NoticeId</name>
+                <column>notice_id</column>
+                <fieldType>bigint</fieldType>
+                <length>0</length>
+                <precision>0</precision>
+                <scale>0</scale>
+                <unique>false</unique>
+                <index>true</index>
+                <null>false</null>
+                <blank>false</blank>
+                <min>0</min>
+                <max>0</max>
+            </field>
+            <field>
+                <verboseName>附件</verboseName>
+                <name>FileUrl</name>
+                <column>file_url</column>
+                <fieldType>nvarchar</fieldType>
+                <length>300</length>
+                <precision>0</precision>
+                <scale>0</scale>
+                <unique>false</unique>
+                <index>false</index>
+                <null>false</null>
+                <blank>false</blank>
+                <min>0</min>
+                <max>0</max>
+            </field>
+
+        </fieldList>
+    </entity>
+</xml>
