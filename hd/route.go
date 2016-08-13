@@ -9,6 +9,7 @@ import (
     "github.com/revel/revel"
 )
 
+/*
 var cmdRoute = &Command{
     UsageLine: "route [import path] [runMode]",
     Short:     "generate routes.go main.go",
@@ -20,26 +21,41 @@ var cmdRoute = &Command{
 
 `,
 }
+*/
+
+var cmdRoute = &Command{
+    UsageLine: "route [import path] [runMode]",
+    Short:     "generate routes.go main.go",
+    Long: `
+    generate routes.go main.go
+    hd route
+
+`,
+}
 
 func init() {
     cmdRoute.Run = generateRoute
 }
 
 func generateRoute(cmd *Command, args []string) int {
+	/*
     if len(args) < 1 {
         fmt.Fprintf(os.Stderr, "%s\n%s", cmdRoute.UsageLine, cmdRoute.Long)
         return 1
     }
 
-    importPath := args[0]
+
+	importPath := args[0]
 
     runMode := "dev"
     if len(args) >= 2 {
         runMode = args[1]
     }
+    */
 
     if !revel.Initialized {
-        revel.Init(runMode, importPath, "")
+        //revel.Init(runMode, importPath, "")
+	    revel.Init("dev", "matrix", "")
     }
 
     sourceInfo, compileError := ProcessSource(revel.CodePaths)
@@ -61,7 +77,8 @@ func generateRoute(cmd *Command, args []string) int {
         "ImportPaths":    CalcImportAliases(sourceInfo),
         "TestSuites":     sourceInfo.TestSuites(),
         "ImportPath":     revel.ImportPath,
-        "RunMode":        runMode,
+        //"RunMode":        runMode,
+	    "RunMode":        "dev",
     }
 
     //harness.GenSource("tmp", "main.go", harness.MAIN, templateArgs)
