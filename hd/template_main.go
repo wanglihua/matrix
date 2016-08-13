@@ -42,8 +42,10 @@ func main() {
         if err != nil {
             log.Fatal(err)
         }
-        *importPath = filepath.Base(currentDir)
-        *srcPath = currentDir[0 : len(currentDir) - len(filepath.Base(currentDir)) - 1]
+        //*importPath = filepath.Base(currentDir)
+        //*srcPath = currentDir[0 : len(currentDir) - len(filepath.Base(currentDir)) - 1]
+        *importPath = "matrix"
+        *srcPath = currentDir
     }
 
     revel.Init(*runMode, *importPath, *srcPath)
