@@ -15,7 +15,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"os"
 	"os/exec"
 	"runtime"
@@ -26,7 +26,7 @@ import (
 	"github.com/howeyc/fsnotify"
 )
 
-var started = make(chan bool)
+//var started = make(chan bool)
 
 var (
 	cmd          *exec.Cmd
@@ -127,7 +127,6 @@ func Autobuild(files []string) {
 	state.Lock()
 	defer state.Unlock()
 
-	Debugf("kill running process")
 	Kill()
 
 	ColorLog("[INFO] Start building...\n")
@@ -168,22 +167,29 @@ func Autobuild(files []string) {
 
 func Kill() {
 	defer func() {
+		recover()
+
+		/*
 		if e := recover(); e != nil {
 			fmt.Println("Kill.recover -> ", e)
 		}
+		*/
 	}()
+
 	if cmd != nil && cmd.Process != nil {
+		cmd.Process.Kill()
+
+		/*
 		err := cmd.Process.Kill()
 		if err != nil {
 			fmt.Println("Kill -> ", err)
 		}
+		*/
 	}
 }
 
 func Restart(appname string) {
-	//has killed when build start
-    //Debugf("kill running process")
-	//Kill()
+	Kill()
 	go Start(appname)
 }
 
@@ -200,7 +206,7 @@ func Start(appname string) {
 
 	go cmd.Run()
 	ColorLog("[INFO] %s is running...\n", appname)
-	started <- true
+	//started <- true
 }
 
 // checkTMPFile returns true if the event was for TMP files.
