@@ -151,7 +151,8 @@ func Autobuild(files []string) {
 		args = append(args, files...)
 
 		bcmd := exec.Command(cmdName, args...)
-		bcmd.Env = append(os.Environ(), "GOGC=off")
+		//bcmd.Env = append(os.Environ(), "GOGC=off")
+		bcmd.Env = append(os.Environ())
 		bcmd.Stdout = os.Stdout
 		bcmd.Stderr = os.Stderr
 		err = bcmd.Run()
@@ -180,8 +181,9 @@ func Kill() {
 }
 
 func Restart(appname string) {
-	Debugf("kill running process")
-	Kill()
+	//has killed when build start
+    //Debugf("kill running process")
+	//Kill()
 	go Start(appname)
 }
 
