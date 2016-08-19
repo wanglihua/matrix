@@ -40,10 +40,12 @@ func (c AuthProfile) Save() revel.Result {
     _, err := session.Id(loginUserId).Get(loginUser)
     core.HandleError(err)
 
-    loginUser.Password = core.EncryptPassword(form.Password)
+	if strings.TrimSpace(form.Password) != "" {
+        loginUser.Password = core.EncryptPassword(form.Password)
 
-    _, err = session.Id(loginUserId).Cols("password").Update(loginUser)
-    core.HandleError(err)
+        _, err = session.Id(loginUserId).Cols("password").Update(loginUser)
+        core.HandleError(err)
+    }
 
     return c.RenderJson(core.JsonResult{Success: true, Message: "保存成功!"})
 }
