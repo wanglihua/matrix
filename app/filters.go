@@ -18,6 +18,11 @@ func PanicFilter(c *revel.Controller, fc []revel.Filter) {
 }
 
 func handleInvocationPanic(c *revel.Controller, err interface{}) {
+	//这个函数里面不能出错（panic），这里出错，程序就挂了
+	defer func() {
+		recover(); //不做任何事，保证程序不退出就行
+	}()
+
     errorDesc := fmt.Sprint(err)
     revel.ERROR.Print(errorDesc, "\n", string(debug.Stack()))
 
