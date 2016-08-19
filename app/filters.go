@@ -28,7 +28,7 @@ func handleInvocationPanic(c *revel.Controller, err interface{}) {
             siteError := revel.NewErrorFromPanic(err) //这个方法有点问题，在Windows下会区分不了大小写盘符，所以不在生产环境中使用
             c.Result = c.RenderError(siteError)
         } else {
-            c.Response.Out.WriteHeader(500)
+            //c.Response.Out.WriteHeader(500) 会报错？？ http: multiple response.WriteHeader calls
             c.Response.Out.Write(debug.Stack())
             c.Result = c.RenderError(errors.New(errorDesc))
         }
