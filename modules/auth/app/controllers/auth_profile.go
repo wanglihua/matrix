@@ -1,6 +1,7 @@
 package controllers
 
 import (
+    "strings"
     "github.com/revel/revel"
     "matrix/core"
     "matrix/modules/auth/models"

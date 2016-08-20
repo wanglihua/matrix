@@ -144,6 +144,9 @@ func Autobuild(files []string) {
 
 		args := []string{"build"}
 		args = append(args, "-o", appName)
+
+		args = append(args, "-ldflags", `"-w"`) //-w去掉DWARF调试信息，得到的程序就不能用gdb调试了
+
 		if buildTags != "" {
 			args = append(args, "-tags", buildTags)
 		}
