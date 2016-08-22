@@ -1,0 +1,24 @@
+my.ini:
+
+[mysqld]
+innodb_buffer_pool_size = 128M
+basedir=d:/mysql
+datadir=d:/mysql/data
+# port = .....
+character-set-server=utf8
+default-storage-engine=InnoDB
+join_buffer_size = 128M
+sort_buffer_size = 2M
+read_rnd_buffer_size = 2M 
+sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
+
+install command:
+mysqld --initialize --initialize-file=d:/mysql/my.ini --console
+mysqld install mysql --defaults-file=d:/mysql/my.ini
+mysql -u root -p
+set password for 'root'@'localhost'=password('root');
+flush privileges;
+
+golang:
+mysql
+root:root@tcp(localhost:3306)/matrix?charset=utf8
