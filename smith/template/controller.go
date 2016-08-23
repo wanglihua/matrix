@@ -9,11 +9,12 @@ import (
 
     "matrix/core"
     "matrix/modules/{{.entity.ModuleLowerCase}}/models"
+    matrix_service "matrix/service"
 )
 
 type {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}} struct {
     *revel.Controller
-    core.BaseController
+    matrix_service.BaseController
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Index() revel.Result {
@@ -97,6 +98,7 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Res
     {{.entity.EntityCamelCase}} := &form.{{.entity.EntityTitleName}}
 
     var affected int64
+    var err error
     if form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
 {{CheckUniqueCreate $.entity $field}}{{end}}{{end}}
         affected, err = session.Insert({{.entity.EntityCamelCase}})
