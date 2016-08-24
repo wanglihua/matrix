@@ -74,7 +74,7 @@ func (c *Cell) String() (string, error) {
 
 // SetFloat sets the value of a cell to a float.
 func (c *Cell) SetFloat(n float64) {
-	c.SetFloatWithFormat(n, builtInNumFmt[builtInNumFmtIndex_GENERAL])
+	c.SetValue(n)
 }
 
 /*
@@ -103,11 +103,7 @@ func (c *Cell) SetFloatWithFormat(n float64, format string) {
 	c.cellType = CellTypeNumeric
 }
 
-var timeLocationUTC *time.Location
-
-func init() {
-	timeLocationUTC, _ = time.LoadLocation("UTC")
-}
+var timeLocationUTC, _ = time.LoadLocation("UTC")
 
 func timeToUTCTime(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), timeLocationUTC)
@@ -123,7 +119,7 @@ func (c *Cell) SetDate(t time.Time) {
 }
 
 func (c *Cell) SetDateTime(t time.Time) {
-	c.SetDateTimeWithFormat(timeToExcelTime(timeToUTCTime(t)), builtInNumFmt[14])
+	c.SetDateTimeWithFormat(timeToExcelTime(timeToUTCTime(t)), builtInNumFmt[22])
 }
 
 func (c *Cell) SetDateTimeWithFormat(n float64, format string) {
@@ -144,10 +140,7 @@ func (c *Cell) Float() (float64, error) {
 
 // SetInt64 sets a cell's value to a 64-bit integer.
 func (c *Cell) SetInt64(n int64) {
-	c.Value = fmt.Sprintf("%d", n)
-	c.NumFmt = builtInNumFmt[builtInNumFmtIndex_INT]
-	c.formula = ""
-	c.cellType = CellTypeNumeric
+	c.SetValue(n)
 }
 
 // Int64 returns the value of cell as 64-bit integer.
@@ -161,44 +154,26 @@ func (c *Cell) Int64() (int64, error) {
 
 // SetInt sets a cell's value to an integer.
 func (c *Cell) SetInt(n int) {
-	c.Value = fmt.Sprintf("%d", n)
-	c.NumFmt = builtInNumFmt[builtInNumFmtIndex_INT]
-	c.formula = ""
-	c.cellType = CellTypeNumeric
+	c.SetValue(n)
 }
 
 // SetInt sets a cell's value to an integer.
 func (c *Cell) SetValue(n interface{}) {
-	var s string
-	switch n.(type) {
+	switch t := n.(type) {
 	case time.Time:
 		c.SetDateTime(n.(time.Time))
 		return
-	case int:
+	case int, int8, int16, int32, int64, float32, float64:
 		c.setGeneral(fmt.Sprintf("%v", n))
-		return
-	case int32:
-		c.setGeneral(fmt.Sprintf("%v", n))
-		return
-	case int64:
-		c.setGeneral(fmt.Sprintf("%v", n))
-		return
-	case float32:
-		c.setGeneral(fmt.Sprintf("%v", n))
-		return
-	case float64:
-		c.setGeneral(fmt.Sprintf("%v", n))
-		return
 	case string:
-		s = n.(string)
+		c.SetString(t)
 	case []byte:
-		s = string(n.([]byte))
+		c.SetString(string(t))
 	case nil:
-		s = ""
+		c.SetString("")
 	default:
-		s = fmt.Sprintf("%v", n)
+		c.SetString(fmt.Sprintf("%v", n))
 	}
-	c.SetString(s)
 }
 
 // SetInt sets a cell's value to an integer.
@@ -239,7 +214,7 @@ func (c *Cell) Bool() bool {
 		return c.Value == "1"
 	}
 	// If numeric, base it on a non-zero.
-	if c.cellType == CellTypeNumeric {
+	if c.cellType == CellTypeNumeric || c.cellType == CellTypeGeneral {
 		return c.Value != "0"
 	}
 	// Return whether there's an empty string.
@@ -384,7 +359,6 @@ func parseTime(c *Cell) (string, error) {
 		{"mm", "01"},
 		{"am/pm", "pm"},
 		{"m/", "1/"},
-		{".0", ".9999"},
 		{"%%%%", "January"},
 		{"&&&&", "Monday"},
 	}

@@ -379,7 +379,7 @@ func formulaForCell(rawcell xlsxC, sharedFormulas map[int]sharedFormula) string 
 					}
 				}
 				if start < len(orig) {
-					res += string(orig[start:end])
+					res += string(orig[start:])
 				}
 			}
 		}
@@ -562,6 +562,11 @@ func readRowsFromSheet(Worksheet *xlsxWorksheet, file *File, sheet *Sheet) ([]*R
 		}
 
 		row.Hidden = rawrow.Hidden
+		height, err := strconv.ParseFloat(rawrow.Ht, 64)
+		if err == nil {
+			row.Height = height
+		}
+		row.isCustom = rawrow.CustomHeight
 		row.OutlineLevel = rawrow.OutlineLevel
 
 		insertColIndex = minCol
@@ -690,7 +695,7 @@ func readSheetsFromZipFile(f *zip.File, file *File, sheetXMLMap map[string]strin
 	}
 	file.Date1904 = workbook.WorkbookPr.Date1904
 
-	for entryNum, _ := range workbook.DefinedNames.DefinedName {
+	for entryNum := range workbook.DefinedNames.DefinedName {
 		file.DefinedNames = append(file.DefinedNames, &workbook.DefinedNames.DefinedName[entryNum])
 	}
 

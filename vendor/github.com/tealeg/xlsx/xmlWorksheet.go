@@ -253,7 +253,7 @@ func (mc *xlsxMergeCells) getExtent(cellRef string) (int, int, error) {
 		return 0, 0, nil
 	}
 	for _, cell := range mc.Cells {
-		if strings.HasPrefix(cell.Ref, cellRef) {
+		if strings.HasPrefix(cell.Ref, cellRef+":") {
 			parts := strings.Split(cell.Ref, ":")
 			startx, starty, err := getCoordsFromCellIDString(parts[0])
 			if err != nil {
@@ -277,8 +277,8 @@ type xlsxC struct {
 	R string `xml:"r,attr"`           // Cell ID, e.g. A1
 	S int    `xml:"s,attr,omitempty"` // Style reference.
 	T string `xml:"t,attr,omitempty"` // Type.
-	V string `xml:"v,omitempty"`      // Value
 	F *xlsxF `xml:"f,omitempty"`      // Formula
+	V string `xml:"v,omitempty"`      // Value
 }
 
 // xlsxF directly maps the f element in the namespace

@@ -1,6 +1,9 @@
 package xlsx
 
 import (
+	"math"
+	"time"
+
 	. "gopkg.in/check.v1"
 )
 
@@ -231,21 +234,21 @@ func (l *CellSuite) TestFormattedValue(c *C) {
 	cell.NumFmt = "h:mm am/pm"
 	fvc.Equals(cell, "6:00 pm")
 	smallCell.NumFmt = "h:mm am/pm"
-	fvc.Equals(smallCell, "12:14 am")
+	fvc.Equals(smallCell, "12:10 am")
 
 	cell.NumFmt = "h:mm:ss am/pm"
 	fvc.Equals(cell, "6:00:00 pm")
 	cell.NumFmt = "hh:mm:ss"
 	fvc.Equals(cell, "18:00:00")
 	smallCell.NumFmt = "h:mm:ss am/pm"
-	fvc.Equals(smallCell, "12:14:47 am")
+	fvc.Equals(smallCell, "12:10:04 am")
 
 	cell.NumFmt = "h:mm"
 	fvc.Equals(cell, "6:00")
 	smallCell.NumFmt = "h:mm"
-	fvc.Equals(smallCell, "12:14")
+	fvc.Equals(smallCell, "12:10")
 	smallCell.NumFmt = "hh:mm"
-	fvc.Equals(smallCell, "00:14")
+	fvc.Equals(smallCell, "00:10")
 
 	cell.NumFmt = "h:mm:ss"
 	fvc.Equals(cell, "6:00:00")
@@ -253,18 +256,18 @@ func (l *CellSuite) TestFormattedValue(c *C) {
 	fvc.Equals(cell, "18:00:00")
 
 	smallCell.NumFmt = "hh:mm:ss"
-	fvc.Equals(smallCell, "00:14:47")
+	fvc.Equals(smallCell, "00:10:04")
 	smallCell.NumFmt = "h:mm:ss"
-	fvc.Equals(smallCell, "12:14:47")
+	fvc.Equals(smallCell, "12:10:04")
 
 	cell.NumFmt = "m/d/yy h:mm"
 	fvc.Equals(cell, "11/22/03 6:00")
 	cell.NumFmt = "m/d/yy hh:mm"
 	fvc.Equals(cell, "11/22/03 18:00")
 	smallCell.NumFmt = "m/d/yy h:mm"
-	fvc.Equals(smallCell, "12/30/99 12:14")
+	fvc.Equals(smallCell, "12/30/99 12:10")
 	smallCell.NumFmt = "m/d/yy hh:mm"
-	fvc.Equals(smallCell, "12/30/99 00:14")
+	fvc.Equals(smallCell, "12/30/99 00:10")
 	earlyCell.NumFmt = "m/d/yy hh:mm"
 	fvc.Equals(earlyCell, "1/1/00 02:24")
 	earlyCell.NumFmt = "m/d/yy h:mm"
@@ -273,19 +276,29 @@ func (l *CellSuite) TestFormattedValue(c *C) {
 	cell.NumFmt = "mm:ss"
 	fvc.Equals(cell, "00:00")
 	smallCell.NumFmt = "mm:ss"
-	fvc.Equals(smallCell, "14:47")
+	fvc.Equals(smallCell, "10:04")
 
 	cell.NumFmt = "[hh]:mm:ss"
 	fvc.Equals(cell, "18:00:00")
 	cell.NumFmt = "[h]:mm:ss"
 	fvc.Equals(cell, "6:00:00")
 	smallCell.NumFmt = "[h]:mm:ss"
-	fvc.Equals(smallCell, "14:47")
+	fvc.Equals(smallCell, "10:04")
 
-	cell.NumFmt = "mmss.0" // I'm not sure about these.
-	fvc.Equals(cell, "0000.0086")
-	smallCell.NumFmt = "mmss.0"
-	fvc.Equals(smallCell, "1447.9999")
+	const (
+		expect1 = "0000.0086"
+		expect2 = "1004.8000"
+		format  = "mmss.0000"
+		tlen    = len(format)
+	)
+
+	for i := 0; i < 3; i++ {
+		tfmt := format[0 : tlen-i]
+		cell.NumFmt = tfmt
+		fvc.Equals(cell, expect1[0:tlen-i])
+		smallCell.NumFmt = tfmt
+		fvc.Equals(smallCell, expect2[0:tlen-i])
+	}
 
 	cell.NumFmt = "yyyy\\-mm\\-dd"
 	fvc.Equals(cell, "2003\\-11\\-22")
@@ -301,7 +314,7 @@ func (l *CellSuite) TestFormattedValue(c *C) {
 	cell.NumFmt = "hh:mm:ss"
 	fvc.Equals(cell, "18:00:00")
 	smallCell.NumFmt = "hh:mm:ss"
-	fvc.Equals(smallCell, "00:14:47")
+	fvc.Equals(smallCell, "00:10:04")
 
 	cell.NumFmt = "dd/mm/yy\\ hh:mm"
 	fvc.Equals(cell, "22/11/03\\ 18:00")
@@ -341,12 +354,12 @@ func (l *CellSuite) TestFormattedValue(c *C) {
 	cell.NumFmt = "mm/dd/yyyy hh:mm:ss"
 	fvc.Equals(cell, "11/22/2003 18:00:00")
 	smallCell.NumFmt = "mm/dd/yyyy hh:mm:ss"
-	fvc.Equals(smallCell, "12/30/1899 00:14:47")
+	fvc.Equals(smallCell, "12/30/1899 00:10:04")
 
 	cell.NumFmt = "yyyy-mm-dd hh:mm:ss"
 	fvc.Equals(cell, "2003-11-22 18:00:00")
 	smallCell.NumFmt = "yyyy-mm-dd hh:mm:ss"
-	fvc.Equals(smallCell, "1899-12-30 00:14:47")
+	fvc.Equals(smallCell, "1899-12-30 00:10:04")
 
 	cell.NumFmt = "mmmm d, yyyy"
 	fvc.Equals(cell, "November 22, 2003")
@@ -374,19 +387,22 @@ func (s *CellSuite) TestSetterGetters(c *C) {
 	cell.SetInt(1024)
 	intValue, _ := cell.Int()
 	c.Assert(intValue, Equals, 1024)
-	c.Assert(cell.Type(), Equals, CellTypeNumeric)
+	c.Assert(cell.NumFmt, Equals, builtInNumFmt[builtInNumFmtIndex_GENERAL])
+	c.Assert(cell.Type(), Equals, CellTypeGeneral)
 
 	cell.SetInt64(1024)
 	int64Value, _ := cell.Int64()
 	c.Assert(int64Value, Equals, int64(1024))
-	c.Assert(cell.Type(), Equals, CellTypeNumeric)
+	c.Assert(cell.NumFmt, Equals, builtInNumFmt[builtInNumFmtIndex_GENERAL])
+	c.Assert(cell.Type(), Equals, CellTypeGeneral)
 
 	cell.SetFloat(1.024)
 	float, _ := cell.Float()
 	intValue, _ = cell.Int() // convert
 	c.Assert(float, Equals, 1.024)
 	c.Assert(intValue, Equals, 1)
-	c.Assert(cell.Type(), Equals, CellTypeNumeric)
+	c.Assert(cell.NumFmt, Equals, builtInNumFmt[builtInNumFmtIndex_GENERAL])
+	c.Assert(cell.Type(), Equals, CellTypeGeneral)
 
 	cell.SetFormula("10+20")
 	c.Assert(cell.Formula(), Equals, "10+20")
@@ -431,4 +447,41 @@ func (s *CellSuite) TestStringBool(c *C) {
 	c.Assert(cell.Bool(), Equals, false)
 	cell.SetString("0")
 	c.Assert(cell.Bool(), Equals, true)
+}
+
+// TestSetValue tests whether SetValue handle properly for different type values.
+func (s *CellSuite) TestSetValue(c *C) {
+	cell := Cell{}
+
+	// int
+	for _, i := range []interface{}{1, int8(1), int16(1), int32(1), int64(1)} {
+		cell.SetValue(i)
+		val, err := cell.Int64()
+		c.Assert(err, IsNil)
+		c.Assert(val, Equals, int64(1))
+	}
+
+	// float
+	for _, i := range []interface{}{1.11, float32(1.11), float64(1.11)} {
+		cell.SetValue(i)
+		val, err := cell.Float()
+		c.Assert(err, IsNil)
+		c.Assert(val, Equals, 1.11)
+	}
+
+	// time
+	cell.SetValue(time.Unix(0, 0))
+	val, err := cell.Float()
+	c.Assert(err, IsNil)
+	c.Assert(math.Floor(val), Equals, 25569.0)
+
+	// string and nil
+	for _, i := range []interface{}{nil, "", []byte("")} {
+		cell.SetValue(i)
+		c.Assert(cell.Value, Equals, "")
+	}
+
+	// others
+	cell.SetValue([]string{"test"})
+	c.Assert(cell.Value, Equals, "[test]")
 }
