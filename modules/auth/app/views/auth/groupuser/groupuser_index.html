@@ -85,14 +85,14 @@
                                             "aaSorting": [[1, "asc"]],
                                             "aoColumns": [
                                                 {
-                                                    "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                                    "mDataProp": "gu.id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
                                                     "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
                                                     "render": function (data, type, row) {
                                                         return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                                     }
                                                 },
-                                                {"mDataProp": "g.group_name", "title": "群组名称", "bSearchable": true},
-                                                {"mDataProp": "u.nick_name", "title": "用户名称", "bSearchable": true},
+                                                {"mDataProp": "group_name", "title": "群组名称", "bSearchable": true},
+                                                {"mDataProp": "user_nick_name", "title": "用户名称", "bSearchable": true},
                                                 {"mDataProp": "gu.add_time", "title": "添加时间", "bSearchable": false, "width": 120}
                                             ],
                                             "fnServerData": function (sSource, aoData, fnCallback) {
@@ -117,11 +117,6 @@
                                             }
                                         }
                                 );
-
-                                $('#groupUserList tbody').on('dblclick', 'tr', function () {
-                                    var id = $(this).find('td:first-child input:checkbox').val();
-                                    showGroupUserDetail(id);
-                                });
                             });
                         </script>
 

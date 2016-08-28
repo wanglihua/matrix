@@ -1,139 +1,147 @@
 package controllers
 
 import (
-    "github.com/revel/revel"
+	"github.com/revel/revel"
 
-    "matrix/modules/auth/models"
-    "matrix/core"
-    "strconv"
+	"matrix/modules/auth/models"
+	"matrix/core"
+	"strconv"
+	"strings"
 )
 
 type AuthGroup struct {
-    *revel.Controller
-    core.BaseController
+	*revel.Controller
+	core.BaseController
 }
 
 func (c AuthGroup) Index() revel.Result {
-    return c.RenderTemplate("auth/group/group_index.html")
+	return c.RenderTemplate("auth/group/group_index.html")
+}
+
+type GroupView struct {
+	models.Group  `xorm:"extends"`
+	UserCount int `xorm:"bigint 'user_count'" json:"user_count"`
 }
 
 func (c AuthGroup) ListData() revel.Result {
-    session := c.DbSession
+	session := c.DbSession
 
-    filter, order, offset, limit := core.GetGridRequestParam(c.Request)
-    query := session.Where(filter)
+	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
+	query := session.
+	Select(strings.Replace("hd_auth_group.*, (SELECT count(*) FROM hd_auth_group_user WHERE group_id = hd_auth_group.id) as user_count", "hd_auth_", models.TablePrefix, -1)).
+			Where(filter)
 
-    //query extra filter here
+	dataQuery := *query
+	if order != "" {
+		dataQuery = *dataQuery.OrderBy(order)
+	} else {
+		dataQuery = *dataQuery.Asc("id")
+	}
 
-    dataQuery := *query
-    if order != "" {
-        dataQuery = *dataQuery.OrderBy(order)
-    } else {
-        dataQuery = *dataQuery.Asc("id")
-    }
+	groupList := make([]GroupView, 0, limit)
+	//groupList := make([]models.Group, 0, limit)
+	err := dataQuery.Limit(limit, offset).Find(&groupList)
+	core.HandleError(err)
 
-    groupList := make([]models.Group, 0, limit)
-    err := dataQuery.Limit(limit, offset).Find(&groupList)
-    core.HandleError(err)
+	countQuery := *query
+	count, err := countQuery.Count(new(GroupView))
+	//count, err := countQuery.Count(new(models.Group))
+	core.HandleError(err)
 
-    countQuery := *query
-    count, err := countQuery.Count(new(models.Group))
-    core.HandleError(err)
-
-    return c.RenderJson(core.GridResult{
-        Data:  groupList,
-        Total: count,
-    })
+	return c.RenderJson(core.GridResult{
+		Data:  groupList,
+		Total: count,
+	})
 }
 
 type GroupForm struct {
-    Group models.Group
+	Group models.Group
 }
 
 func (f *GroupForm) IsCreate() bool {
-    return f.Group.Id == 0
+	return f.Group.Id == 0
 }
 
 func (f *GroupForm) Valid(validation *revel.Validation) bool {
-    validation.Required(f.Group.GroupName).Message("群组名不能为空！")
-    validation.MinSize(f.Group.GroupName, 3).Message("群组名长度不能小于3！")
-    validation.MaxSize(f.Group.GroupName, 20).Message("群组名长度不能大于20！")
+	validation.Required(f.Group.GroupName).Message("群组名不能为空！")
+	validation.MinSize(f.Group.GroupName, 3).Message("群组名长度不能小于3！")
+	validation.MaxSize(f.Group.GroupName, 20).Message("群组名长度不能大于20！")
 
-    return validation.HasErrors() == false
+	return validation.HasErrors() == false
 }
 
 func (c AuthGroup) Detail() revel.Result {
-    session := c.DbSession
+	session := c.DbSession
 
-    var groupId int64
-    c.Params.Bind(&groupId, "id")
+	var groupId int64
+	c.Params.Bind(&groupId, "id")
 
-    group := new(models.Group)
-    if groupId != 0 {
-        has, err := session.Id(groupId).Get(group)
-        core.HandleError(err)
-        if has == false {
-            panic("指定的群组不存在！")
-        }
-    }
+	group := new(models.Group)
+	if groupId != 0 {
+		has, err := session.Id(groupId).Get(group)
+		core.HandleError(err)
+		if has == false {
+			panic("指定的群组不存在！")
+		}
+	}
 
-    form := new(GroupForm)
-    form.Group = *group
+	form := new(GroupForm)
+	form.Group = *group
 
-    c.UnbindToRenderArgs(form, "form")
+	c.UnbindToRenderArgs(form, "form")
 
-    return c.RenderTemplate("auth/group/group_detail.html")
+	return c.RenderTemplate("auth/group/group_detail.html")
 }
 
 func (c AuthGroup) Save() revel.Result {
-    session := c.DbSession
+	session := c.DbSession
 
-    form := new(GroupForm)
-    c.Params.Bind(form, "form")
+	form := new(GroupForm)
+	c.Params.Bind(form, "form")
 
-    if form.Valid(c.Validation) == false {
-        return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
-    }
+	if form.Valid(c.Validation) == false {
+		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+	}
 
-    group := &form.Group
+	group := &form.Group
 
-    var affected int64
-    if form.IsCreate() {
-        count, err := session.Where("group_name = ?", group.GroupName).Count(new(models.Group))
-        core.HandleError(err)
-        if count != 0 {
-            return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
-        }
+	var affected int64
+	if form.IsCreate() {
+		count, err := session.Where("group_name = ?", group.GroupName).Count(new(models.Group))
+		core.HandleError(err)
+		if count != 0 {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
+		}
 
-        affected, err = session.Insert(group)
-        core.HandleError(err)
-    } else {
-        count, err := session.Where("id <> ? and group_name = ?", group.Id, group.GroupName).Count(new(models.Group))
-        core.HandleError(err)
-        if count != 0 {
-            return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
-        }
+		affected, err = session.Insert(group)
+		core.HandleError(err)
+	} else {
+		count, err := session.Where("id <> ? and group_name = ?", group.Id, group.GroupName).Count(new(models.Group))
+		core.HandleError(err)
+		if count != 0 {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
+		}
 
-        affected, err = session.Id(group.Id).Update(group)
-        core.HandleError(err)
+		affected, err = session.Id(group.Id).Update(group)
+		core.HandleError(err)
 
-        if affected == 0 {
-            return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
-        }
-    }
+		if affected == 0 {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+		}
+	}
 
-    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
+	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
 }
 
 func (c AuthGroup) Delete() revel.Result {
-    session := c.DbSession
+	session := c.DbSession
 
-    groupIdList := make([]int64, 0)
-    c.Params.Bind(&groupIdList, "id_list")
+	groupIdList := make([]int64, 0)
+	c.Params.Bind(&groupIdList, "id_list")
 
-    group := new(models.Group)
-    affected, err := session.In("id", groupIdList).Delete(group)
-    core.HandleError(err)
+	group := new(models.Group)
+	affected, err := session.In("id", groupIdList).Delete(group)
+	core.HandleError(err)
 
-    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
+	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }

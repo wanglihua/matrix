@@ -2,8 +2,9 @@ package db
 
 import (
     "github.com/go-xorm/xorm"
-    _ "github.com/mattn/go-sqlite3"
+    //_ "github.com/mattn/go-sqlite3"
     //_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/go-sql-driver/mysql"
     "github.com/revel/revel"
     //"github.com/go-xorm/core"
     "time"
@@ -13,11 +14,11 @@ var Engine *xorm.Engine = nil
 
 func InitDatabase() {
     if Engine == nil {
-        dbDriver, _ := revel.Config.String("db.driver")
-        dbUrl, _ := revel.Config.String("db.url")
+        db_driver, _ := revel.Config.String("db.driver")
+        db_url, _ := revel.Config.String("db.url")
 
         var err error
-        Engine, err = xorm.NewEngine(dbDriver, dbUrl)
+        Engine, err = xorm.NewEngine(db_driver, db_url)
         //Engine, err = xorm.NewEngine("sqlite3", "./matrix.db")
         //Engine, err = xorm.NewEngine("mssql", "server=localhost;database=Matrix;user id=sa;password=sa;")
         if err != nil {
