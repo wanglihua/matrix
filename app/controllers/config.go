@@ -3,13 +3,14 @@ package controllers
 import (
     "github.com/revel/revel"
     "matrix/core"
+	"matrix/service"
     "matrix/app/models"
     "matrix/app/layout"
 )
 
 type SysConfig struct {
     *revel.Controller
-    core.BaseController
+    service.BaseController
 }
 
 type ConfigForm struct {

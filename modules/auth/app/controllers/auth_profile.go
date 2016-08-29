@@ -4,13 +4,14 @@ import (
     "strings"
     "github.com/revel/revel"
     "matrix/core"
+	"matrix/service"
     "matrix/modules/auth/models"
     "matrix/modules/auth/forms"
 )
 
 type AuthProfile struct {
     *revel.Controller
-    core.BaseController
+    service.BaseController
 }
 
 func (c AuthProfile) Index() revel.Result {

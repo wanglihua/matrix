@@ -4,13 +4,14 @@ import (
 	"github.com/revel/revel"
 
 	"matrix/core"
+	"matrix/service"
 	"matrix/modules/oa/models"
 	authModels "matrix/modules/auth/models"
 )
 
 type OaWorklogAdmin struct {
 	*revel.Controller
-	core.BaseController
+	service.BaseController
 }
 
 func (c OaWorklogAdmin) Index() revel.Result {

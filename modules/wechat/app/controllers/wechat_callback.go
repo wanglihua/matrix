@@ -4,7 +4,8 @@ import (
     "encoding/xml"
     "github.com/revel/revel"
     "matrix/core"
-    "matrix/modules/weixin/service"
+	"matrix/service"
+    weixin_service  "matrix/modules/weixin/service"
     "gopkg.in/xmlpath"
     "io/ioutil"
     "time"
@@ -16,7 +17,7 @@ import (
 
 type WechatCallback struct {
     *revel.Controller
-    core.BaseController
+    service.BaseController
 }
 
 func (c WechatCallback) Sign() revel.Result {
@@ -30,7 +31,7 @@ func (c WechatCallback) Sign() revel.Result {
     c.Params.Bind(&echostr, "echostr")
 
     if echostr != "" {
-        signatureComputed := service.Sign(service.GetToken(session), timestamp, nonce)
+        signatureComputed := weixin_service.Sign(weixin_service.GetToken(session), timestamp, nonce)
         if signature == signatureComputed {
             return c.RenderText(echostr)
         }
@@ -49,24 +50,24 @@ func (c WechatCallback) Reply() revel.Result {
     c.Params.Bind(&timestamp, "timestamp")
     c.Params.Bind(&nonce, "nonce")
 
-    signatureComputed := service.Sign(service.GetToken(session), timestamp, nonce)
+    signatureComputed := weixin_service.Sign(weixin_service.GetToken(session), timestamp, nonce)
     if signature != signatureComputed {
         return c.RenderText("")
     }
 
     requestMessageBody, _ := ioutil.ReadAll(c.Request.Body)
-    requestCipherMsg := new(service.RequestCipherMessage)
+    requestCipherMsg := new(weixin_service.RequestCipherMessage)
     xml.Unmarshal(requestMessageBody, requestCipherMsg)
 
-    msgSignatureComputed := service.MsgSign(service.GetToken(session), timestamp, nonce, requestCipherMsg.Encrypt)
+    msgSignatureComputed := weixin_service.MsgSign(weixin_service.GetToken(session), timestamp, nonce, requestCipherMsg.Encrypt)
     if msgSignature != msgSignatureComputed {
         return c.RenderText("")
     }
 
-    encryptedMsg := service.Base64Decode([]byte(requestCipherMsg.Encrypt))
-    aesKey := service.Base64Decode([]byte(service.GetEncodingAesKey(session) + "="))
+    encryptedMsg := weixin_service.Base64Decode([]byte(requestCipherMsg.Encrypt))
+    aesKey := weixin_service.Base64Decode([]byte(weixin_service.GetEncodingAesKey(session) + "="))
 
-    _, msgPlainXmlBytes, _, err := service.AesDecryptMsg(encryptedMsg, aesKey)
+    _, msgPlainXmlBytes, _, err := weixin_service.AesDecryptMsg(encryptedMsg, aesKey)
     core.HandleError(err)
 
     revel.TRACE.Println("request plain xml: ")
@@ -92,7 +93,7 @@ func (c WechatCallback) Reply() revel.Result {
             <MsgId>6301214312140396469</MsgId>
         </xml>
         */
-        requestTextMessage := new(service.RequestTextMessage)
+        requestTextMessage := new(weixin_service.RequestTextMessage)
         xml.Unmarshal(msgPlainXmlBytes, requestTextMessage)
 
         requestMsgFrom = requestTextMessage.FromUserName
@@ -146,7 +147,7 @@ func (c WechatCallback) Reply() revel.Result {
     </xml>
     */
     msgTimeStampStr := strconv.FormatInt(time.Now().Unix(), 10)
-    responseTextMessage := new(service.ResponseTextMessage)
+    responseTextMessage := new(weixin_service.ResponseTextMessage)
     responseTextMessage.ToUserName = requestMsgFrom
     responseTextMessage.FromUserName = requestMsgTo
     responseTextMessage.CreateTime = msgTimeStampStr
@@ -154,11 +155,11 @@ func (c WechatCallback) Reply() revel.Result {
     responseTextMessage.Content = replyText
     responseMessageBytes, _ := xml.Marshal(responseTextMessage)
 
-    responseTextMessageEncrypted := service.AesEncryptMsg([]byte("12345678"), responseMessageBytes, service.GetAppId(session), aesKey)
+    responseTextMessageEncrypted := weixin_service.AesEncryptMsg([]byte("12345678"), responseMessageBytes, weixin_service.GetAppId(session), aesKey)
     responseTextMessageBase64 := base64.StdEncoding.EncodeToString(responseTextMessageEncrypted)
-    responseMsgSignature := service.MsgSign(service.GetToken(session), msgTimeStampStr, nonce, responseTextMessageBase64)
+    responseMsgSignature := weixin_service.MsgSign(weixin_service.GetToken(session), msgTimeStampStr, nonce, responseTextMessageBase64)
 
-    responseCliperMessage := new(service.ResponseCliperMessage)
+    responseCliperMessage := new(weixin_service.ResponseCliperMessage)
     responseCliperMessage.Encrypt = responseTextMessageBase64
     responseCliperMessage.MsgSignature = responseMsgSignature
     responseCliperMessage.TimeStamp = msgTimeStampStr

@@ -4,13 +4,14 @@ import (
 	"github.com/revel/revel"
 
 	"matrix/core"
+	"matrix/service"
 	"matrix/modules/auth/models"
 	"fmt"
 )
 
 type AuthAdmin struct {
 	*revel.Controller
-	core.BaseController
+	service.BaseController
 }
 
 func (c AuthAdmin) Index() revel.Result {

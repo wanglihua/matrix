@@ -1,6 +1,7 @@
-package core
+package service
 
 import (
+	"matrix/core"
     "matrix/db"
     "matrix/app/routes"
     "github.com/revel/revel"
@@ -12,7 +13,7 @@ type BaseController struct {
     *revel.Controller
 
     DbSession *xorm.Session
-    User      *LoginUser
+    User      *core.LoginUser
 }
 
 func (c *BaseController) Before() revel.Result {
@@ -28,7 +29,7 @@ func (c *BaseController) Before() revel.Result {
 
         if revel.DevMode == false {
             err := c.DbSession.Begin()
-            HandleError(err)
+            core.HandleError(err)
         }
 
         authResult := userAuth(c)
@@ -36,7 +37,7 @@ func (c *BaseController) Before() revel.Result {
             return authResult
         }
 
-        c.User = GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
+        c.User = core.GetLoginUser(c.Session) //将LoginUser从Session Cache中取出放入Controller上下文中，方便接下来的访问
     }
 
     return nil
@@ -46,7 +47,7 @@ func (c *BaseController) Finally() revel.Result {
     if (isStaticRequest(c) == false) {
         if revel.DevMode == false {
             err := c.DbSession.Commit()
-            HandleError(err)
+            core.HandleError(err)
         }
 
         c.DbSession.Close() //模板tags中的数据库访问请自行开启 db session
@@ -64,7 +65,7 @@ func (c *BaseController) Panic() revel.Result {
 
         if revel.DevMode == false {
             err := c.DbSession.Rollback()
-            HandleError(err)
+            core.HandleError(err)
         }
     }
 
@@ -112,15 +113,15 @@ func userAuth(c *BaseController) revel.Result {
         return nil //暂时先 return true
     }
 
-    loginuser := GetLoginUser(c.Session)
+    loginuser := core.GetLoginUser(c.Session)
     //revel.TRACE.Println("userAuth session id: " + c.Session.Id())
 
     if loginuser == nil {
         revel.TRACE.Println("loginuser == nil")
 
-        if IsAjaxRequest(c.Request) {
+        if core.IsAjaxRequest(c.Request) {
             //c.Result = c.RenderJson(JsonResult{Success: false, Message: "操作失败，未登陆或没相应权限！"})
-            return c.RenderJson(JsonResult{Success: false, Message: "操作失败，未登陆或没相应权限！"})
+            return c.RenderJson(core.JsonResult{Success: false, Message: "操作失败，未登陆或没相应权限！"})
         } else {
             //c.Result = c.Redirect(routes.Login.Index())
             return c.Redirect(routes.Login.Index())

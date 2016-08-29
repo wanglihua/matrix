@@ -5,12 +5,13 @@ import (
     "github.com/revel/revel"
 
     "matrix/core"
+	"matrix/service"
     "matrix/modules/inventory/models"
 )
 
 type InventoryStorageLoc struct {
     *revel.Controller
-    core.BaseController
+    service.BaseController
 }
 
 func (c InventoryStorageLoc) Index() revel.Result {

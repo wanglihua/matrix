@@ -4,8 +4,9 @@ import (
     "strconv"
     "github.com/revel/revel"
     "matrix/core"
+	"matrix/service"
     "matrix/core/requests"
-    "matrix/modules/weixin/service"
+    weixin_service "matrix/modules/weixin/service"
     "matrix/modules/weixin/models"
     "github.com/antonholmquist/jason"
     "bytes"
@@ -14,7 +15,7 @@ import (
 
 type WeixinMenu struct {
     *revel.Controller
-    core.BaseController
+    service.BaseController
 }
 
 func (c WeixinMenu) Index() revel.Result {
@@ -162,7 +163,7 @@ func (c WeixinMenu) Download() revel.Result {
     session := c.DbSession
 
     //https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN
-    accessToken := service.GetAccessToken(session)
+    accessToken := weixin_service.GetAccessToken(session)
     url := "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=" + accessToken
     var responeStr = requests.Get(url)
     revel.TRACE.Println(responeStr)
@@ -421,7 +422,7 @@ func (c WeixinMenu) Upload() revel.Result {
     menuJson := menuJsonBuffer.String()
 
     // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN
-    accessToken := service.GetAccessToken(session)
+    accessToken := weixin_service.GetAccessToken(session)
     url := "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=" + accessToken
 
     /*

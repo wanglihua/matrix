@@ -6,12 +6,13 @@ import (
     "github.com/revel/revel"
 
     "matrix/core"
+	"matrix/service"
     "matrix/modules/inventory/models"
 )
 
 type InventorySupplier struct {
     *revel.Controller
-    core.BaseController
+    service.BaseController
 }
 
 func (c InventorySupplier) Index() revel.Result {

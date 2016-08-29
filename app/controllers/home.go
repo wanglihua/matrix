@@ -3,6 +3,7 @@ package controllers
 import (
     "github.com/revel/revel"
     "matrix/core"
+	"matrix/service"
     "matrix/db"
     models "matrix/app/models"
     authModels "matrix/modules/auth/models"
@@ -13,7 +14,7 @@ import (
 
 type Home struct {
     *revel.Controller
-    core.BaseController
+    service.BaseController
 }
 
 func (c Home) Index() revel.Result {
