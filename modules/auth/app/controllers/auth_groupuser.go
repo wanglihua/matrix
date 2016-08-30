@@ -25,8 +25,8 @@ func (c AuthGroupUser) Index() revel.Result {
 
 type GroupUserView struct {
 	models.GroupUser    `xorm:"extends" json:"gu"`
-	UserNickName string `xorm:"'user_nick_name'" json:"user_nick_name"`
-	GroupName    string `xorm:"'group_name'" json:"group_name"`
+	models.Group        `xorm:"extends" json:"g"`
+	models.User         `xorm:"extends" json:"u"`
 }
 
 func (c AuthGroupUser) ListData() revel.Result {
@@ -37,7 +37,7 @@ func (c AuthGroupUser) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-	Select("gu.*, u.nick_name as user_nick_name, g.group_name").
+	Select("gu.*, g.*, u.*").
 			Table(models.TablePrefix + "group_user").Alias("gu").
 			Join("inner", []string{models.TablePrefix + "group", "g"}, "gu.group_id = g.id").
 			Join("inner", []string{models.TablePrefix + "user", "u"}, "gu.user_id = u.id").

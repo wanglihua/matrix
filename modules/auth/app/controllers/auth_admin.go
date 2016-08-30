@@ -19,9 +19,8 @@ func (c AuthAdmin) Index() revel.Result {
 }
 
 type AdminView struct {
-	models.Admin    `xorm:"extends" json:"a"`
-	LoginName string `xorm:"'login_name'" json:"login_name"`
-	NickName  string `xorm:"'nick_name'" json:"nick_name"`
+	models.Admin   `xorm:"extends" json:"a"`
+	models.User    `xorm:"extends" json:"u"`
 }
 
 func (c AuthAdmin) ListData() revel.Result {
@@ -29,7 +28,7 @@ func (c AuthAdmin) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-	Select("a.*, u.login_name, u.nick_name").
+	Select("a.*, u.*").
 			Table(models.TablePrefix + "user").Alias("u").
 			Join("inner", []string{models.TablePrefix + "admin", "a"}, "u.id = a.user_id").
 			Where(filter)

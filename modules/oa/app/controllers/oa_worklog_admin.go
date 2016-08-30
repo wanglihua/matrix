@@ -20,7 +20,7 @@ func (c OaWorklogAdmin) Index() revel.Result {
 
 type WorklogAdminView struct {
 	models.Worklog      `xorm:"extends" json:"l"`
-	NickName string     `xorm:"'nick_name'" json:"nick_name"`
+	authModels.User     `xorm:"extends" json:"u"`
 }
 
 func (c OaWorklogAdmin) ListData() revel.Result {
@@ -28,7 +28,7 @@ func (c OaWorklogAdmin) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-	Select("l.*, u.nick_name").
+	Select("l.*, u.*").
 			Table(authModels.TablePrefix + "user").Alias("u").
 			Join("inner", []string{models.TablePrefix + "worklog", "l"}, "u.id = l.user_id").
 			Where(filter)
