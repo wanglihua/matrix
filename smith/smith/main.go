@@ -211,23 +211,23 @@ func strToBool(val string) bool {
 }
 
 func strToFieldType(val string) fieldtype.FieldType {
-    if val == "Int" {
+    if strings.ToLower(val) == strings.ToLower("Int") {
         return fieldtype.Int
-    } else if (strings.ToLower(val) == strings.ToLower("BigInt")) {
+    } else if strings.ToLower(val) == strings.ToLower("BigInt") {
         return fieldtype.BigInt
-    } else if (strings.ToLower(val) == strings.ToLower("Decimal")) {
+    } else if strings.ToLower(val) == strings.ToLower("Decimal") {
         return fieldtype.Decimal
-    } else if (strings.ToLower(val) == strings.ToLower("NVarchar")) {
+    } else if strings.ToLower(val) == strings.ToLower("NVarchar") {
         return fieldtype.NVarchar
-    } else if (strings.ToLower(val) == strings.ToLower("DateTime")) {
+    } else if strings.ToLower(val) == strings.ToLower("DateTime") {
         return fieldtype.DateTime
-    } else if (strings.ToLower(val) == strings.ToLower("Boolean")) {
+    } else if strings.ToLower(val) == strings.ToLower("Boolean") {
         return fieldtype.Boolean
-    } else if (strings.ToLower(val) == strings.ToLower("Create")) {
+    } else if strings.ToLower(val) == strings.ToLower("Create") {
         return fieldtype.Create
-    } else if (strings.ToLower(val) == strings.ToLower("Update")) {
-        return fieldtype.Boolean
-    } else if (strings.ToLower(val) == strings.ToLower("Version")) {
+    } else if strings.ToLower(val) == strings.ToLower("Update") {
+        return fieldtype.Update
+    } else if strings.ToLower(val) == strings.ToLower("Version") {
         return fieldtype.Version
     }
 
