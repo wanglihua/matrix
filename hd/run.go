@@ -105,12 +105,15 @@ func runApp(cmd *Command, args []string) int {
         }
     }
 
+    notify_setup()
+
     NewWatcher(paths, files)
     Autobuild(files)
 
     for {
         select {
         case <-exit:
+            notify_dispose()
             runtime.Goexit()
         }
     }

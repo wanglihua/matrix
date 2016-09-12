@@ -161,6 +161,7 @@ func Autobuild(files []string) {
 	}
 
 	if err != nil {
+		notify_show_error()
 		ColorLog("[ERRO] ============== Build failed ===================\n")
 		return
 	}
@@ -209,6 +210,8 @@ func Start(appname string) {
 
 	go cmd.Run()
 	ColorLog("[INFO] %s is running...\n", appname)
+
+	notify_show_success()
 	//started <- true
 }
 
