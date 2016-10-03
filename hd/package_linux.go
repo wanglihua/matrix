@@ -69,8 +69,9 @@ func mustZipDir(destFilename, srcDir string, web_app_name string) string {
 			return nil
 		}
 
-		file_header_name := web_app_name + "/matrix/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
-		if strings.HasSuffix(strings.ToLower(srcPath), "matrix.exe") {
+		file_header_name := web_app_name + "/" + importPath + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
+		if strings.HasSuffix(strings.ToLower(srcPath), importPath) {
+			// import path as binary name
 			file_header_name = web_app_name + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
 		}
 
@@ -113,8 +114,8 @@ func mustTarGzDir(destFilename, srcDir string, web_app_name string) string {
 		panicOnError(err, "Failed to read source file")
 		defer srcFile.Close()
 
-		file_header_name := web_app_name + "/matrix/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
-		if strings.HasSuffix(strings.ToLower(srcPath), "matrix.exe") {
+		file_header_name := web_app_name + "/" + importPath + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
+		if strings.HasSuffix(strings.ToLower(srcPath), importPath) {
 			file_header_name = web_app_name + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
 		}
 		err = tarWriter.WriteHeader(&tar.Header{
@@ -164,7 +165,7 @@ func filterPathFiles(srcPath string) bool {
 		return true
 	}
 
-	if strings.HasSuffix(srcPath, ".exe~") {
+	if strings.HasSuffix(srcPath, "~") {
 		return true
 	}
 
@@ -188,7 +189,7 @@ func filterPathFiles(srcPath string) bool {
 		return true
 	}
 
-	if strings.HasSuffix(srcPath, "test.exe") {
+	if strings.HasSuffix(srcPath, "test") {
 		return true
 	}
 

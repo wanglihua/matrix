@@ -44,7 +44,7 @@ func main() {
         }
         //*importPath = filepath.Base(currentDir)
         //*srcPath = currentDir[0 : len(currentDir) - len(filepath.Base(currentDir)) - 1]
-        *importPath = "matrix"
+        *importPath = "{{.ImportPath}}"
         *srcPath = currentDir
     }
 

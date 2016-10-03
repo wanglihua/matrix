@@ -9,29 +9,17 @@ import (
     "github.com/revel/revel"
 )
 
-/*
 var cmdRoute = &Command{
-    UsageLine: "route [import path] [runMode]",
+    UsageLine: "route [import path]",
     Short:     "generate routes.go main.go",
     Long: `
     generate routes.go main.go
     hd route matrix
-    hd route matrix prod
-    hd route matrix dev
 
 `,
 }
-*/
 
-var cmdRoute = &Command{
-    UsageLine: "route [import path] [runMode]",
-    Short:     "generate routes.go main.go",
-    Long: `
-    generate routes.go main.go
-    hd route
-
-`,
-}
+var importPath string
 
 func init() {
     cmdRoute.Run = generateRoute
@@ -44,7 +32,6 @@ func generateRoute(cmd *Command, args []string) int {
         return 1
     }
 
-
 	importPath := args[0]
 
     runMode := "dev"
@@ -53,9 +40,15 @@ func generateRoute(cmd *Command, args []string) int {
     }
     */
 
+    if len(args) < 1 {
+        fmt.Fprintf(os.Stderr, "%s\n%s", cmdRoute.UsageLine, cmdRoute.Long)
+        return 1
+    }
+
+	importPath := args[0]
+
     if !revel.Initialized {
-        //revel.Init(runMode, importPath, "")
-	    revel.Init("dev", "matrix", "")
+	    revel.Init("dev", importPath, "")
     }
 
     sourceInfo, compileError := ProcessSource(revel.CodePaths)
