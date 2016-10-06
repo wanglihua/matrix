@@ -8,11 +8,10 @@ import (
 	"io"
 	"compress/gzip"
 	"archive/tar"
-	"archive/zip"
 	"time"
-	"io/ioutil"
 	"path/filepath"
 	"log"
+	"matrix/hd/homedir"
 )
 
 var cmdPackage = &Command{
@@ -20,7 +19,7 @@ var cmdPackage = &Command{
 	Short:     "package applicatoin",
 	Long: `
     package application
-    hd pack web_app_name
+    hd pack web_app_name(not be same with import path)
 `,
 }
 
@@ -36,61 +35,28 @@ func packageApp(cmd *Command, args []string) int {
 
 	web_app_name := args[0]
 
-	os.MkdirAll("~/publish", 0777)
-	//destFile := "d:\\publish\\" + filepath.Base(revel.BasePath) + "_" + time.Now().Format("200601021504") + ".tar.gz"
-	destFile := "~/publish/" + web_app_name + "_" + time.Now().Format("200601021504") + ".zip"
-	// Create the zip file.
-	//archiveName := mustTarGzDir(destFile, revel.BasePath)
+	home_dir, _ := homedir.Dir()
+	publish_dir := home_dir + "/publish"
+
 	currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		log.Fatal(err)
 	}
-	archiveName := mustZipDir(destFile, currentDir, web_app_name)
+
+	cur_path_list := strings.Split(currentDir, string(os.PathSeparator))
+	import_path := cur_path_list[len(cur_path_list) - 1]
+
+	os.MkdirAll(publish_dir, 0777)
+	destFile := publish_dir + "/" + web_app_name + "_" + time.Now().Format("200601021504") + ".tar.gz"
+
+	archiveName := mustTarGzDir(destFile, currentDir, web_app_name, import_path)
 
 	fmt.Println("Your archive is ready:", archiveName)
 
 	return 0
 }
 
-func mustZipDir(destFilename, srcDir string, web_app_name string) string {
-	zipFile, err := os.Create(destFilename)
-	panicOnError(err, "Failed to create archive")
-	defer zipFile.Close()
-
-	zipWriter := zip.NewWriter(zipFile)
-	defer zipWriter.Close()
-
-	revel.Walk(srcDir, func(srcPath string, info os.FileInfo, err error) error {
-		if info.IsDir() {
-			return nil
-		}
-
-		if filterPathFiles(srcPath) {
-			return nil
-		}
-
-		file_header_name := web_app_name + "/" + importPath + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
-		if strings.HasSuffix(strings.ToLower(srcPath), importPath) {
-			// import path as binary name
-			file_header_name = web_app_name + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
-		}
-
-		fileWriter, err := zipWriter.Create(file_header_name)
-		panicOnError(err, "Failed to create file writer")
-
-		fileContent, err := ioutil.ReadFile(srcPath)
-		panicOnError(err, "Failed to read source file")
-
-		_, err = fileWriter.Write(fileContent)
-		panicOnError(err, "Failed to write file content")
-
-		return nil
-	})
-
-	return zipFile.Name()
-}
-
-func mustTarGzDir(destFilename, srcDir string, web_app_name string) string {
+func mustTarGzDir(destFilename, srcDir string, web_app_name string, import_path string) string {
 	zipFile, err := os.Create(destFilename)
 	panicOnError(err, "Failed to create archive")
 	defer zipFile.Close()
@@ -114,16 +80,26 @@ func mustTarGzDir(destFilename, srcDir string, web_app_name string) string {
 		panicOnError(err, "Failed to read source file")
 		defer srcFile.Close()
 
-		file_header_name := web_app_name + "/" + importPath + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
-		if strings.HasSuffix(strings.ToLower(srcPath), importPath) {
-			file_header_name = web_app_name + "/" + strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
+		relative_path_file := strings.TrimLeft(srcPath[len(srcDir):], string(os.PathSeparator))
+
+		file_header_name := web_app_name + "/" + import_path + "/" + relative_path_file
+
+		path_file_list := strings.Split(srcPath, string(os.PathSeparator))
+		path_file_list_len := len(path_file_list)
+
+		//is the executable file
+		if path_file_list_len >= 2 &&  path_file_list[path_file_list_len - 2] == path_file_list[path_file_list_len - 1] {
+			// web_app_name as binary name
+			file_header_name = web_app_name + "/" + web_app_name
 		}
+
 		err = tarWriter.WriteHeader(&tar.Header{
 			Name:    file_header_name,
 			Size:    info.Size(),
 			Mode:    int64(info.Mode()),
 			ModTime: info.ModTime(),
 		})
+
 		panicOnError(err, "Failed to write tar entry header")
 
 		_, err = io.Copy(tarWriter, srcFile)
