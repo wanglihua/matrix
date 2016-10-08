@@ -76,7 +76,7 @@ func mustZipDir(destFilename, srcDir string, web_app_name string, import_path st
 		path_file_list_len := len(path_file_list)
 
 		//is the executable file
-		if path_file_list_len >= 2 && path_file_list[path_file_list_len - 2] == path_file_list[path_file_list_len - 1] + ".exe" {
+		if path_file_list_len >= 2 && path_file_list[path_file_list_len - 2] + ".exe" == path_file_list[path_file_list_len - 1] {
 			// web_app_name as binary name
 			file_header_name = web_app_name + "\\" + web_app_name + ".exe"
 		}
