@@ -149,6 +149,10 @@ func filterPathFiles(srcPath string) bool {
 		return true
 	}
 
+	if strings.HasSuffix(srcPath, ".syso") {
+		return true
+	}
+
 	if strings.HasSuffix(srcPath, ".less") {
 		return true
 	}

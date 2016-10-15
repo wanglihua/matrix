@@ -6,6 +6,8 @@ import (
 	"matrix/service"
 )
 
+var AppName string = "matrix"
+
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 

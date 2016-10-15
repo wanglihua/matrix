@@ -12,8 +12,9 @@ import (
     "path/filepath"
     "os"
     "log"
+    "{{.ImportPath}}/app"
+	"{{.ImportPath}}/core/lic"
     "{{.ImportPath}}/db"
-    //"github.com/go-xorm/xorm"
     "fmt"
     "strconv"
 )
@@ -37,16 +38,20 @@ func main() {
     }()
 
     flag.Parse()
+
+    currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+    if err != nil {
+        log.Fatal(err)
+    }
+    lic_file_path := currentDir + string(os.PathSeparator) + "app.lic"
+
     if *runMode == "prod" {
-        currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-        if err != nil {
-            log.Fatal(err)
-        }
-        //*importPath = filepath.Base(currentDir)
-        //*srcPath = currentDir[0 : len(currentDir) - len(filepath.Base(currentDir)) - 1]
         *importPath = "{{.ImportPath}}"
         *srcPath = currentDir
+        lic_file_path = currentDir + string(os.PathSeparator) + "{{.ImportPath}}" + string(os.PathSeparator) + "app.lic"
     }
+
+    lic.ValidAppLic(app.AppName, lic_file_path)
 
     revel.Init(*runMode, *importPath, *srcPath)
     revel.INFO.Println("Running revel server")
