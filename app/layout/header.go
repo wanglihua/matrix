@@ -1,12 +1,36 @@
 package layout
 
-func GetHeader(title string, sysName string, loginUserNickName string) string {
-    return `<!DOCTYPE html>
+import (
+	"github.com/revel/revel"
+	"github.com/go-xorm/xorm"
+	"bytes"
+	"matrix/core"
+)
+
+func GetHeader(title string, db_session *xorm.Session, web_session revel.Session) string {
+	sys_name := GetSysName(db_session)
+
+	login_user := core.GetLoginUser(web_session)
+	login_user_nick_name := "未登录"
+	is_admin := false
+	if login_user != nil {
+		login_user_nick_name = login_user.NickName
+		is_admin = login_user.IsAdmin
+	}
+
+	var header_buffer bytes.Buffer
+	header_buffer.WriteString(`<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8"/>
-    <title>` + title + `-` + sysName + `</title>
+    <title>`)
+
+	header_buffer.WriteString(title)
+	header_buffer.WriteString("-")
+	header_buffer.WriteString(sys_name)
+
+	header_buffer.WriteString(`</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <link type="text/css" rel="stylesheet" href="/static/ace/css/all.css" class="ace-main-stylesheet" id="main-ace-style" />
     <!--[if lte IE 9]>
@@ -16,6 +40,7 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
     <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-ie.min.css"/>
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="/static/site.css"/>
+
     <!--[if !IE]> -->
     <script type="text/javascript">
         window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery.min.js'>" + "<" + "/script>");
@@ -28,7 +53,9 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
     <![endif]-->
     <script type="text/javascript">
         if ('ontouchstart' in document.documentElement) document.write("<script type='text/javascript' src='/static/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-    </script>
+    </script>`)
+
+	header_buffer.WriteString(`
 </head>
 
 <body class="no-skin">
@@ -52,7 +79,11 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
         </button>
         <div class="navbar-header pull-left">
             <a href="/" class="navbar-brand">
-                <small>` + sysName + `</small>
+                <small>`)
+
+	header_buffer.WriteString(sys_name)
+
+	header_buffer.WriteString(`</small>
             </a>
             </div>
         <div class="navbar-buttons navbar-header pull-right" role="navigation">
@@ -60,7 +91,11 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                 <li class="light-blue">
                     <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                         <img class="nav-user-photo" src="/static/ace/avatars/user3.jpg" alt="user photo"/>
-                                <span class="user-info"><small>欢迎！</small>` + loginUserNickName + `</span>
+                                <span class="user-info"><small>欢迎！</small>`)
+
+	header_buffer.WriteString(login_user_nick_name)
+
+	header_buffer.WriteString(`</span>
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
                     <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
@@ -177,6 +212,11 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
 
                 </ul>
             </li>
+
+`)
+
+	if is_admin {
+		header_buffer.WriteString(`
             <li id="auth-menu" class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-users"></i>
@@ -249,6 +289,9 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                     </li>
                 </ul>
             </li>
+`)
+	}
+		header_buffer.WriteString(`
             <li id="help-menu" class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-book"></i>
@@ -301,7 +344,9 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
                     </li>
                 </ul>
             </li>
-        </ul>
+`)
+
+	header_buffer.WriteString(`
         <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
             <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
         </div>
@@ -314,95 +359,6 @@ func GetHeader(title string, sysName string, loginUserNickName string) string {
     </div>
 
     <div class="main-content">
-`
+`)
+	return header_buffer.String()
 }
-
-/*
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/all.css"/>
-    <!--[if lte IE 9]>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-part2.min.css" class="ace-main-stylesheet"/>
-    <![endif]-->
-    <!--[if lte IE 9]>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-ie.min.css"/>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="/static/site.css"/>
-    <!--[if !IE]> -->
-    <script type="text/javascript">
-        window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery.min.js'>" + "<" + "/script>");
-    </script>
-    <!-- <![endif]-->
-    <!--[if IE]>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery1x.min.js'>" + "<" + "/script>");
-    </script>
-    <![endif]-->
-    <script type="text/javascript">
-        if ('ontouchstart' in document.documentElement) document.write("<script type='text/javascript' src='/static/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-    </script>
-    <script type="text/javascript" src="/static/ace/js/all1.js"></script>
-    <!--[if lte IE 8]>
-    <script type="text/javascript" src="/static/ace/js/html5shiv.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/respond.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript" src="/static/ace/js/all2.js"></script>
-    <script type="text/javascript" src="/static/js/js.cookie.js"></script>
-    <script type="text/javascript" src="/static/site.js"></script>
-*/
-
-/*
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap.min.css"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/font-awesome.min.css"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-fonts.min.css"/>
-    <!--[if lte IE 9]>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-part2.min.css" class="ace-main-stylesheet"/>
-    <![endif]-->
-    <!--[if lte IE 9]>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-ie.min.css"/>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap-datetimepicker.min.css"/>
-    <link type="text/css" rel="stylesheet" href="/static/ace/css/bootstrap-multiselect.min.css"/>
-    <link type="text/css" rel="stylesheet" href="/static/site.css"/>
-    <!--[if !IE]> -->
-    <script type="text/javascript">
-        window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery.min.js'>" + "<" + "/script>");
-    </script>
-    <!-- <![endif]-->
-    <!--[if IE]>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery1x.min.js'>" + "<" + "/script>");
-    </script>
-    <![endif]-->
-    <script type="text/javascript">
-        if ('ontouchstart' in document.documentElement) document.write("<script type='text/javascript' src='/static/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
-    </script>
-    <script type="text/javascript" src="/static/ace/js/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery-ui.custom.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.ba-resize.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/ace.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/ace-elements.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/ace-extra.min.js"></script>
-    <!--[if lte IE 8]>
-    <script type="text/javascript" src="/static/ace/js/html5shiv.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/respond.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript" src="/static/ace/js/dataTables/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/jquery.dataTables.bootstrap.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/buttons/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/buttons/buttons.colVis.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/dataTables/extensions/select/dataTables.select.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/date-time/moment.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.dataTables.fixedHeader.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.dataTables.fixedColumns.js"></script>
-    <script type="text/javascript" src="/static/ace/js/extend.datetime.js"></script>
-    <script type="text/javascript" src="/static/ace/js/jquery.numberformatter.js"></script>
-    <script type="text/javascript" src="/static/ace/js/datetimepicker/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-    <script type="text/javascript" src="/static/ace/js/bootstrap-multiselect.min.js"></script>
-    <script type="text/javascript" src="/static/ace/js/fuelux/fuelux.spinner.min.js"></script>
-    <script type="text/javascript" src="/static/js/js.cookie.js"></script>
-    <script type="text/javascript" src="/static/site.js"></script>
-*/
