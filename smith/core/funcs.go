@@ -54,7 +54,7 @@ func AppendToFile(fileName string, code string) {
 	if checkFileIsExist(fileName) {
 		var file *os.File
 		var err error
-		file, err = os.OpenFile(fileName, os.O_APPEND, 0666)  //打开文件
+		file, err = os.OpenFile(fileName, os.O_APPEND | os.O_WRONLY, 0666)  //打开文件
 		matrix_core.HandleError(err)
 
 		_, err = file.WriteString(code)

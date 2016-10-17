@@ -201,10 +201,34 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
                             </li>
                         </ul>
                     </li>
+                    <li id="inventory-prdmgr-menu" class="">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            <span class="menu-text">货品管理</span>
+                            <b class="arrow fa fa-angle-down"></b>
+                        </a>
+                        <b class="arrow"></b>
+                        <ul class="submenu">
+                            <li id="inventory-prdcate-menu">
+		                        <a href="/inventory/product/cate">
+		                            <i class="menu-icon fa fa-caret-right"></i>
+		                            货品类别
+		                        </a>
+		                        <b class="arrow"></b>
+                            </li>
+                            <li id="inventory-product-menu">
+		                        <a href="/inventory/product">
+		                            <i class="menu-icon fa fa-caret-right"></i>
+		                            货品信息
+		                        </a>
+		                        <b class="arrow"></b>
+                            </li>
+                        </ul>
+                    </li>
                     <li id="inventory-stock-menu" class="">
                         <a href="/inventory/stock">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            仓库管理
+                            仓库信息
                         </a>
                         <b class="arrow"></b>
                     </li>
