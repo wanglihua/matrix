@@ -1,0 +1,152 @@
+<div class="modal fade" id="clientDetailDialog">
+    <div class="modal-dialog" style="width: 680px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                <h4 class="modal-title">客户详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" role="form" id="clientDetailForm" onsubmit="saveClient();return false;">
+                            <input id="client_id" name="form.Client.Id" type="hidden" value="{%.form_Client_Id%}"/>
+                            <input id="client_version" name="form.Client.Version" type="hidden" value="{%.form_Client_Version%}"/>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="sup_code" class="col-xs-2 control-label no-padding-right">编号</label>
+                                        <div class="col-xs-10">
+                                            <input id="sup_code" name="form.Client.Code" type="text" class="input-sm form-control" value="{%.form_Client_Code%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="sup_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                        <div class="col-xs-10">
+                                            <input id="sup_name" name="form.Client.Name" type="text" class="input-sm form-control" value="{%.form_Client_Name%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="contact" class="col-xs-2 control-label no-padding-right">联系人</label>
+                                        <div class="col-xs-10">
+                                            <input id="contact" name="form.Client.Contact" type="text" class="input-sm form-control" value="{%.form_Client_Contact%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="phone" class="col-xs-2 control-label no-padding-right">联系电话</label>
+                                        <div class="col-xs-10">
+                                            <input id="phone" name="form.Client.Phone" type="text" class="input-sm form-control" value="{%.form_Client_Phone%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="col-xs-1 control-label no-padding-right">联系地址</label>
+                                <div class="col-xs-11">
+                                    <input id="address" name="form.Client.Address" type="text" class="input-sm form-control" value="{%.form_Client_Address%}"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="bank" class="col-xs-2 control-label no-padding-right">开户银行</label>
+                                        <div class="col-xs-10">
+                                            <input id="bank" name="form.Client.Bank" type="text" class="input-sm form-control" value="{%.form_Client_Bank%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="bank_account" class="col-xs-2 control-label no-padding-right">银行账号</label>
+                                        <div class="col-xs-10">
+                                            <input id="bank_account" name="form.Client.BankAccount" type="text" class="input-sm form-control" value="{%.form_Client_BankAccount%}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="remark" class="col-xs-1 control-label no-padding-right">备注</label>
+                                <div class="col-xs-11">
+                                    <input id="remark" name="form.Client.Remark" type="text" class="input-sm form-control" value="{%.form_Client_Remark%}"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveClient()">
+                    <i class="ace-icon fa fa-floppy-o"></i>保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript'>
+    function saveClient() {
+        showMask("提交中...");
+        var form = $("#clientDetailForm");
+        var valid = validate(form, {
+            'form.Client.Name': {
+                required: true, minlength: 3, maxlength: 30
+            },
+            'form.Client.Code': {
+                required: true, minlength: 3, maxlength: 10
+            },
+            'form.Client.Contact': {
+                required: false, maxlength: 20
+            },
+            'form.Client.Phone': {
+                required: false, minlength: 2, maxlength: 40
+            },
+            'form.Client.Address': {
+                required: false, minlength: 3, maxlength: 20
+            },
+            'form.Client.Bank': {
+                required: false, maxlength: 20
+            },
+            'form.Client.BankAccount': {
+                required: false, minlength: 4, maxlength: 50
+            },
+            'form.Client.Remark': {
+                required: false, minlength: 3, maxlength: 250
+            }
+        });
+
+        if (!valid) {
+            hideMask();
+        } else {
+            $.ajax({
+                       url: '{%url "InventoryClient.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#clientDetailDialog').modal('hide');
+                               reloadList('#clientList');
+                               //return;
+                           }
+                       }
+                   }
+            );
+        }
+    }
+</script>
+

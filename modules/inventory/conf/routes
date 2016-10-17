@@ -6,6 +6,12 @@ POST /inventory/supplier/detail               InventorySupplier.Detail
 POST /inventory/supplier/save                 InventorySupplier.Save
 POST /inventory/supplier/delete               InventorySupplier.Delete
 
+GET  /inventory/client                        InventoryClient.Index
+POST /inventory/client/listdata               InventoryClient.ListData
+POST /inventory/client/detail                 InventoryClient.Detail
+POST /inventory/client/save                   InventoryClient.Save
+POST /inventory/client/delete                 InventoryClient.Delete
+
 GET  /inventory/stock                         InventoryStock.Index
 POST /inventory/stock/listdata                InventoryStock.ListData
 POST /inventory/stock/detail                  InventoryStock.Detail
@@ -17,5 +23,3 @@ POST /inventory/storageloc/listdata           InventoryStorageLoc.ListData
 POST /inventory/storageloc/detail             InventoryStorageLoc.Detail
 POST /inventory/storageloc/save               InventoryStorageLoc.Save
 POST /inventory/storageloc/delete             InventoryStorageLoc.Delete
-
-

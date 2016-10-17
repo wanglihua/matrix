@@ -148,6 +148,13 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
                 var parentMenu = $("#" + parentMenuName);
                 parentMenu.addClass("open");
                 parentMenu.find("#" + activeMenuName).addClass("active");
+
+				var subParentBreadcrumb = $("div#breadcrumbs ul.breadcrumb li.subparent");
+				if(subParentBreadcrumb.size() != 0) {
+	                var subParentMenuName = $("div#breadcrumbs ul.breadcrumb li.subparent").data().menu;
+	                var subParentMenu = $("#" + subParentMenuName);
+	                subParentMenu.addClass("open");
+                }
             }
             catch (e) {
             }
@@ -170,12 +177,29 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
                 </a>
                 <b class="arrow"></b>
                 <ul class="submenu">
-                    <li id="inventory-supplier-menu" class="">
-                        <a href="/inventory/supplier">
+                    <li id="inventory-relparty-menu" class="">
+                        <a href="#" class="dropdown-toggle">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            供应商管理
+                            <span class="menu-text">往来单位</span>
+                            <b class="arrow fa fa-angle-down"></b>
                         </a>
                         <b class="arrow"></b>
+                        <ul class="submenu">
+                            <li id="inventory-supplier-menu">
+		                        <a href="/inventory/supplier">
+		                            <i class="menu-icon fa fa-caret-right"></i>
+		                            供应商管理
+		                        </a>
+		                        <b class="arrow"></b>
+                            </li>
+                            <li id="inventory-client-menu">
+		                        <a href="/inventory/client">
+		                            <i class="menu-icon fa fa-caret-right"></i>
+		                            客户管理
+		                        </a>
+		                        <b class="arrow"></b>
+                            </li>
+                        </ul>
                     </li>
                     <li id="inventory-stock-menu" class="">
                         <a href="/inventory/stock">
