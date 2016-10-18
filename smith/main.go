@@ -73,6 +73,10 @@ func main() {
 			model_field := model_type.Field(model_field_index)
 
 			field.Name = model_field.Name
+			if  field.Name == "Id" || field.Name == "CreateTime" || field.Name == "UpdateTime" || field.Name == "Version" {
+				continue
+			}
+
 			field_xorm_column, unique := smith_core.GetFieldXormColumn(model_field)
 
 			field.Column = field_xorm_column.FieldName

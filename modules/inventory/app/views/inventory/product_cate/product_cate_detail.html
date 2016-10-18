@@ -1,0 +1,81 @@
+<div class="modal fade" id="productCateDetailDialog">
+    <div class="modal-dialog" style="width: 440px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                <h4 class="modal-title">货品类别详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" role="form" id="productCateDetailForm" onsubmit="saveProductCate();return false;">
+                            <input id="productCate_id" name="form.ProductCate.Id" type="hidden" value="{%.form_ProductCate_Id%}"/>
+                            <input id="productCate_version" name="form.ProductCate.Version" type="hidden" value="{%.form_ProductCate_Version%}"/>
+                            <div class="form-group">
+                                <label for="cate_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                <div class="col-xs-10">
+                                    <input id="cate_name" name="form.ProductCate.Name" type="text" class="input-sm form-control" value="{%.form_ProductCate_Name%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cate_desc" class="col-xs-2 control-label no-padding-right">描述</label>
+                                <div class="col-xs-10">
+                                    <input id="cate_desc" name="form.ProductCate.Desc" type="text" class="input-sm form-control" value="{%.form_ProductCate_Desc%}"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveProductCate()">
+                    <i class="ace-icon fa fa-floppy-o"></i>保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript'>
+function saveProductCate() {
+    showMask("提交中...");
+    var form = $("#productCateDetailForm");
+    var valid = validate(form, {  
+        'form.ProductCate.Name': {
+            required: true, minlength: 2, maxlength: 100
+        },
+        'form.ProductCate.Desc': {
+            required: false, minlength: 2, maxlength: 300
+        }
+    });
+
+    if (!valid) {
+        hideMask();
+    } else {
+        $.ajax({
+                   url: '{%url "InventoryProductCate.Save"%}',
+                   type: "POST",
+                   data: form.serialize(),
+                   success: function (data) {
+                       hideMask();
+                       if (data.success == false) {
+                           $.msg.error(data.message);
+                           //return;
+                       }
+                       else {
+                           $.msg.show(data.message);
+                           $('#productCateDetailDialog').modal('hide');
+                           reloadList('#productCateList');
+                           //return;
+                       }
+                   }
+               }
+        );
+    }
+}
+</script>
+
