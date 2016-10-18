@@ -34,7 +34,15 @@ var ModelList = []interface{}{
 
 	//sample field definition
 	//Field1 float64 `xorm:"decimal(18,4) notnull 'field1'" json:"field1" smith:"verbose_name=字段1,min=0,max=100"`
+	//sample model methods
 
+	//func (e Entity) TableName() string {
+	//	return TablePrefix + "table_name"
+	//}
+
+	//func (e Entity) ModelDesc() string {
+	//	return "verbose_name=中文名"
+	//}
  */
 
 var output_base_dir = config.OutputBaseDir

@@ -75,7 +75,7 @@ func (e ProductCate) TableName() string {
 }
 
 func (e ProductCate) ModelDesc() string {
-	return "货品类别"
+	return "verbose_name=货品类别"
 }
 
 //---------------------------------------------------------------------------------------------------------------
