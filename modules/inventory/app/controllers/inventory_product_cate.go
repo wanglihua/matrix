@@ -74,26 +74,26 @@ func (f *ProductCateForm) Valid(validation *revel.Validation) bool {
 	return validation.HasErrors() == false
 }
 
-func (c InventoryProductCate) Detail() revel.Result {
-	session := c.DbSession
+func (c InventoryProductCate) DetailData() revel.Result {
+	db_session := c.DbSession
 
-	var productCateId int64
-	c.Params.Bind(&productCateId, "id")
+	var id int64
+	c.Params.Bind(&id, "id")
 
-	productCate := new(models.ProductCate)
-	if productCateId != 0 {
-		has, err := session.Id(productCateId).Get(productCate)
+	var product_cate models.ProductCate
+	if id != 0 {
+		has, err := db_session.Id(id).Get(&product_cate)
 		core.HandleError(err)
 		if has == false {
-			panic("指定的货品类别不存在！")
+			return c.RenderJson(core.JsonResult{Success: false, Message: "货品分类不存在！" })
 		}
 	}
 
-	form := new(ProductCateForm)
-	form.ProductCate = *productCate
-	c.UnbindToRenderArgs(form, "form")
+	result := map[string]interface{}{
+		"cate": product_cate,
+	}
 
-	return c.RenderTemplate("inventory/product_cate/product_cate_detail.html")
+	return c.RenderJson(result)
 }
 
 func (c InventoryProductCate) Save() revel.Result {

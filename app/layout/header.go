@@ -39,9 +39,15 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
     <!--[if lte IE 9]>
     <link type="text/css" rel="stylesheet" href="/static/ace/css/ace-ie.min.css"/>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="/static/site.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/site.css"/>`)
 
-    <!--[if !IE]> -->
+	if revel.DevMode {
+		header_buffer.WriteString(`<script type="text/javascript" src="/static/js/vue.js"></script>`)
+	} else {
+		header_buffer.WriteString(`<script type="text/javascript" src="/static/js/vue.min.js"></script>`)
+	}
+
+	header_buffer.WriteString(`<!--[if !IE]> -->
     <script type="text/javascript">
         window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery.min.js'>" + "<" + "/script>");
     </script>
@@ -339,7 +345,7 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
             </li>
 `)
 	}
-		header_buffer.WriteString(`
+	header_buffer.WriteString(`
             <li id="help-menu" class="">
                 <a href="#" class="dropdown-toggle">
                     <i class="menu-icon fa fa-book"></i>

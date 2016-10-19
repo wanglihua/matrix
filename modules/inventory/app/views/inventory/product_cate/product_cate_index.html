@@ -1,57 +1,176 @@
 {%header "货品类别管理" .%}
 
-<div class="breadcrumbs" id="breadcrumbs">
-    <ul class="breadcrumb">
-        <li>
-            <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
-        </li>
-        <li class="parent" data-menu="inventory-menu">仓储管理</li>
-        <li class="subparent" data-menu="inventory-prdmgr-menu">货品管理</li>
-        <li class="active" data-menu="inventory-prdcate-menu">货品类别</li>
-    </ul>
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="inventory-menu">仓储管理</li>
+            <li class="subparent" data-menu="inventory-prdmgr-menu">货品管理</li>
+            <li class="active" data-menu="inventory-prdcate-menu">货品类别</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList()">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-success btn-sm" @click="showProductCateDetail(0)">
+                        <i class="ace-icon fa fa-plus"></i>
+                        新增
+                    </button>
+                    <button class="btn btn-danger btn-sm" @click="deleteProductCate()">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                        删除
+                    </button>
+                </div>
+                <div>
+                    <table id="productCateList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="productCateDetailDialog">
+        <div class="modal-dialog" style="width: 440px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">货品类别详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="productCateDetailForm" onsubmit="saveProductCate();return false;">
+                                <input id="productCate_id" name="form.ProductCate.Id" type="hidden" :value="cate.id"/>
+                                <input id="productCate_version" name="form.ProductCate.Version" type="hidden" :value="cate.version"/>
+                                <div class="form-group">
+                                    <label for="cate_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                    <div class="col-xs-10">
+                                        <input id="cate_name" name="form.ProductCate.Name" type="text" class="input-sm form-control" :value="cate.cate_name"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cate_desc" class="col-xs-2 control-label no-padding-right">描述</label>
+                                    <div class="col-xs-10">
+                                        <input id="cate_desc" name="form.ProductCate.Desc" type="text" class="input-sm form-control" :value="cate.cate_desc"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveProductCate()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="page-content">
-    <div class="row">
-        <div class="col-xs-12" style="padding: 0;">
-            <div class="gridToolBar clearfix">
-                <button class="btn btn-primary btn-sm" onclick="reloadList('#productCateList')">
-                    <i class="ace-icon fa fa-refresh"></i>
-                    刷新
-                </button>
-                <button class="btn btn-success btn-sm" onclick="showProductCateDetail(0)">
-                    <i class="ace-icon fa fa-plus"></i>
-                    新增
-                </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteProductCate()">
-                    <i class="ace-icon fa fa-trash-o"></i>
-                    删除
-                </button>
-            </div>
-            <div>
-                <table id="productCateList" class="table table-striped table-bordered table-hover"></table>
-            </div>
-            <div id="productCateDetailDialogWrapper"></div>
-            <script type="text/javascript">
-                function showProductCateDetail(id) {
+<script type="text/javascript">
+    $(function () {
+        var vm = new Vue({
+            el: '#page',
+            data: {
+                cate: {}
+            },
+            mounted: function () {
+                initDataTable(
+                        '#productCateList',
+                        {
+                            "sAjaxSource": '{%url "InventoryProductCate.ListData"%}',
+                            "aaSorting": [[1, "asc"]],
+                            "aoColumns": [
+                                {
+                                    "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                    "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                    "render": function (data, type, row) {
+                                        return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                    }
+                                },
+                                {"mDataProp": "cate_name", "title": "名称", "bSearchable": true},
+                                {"mDataProp": "cate_desc", "title": "描述", "bSearchable": true},
+                                {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                                {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                            ]
+                        }
+                );
+
+                $('#productCateList tbody').on('dblclick', 'tr', function () {
+                    var id = $(this).find('td:first-child input:checkbox').val();
+                    vm.showProductCateDetail(id);
+                });
+            },
+            methods: {
+                reloadList: function () {
+                    reloadList('#productCateList');
+                },
+                showProductCateDetail: function (id) {
+                    showMask("加载中...");
                     $.ajax({
-                               url: '{%url "InventoryProductCate.Detail" %}',
+                               url: '{%url "InventoryProductCate.DetailData" %}',
                                type: "POST",
                                data: {
                                    "id": id
                                },
                                success: function (result) {
+                                   hideMask();
                                    if (result.success == false) {
                                        $.msg.error(result.message);
                                        return;
                                    }
-                                   $("#productCateDetailDialogWrapper").html(result);
+                                   vm.cate = result.cate;
                                    $('#productCateDetailDialog').modal(modalOptions);
                                }
                            }
                     );
-                }
+                },
+                saveProductCate: function () {
+                    showMask("提交中...");
+                    var form = $("#productCateDetailForm");
+                    var valid = validate(form, {
+                        'form.ProductCate.Name': {
+                            required: true, minlength: 2, maxlength: 100
+                        },
+                        'form.ProductCate.Desc': {
+                            required: false, minlength: 2, maxlength: 300
+                        }
+                    });
 
-                function deleteProductCate() {
+                    if (!valid) {
+                        hideMask();
+                    } else {
+                        $.ajax({
+                                   url: '{%url "InventoryProductCate.Save"%}',
+                                   type: "POST",
+                                   data: form.serialize(),
+                                   success: function (data) {
+                                       hideMask();
+                                       if (data.success == false) {
+                                           $.msg.error(data.message);
+                                           //return;
+                                       }
+                                       else {
+                                           $.msg.show(data.message);
+                                           $('#productCateDetailDialog').modal('hide');
+                                           reloadList('#productCateList');
+                                           //return;
+                                       }
+                                   }
+                               }
+                        );
+                    }
+                },
+                deleteProductCate: function () {
                     var id_list = [];
                     $('#productCateList tbody tr>td:first-child input:checkbox').each(function () {
                         if (this.checked) {
@@ -82,38 +201,10 @@
                                });
                     });
                 }
+            }
+        });
+    });
+</script>
 
-                $(function () {
-                    initDataTable(
-                            '#productCateList',
-                            {
-                                "sAjaxSource": '{%url "InventoryProductCate.ListData"%}',
-                                "aaSorting": [[1, "asc"]],
-                                "aoColumns": [
-                                    {
-                                        "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
-                                        "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
-                                        "render": function (data, type, row) {
-                                            return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
-                                        }
-                                    },
-                                    {"mDataProp": "cate_name", "title": "名称", "bSearchable": true },
-                                    {"mDataProp": "cate_desc", "title": "描述", "bSearchable": true },
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
-                                ]
-                            }
-                    );
-
-                    $('#productCateList tbody').on('dblclick', 'tr', function () {
-                        var id = $(this).find('td:first-child input:checkbox').val();
-                        showProductCateDetail(id);
-                    });
-                });
-            </script>
-
-        </div>
-    </div>
-</div>
 {%footer%}
 

@@ -25,7 +25,8 @@ POST /inventory/storageloc/save               InventoryStorageLoc.Save
 POST /inventory/storageloc/delete             InventoryStorageLoc.Delete
 
 GET  /inventory/product/cate                  InventoryProductCate.Index
-POST /inventory/product/cate/listdata         InventoryProductCate.ListData
+POST /inventory/product/cate/list/data        InventoryProductCate.ListData
 POST /inventory/product/cate/detail           InventoryProductCate.Detail
+POST /inventory/product/cate/detail/data      InventoryProductCate.DetailData
 POST /inventory/product/cate/save             InventoryProductCate.Save
 POST /inventory/product/cate/delete           InventoryProductCate.Delete
