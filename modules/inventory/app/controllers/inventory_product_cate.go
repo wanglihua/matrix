@@ -99,6 +99,12 @@ func (c InventoryProductCate) DetailData() revel.Result {
 func (c InventoryProductCate) Save() revel.Result {
 	session := c.DbSession
 
+	//data: JSON.stringify({ "command": "on" }),
+	//req_body := c.Request.Body
+	//resquest_bytes, err := ioutil.ReadAll(req_body)
+	//core.HandleError(err)
+	//req_body.Close()
+
 	form := new(ProductCateForm)
 	c.Params.Bind(form, "form")
 
