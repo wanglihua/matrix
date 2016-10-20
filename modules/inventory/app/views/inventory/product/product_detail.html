@@ -1,0 +1,161 @@
+<div class="modal fade" id="productDetailDialog">
+    <div class="modal-dialog" style="width: 440px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                <h4 class="modal-title">货品信息详细</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <form class="form-horizontal" role="form" id="productDetailForm" onsubmit="saveProduct();return false;">
+                            <input id="product_id" name="form.Product.Id" type="hidden" value="{%.form_Product_Id%}"/>
+                            <input id="product_version" name="form.Product.Version" type="hidden" value="{%.form_Product_Version%}"/>
+                            <div class="form-group">
+                                <label for="code" class="col-xs-2 control-label no-padding-right">编码</label>
+                                <div class="col-xs-10">
+                                    <input id="code" name="form.Product.Code" type="text" class="input-sm form-control" value="{%.form_Product_Code%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name" class="col-xs-2 control-label no-padding-right">品名</label>
+                                <div class="col-xs-10">
+                                    <input id="name" name="form.Product.Name" type="text" class="input-sm form-control" value="{%.form_Product_Name%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="model" class="col-xs-2 control-label no-padding-right">规格型号</label>
+                                <div class="col-xs-10">
+                                    <input id="model" name="form.Product.Model" type="text" class="input-sm form-control" value="{%.form_Product_Model%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="current_stock" class="col-xs-2 control-label no-padding-right">当前库存</label>
+                                <div class="col-xs-10">
+                                    <input id="current_stock" name="form.Product.CurrentStock" type="text" class="input-sm form-control" value="{%.form_Product_CurrentStock%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="stock_lower_limit" class="col-xs-2 control-label no-padding-right">库存下限</label>
+                                <div class="col-xs-10">
+                                    <input id="stock_lower_limit" name="form.Product.StockLowerLimit" type="text" class="input-sm form-control" value="{%.form_Product_StockLowerLimit%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="stock_upper_limit" class="col-xs-2 control-label no-padding-right">库存上限</label>
+                                <div class="col-xs-10">
+                                    <input id="stock_upper_limit" name="form.Product.StockUpperLimit" type="text" class="input-sm form-control" value="{%.form_Product_StockUpperLimit%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="unit" class="col-xs-2 control-label no-padding-right">单位</label>
+                                <div class="col-xs-10">
+                                    <input id="unit" name="form.Product.Unit" type="text" class="input-sm form-control" value="{%.form_Product_Unit%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cost_price" class="col-xs-2 control-label no-padding-right">成本价</label>
+                                <div class="col-xs-10">
+                                    <input id="cost_price" name="form.Product.CostPrice" type="text" class="input-sm form-control" value="{%.form_Product_CostPrice%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="retail_price" class="col-xs-2 control-label no-padding-right">零售价</label>
+                                <div class="col-xs-10">
+                                    <input id="retail_price" name="form.Product.RetailPrice" type="text" class="input-sm form-control" value="{%.form_Product_RetailPrice%}"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="state" class="col-xs-2 control-label no-padding-right">状态</label>
+                                <div class="col-xs-10">
+                                    <input id="state" name="form.Product.State" type="text" class="input-sm form-control" value="{%.form_Product_State%}"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveProduct()">
+                    <i class="ace-icon fa fa-floppy-o"></i>保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type='text/javascript'>
+    function saveProduct() {
+        showMask("提交中...");
+        var form = $("#productDetailForm");
+        var valid = validate(form, {
+            'form.Product.Code': {
+                required: true, minlength: 2, maxlength: 20
+            },
+            'form.Product.Name': {
+                required: true, minlength: 2, maxlength: 100
+            },
+            'form.Product.Model': {
+                required: false, minlength: 2, maxlength: 200
+            },
+            'form.Product.CurrentStock': {
+                required: false, digits: true
+            },
+            'form.Product.StockLowerLimit': {
+                required: false, digits: true
+            },
+            'form.Product.StockUpperLimit': {
+                required: false, digits: true
+            },
+            'form.Product.Unit': {
+                required: true, minlength: 1, maxlength: 10
+            },
+            'form.Product.CostPrice': {
+                required: false, digits: true
+            },
+            'form.Product.RetailPrice': {
+                required: false, digits: true
+            },
+            'form.Product.State': {
+                required: true, minlength: 1
+            }
+        });
+
+        if (!valid) {
+            hideMask();
+        } else {
+            $.ajax({
+                       url: '{%url "InventoryProduct.Save"%}',
+                       type: "POST",
+                       data: form.serialize(),
+                       success: function (data) {
+                           hideMask();
+                           if (data.success == false) {
+                               $.msg.error(data.message);
+                               //return;
+                           }
+                           else {
+                               $.msg.show(data.message);
+                               $('#productDetailDialog').modal('hide');
+                               reloadList('#productList');
+                               //return;
+                           }
+                       }
+                   }
+            );
+        }
+    }
+</script>
+

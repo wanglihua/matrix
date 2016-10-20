@@ -29,3 +29,9 @@ POST /inventory/product/cate/data/list        InventoryProductCate.ListData
 POST /inventory/product/cate/data/detail      InventoryProductCate.DetailData
 POST /inventory/product/cate/save             InventoryProductCate.Save
 POST /inventory/product/cate/delete           InventoryProductCate.Delete
+
+GET  /inventory/product                       InventoryProduct.Index
+POST /inventory/product/listdata              InventoryProduct.ListData
+POST /inventory/product/detail                InventoryProduct.Detail
+POST /inventory/product/save                  InventoryProduct.Save
+POST /inventory/product/delete                InventoryProduct.Delete

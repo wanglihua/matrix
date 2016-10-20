@@ -93,7 +93,7 @@ type Product struct {
 	Unit            string          `xorm:"nvarchar(50) notnull 'unit'" json:"unit" smith:"verbose_name=单位,min=1,max=10"`
 	CostPrice       core.NullInt    `xorm:"bigint null 'cost_price'" json:"cost_price" smith:"verbose_name=成本价,min=0"`
 	RetailPrice     core.NullInt    `xorm:"bigint null 'retail_price'" json:"retail_price" smith:"verbose_name=零售价,min=0"`
-	State           string          `xorm:"nvarchar(10) notnull 'state'" json:"state" smith:"verbose_name=当前库存,min=0"`
+	State           string          `xorm:"nvarchar(10) notnull 'state'" json:"state" smith:"verbose_name=状态,min=1"`
 
 	CreateTime      core.Time       `xorm:"created notnull 'create_time'" json:"create_time"`
 	UpdateTime      core.Time       `xorm:"updated notnull 'update_time'" json:"update_time"`
@@ -101,7 +101,7 @@ type Product struct {
 }
 
 func (e Product) TableName() string {
-	return TablePrefix + "product_cate"
+	return TablePrefix + "product"
 }
 
 func (e Product) ModelDesc() string {

@@ -11,5 +11,5 @@ var ModuleLowerCase = entity_models.ModuleLowerCase
 var ModuleChinese = entity_models.ModuleChinese
 var TablePrefix = entity_models.TablePrefix
 var ModelList = []interface{}{
-	entity_models.ProductCate{},
+	entity_models.Product{},
 }
