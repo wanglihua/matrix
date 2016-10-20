@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/revel/revel"
 	"matrix/core"
-	"matrix/service"
 	"matrix/modules/auth/models"
 	"matrix/modules/auth/forms"
 	"matrix/app/layout"
@@ -11,7 +10,6 @@ import (
 
 type Login struct {
 	*revel.Controller
-	service.BaseController
 }
 
 func (c Login) Index() revel.Result {

@@ -3,7 +3,6 @@ package app
 import (
 	"github.com/revel/revel"
 	"runtime"
-	"matrix/service"
 )
 
 var AppName string = "matrix"
@@ -13,11 +12,14 @@ func init() {
 
 	revel.TimeFormats = append(revel.TimeFormats, "2006-01-02 15:04:05")
 
-	revel.InterceptMethod((*service.BaseController).Before, revel.BEFORE)
-	revel.InterceptMethod((*service.BaseController).Finally, revel.FINALLY)
-	revel.InterceptMethod((*service.BaseController).Panic, revel.PANIC)
+	//revel.InterceptMethod((*service.BaseController).Before, revel.BEFORE)
+	//revel.InterceptMethod((*service.BaseController).Finally, revel.FINALLY)
+	//revel.InterceptMethod((*service.BaseController).Panic, revel.PANIC)
 
 	//revel.InterceptFunc(userAuthInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
+	revel.InterceptFunc(BeforeInterceptor, revel.BEFORE, revel.ALL_CONTROLLERS)
+	revel.InterceptFunc(FinallyInterceptor, revel.FINALLY, revel.ALL_CONTROLLERS)
+	revel.InterceptFunc(PanicInterceptor, revel.PANIC, revel.ALL_CONTROLLERS)
 
 	// Filters is the default set of global filters.
 	revel.Filters = []revel.Filter{

@@ -3,13 +3,11 @@ package controllers
 import (
     "github.com/revel/revel"
     "matrix/core"
-	"matrix/service"
     "matrix/modules/weixin/models"
 )
 
 type WeixinConfig struct {
     *revel.Controller
-    service.BaseController
 }
 
 type ConfigForm struct {

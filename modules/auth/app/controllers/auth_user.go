@@ -6,14 +6,12 @@ import (
     "matrix/modules/auth/models"
     "matrix/modules/auth/forms"
     "matrix/core"
-	"matrix/service"
     "strconv"
     "strings"
 )
 
 type AuthUser struct {
     *revel.Controller
-    service.BaseController
 }
 
 func (c AuthUser) Index() revel.Result {

@@ -4,7 +4,6 @@ import (
     "strconv"
     "github.com/revel/revel"
     "matrix/core"
-	"matrix/service"
     "matrix/core/requests"
     weixin_service "matrix/modules/weixin/service"
     "matrix/modules/weixin/models"
@@ -15,7 +14,6 @@ import (
 
 type WeixinMenu struct {
     *revel.Controller
-    service.BaseController
 }
 
 func (c WeixinMenu) Index() revel.Result {

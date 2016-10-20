@@ -5,14 +5,12 @@ import (
 
 	"matrix/modules/auth/models"
 	"matrix/core"
-	"matrix/service"
 	"strconv"
 	"strings"
 )
 
 type AuthGroup struct {
 	*revel.Controller
-	service.BaseController
 }
 
 func (c AuthGroup) Index() revel.Result {

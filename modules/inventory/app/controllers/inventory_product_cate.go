@@ -6,12 +6,12 @@ import (
 
 	"matrix/core"
 	"matrix/modules/inventory/models"
-	matrix_service "matrix/service"
+	"io/ioutil"
+	"encoding/json"
 )
 
 type InventoryProductCate struct {
 	*revel.Controller
-	matrix_service.BaseController
 }
 
 func (c InventoryProductCate) Index() revel.Result {
@@ -48,7 +48,7 @@ func (c InventoryProductCate) ListData() revel.Result {
 }
 
 type ProductCateForm struct {
-	ProductCate models.ProductCate
+	ProductCate models.ProductCate `json:"cate"`
 }
 
 func (f *ProductCateForm) IsCreate() bool {
@@ -89,40 +89,39 @@ func (c InventoryProductCate) DetailData() revel.Result {
 		}
 	}
 
-	result := map[string]interface{}{
-		"cate": product_cate,
-	}
+	var detail_form ProductCateForm
+	detail_form.ProductCate = product_cate;
 
-	return c.RenderJson(result)
+	return c.RenderJson(detail_form)
 }
 
 func (c InventoryProductCate) Save() revel.Result {
 	session := c.DbSession
 
-	//data: JSON.stringify({ "command": "on" }),
-	//req_body := c.Request.Body
-	//resquest_bytes, err := ioutil.ReadAll(req_body)
-	//core.HandleError(err)
-	//req_body.Close()
+	resquest_bytes, err := ioutil.ReadAll(c.Request.Body)
+	core.HandleError(err)
 
-	form := new(ProductCateForm)
-	c.Params.Bind(form, "form")
+	revel.TRACE.Println("json body: ",string(resquest_bytes))
 
-	if form.Valid(c.Validation) == false {
+	var detail_form ProductCateForm
+	err = json.Unmarshal(resquest_bytes, &detail_form)
+	core.HandleError(err)
+
+	if detail_form.Valid(c.Validation) == false {
 		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
 	}
 
-	productCate := &form.ProductCate
+	productCate := detail_form.ProductCate
 
 	var affected int64
-	if form.IsCreate() {
+	if detail_form.IsCreate() {
 		nameCount, err := session.Where("cate_name = ?", productCate.Name).Count(new(models.ProductCate))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
 		}
 
-		affected, err = session.Insert(productCate)
+		affected, err = session.Insert(&productCate)
 		core.HandleError(err)
 	} else {
 		nameCount, err := session.Where("id <> ? and cate_name = ?", productCate.Id, productCate.Name).Count(new(models.ProductCate))
@@ -131,7 +130,7 @@ func (c InventoryProductCate) Save() revel.Result {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
 		}
 
-		affected, err = session.Id(productCate.Id).Update(productCate)
+		affected, err = session.Id(productCate.Id).Update(&productCate)
 		core.HandleError(err)
 
 		if affected == 0 {

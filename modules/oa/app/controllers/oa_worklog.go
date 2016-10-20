@@ -5,7 +5,6 @@ import (
 	"github.com/revel/revel"
 
 	"matrix/core"
-	"matrix/service"
 	"matrix/modules/oa/models"
 	authModels "matrix/modules/auth/models"
 	"fmt"
@@ -14,7 +13,6 @@ import (
 
 type OaWorklog struct {
 	*revel.Controller
-	service.BaseController
 }
 
 func (c OaWorklog) Index() revel.Result {

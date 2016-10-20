@@ -3,12 +3,10 @@ package controllers
 import (
     "github.com/revel/revel"
     "matrix/core"
-	"matrix/service"
 )
 
 type Help struct {
     *revel.Controller
-    service.BaseController
 }
 
 func (c Help) Index() revel.Result {

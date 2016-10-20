@@ -2,12 +2,10 @@ package controllers
 
 import (
     "github.com/revel/revel"
-	"matrix/service"
 )
 
 type WechatHome struct {
     *revel.Controller
-    service.BaseController
 }
 
 func (c WechatHome) Index() revel.Result {

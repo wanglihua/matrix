@@ -9,12 +9,10 @@ import (
 
     "matrix/core"
     "matrix/modules/{{.entity.ModuleLowerCase}}/models"
-    matrix_service "matrix/service"
 )
 
 type {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}} struct {
     *revel.Controller
-    matrix_service.BaseController
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Index() revel.Result {

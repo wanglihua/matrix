@@ -4,7 +4,6 @@ import (
     "encoding/xml"
     "github.com/revel/revel"
     "matrix/core"
-	"matrix/service"
     weixin_service  "matrix/modules/weixin/service"
     "gopkg.in/xmlpath"
     "io/ioutil"
@@ -17,7 +16,6 @@ import (
 
 type WechatCallback struct {
     *revel.Controller
-    service.BaseController
 }
 
 func (c WechatCallback) Sign() revel.Result {

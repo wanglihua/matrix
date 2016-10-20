@@ -44,20 +44,20 @@
                 <div class="modal-body clearfix">
                     <div class="row">
                         <div class="col-xs-12">
-                            <form class="form-horizontal" role="form" id="productCateDetailForm" onsubmit="saveProductCate();return false;">
-                                <input id="productCate_id" name="form.ProductCate.Id" type="hidden" :value="cate.id"/>
-                                <input id="productCate_version" name="form.ProductCate.Version" type="hidden" :value="cate.version"/>
+                            <form class="form-horizontal" role="form" id="productCateDetailForm">
+                                <input id="productCate_id" name="cate.id" type="hidden" :value="cate.id"/>
+                                <input id="productCate_version" name="cate.version" type="hidden" :value="cate.version"/>
                                 <div class="form-group">
                                     <label for="cate_name" class="col-xs-2 control-label no-padding-right">名称</label>
                                     <div class="col-xs-10">
-                                        <input id="cate_name" name="form.ProductCate.Name" type="text" class="input-sm form-control" :value="cate.cate_name"/>
+                                        <input id="cate_name" name="cate.cate_name" type="text" class="input-sm form-control" :value="cate.cate_name"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="cate_desc" class="col-xs-2 control-label no-padding-right">描述</label>
                                     <div class="col-xs-10">
-                                        <input id="cate_desc" name="form.ProductCate.Desc" type="text" class="input-sm form-control" :value="cate.cate_desc"/>
+                                        <input id="cate_desc" name="cate.cate_desc" type="text" class="input-sm form-control" :value="cate.cate_desc"/>
                                     </div>
                                 </div>
                             </form>
@@ -77,132 +77,134 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(function () {
-        var vm = new Vue({
-            el: '#page',
-            data: {
-                cate: {}
+    var vm = new Vue({
+        el: '#page',
+        data: {
+            cate: {}
+        },
+        mounted: function () {
+            initDataTable(
+                    '#productCateList',
+                    {
+                        "sAjaxSource": '{%url "InventoryProductCate.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "cate_name", "title": "名称", "bSearchable": true},
+                            {"mDataProp": "cate_desc", "title": "描述", "bSearchable": true},
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                        ]
+                    }
+            );
+
+            $('#productCateList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showProductCateDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#productCateList');
             },
-            mounted: function () {
-                initDataTable(
-                        '#productCateList',
-                        {
-                            "sAjaxSource": '{%url "InventoryProductCate.ListData"%}',
-                            "aaSorting": [[1, "asc"]],
-                            "aoColumns": [
-                                {
-                                    "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
-                                    "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
-                                    "render": function (data, type, row) {
-                                        return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
-                                    }
-                                },
-                                {"mDataProp": "cate_name", "title": "名称", "bSearchable": true},
-                                {"mDataProp": "cate_desc", "title": "描述", "bSearchable": true},
-                                {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                                {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
-                            ]
+            showProductCateDetail: function (id) {
+                showMask("加载中...");
+                $.ajax({
+                            url: '{%url "InventoryProductCate.DetailData" %}',
+                            type: "POST",
+                            data: {
+                                "id": id
+                            },
+                            success: function (result) {
+                                hideMask();
+                                if (result.success == false) {
+                                    $.msg.error(result.message);
+                                    return;
+                                }
+                                vm.cate = result.cate;
+                                $('#productCateDetailDialog').modal(modalOptions);
+                            }
                         }
                 );
-
-                $('#productCateList tbody').on('dblclick', 'tr', function () {
-                    var id = $(this).find('td:first-child input:checkbox').val();
-                    vm.showProductCateDetail(id);
-                });
             },
-            methods: {
-                reloadList: function () {
-                    reloadList('#productCateList');
-                },
-                showProductCateDetail: function (id) {
-                    showMask("加载中...");
+            saveProductCate: function () {
+                console.log(vm.cate);
+
+                showMask("提交中...");
+                var form = $("#productCateDetailForm");
+                var valid = validate(form, {
+                    'cate.cate_name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'cate.cate_desc': {
+                        required: false, minlength: 2, maxlength: 300
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
                     $.ajax({
-                               url: '{%url "InventoryProductCate.DetailData" %}',
-                               type: "POST",
-                               data: {
-                                   "id": id
-                               },
-                               success: function (result) {
-                                   hideMask();
-                                   if (result.success == false) {
-                                       $.msg.error(result.message);
-                                       return;
-                                   }
-                                   vm.cate = result.cate;
-                                   $('#productCateDetailDialog').modal(modalOptions);
-                               }
-                           }
+                                url: '{%url "InventoryProductCate.Save"%}',
+                                type: "POST",
+                                processData: false,
+                                contentType: 'application/json',
+                                data: JSON.stringify(vm.$data),
+                                success: function (data) {
+                                    hideMask();
+                                    if (data.success == false) {
+                                        $.msg.error(data.message);
+                                        //return;
+                                    }
+                                    else {
+                                        $.msg.show(data.message);
+                                        $('#productCateDetailDialog').modal('hide');
+                                        reloadList('#productCateList');
+                                        //return;
+                                    }
+                                }
+                            }
                     );
-                },
-                saveProductCate: function () {
-                    showMask("提交中...");
-                    var form = $("#productCateDetailForm");
-                    var valid = validate(form, {
-                        'form.ProductCate.Name': {
-                            required: true, minlength: 2, maxlength: 100
-                        },
-                        'form.ProductCate.Desc': {
-                            required: false, minlength: 2, maxlength: 300
-                        }
-                    });
-
-                    if (!valid) {
-                        hideMask();
-                    } else {
-                        $.ajax({
-                                   url: '{%url "InventoryProductCate.Save"%}',
-                                   type: "POST",
-                                   data: form.serialize(),
-                                   success: function (data) {
-                                       hideMask();
-                                       if (data.success == false) {
-                                           $.msg.error(data.message);
-                                           //return;
-                                       }
-                                       else {
-                                           $.msg.show(data.message);
-                                           $('#productCateDetailDialog').modal('hide');
-                                           reloadList('#productCateList');
-                                           //return;
-                                       }
-                                   }
-                               }
-                        );
-                    }
-                },
-                deleteProductCate: function () {
-                    var id_list = [];
-                    $('#productCateList tbody tr>td:first-child input:checkbox').each(function () {
-                        if (this.checked) {
-                            id_list.push($(this).val());
-                        }
-                    });
-
-                    if (id_list.length == 0) {
-                        $.msg.alert("请选择数据！");
-                        return;
-                    }
-
-                    $.msg.confirm("确认要删除吗？", function () {
-                        $.ajax({
-                                   url: '{%url "InventoryProductCate.Delete"%}',
-                                   type: "POST",
-                                   data: {"id_list": id_list},
-                                   success: function (data) {
-                                       if (data.success == false) {
-                                           $.msg.error(data.message);
-                                           return;
-                                       }
-                                       else {
-                                           $.msg.show(data.message);
-                                       }
-                                       reloadList('#productCateList');
-                                   }
-                               });
-                    });
                 }
+            },
+            deleteProductCate: function () {
+                var id_list = [];
+                $('#productCateList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                        url: '{%url "InventoryProductCate.Delete"%}',
+                        type: "POST",
+                        data: {"id_list": id_list},
+                        success: function (data) {
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                            }
+                            reloadList('#productCateList');
+                        }
+                    });
+                });
             }
-        });
+        }
     });
 </script>
 

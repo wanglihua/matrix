@@ -11,26 +11,29 @@ import (
 	"runtime"
 	"strings"
 	"time"
+	"github.com/go-xorm/xorm"
 )
 
 type Controller struct {
-	Name          string          // The controller name, e.g. "Application"
-	Type          *ControllerType // A description of the controller type.
-	MethodName    string          // The method name, e.g. "Index"
-	MethodType    *MethodType     // A description of the invoked action type.
-	AppController interface{}     // The controller that was instantiated.
-	Action        string          // The fully qualified action name, e.g. "App.Index"
+	Name          string                 // The controller name, e.g. "Application"
+	Type          *ControllerType        // A description of the controller type.
+	MethodName    string                 // The method name, e.g. "Index"
+	MethodType    *MethodType            // A description of the invoked action type.
+	AppController interface{}            // The controller that was instantiated.
+	Action        string                 // The fully qualified action name, e.g. "App.Index"
 
-	Request  *Request
-	Response *Response
-	Result   Result
+	Request       *Request
+	Response      *Response
+	Result        Result
 
-	Flash      Flash                  // User cookie, cleared after 1 request.
-	Session    Session                // Session, stored in cookie, signed.
-	Params     *Params                // Parameters from URL and form (including multipart).
-	Args       map[string]interface{} // Per-request scratch space.
-	RenderArgs map[string]interface{} // Args passed to the template.
-	Validation *Validation            // Data validation helpers
+	Flash         Flash                  // User cookie, cleared after 1 request.
+	Session       Session                // Session, stored in cookie, signed.
+	Params        *Params                // Parameters from URL and form (including multipart).
+	Args          map[string]interface{} // Per-request scratch space.
+	RenderArgs    map[string]interface{} // Args passed to the template.
+	Validation    *Validation            // Data validation helpers
+
+	DbSession     *xorm.Session
 }
 
 func NewController(req *Request, resp *Response) *Controller {
@@ -44,6 +47,22 @@ func NewController(req *Request, resp *Response) *Controller {
 			"DevMode": DevMode,
 		},
 	}
+}
+
+func (c *Controller) UnbindToRenderArgs(val interface{}, name string) {
+	datas := make(map[string]string)
+	Unbind(datas, name, val)
+	for key, value := range datas {
+		c.RenderArgs[strings.Replace(key, ".", "_", -1)] = value
+	}
+}
+
+func (c *Controller)  GetValidationErrorMessage() string {
+	errorMessage := ""
+	for _, validationError := range c.Validation.Errors {
+		errorMessage += "<p>" + validationError.Message + "</p>"
+	}
+	return errorMessage
 }
 
 // FlashParams serializes the contents of Controller.Params to the Flash
@@ -210,7 +229,7 @@ func (c *Controller) RenderFile(file *os.File, delivery ContentDisposition) Resu
 	c.setStatusIfNil(http.StatusOK)
 
 	var (
-		modtime       = time.Now()
+		modtime = time.Now()
 		fileInfo, err = file.Stat()
 	)
 	if err != nil {
@@ -291,8 +310,8 @@ func (c *Controller) SetAction(controllerName, methodName string) error {
 func initNewAppController(appControllerType *ControllerType, c *Controller) reflect.Value {
 	var (
 		appControllerPtr = reflect.New(appControllerType.Type)
-		appController    = appControllerPtr.Elem()
-		cValue           = reflect.ValueOf(c)
+		appController = appControllerPtr.Elem()
+		cValue = reflect.ValueOf(c)
 	)
 	for _, index := range appControllerType.ControllerIndexes {
 		appController.FieldByIndex(index).Set(cValue)
@@ -312,8 +331,8 @@ func findControllers(appControllerType reflect.Type) (indexes [][]int) {
 	for len(queue) > 0 {
 		// Get the next value and de-reference it if necessary.
 		var (
-			node     = queue[0]
-			elem     = node.val
+			node = queue[0]
+			elem = node.val
 			elemType = elem.Type()
 		)
 		if elemType.Kind() == reflect.Ptr {
@@ -400,6 +419,6 @@ func RegisterController(c interface{}, methods []*MethodType) {
 		ControllerIndexes: findControllers(elem),
 	}
 
-    //太多信息，先禁用
-    //TRACE.Printf("Registered controller: %s", elem.Name())
+	//太多信息，先禁用
+	//TRACE.Printf("Registered controller: %s", elem.Name())
 }

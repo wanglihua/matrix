@@ -62,6 +62,16 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
     </script>`)
 
 	header_buffer.WriteString(`
+        <script type="text/javascript" src="/static/ace/js/all1.js"></script>
+        <!--[if lte IE 8]>
+        <script type="text/javascript" src="/static/ace/js/html5shiv.min.js"></script>
+        <script type="text/javascript" src="/static/ace/js/respond.min.js"></script>
+        <![endif]-->
+        <script type="text/javascript" src="/static/ace/js/all2.js"></script>
+        <script type="text/javascript" src="/static/js/js.cookie.js"></script>
+        <script type="text/javascript" src="/static/site.js"></script>`)
+
+	header_buffer.WriteString(`
 </head>
 
 <body class="no-skin">

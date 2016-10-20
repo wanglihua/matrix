@@ -4,20 +4,18 @@ import (
     "strings"
     "github.com/revel/revel"
     "matrix/core"
-	"matrix/service"
     "matrix/modules/auth/models"
     "matrix/modules/auth/forms"
 )
 
 type AuthProfile struct {
     *revel.Controller
-    service.BaseController
 }
 
 func (c AuthProfile) Index() revel.Result {
     session := c.DbSession
 
-    loginUserId := c.User.UserId
+    loginUserId := core.GetLoginUser(c.Session).UserId
     loginUser := new(models.User)
     _, err := session.Id(loginUserId).Get(loginUser)
     core.HandleError(err)
@@ -37,7 +35,7 @@ func (c AuthProfile) Save() revel.Result {
         return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
     }
 
-    loginUserId := c.User.UserId
+    loginUserId := core.GetLoginUser(c.Session).UserId
     loginUser := new(models.User)
     _, err := session.Id(loginUserId).Get(loginUser)
     core.HandleError(err)
