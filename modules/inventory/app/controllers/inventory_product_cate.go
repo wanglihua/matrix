@@ -101,8 +101,6 @@ func (c InventoryProductCate) Save() revel.Result {
 	resquest_bytes, err := ioutil.ReadAll(c.Request.Body)
 	core.HandleError(err)
 
-	revel.TRACE.Println("json body: ", string(resquest_bytes))
-
 	var detail_form ProductCateForm
 	err = json.Unmarshal(resquest_bytes, &detail_form)
 	core.HandleError(err)

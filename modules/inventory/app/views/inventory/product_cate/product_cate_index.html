@@ -45,20 +45,20 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <form class="form-horizontal" role="form" id="productCateDetailForm">
-                                <input id="productCate_id" name="cate.id" type="hidden" v-model="cate.id"/>
-                                <input id="productCate_version" name="cate.version" type="hidden" v-model="cate.version"/>
+                                <input id="productCate_id" name="detail.cate.id" type="hidden" v-model="detail.cate.id"/>
+                                <input id="productCate_version" name="detail.cate.version" type="hidden" v-model="detail.cate.version"/>
 
                                 <div class="form-group">
                                     <label for="cate_name" class="col-xs-2 control-label no-padding-right">名称</label>
                                     <div class="col-xs-10">
-                                        <input id="cate_name" name="cate.cate_name" type="text" class="input-sm form-control" v-model="cate.cate_name" />
+                                        <input id="cate_name" name="detail.cate.cate_name" type="text" class="input-sm form-control" v-model="detail.cate.cate_name"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="cate_desc" class="col-xs-2 control-label no-padding-right">描述</label>
                                     <div class="col-xs-10">
-                                        <input id="cate_desc" name="cate.cate_desc" type="text" class="input-sm form-control" v-model="cate.cate_desc"/>
+                                        <input id="cate_desc" name="detail.cate.cate_desc" type="text" class="input-sm form-control" v-model="detail.cate.cate_desc"/>
                                     </div>
                                 </div>
                             </form>
@@ -81,7 +81,8 @@
     var vm = new Vue({
         el: '#page',
         data: {
-            "cate": {
+            "detail": {
+                "cate": {}
             }
         },
         mounted: function () {
@@ -118,31 +119,31 @@
             showProductCateDetail: function (id) {
                 showMask("加载中...");
                 $.ajax({
-                            url: '{%url "InventoryProductCate.DetailData" %}',
-                            type: "POST",
-                            data: {
-                                "id": id
-                            },
-                            success: function (result) {
-                                hideMask();
-                                if (result.success == false) {
-                                    $.msg.error(result.message);
-                                    return;
-                                }
-                                vm.cate = result.cate;
-                                $('#productCateDetailDialog').modal(modalOptions);
-                            }
-                        }
+                           url: '{%url "InventoryProductCate.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#productCateDetailDialog').modal(modalOptions);
+                           }
+                       }
                 );
             },
             saveProductCate: function () {
                 showMask("提交中...");
                 var form = $("#productCateDetailForm");
                 var valid = validate(form, {
-                    'cate.cate_name': {
+                    'detail.cate.cate_name': {
                         required: true, minlength: 2, maxlength: 100
                     },
-                    'cate.cate_desc': {
+                    'detail.cate.cate_desc': {
                         required: false, minlength: 2, maxlength: 300
                     }
                 });
@@ -151,25 +152,25 @@
                     hideMask();
                 } else {
                     $.ajax({
-                                url: '{%url "InventoryProductCate.Save"%}',
-                                type: "POST",
-                                processData: false,
-                                contentType: 'application/json',
-                                data: JSON.stringify(vm.$data),
-                                success: function (data) {
-                                    hideMask();
-                                    if (data.success == false) {
-                                        $.msg.error(data.message);
-                                        //return;
-                                    }
-                                    else {
-                                        $.msg.show(data.message);
-                                        $('#productCateDetailDialog').modal('hide');
-                                        reloadList('#productCateList');
-                                        //return;
-                                    }
-                                }
-                            }
+                               url: '{%url "InventoryProductCate.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#productCateDetailDialog').modal('hide');
+                                       reloadList('#productCateList');
+                                       //return;
+                                   }
+                               }
+                           }
                     );
                 }
             },
@@ -188,20 +189,20 @@
 
                 $.msg.confirm("确认要删除吗？", function () {
                     $.ajax({
-                        url: '{%url "InventoryProductCate.Delete"%}',
-                        type: "POST",
-                        data: {"id_list": id_list},
-                        success: function (data) {
-                            if (data.success == false) {
-                                $.msg.error(data.message);
-                                return;
-                            }
-                            else {
-                                $.msg.show(data.message);
-                            }
-                            reloadList('#productCateList');
-                        }
-                    });
+                               url: '{%url "InventoryProductCate.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   reloadList('#productCateList');
+                               }
+                           });
                 });
             }
         }
