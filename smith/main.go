@@ -1,16 +1,16 @@
 package main
 
 import (
-	"os"
 	"fmt"
-	"matrix/core"
-	"matrix/smith/core/template"
-	"strings"
-	"matrix/smith/core/fieldtype"
-	smith_core "matrix/smith/core"
 	xorm_core "github.com/go-xorm/core"
-	"reflect"
+	"matrix/core"
 	"matrix/smith/config"
+	smith_core "matrix/smith/core"
+	"matrix/smith/core/fieldtype"
+	"matrix/smith/core/template"
+	"os"
+	"reflect"
+	"strings"
 )
 
 /*
@@ -43,7 +43,7 @@ var ModelList = []interface{}{
 	//func (e Entity) ModelDesc() string {
 	//	return "verbose_name=中文名"
 	//}
- */
+*/
 
 var output_base_dir = config.OutputBaseDir
 var module_title_name = config.ModuleTitleName
@@ -73,7 +73,7 @@ func main() {
 			model_field := model_type.Field(model_field_index)
 
 			field.Name = model_field.Name
-			if  field.Name == "Id" || field.Name == "CreateTime" || field.Name == "UpdateTime" || field.Name == "Version" {
+			if field.Name == "Id" || field.Name == "CreateTime" || field.Name == "UpdateTime" || field.Name == "Version" {
 				continue
 			}
 
@@ -172,31 +172,31 @@ func main() {
 	err = os.MkdirAll(controllersDir, 0777)
 	core.HandleError(err)
 
-	for _, entity := range (entityList) {
+	for _, entity := range entityList {
 		controllerCode := smith_core.RenderCodeTemplate("controller", template.ControllerTemplate, map[string]interface{}{
 			"entity": entity,
 		})
 
-		smith_core.WriteToFile(controllersDir + "/" + entityList[0].ModuleLowerCase + "_" + smith_core.ToUnderscore(entity.EntityCamelCase) + ".go", controllerCode)
+		smith_core.WriteToFile(controllersDir+"/"+entityList[0].ModuleLowerCase+"_"+smith_core.ToUnderscore(entity.EntityCamelCase)+".go", controllerCode)
 	}
 
 	viewsDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/app/views/" + entityList[0].ModuleLowerCase + "/" + smith_core.ToUnderscore(entityList[0].EntityCamelCase) + "/"
 	err = os.MkdirAll(viewsDir, 0777)
 	core.HandleError(err)
 
-	for _, entity := range (entityList) {
+	for _, entity := range entityList {
 
 		indexhtmlCode := smith_core.RenderCodeTemplate("indexhtml", template.IndexHtmlTemplate, map[string]interface{}{
 			"entity": entity,
 		})
 
-		smith_core.WriteToFile(viewsDir + "/" + smith_core.ToUnderscore(entity.EntityCamelCase) + "_index.html", indexhtmlCode)
+		smith_core.WriteToFile(viewsDir+"/"+smith_core.ToUnderscore(entity.EntityCamelCase)+"_index.html", indexhtmlCode)
 
 		detailhtmlCode := smith_core.RenderCodeTemplate("detailhtml", template.DetailHtmlTemplate, map[string]interface{}{
 			"entity": entity,
 		})
 
-		smith_core.WriteToFile(viewsDir + "/" + smith_core.ToUnderscore(entity.EntityCamelCase) + "_detail.html", detailhtmlCode)
+		smith_core.WriteToFile(viewsDir+"/"+smith_core.ToUnderscore(entity.EntityCamelCase)+"_detail.html", detailhtmlCode)
 	}
 
 	confDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/conf"
@@ -206,7 +206,7 @@ func main() {
 		"entityList": entityList,
 	})
 
-	smith_core.AppendToFile(confDir + "/routes", routeCode)
+	smith_core.AppendToFile(confDir+"/routes", routeCode)
 
 	menuDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/app/views/"
 	err = os.MkdirAll(menuDir, 0777)
@@ -215,7 +215,7 @@ func main() {
 		"entityList": entityList,
 	})
 
-	smith_core.WriteToFile(menuDir + "/menu.html", menuCode)
+	smith_core.WriteToFile(menuDir+"/menu.html", menuCode)
 
 	fmt.Println("Code Generated!")
 }

@@ -1,24 +1,24 @@
 package layout
 
 import (
-    "matrix/app/models"
-    "github.com/go-xorm/xorm"
+	"github.com/go-xorm/xorm"
+	"matrix/app/models"
 )
 
 var sysName = ""
 
 func GetSysName(dbsession *xorm.Session) string {
-    if sysName == "" {
-        config := new(models.Config)
-        has, _ := dbsession.Limit(1).Get(config)
-        if has {
-            sysName = config.SysName
-        }
-    }
+	if sysName == "" {
+		config := new(models.Config)
+		has, _ := dbsession.Limit(1).Get(config)
+		if has {
+			sysName = config.SysName
+		}
+	}
 
-    return sysName
+	return sysName
 }
 
 func SetSysName(name string) {
-    sysName = name
+	sysName = name
 }

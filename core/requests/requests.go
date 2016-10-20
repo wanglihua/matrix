@@ -1,68 +1,68 @@
 package requests
 
 import (
-    "net/http"
-    "io/ioutil"
-    "strings"
-    "net/url"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"strings"
 
-    "matrix/core"
+	"matrix/core"
 )
 
 func Get(url string) string {
-    httpResp, err := http.Get(url)
-    core.HandleError(err)
-    if httpResp != nil {
-        defer httpResp.Body.Close()
-    }
+	httpResp, err := http.Get(url)
+	core.HandleError(err)
+	if httpResp != nil {
+		defer httpResp.Body.Close()
+	}
 
-    responeBytes, err := ioutil.ReadAll(httpResp.Body)
-    core.HandleError(err)
+	responeBytes, err := ioutil.ReadAll(httpResp.Body)
+	core.HandleError(err)
 
-    return string(responeBytes)
+	return string(responeBytes)
 }
 
 func Post(url string) string {
-    httpResp, err := http.Post(url, "application/x-www-form-urlencoded", strings.NewReader(""))
-    core.HandleError(err)
-    if httpResp != nil {
-        defer httpResp.Body.Close()
-    }
+	httpResp, err := http.Post(url, "application/x-www-form-urlencoded", strings.NewReader(""))
+	core.HandleError(err)
+	if httpResp != nil {
+		defer httpResp.Body.Close()
+	}
 
-    responeBytes, err := ioutil.ReadAll(httpResp.Body)
-    core.HandleError(err)
+	responeBytes, err := ioutil.ReadAll(httpResp.Body)
+	core.HandleError(err)
 
-    return string(responeBytes)
+	return string(responeBytes)
 }
 
 func PostForm(url string, data url.Values) string {
-    httpResp, err := http.PostForm(url, data)
-    core.HandleError(err)
-    if httpResp != nil {
-        defer httpResp.Body.Close()
-    }
+	httpResp, err := http.PostForm(url, data)
+	core.HandleError(err)
+	if httpResp != nil {
+		defer httpResp.Body.Close()
+	}
 
-    responeBytes, err := ioutil.ReadAll(httpResp.Body)
-    core.HandleError(err)
+	responeBytes, err := ioutil.ReadAll(httpResp.Body)
+	core.HandleError(err)
 
-    return string(responeBytes)
+	return string(responeBytes)
 }
 
 func PostJson(url string, json string) string {
-    return postWithContentType(url, "application/json", json)
+	return postWithContentType(url, "application/json", json)
 }
 
 func postWithContentType(url string, bodyType string, body string) string {
-    httpResp, err := http.Post(url, bodyType, strings.NewReader(body))
-    core.HandleError(err)
-    if httpResp != nil {
-        defer httpResp.Body.Close()
-    }
+	httpResp, err := http.Post(url, bodyType, strings.NewReader(body))
+	core.HandleError(err)
+	if httpResp != nil {
+		defer httpResp.Body.Close()
+	}
 
-    responeBytes, err := ioutil.ReadAll(httpResp.Body)
-    core.HandleError(err)
+	responeBytes, err := ioutil.ReadAll(httpResp.Body)
+	core.HandleError(err)
 
-    return string(responeBytes)
+	return string(responeBytes)
 }
 
 /*

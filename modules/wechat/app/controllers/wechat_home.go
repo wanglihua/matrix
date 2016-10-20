@@ -1,13 +1,13 @@
 package controllers
 
 import (
-    "github.com/revel/revel"
+	"github.com/revel/revel"
 )
 
 type WechatHome struct {
-    *revel.Controller
+	*revel.Controller
 }
 
 func (c WechatHome) Index() revel.Result {
-    return c.RenderTemplate("wechat/home/home_index.html")
+	return c.RenderTemplate("wechat/home/home_index.html")
 }

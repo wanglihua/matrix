@@ -1,9 +1,9 @@
 package layout
 
 import (
-	"github.com/revel/revel"
-	"github.com/go-xorm/xorm"
 	"bytes"
+	"github.com/go-xorm/xorm"
+	"github.com/revel/revel"
 	"matrix/core"
 )
 

@@ -19,5 +19,3 @@ func Create_qrcode(data string) barcode.Barcode {
 
 	return code
 }
-
-

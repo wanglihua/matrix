@@ -3,8 +3,8 @@ package controllers
 import (
 	"github.com/revel/revel"
 
-	"matrix/modules/auth/models"
 	"matrix/core"
+	"matrix/modules/auth/models"
 	"strconv"
 	"strings"
 )
@@ -18,8 +18,8 @@ func (c AuthGroup) Index() revel.Result {
 }
 
 type GroupView struct {
-	models.Group  `xorm:"extends"`
-	UserCount int `xorm:"bigint 'user_count'" json:"user_count"`
+	models.Group `xorm:"extends"`
+	UserCount    int `xorm:"bigint 'user_count'" json:"user_count"`
 }
 
 func (c AuthGroup) ListData() revel.Result {
@@ -27,8 +27,8 @@ func (c AuthGroup) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-	Select(strings.Replace("hd_auth_group.*, (SELECT count(*) FROM hd_auth_group_user WHERE group_id = hd_auth_group.id) as user_count", "hd_auth_", models.TablePrefix, -1)).
-			Where(filter)
+		Select(strings.Replace("hd_auth_group.*, (SELECT count(*) FROM hd_auth_group_user WHERE group_id = hd_auth_group.id) as user_count", "hd_auth_", models.TablePrefix, -1)).
+		Where(filter)
 
 	dataQuery := *query
 	if order != "" {
@@ -99,7 +99,7 @@ func (c AuthGroup) Save() revel.Result {
 	c.Params.Bind(form, "form")
 
 	if form.Valid(c.Validation) == false {
-		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
 	group := &form.Group
@@ -109,7 +109,7 @@ func (c AuthGroup) Save() revel.Result {
 		count, err := session.Where("group_name = ?", group.GroupName).Count(new(models.Group))
 		core.HandleError(err)
 		if count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！"})
 		}
 
 		affected, err = session.Insert(group)
@@ -118,14 +118,14 @@ func (c AuthGroup) Save() revel.Result {
 		count, err := session.Where("id <> ? and group_name = ?", group.Id, group.GroupName).Count(new(models.Group))
 		core.HandleError(err)
 		if count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！"})
 		}
 
 		affected, err = session.Id(group.Id).Update(group)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 

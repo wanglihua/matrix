@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"github.com/revel/revel"
-	"matrix/core"
-	"matrix/modules/auth/models"
-	"matrix/modules/auth/forms"
 	"matrix/app/layout"
+	"matrix/core"
+	"matrix/modules/auth/forms"
+	"matrix/modules/auth/models"
 )
 
 type Login struct {

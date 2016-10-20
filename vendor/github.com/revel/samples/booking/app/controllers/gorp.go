@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"database/sql"
 	"github.com/go-gorp/gorp"
 	_ "github.com/mattn/go-sqlite3"
-	r "github.com/revel/revel"
 	"github.com/revel/modules/db/app"
+	r "github.com/revel/revel"
 	"github.com/revel/samples/booking/app/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (

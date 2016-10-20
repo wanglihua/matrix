@@ -1,15 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"github.com/revel/revel"
-	"strings"
 	"archive/zip"
-	"time"
+	"fmt"
+	"github.com/revel/revel"
 	"io/ioutil"
-	"path/filepath"
 	"log"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 var cmdPackage = &Command{
@@ -39,7 +39,7 @@ func packageApp(cmd *Command, args []string) int {
 	}
 
 	cur_path_list := strings.Split(currentDir, string(os.PathSeparator))
-	import_path := cur_path_list[len(cur_path_list) - 1]
+	import_path := cur_path_list[len(cur_path_list)-1]
 
 	os.MkdirAll("d:\\publish", 0777)
 	destFile := "d:\\publish\\" + web_app_name + "_" + time.Now().Format("200601021504") + ".zip"
@@ -76,7 +76,7 @@ func mustZipDir(destFilename, srcDir string, web_app_name string, import_path st
 		path_file_list_len := len(path_file_list)
 
 		//is the executable file
-		if path_file_list_len >= 2 && path_file_list[path_file_list_len - 2] + ".exe" == path_file_list[path_file_list_len - 1] {
+		if path_file_list_len >= 2 && path_file_list[path_file_list_len-2]+".exe" == path_file_list[path_file_list_len-1] {
 			// web_app_name as binary name
 			file_header_name = web_app_name + "\\" + web_app_name + ".exe"
 		}
@@ -158,5 +158,5 @@ func filterPathFiles(srcPath string) bool {
 		return true
 	}
 
-	return false;
+	return false
 }

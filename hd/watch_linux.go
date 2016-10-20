@@ -174,9 +174,9 @@ func Kill() {
 		recover()
 
 		/*
-		if e := recover(); e != nil {
-			fmt.Println("Kill.recover -> ", e)
-		}
+			if e := recover(); e != nil {
+				fmt.Println("Kill.recover -> ", e)
+			}
 		*/
 	}()
 
@@ -184,10 +184,10 @@ func Kill() {
 		cmd.Process.Kill()
 
 		/*
-		err := cmd.Process.Kill()
-		if err != nil {
-			fmt.Println("Kill -> ", err)
-		}
+			err := cmd.Process.Kill()
+			if err != nil {
+				fmt.Println("Kill -> ", err)
+			}
 		*/
 	}
 }

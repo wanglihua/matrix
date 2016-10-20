@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
+	"encoding/json"
+	"io/ioutil"
 	"matrix/core"
 	"matrix/modules/inventory/models"
-	"io/ioutil"
-	"encoding/json"
 )
 
 type InventoryProductCate struct {
@@ -85,12 +85,12 @@ func (c InventoryProductCate) DetailData() revel.Result {
 		has, err := db_session.Id(id).Get(&product_cate)
 		core.HandleError(err)
 		if has == false {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "货品分类不存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "货品分类不存在！"})
 		}
 	}
 
 	var detail_form ProductCateForm
-	detail_form.ProductCate = product_cate;
+	detail_form.ProductCate = product_cate
 
 	return c.RenderJson(detail_form)
 }
@@ -101,14 +101,14 @@ func (c InventoryProductCate) Save() revel.Result {
 	resquest_bytes, err := ioutil.ReadAll(c.Request.Body)
 	core.HandleError(err)
 
-	revel.TRACE.Println("json body: ",string(resquest_bytes))
+	revel.TRACE.Println("json body: ", string(resquest_bytes))
 
 	var detail_form ProductCateForm
 	err = json.Unmarshal(resquest_bytes, &detail_form)
 	core.HandleError(err)
 
 	if detail_form.Valid(c.Validation) == false {
-		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
 	productCate := detail_form.ProductCate
@@ -118,7 +118,7 @@ func (c InventoryProductCate) Save() revel.Result {
 		nameCount, err := session.Where("cate_name = ?", productCate.Name).Count(new(models.ProductCate))
 		core.HandleError(err)
 		if nameCount != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		affected, err = session.Insert(&productCate)
@@ -127,14 +127,14 @@ func (c InventoryProductCate) Save() revel.Result {
 		nameCount, err := session.Where("id <> ? and cate_name = ?", productCate.Id, productCate.Name).Count(new(models.ProductCate))
 		core.HandleError(err)
 		if nameCount != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		affected, err = session.Id(productCate.Id).Update(&productCate)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -152,4 +152,3 @@ func (c InventoryProductCate) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

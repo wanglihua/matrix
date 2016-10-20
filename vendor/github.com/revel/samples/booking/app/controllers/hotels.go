@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"fmt"
 	"github.com/revel/revel"
 	"github.com/revel/samples/booking/app/models"
 	"github.com/revel/samples/booking/app/routes"
+	"golang.org/x/crypto/bcrypt"
 	"strings"
 )
 

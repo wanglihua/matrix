@@ -1,7 +1,6 @@
 package template
 
-var DetailHtmlTemplate =
-`<div class="modal fade" id="{{.entity.EntityCamelCase}}DetailDialog">
+var DetailHtmlTemplate = `<div class="modal fade" id="{{.entity.EntityCamelCase}}DetailDialog">
     <div class="modal-dialog" style="width: 440px;">
         <div class="modal-content">
             <div class="modal-header">

@@ -1,14 +1,13 @@
 package weixin
 
 import (
-    "github.com/revel/revel/testing"
-    "matrix/core"
-    "github.com/yasuyuky/jsonpath"
-    "github.com/antonholmquist/jason"
-    "github.com/revel/revel"
-    "reflect"
+	"github.com/antonholmquist/jason"
+	"github.com/revel/revel"
+	"github.com/revel/revel/testing"
+	"github.com/yasuyuky/jsonpath"
+	"matrix/core"
+	"reflect"
 )
-
 
 // {"errcode":46003,"errmsg":"menu no exist hint: [mh2CUA0174vr21]"}
 
@@ -57,35 +56,34 @@ import (
 */
 
 type JsonPathTest struct {
-    testing.TestSuite
+	testing.TestSuite
 }
 
 func (t *JsonPathTest) TestJsonPath() {
-    jsonStr := `{"errcode":46003,"errmsg":"menu no exist hint: [mh2CUA0174vr21]"}`
-    jsonData, err := jsonpath.DecodeString(jsonStr)
-    core.HandleError(err)
+	jsonStr := `{"errcode":46003,"errmsg":"menu no exist hint: [mh2CUA0174vr21]"}`
+	jsonData, err := jsonpath.DecodeString(jsonStr)
+	core.HandleError(err)
 
-    errcode, err := jsonpath.Get(jsonData, []interface{}{"errcode"}, "")
-    core.HandleError(err)
+	errcode, err := jsonpath.Get(jsonData, []interface{}{"errcode"}, "")
+	core.HandleError(err)
 
-    t.AssertEqual(float64(46003.0), errcode.(float64))
+	t.AssertEqual(float64(46003.0), errcode.(float64))
 }
 
 func (t *JsonPathTest) TestJasonReadInt() {
-    jsonData, err := jason.NewObjectFromBytes([]byte(`{"errcode":46003,"errmsg":"menu no exist hint: [mh2CUA0174vr21]"}`))
-    core.HandleError(err)
+	jsonData, err := jason.NewObjectFromBytes([]byte(`{"errcode":46003,"errmsg":"menu no exist hint: [mh2CUA0174vr21]"}`))
+	core.HandleError(err)
 
-    errcode, err := jsonData.GetInt64("errcode")
-    core.HandleError(err)
+	errcode, err := jsonData.GetInt64("errcode")
+	core.HandleError(err)
 
-    //errcodeNumber, err := errcode.Int64()
-    core.HandleError(err)
-    t.AssertEqual(46003, errcode)
+	//errcodeNumber, err := errcode.Int64()
+	core.HandleError(err)
+	t.AssertEqual(46003, errcode)
 }
 
 func (t *JsonPathTest) TestJasonRead() {
-    var weixinMenuJson =
-    `
+	var weixinMenuJson = `
     {
         "menu": {
             "button": [
@@ -128,22 +126,22 @@ func (t *JsonPathTest) TestJasonRead() {
         }
     }
     `
-    jsonData, _ := jason.NewObjectFromBytes([]byte(weixinMenuJson))
-    revel.TRACE.Println(reflect.TypeOf(jsonData))
-    revel.TRACE.Println(jsonData)
+	jsonData, _ := jason.NewObjectFromBytes([]byte(weixinMenuJson))
+	revel.TRACE.Println(reflect.TypeOf(jsonData))
+	revel.TRACE.Println(jsonData)
 
-    buttons, _ := jsonData.GetObjectArray("menu", "button")
-    revel.TRACE.Println(reflect.TypeOf(buttons))
-    revel.TRACE.Println(buttons)
-    revel.TRACE.Println(len(buttons))
-    revel.TRACE.Println(buttons == nil)
+	buttons, _ := jsonData.GetObjectArray("menu", "button")
+	revel.TRACE.Println(reflect.TypeOf(buttons))
+	revel.TRACE.Println(buttons)
+	revel.TRACE.Println(len(buttons))
+	revel.TRACE.Println(buttons == nil)
 
-    for _, button := range buttons {
-        btnType, _ := button.GetString("type")
-        revel.TRACE.Println(reflect.TypeOf(btnType))
-        revel.TRACE.Println(btnType)
-        //revel.TRACE.Println(btnType == nil)
-        revel.TRACE.Println(btnType == "")
-    }
+	for _, button := range buttons {
+		btnType, _ := button.GetString("type")
+		revel.TRACE.Println(reflect.TypeOf(btnType))
+		revel.TRACE.Println(btnType)
+		//revel.TRACE.Println(btnType == nil)
+		revel.TRACE.Println(btnType == "")
+	}
 
 }

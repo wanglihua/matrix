@@ -3,9 +3,9 @@ package controllers
 import (
 	"github.com/revel/revel"
 
+	"fmt"
 	"matrix/core"
 	"matrix/modules/auth/models"
-	"fmt"
 )
 
 type AuthAdmin struct {
@@ -17,8 +17,8 @@ func (c AuthAdmin) Index() revel.Result {
 }
 
 type AdminView struct {
-	models.Admin   `xorm:"extends" json:"a"`
-	models.User    `xorm:"extends" json:"u"`
+	models.Admin `xorm:"extends" json:"a"`
+	models.User  `xorm:"extends" json:"u"`
 }
 
 func (c AuthAdmin) ListData() revel.Result {
@@ -26,10 +26,10 @@ func (c AuthAdmin) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-	Select("a.*, u.*").
-			Table(models.TablePrefix + "user").Alias("u").
-			Join("inner", []string{models.TablePrefix + "admin", "a"}, "u.id = a.user_id").
-			Where(filter)
+		Select("a.*, u.*").
+		Table(models.TablePrefix+"user").Alias("u").
+		Join("inner", []string{models.TablePrefix + "admin", "a"}, "u.id = a.user_id").
+		Where(filter)
 
 	//query extra filter here
 
@@ -64,7 +64,7 @@ func (c AuthAdmin) AddListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.Where(filter).
-			And(fmt.Sprintf("id NOT IN (SELECT user_id FROM %sadmin)", models.TablePrefix))
+		And(fmt.Sprintf("id NOT IN (SELECT user_id FROM %sadmin)", models.TablePrefix))
 
 	//query extra filter here
 

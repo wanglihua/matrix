@@ -24,7 +24,6 @@ type Hello1 interface {
 }
 
 type Hello struct {
-
 }
 
 func (h *Hello) Hello1() {

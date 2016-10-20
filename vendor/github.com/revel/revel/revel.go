@@ -132,10 +132,10 @@ func Init(mode, importPath, srcPath string) {
 
 	// If the SourcePath is not specified, find it using build.Import.
 
-    //var revelSourcePath string // may be different from the app source path
+	//var revelSourcePath string // may be different from the app source path
 	if SourcePath == "" {
 		//revelSourcePath, SourcePath = findSrcPaths(importPath)
-        _, SourcePath = findSrcPaths(importPath)
+		_, SourcePath = findSrcPaths(importPath)
 	} else {
 		// If the SourcePath was specified, assume both Revel and the app are within it.
 		SourcePath = path.Clean(SourcePath)
@@ -207,7 +207,7 @@ func Init(mode, importPath, srcPath string) {
 	CookiePrefix = Config.StringDefault("cookie.prefix", "REVEL")
 	CookieDomain = Config.StringDefault("cookie.domain", "")
 	//CookieSecure = Config.BoolDefault("cookie.secure", !DevMode)
-    CookieSecure = Config.BoolDefault("cookie.secure", false)
+	CookieSecure = Config.BoolDefault("cookie.secure", false)
 	TemplateDelims = Config.StringDefault("template.delimiters", "")
 	if secretStr := Config.StringDefault("app.secret", ""); secretStr != "" {
 		secretKey = []byte(secretStr)
@@ -315,15 +315,15 @@ func findSrcPaths(importPath string) (revelSourcePath, appSourcePath string) {
 		ERROR.Fatalln("Failed to import", importPath, "with error:", err)
 	}
 
-    /*
-	revelPkg, err := build.Import(REVEL_IMPORT_PATH, "", build.FindOnly)
-	if err != nil {
-		ERROR.Fatalln("Failed to find Revel with error:", err)
-	}
+	/*
+		revelPkg, err := build.Import(REVEL_IMPORT_PATH, "", build.FindOnly)
+		if err != nil {
+			ERROR.Fatalln("Failed to find Revel with error:", err)
+		}
 	*/
 
 	//return revelPkg.SrcRoot, appPkg.SrcRoot
-    return "", appPkg.SrcRoot
+	return "", appPkg.SrcRoot
 }
 
 type Module struct {

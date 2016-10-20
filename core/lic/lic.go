@@ -2,13 +2,13 @@ package lic
 
 import (
 	"bytes"
-	"fmt"
+	"crypto/cipher"
+	"crypto/des"
 	"crypto/md5"
 	"encoding/hex"
-	"crypto/des"
-	"crypto/cipher"
-	"log"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"time"
 )
 
@@ -28,18 +28,18 @@ func DecryptLic(lic_app_name string, lic string) string {
 	}
 	lic_runes := []rune(lic)
 	lic_len := len(lic_runes)
-	if make_md5(string(lic_runes[0:lic_len - 32]) + encrypt_salt) != string(lic_runes[lic_len - 32:lic_len]) {
+	if make_md5(string(lic_runes[0:lic_len-32])+encrypt_salt) != string(lic_runes[lic_len-32:lic_len]) {
 		log.Fatal(fmt.Sprintf("[L001] lic not valid: %s", lic))
 	}
-	encrypt_date := lic_runes[lic_len - 48:lic_len - 32]
+	encrypt_date := lic_runes[lic_len-48 : lic_len-32]
 	decrypt_date := string(des_decrypt(hex_string_to_bytes(string(encrypt_date)), []byte(encrypt_salt)))
-	if make_md5(lic_app_name + encrypt_salt) != string(lic_runes[lic_len - 80:lic_len - 48]) {
+	if make_md5(lic_app_name+encrypt_salt) != string(lic_runes[lic_len-80:lic_len-48]) {
 		log.Fatal(fmt.Sprintf("[L002] lic not valid: %s", lic))
 	}
-	if string(lic_runes[lic_len - 88:lic_len - 80]) != decrypt_date {
+	if string(lic_runes[lic_len-88:lic_len-80]) != decrypt_date {
 		log.Fatal(fmt.Sprintf("[L003] lic not valid: %s", lic))
 	}
-	if string(lic_runes[0:lic_len - 88]) != lic_app_name {
+	if string(lic_runes[0:lic_len-88]) != lic_app_name {
 		log.Fatal(fmt.Sprintf("[L004] lic not valid: %s", lic))
 	}
 	return decrypt_date
@@ -94,7 +94,7 @@ func make_right_len_des_key(key_bytes []byte) []byte {
 	if key_bytes_len > des_key_len {
 		key_bytes = key_bytes[0:des_key_len]
 	} else if key_bytes_len != des_key_len {
-		key_bytes = append(key_bytes, bytes.Repeat([]byte("0"), des_key_len - key_bytes_len)...)
+		key_bytes = append(key_bytes, bytes.Repeat([]byte("0"), des_key_len-key_bytes_len)...)
 	}
 	return key_bytes
 }
@@ -116,8 +116,8 @@ func hex_string_to_bytes(hex_str string) []byte {
 	hex_runes := []rune(hex_str)
 	hex_runes_len := len(hex_runes)
 	var hex_bytes = make([]byte, 0)
-	for i := 0; i < hex_runes_len / 2; i++ {
-		var b byte = byte(hex_digit_rune_to_num(hex_runes[2 * i]) * 16 + hex_digit_rune_to_num(hex_runes[2 * i + 1]))
+	for i := 0; i < hex_runes_len/2; i++ {
+		var b byte = byte(hex_digit_rune_to_num(hex_runes[2*i])*16 + hex_digit_rune_to_num(hex_runes[2*i+1]))
 		hex_bytes = append(hex_bytes, b)
 	}
 	return hex_bytes
@@ -125,7 +125,7 @@ func hex_string_to_bytes(hex_str string) []byte {
 
 func hex_digit_rune_to_num(hex_digit_rune rune) int {
 	if hex_digit_rune >= rune('a') {
-		return int(hex_digit_rune - rune('a')) + 10
+		return int(hex_digit_rune-rune('a')) + 10
 	} else {
 		return int(hex_digit_rune - rune('0'))
 	}

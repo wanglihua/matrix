@@ -1157,7 +1157,7 @@ func (session *Session) SumsInt(bean interface{}, columnNames ...string) ([]int6
 	defer session.resetStatement()
 	if session.IsAutoClose {
 		defer session.Close()
-		}
+	}
 
 	var sqlStr string
 	var args []interface{}
@@ -1201,19 +1201,19 @@ func (session *Session) Find(rowsSlicePtr interface{}, condiBean ...interface{})
 	sliceElementType := sliceValue.Type().Elem()
 	var table *core.Table
 	if session.Statement.RefTable == nil {
-	if sliceElementType.Kind() == reflect.Ptr {
-		if sliceElementType.Elem().Kind() == reflect.Struct {
-			pv := reflect.New(sliceElementType.Elem())
+		if sliceElementType.Kind() == reflect.Ptr {
+			if sliceElementType.Elem().Kind() == reflect.Struct {
+				pv := reflect.New(sliceElementType.Elem())
+				table = session.Engine.autoMapType(pv.Elem())
+			} else {
+				return errors.New("slice type")
+			}
+		} else if sliceElementType.Kind() == reflect.Struct {
+			pv := reflect.New(sliceElementType)
 			table = session.Engine.autoMapType(pv.Elem())
 		} else {
 			return errors.New("slice type")
 		}
-	} else if sliceElementType.Kind() == reflect.Struct {
-		pv := reflect.New(sliceElementType)
-		table = session.Engine.autoMapType(pv.Elem())
-	} else {
-		return errors.New("slice type")
-	}
 		session.Statement.RefTable = table
 	} else {
 		table = session.Statement.RefTable
@@ -1802,23 +1802,23 @@ func (session *Session) _row2Bean(rows *core.Rows, fields []string, fieldsCount 
 
 						t := vv.Convert(core.TimeType).Interface().(time.Time)
 
-                        //begin wanglihua 20160625
-                        /*
-						z, _ := t.Zone()
-						if len(z) == 0 || t.Year() == 0 { // !nashtsai! HACK tmp work around for lib/pq doesn't properly time with location
-							session.Engine.logger.Debugf("empty zone key[%v] : %v | zone: %v | location: %+v\n", key, t, z, *t.Location())
-							t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(),
-								t.Minute(), t.Second(), t.Nanosecond(), time.Local)
-						}
-						// !nashtsai! convert to engine location
-						if col.TimeZone == nil {
-							t = t.In(session.Engine.TZLocation)
-						} else {
-							t = t.In(col.TimeZone)
-						}
+						//begin wanglihua 20160625
+						/*
+							z, _ := t.Zone()
+							if len(z) == 0 || t.Year() == 0 { // !nashtsai! HACK tmp work around for lib/pq doesn't properly time with location
+								session.Engine.logger.Debugf("empty zone key[%v] : %v | zone: %v | location: %+v\n", key, t, z, *t.Location())
+								t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(),
+									t.Minute(), t.Second(), t.Nanosecond(), time.Local)
+							}
+							// !nashtsai! convert to engine location
+							if col.TimeZone == nil {
+								t = t.In(session.Engine.TZLocation)
+							} else {
+								t = t.In(col.TimeZone)
+							}
 						*/
-                        t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), session.Engine.TZLocation)
-                        //end wanglihua 20160625
+						t = time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), t.Nanosecond(), session.Engine.TZLocation)
+						//end wanglihua 20160625
 
 						fieldValue.Set(reflect.ValueOf(t).Convert(fieldType))
 
@@ -2437,16 +2437,16 @@ func (session *Session) str2Time(col *core.Column, data string) (outTime time.Ti
 			// !nashtsai! HACK mymysql driver is casuing Local location being change to CHAT and cause wrong time conversion
 			//fmt.Println(x.In(session.Engine.TZLocation), "===")
 
-            //begin wanglihua 20160625
-            /*
-			if col.TimeZone == nil {
-				x = x.In(session.Engine.TZLocation)
-			} else {
-				x = x.In(col.TimeZone)
-			}
+			//begin wanglihua 20160625
+			/*
+				if col.TimeZone == nil {
+					x = x.In(session.Engine.TZLocation)
+				} else {
+					x = x.In(col.TimeZone)
+				}
 			*/
-            x = time.Date(x.Year(), x.Month(), x.Day(), x.Hour(), x.Minute(), x.Second(), x.Nanosecond(), session.Engine.TZLocation)
-            //end wanglihua 20160625
+			x = time.Date(x.Year(), x.Month(), x.Day(), x.Hour(), x.Minute(), x.Second(), x.Nanosecond(), session.Engine.TZLocation)
+			//end wanglihua 20160625
 
 			//fmt.Println(x, "=====")
 			session.Engine.logger.Debugf("time(0) key[%v]: %+v | sdata: [%v]\n", col.FieldName, x, sdata)

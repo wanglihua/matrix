@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"matrix/core/lic"
 	"os"
 	"path/filepath"
-	"log"
 	"unicode/utf8"
-	"matrix/core/lic"
 )
 
 var cmdLic = &Command{
@@ -55,4 +55,3 @@ func generate_lic(cmd *Command, args []string) int {
 	fmt.Println("Your lic is ready:", lic_file_path)
 	return 0
 }
-

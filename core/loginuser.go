@@ -1,8 +1,8 @@
 package core
 
 import (
-	"github.com/revel/revel/cache"
 	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
 )
 
 const LOGIN_USER_CACHE_KEY = "Login_User_b6db637be022550d"
@@ -17,7 +17,7 @@ type LoginUser struct {
 
 func GetLoginUser(session revel.Session) *LoginUser {
 	var loginUser = new(LoginUser)
-	err := cache.Get(session.Id() + LOGIN_USER_CACHE_KEY, loginUser)
+	err := cache.Get(session.Id()+LOGIN_USER_CACHE_KEY, loginUser)
 	if err != nil {
 		revel.WARN.Println(err.Error())
 	}
@@ -30,7 +30,7 @@ func GetLoginUser(session revel.Session) *LoginUser {
 }
 
 func PutLoginUserToSession(session revel.Session, user LoginUser) {
-	cache.Set(session.Id() + LOGIN_USER_CACHE_KEY, user, GetSessionExpire())
+	cache.Set(session.Id()+LOGIN_USER_CACHE_KEY, user, GetSessionExpire())
 }
 
 func RemoveLoginUserInSession(session revel.Session) {

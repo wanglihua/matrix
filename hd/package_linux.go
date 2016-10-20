@@ -1,17 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"github.com/revel/revel"
-	"strings"
-	"io"
-	"compress/gzip"
 	"archive/tar"
-	"time"
-	"path/filepath"
+	"compress/gzip"
+	"fmt"
+	"github.com/revel/revel"
+	"io"
 	"log"
 	"matrix/hd/homedir"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 var cmdPackage = &Command{
@@ -44,7 +44,7 @@ func packageApp(cmd *Command, args []string) int {
 	}
 
 	cur_path_list := strings.Split(currentDir, string(os.PathSeparator))
-	import_path := cur_path_list[len(cur_path_list) - 1]
+	import_path := cur_path_list[len(cur_path_list)-1]
 
 	os.MkdirAll(publish_dir, 0777)
 	destFile := publish_dir + "/" + web_app_name + "_" + time.Now().Format("200601021504") + ".tar.gz"
@@ -88,7 +88,7 @@ func mustTarGzDir(destFilename, srcDir string, web_app_name string, import_path 
 		path_file_list_len := len(path_file_list)
 
 		//is the executable file
-		if path_file_list_len >= 2 &&  path_file_list[path_file_list_len - 2] == path_file_list[path_file_list_len - 1] {
+		if path_file_list_len >= 2 && path_file_list[path_file_list_len-2] == path_file_list[path_file_list_len-1] {
 			// web_app_name as binary name
 			file_header_name = web_app_name + "/" + web_app_name
 		}
@@ -173,5 +173,5 @@ func filterPathFiles(srcPath string) bool {
 		return true
 	}
 
-	return false;
+	return false
 }

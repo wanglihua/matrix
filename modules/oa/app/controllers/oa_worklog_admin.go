@@ -4,8 +4,8 @@ import (
 	"github.com/revel/revel"
 
 	"matrix/core"
-	"matrix/modules/oa/models"
 	authModels "matrix/modules/auth/models"
+	"matrix/modules/oa/models"
 )
 
 type OaWorklogAdmin struct {
@@ -17,8 +17,8 @@ func (c OaWorklogAdmin) Index() revel.Result {
 }
 
 type WorklogAdminView struct {
-	models.Worklog      `xorm:"extends" json:"l"`
-	authModels.User     `xorm:"extends" json:"u"`
+	models.Worklog  `xorm:"extends" json:"l"`
+	authModels.User `xorm:"extends" json:"u"`
 }
 
 func (c OaWorklogAdmin) ListData() revel.Result {
@@ -26,10 +26,10 @@ func (c OaWorklogAdmin) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-	Select("l.*, u.*").
-			Table(authModels.TablePrefix + "user").Alias("u").
-			Join("inner", []string{models.TablePrefix + "worklog", "l"}, "u.id = l.user_id").
-			Where(filter)
+		Select("l.*, u.*").
+		Table(authModels.TablePrefix+"user").Alias("u").
+		Join("inner", []string{models.TablePrefix + "worklog", "l"}, "u.id = l.user_id").
+		Where(filter)
 
 	//query extra filter here
 

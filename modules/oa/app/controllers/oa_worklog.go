@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
-	"matrix/core"
-	"matrix/modules/oa/models"
-	authModels "matrix/modules/auth/models"
 	"fmt"
+	"matrix/core"
+	authModels "matrix/modules/auth/models"
+	"matrix/modules/oa/models"
 	"strings"
 )
 
@@ -109,7 +109,7 @@ func (c OaWorklog) Detail() revel.Result {
 
 		userId := core.GetLoginUser(c.Session).UserId
 		if worklog.UserId != userId {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "自能查看自己的工作日志！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "自能查看自己的工作日志！"})
 		}
 	}
 
@@ -140,7 +140,7 @@ func (c OaWorklog) Save() revel.Result {
 	c.Params.Bind(form, "form")
 
 	if form.Valid(c.Validation) == false {
-		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
 	worklog := &form.Worklog
@@ -157,14 +157,14 @@ func (c OaWorklog) Save() revel.Result {
 	} else {
 		//只能更新自己的
 		if worklog.UserId != loginUserId {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "只能保存自己的工作日志！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "只能保存自己的工作日志！"})
 		}
 
 		affected, err = session.Id(worklog.Id).Update(worklog)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -186,7 +186,7 @@ func (c OaWorklog) Delete() revel.Result {
 	count, err := session.Where(filter).Count(new(models.Worklog))
 	core.HandleError(err)
 	if count < int64(len(worklogIdList)) {
-		return c.RenderJson(core.JsonResult{Success: false, Message: "部分工作日志不存在或不属于当前登录人！" })
+		return c.RenderJson(core.JsonResult{Success: false, Message: "部分工作日志不存在或不属于当前登录人！"})
 	}
 
 	affected, err := session.In("id", worklogIdList).Delete(new(models.Worklog))
@@ -194,4 +194,3 @@ func (c OaWorklog) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

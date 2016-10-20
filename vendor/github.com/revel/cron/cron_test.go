@@ -116,9 +116,9 @@ func TestAddWhileRunningWithDelay(t *testing.T) {
 	defer cron.Stop()
 	time.Sleep(5 * time.Second)
 	var calls = 0
-	cron.AddFunc("* * * * * *", func() { calls += 1 });
+	cron.AddFunc("* * * * * *", func() { calls += 1 })
 
-	<- time.After(ONE_SECOND)
+	<-time.After(ONE_SECOND)
 	if calls != 1 {
 		fmt.Printf("called %d times, expected 1\n", calls)
 		t.Fail()

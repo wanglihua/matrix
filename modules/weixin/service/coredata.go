@@ -1,6 +1,5 @@
 package service
 
-
 /*
 <xml>
     <ToUserName><![CDATA[gh_c03e85cdf6af]]></ToUserName>
@@ -8,8 +7,8 @@ package service
 </xml>
 */
 type RequestCipherMessage struct {
-    ToUserName string    `xml:"ToUserName"`
-    Encrypt    string    `xml:"Encrypt"`
+	ToUserName string `xml:"ToUserName"`
+	Encrypt    string `xml:"Encrypt"`
 }
 
 /*
@@ -23,14 +22,13 @@ type RequestCipherMessage struct {
 </xml>
 */
 type RequestTextMessage struct {
-    ToUserName   string    `xml:"ToUserName"`
-    FromUserName string    `xml:"FromUserName"`
-    CreateTime   string    `xml:"CreateTime"`
-    MsgType      string    `xml:"MsgType"`
-    Content      string    `xml:"Content"`
-    MsgId        string    `xml:"MsgId"`
+	ToUserName   string `xml:"ToUserName"`
+	FromUserName string `xml:"FromUserName"`
+	CreateTime   string `xml:"CreateTime"`
+	MsgType      string `xml:"MsgType"`
+	Content      string `xml:"Content"`
+	MsgId        string `xml:"MsgId"`
 }
-
 
 /*
 <xml>
@@ -42,12 +40,12 @@ type RequestTextMessage struct {
 */
 
 type ResponseCliperMessage struct {
-    XMLName      struct{}  `xml:"xml"`
+	XMLName struct{} `xml:"xml"`
 
-    Encrypt      string    `xml:"Encrypt"`
-    MsgSignature string    `xml:"MsgSignature"`
-    TimeStamp    string    `xml:"TimeStamp"`
-    Nonce        string    `xml:"Nonce"`
+	Encrypt      string `xml:"Encrypt"`
+	MsgSignature string `xml:"MsgSignature"`
+	TimeStamp    string `xml:"TimeStamp"`
+	Nonce        string `xml:"Nonce"`
 }
 
 /*
@@ -60,22 +58,21 @@ type ResponseCliperMessage struct {
 </xml>
 */
 type ResponseTextMessage struct {
-    XMLName      struct{}  `xml:"xml"`
+	XMLName struct{} `xml:"xml"`
 
-    ToUserName   string    `xml:"ToUserName"`
-    FromUserName string    `xml:"FromUserName"`
-    CreateTime   string    `xml:"CreateTime"`
-    MsgType      string    `xml:"MsgType"`
-    Content      string    `xml:"Content"`
+	ToUserName   string `xml:"ToUserName"`
+	FromUserName string `xml:"FromUserName"`
+	CreateTime   string `xml:"CreateTime"`
+	MsgType      string `xml:"MsgType"`
+	Content      string `xml:"Content"`
 }
 
 type WeixinError struct {
-    ErrCode int  `json:"errcode"`
-    ErrMsg  string `json:"errmsg"`
+	ErrCode int    `json:"errcode"`
+	ErrMsg  string `json:"errmsg"`
 }
 
 type AccessToken struct {
-    Token     string `json:"access_token"`
-    ExpiresIn int    `json:"expires_in"`
+	Token     string `json:"access_token"`
+	ExpiresIn int    `json:"expires_in"`
 }
-

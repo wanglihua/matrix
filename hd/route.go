@@ -7,9 +7,9 @@ import (
 	"text/template"
 
 	"github.com/revel/revel"
-	"strings"
-	"path/filepath"
 	"log"
+	"path/filepath"
+	"strings"
 )
 
 var cmdRoute = &Command{
@@ -28,18 +28,18 @@ func init() {
 
 func generateRoute(cmd *Command, args []string) int {
 	/*
-    if len(args) < 1 {
-        fmt.Fprintf(os.Stderr, "%s\n%s", cmdRoute.UsageLine, cmdRoute.Long)
-        return 1
-    }
+	    if len(args) < 1 {
+	        fmt.Fprintf(os.Stderr, "%s\n%s", cmdRoute.UsageLine, cmdRoute.Long)
+	        return 1
+	    }
 
-	importPath := args[0]
+		importPath := args[0]
 
-    runMode := "dev"
-    if len(args) >= 2 {
-        runMode = args[1]
-    }
-    */
+	    runMode := "dev"
+	    if len(args) >= 2 {
+	        runMode = args[1]
+	    }
+	*/
 
 	currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -47,7 +47,7 @@ func generateRoute(cmd *Command, args []string) int {
 	}
 
 	cur_path_list := strings.Split(currentDir, string(os.PathSeparator))
-	import_path := cur_path_list[len(cur_path_list) - 1]
+	import_path := cur_path_list[len(cur_path_list)-1]
 
 	if !revel.Initialized {
 		revel.Init("dev", import_path, "")
@@ -73,7 +73,7 @@ func generateRoute(cmd *Command, args []string) int {
 		"TestSuites":     sourceInfo.TestSuites(),
 		"ImportPath":     revel.ImportPath,
 		//"RunMode":        runMode,
-		"RunMode":        "dev",
+		"RunMode": "dev",
 	}
 
 	//harness.GenSource("tmp", "main.go", harness.MAIN, templateArgs)

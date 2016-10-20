@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/auth/models"
@@ -22,9 +22,9 @@ func (c AuthGroupUser) Index() revel.Result {
 }
 
 type GroupUserView struct {
-	models.GroupUser    `xorm:"extends" json:"gu"`
-	models.Group        `xorm:"extends" json:"g"`
-	models.User         `xorm:"extends" json:"u"`
+	models.GroupUser `xorm:"extends" json:"gu"`
+	models.Group     `xorm:"extends" json:"g"`
+	models.User      `xorm:"extends" json:"u"`
 }
 
 func (c AuthGroupUser) ListData() revel.Result {
@@ -35,11 +35,11 @@ func (c AuthGroupUser) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-	Select("gu.*, g.*, u.*").
-			Table(models.TablePrefix + "group_user").Alias("gu").
-			Join("inner", []string{models.TablePrefix + "group", "g"}, "gu.group_id = g.id").
-			Join("inner", []string{models.TablePrefix + "user", "u"}, "gu.user_id = u.id").
-			Where(filter)
+		Select("gu.*, g.*, u.*").
+		Table(models.TablePrefix+"group_user").Alias("gu").
+		Join("inner", []string{models.TablePrefix + "group", "g"}, "gu.group_id = g.id").
+		Join("inner", []string{models.TablePrefix + "user", "u"}, "gu.user_id = u.id").
+		Where(filter)
 
 	//query extra filter here
 	query = query.Where("gu.group_id = ?", groupId)
@@ -84,7 +84,7 @@ func (c AuthGroupUser) AddListData() revel.Result {
 	groupUserList := make([]models.GroupUser, 0)
 	userIdQuery.Select("user_id").Find(&groupUserList)
 	userIdList := make([]string, 0)
-	for _, groupUser := range (groupUserList) {
+	for _, groupUser := range groupUserList {
 		userIdList = append(userIdList, strconv.FormatInt(groupUser.UserId, 10))
 	}
 
@@ -125,7 +125,7 @@ func (c AuthGroupUser) AddSave() revel.Result {
 	addUserIdList := make([]int64, 0)
 	c.Params.Bind(&addUserIdList, "userIdList")
 
-	for _, userId := range (addUserIdList) {
+	for _, userId := range addUserIdList {
 		groupUser := new(models.GroupUser)
 		groupUser.UserId = userId
 		groupUser.GroupId = groupId
@@ -148,4 +148,3 @@ func (c AuthGroupUser) Remove() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

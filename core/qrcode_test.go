@@ -1,9 +1,9 @@
 package core
 
 import (
-	"os"
 	"image"
 	"image/png"
+	"os"
 	"testing"
 )
 

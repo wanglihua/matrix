@@ -17,10 +17,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/revel/revel"
 	"html/template"
 	"os"
 	"strings"
-	"github.com/revel/revel"
 )
 
 const version = "1.0.0"
@@ -28,20 +28,20 @@ const version = "1.0.0"
 type Command struct {
 	// Run runs the command.
 	// The args are the arguments after the command name.
-	Run         func(cmd *Command, args []string) int
+	Run func(cmd *Command, args []string) int
 
 	// UsageLine is the one-line usage message.
 	// The first word in the line is taken to be the command name.
-	UsageLine   string
+	UsageLine string
 
 	// Short is the short description shown in the 'go help' output.
-	Short       template.HTML
+	Short template.HTML
 
 	// Long is the long message shown in the 'go help <this-command>' output.
-	Long        template.HTML
+	Long template.HTML
 
 	// Flag is a set of flags specific to this command.
-	Flag        flag.FlagSet
+	Flag flag.FlagSet
 
 	// CustomFlags indicates that the command will do its own
 	// flag parsing.
@@ -83,7 +83,7 @@ func main() {
 
 	if len(args) < 1 {
 		os.Exit(cmdRun.Run(cmdRun, args))
-		return;
+		return
 	}
 
 	for _, cmd := range commands {

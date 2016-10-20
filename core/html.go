@@ -1,6 +1,6 @@
 package core
 
 type SelectOption struct {
-    Value string
-    Text  string
+	Value string
+	Text  string
 }

@@ -1,9 +1,9 @@
 package core
 
 import (
+	"log"
 	"regexp"
 	"strconv"
-	"log"
 	"strings"
 )
 
@@ -52,27 +52,27 @@ func Convert_num_to_cny(num float64) string {
 	return str
 }
 
-func Convert_num_to_cap(num float64) string{
-    strnum := strconv.FormatFloat(num, 'f', 2, 64)
-    capitalSlice := []string{"万","亿","兆"}
-    index := 0
-    result := ""
-    sdivision := strings.Split(strnum,".")
-    sl := sdivision[0]
-    if len(sdivision)>1{
-        result="."+sdivision[1]
-    }
-    // slength := len(sl)
-    for len(sl)>4{
-        result = capitalSlice[index]+sl[len(sl)-4:] + result
-        index = index+1
-        sl = sl[0:len(sl)-4]
-    }
-    result = sl+result
-    result = strings.Replace(result,"万0000","万",-1)
-    result = strings.Replace(result,"亿0000","亿",-1)
-    result = strings.Replace(result,"兆0000","兆",-1)
-    result = strings.Replace(result,"亿万","亿",-1)
-    result = strings.Replace(result,"兆亿","兆",-1)
-    return result
+func Convert_num_to_cap(num float64) string {
+	strnum := strconv.FormatFloat(num, 'f', 2, 64)
+	capitalSlice := []string{"万", "亿", "兆"}
+	index := 0
+	result := ""
+	sdivision := strings.Split(strnum, ".")
+	sl := sdivision[0]
+	if len(sdivision) > 1 {
+		result = "." + sdivision[1]
+	}
+	// slength := len(sl)
+	for len(sl) > 4 {
+		result = capitalSlice[index] + sl[len(sl)-4:] + result
+		index = index + 1
+		sl = sl[0 : len(sl)-4]
+	}
+	result = sl + result
+	result = strings.Replace(result, "万0000", "万", -1)
+	result = strings.Replace(result, "亿0000", "亿", -1)
+	result = strings.Replace(result, "兆0000", "兆", -1)
+	result = strings.Replace(result, "亿万", "亿", -1)
+	result = strings.Replace(result, "兆亿", "兆", -1)
+	return result
 }
