@@ -45,8 +45,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <form class="form-horizontal" role="form" id="productCateDetailForm">
-                                <input id="productCate_id" name="detail.cate.id" type="hidden" v-model="detail.cate.id"/>
-                                <input id="productCate_version" name="detail.cate.version" type="hidden" v-model="detail.cate.version"/>
+                                <input id="productCate_id" name="detail.cate.id" type="hidden" v-model.number="detail.cate.id"/>
+                                <input id="productCate_version" name="detail.cate.version" type="hidden" v-model.number="detail.cate.version"/>
 
                                 <div class="form-group">
                                     <label for="cate_name" class="col-xs-2 control-label no-padding-right">名称</label>
@@ -166,7 +166,7 @@
                                    else {
                                        $.msg.show(data.message);
                                        $('#productCateDetailDialog').modal('hide');
-                                       reloadList('#productCateList');
+                                       vm.reloadList();
                                        //return;
                                    }
                                }
@@ -200,7 +200,7 @@
                                    else {
                                        $.msg.show(data.message);
                                    }
-                                   reloadList('#productCateList');
+                                   vm.reloadList();
                                }
                            });
                 });

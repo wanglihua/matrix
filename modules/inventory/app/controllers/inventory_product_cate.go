@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"encoding/json"
-	"io/ioutil"
 	"matrix/core"
 	"matrix/modules/inventory/models"
 )
@@ -98,11 +97,8 @@ func (c InventoryProductCate) DetailData() revel.Result {
 func (c InventoryProductCate) Save() revel.Result {
 	session := c.DbSession
 
-	resquest_bytes, err := ioutil.ReadAll(c.Request.Body)
-	core.HandleError(err)
-
 	var detail_form ProductCateForm
-	err = json.Unmarshal(resquest_bytes, &detail_form)
+	err := json.Unmarshal(c.GetRequestBody(), &detail_form)
 	core.HandleError(err)
 
 	if detail_form.Valid(c.Validation) == false {

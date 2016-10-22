@@ -12,28 +12,29 @@ import (
 	"runtime"
 	"strings"
 	"time"
+	"io/ioutil"
 )
 
 type Controller struct {
-	Name          string          // The controller name, e.g. "Application"
-	Type          *ControllerType // A description of the controller type.
-	MethodName    string          // The method name, e.g. "Index"
-	MethodType    *MethodType     // A description of the invoked action type.
-	AppController interface{}     // The controller that was instantiated.
-	Action        string          // The fully qualified action name, e.g. "App.Index"
+	Name          string                 // The controller name, e.g. "Application"
+	Type          *ControllerType        // A description of the controller type.
+	MethodName    string                 // The method name, e.g. "Index"
+	MethodType    *MethodType            // A description of the invoked action type.
+	AppController interface{}            // The controller that was instantiated.
+	Action        string                 // The fully qualified action name, e.g. "App.Index"
 
-	Request  *Request
-	Response *Response
-	Result   Result
+	Request       *Request
+	Response      *Response
+	Result        Result
 
-	Flash      Flash                  // User cookie, cleared after 1 request.
-	Session    Session                // Session, stored in cookie, signed.
-	Params     *Params                // Parameters from URL and form (including multipart).
-	Args       map[string]interface{} // Per-request scratch space.
-	RenderArgs map[string]interface{} // Args passed to the template.
-	Validation *Validation            // Data validation helpers
+	Flash         Flash                  // User cookie, cleared after 1 request.
+	Session       Session                // Session, stored in cookie, signed.
+	Params        *Params                // Parameters from URL and form (including multipart).
+	Args          map[string]interface{} // Per-request scratch space.
+	RenderArgs    map[string]interface{} // Args passed to the template.
+	Validation    *Validation            // Data validation helpers
 
-	DbSession *xorm.Session
+	DbSession     *xorm.Session
 }
 
 func NewController(req *Request, resp *Response) *Controller {
@@ -47,6 +48,17 @@ func NewController(req *Request, resp *Response) *Controller {
 			"DevMode": DevMode,
 		},
 	}
+}
+
+//wanglihua begin
+
+func (c *Controller) GetRequestBody() []byte {
+	body_bytes, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	return body_bytes
 }
 
 func (c *Controller) UnbindToRenderArgs(val interface{}, name string) {
@@ -64,6 +76,8 @@ func (c *Controller) GetValidationErrorMessage() string {
 	}
 	return errorMessage
 }
+
+//wanglihua end
 
 // FlashParams serializes the contents of Controller.Params to the Flash
 // cookie.
@@ -229,7 +243,7 @@ func (c *Controller) RenderFile(file *os.File, delivery ContentDisposition) Resu
 	c.setStatusIfNil(http.StatusOK)
 
 	var (
-		modtime       = time.Now()
+		modtime = time.Now()
 		fileInfo, err = file.Stat()
 	)
 	if err != nil {
@@ -310,8 +324,8 @@ func (c *Controller) SetAction(controllerName, methodName string) error {
 func initNewAppController(appControllerType *ControllerType, c *Controller) reflect.Value {
 	var (
 		appControllerPtr = reflect.New(appControllerType.Type)
-		appController    = appControllerPtr.Elem()
-		cValue           = reflect.ValueOf(c)
+		appController = appControllerPtr.Elem()
+		cValue = reflect.ValueOf(c)
 	)
 	for _, index := range appControllerType.ControllerIndexes {
 		appController.FieldByIndex(index).Set(cValue)
@@ -331,8 +345,8 @@ func findControllers(appControllerType reflect.Type) (indexes [][]int) {
 	for len(queue) > 0 {
 		// Get the next value and de-reference it if necessary.
 		var (
-			node     = queue[0]
-			elem     = node.val
+			node = queue[0]
+			elem = node.val
 			elemType = elem.Type()
 		)
 		if elemType.Kind() == reflect.Ptr {

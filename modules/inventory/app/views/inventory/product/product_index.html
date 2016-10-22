@@ -1,127 +1,330 @@
-{%header "货品信息管理" .%}
+{%header "货品信息" .%}
 
-<div class="breadcrumbs" id="breadcrumbs">
-    <ul class="breadcrumb">
-        <li>
-            <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
-        </li>
-        <li class="parent" data-menu="inventory-menu">仓储管理</li>
-        <li class="subparent" data-menu="inventory-prdmgr-menu">货品管理</li>
-        <li class="active" data-menu="inventory-product-menu">货品信息</li>
-    </ul>
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='url "Home.Index"'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="inventory-menu">仓储管理</li>
+            <li class="subparent" data-menu="inventory-prdmgr-menu">货品管理</li>
+            <li class="active" data-menu="inventory-product-menu">货品信息</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList()">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-success btn-sm" @click="showProductDetail(0)">
+                        <i class="ace-icon fa fa-plus"></i>
+                        新增
+                    </button>
+                    <button class="btn btn-danger btn-sm" @click="deleteProduct()">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                        删除
+                    </button>
+                </div>
+                <div>
+                    <table id="productList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="productDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">货品信息详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="productDetailForm" onsubmit="saveProduct();return false;">
+                                <input id="product_id" name="form.product.Id" type="hidden" v-model.number="detail.product.id"/>
+                                <input id="product_version" name="form.product.Version" type="hidden" v-model.number="detail.product.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="code" class="col-xs-2 control-label no-padding-right">编码</label>
+                                            <div class="col-xs-10">
+                                                <input id="code" name="form.product.code" type="text" class="input-sm form-control" v-model="detail.product.code"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="name" class="col-xs-2 control-label no-padding-right">品名</label>
+                                            <div class="col-xs-10">
+                                                <input id="name" name="form.product.name" type="text" class="input-sm form-control" v-model="detail.product.name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="model" class="col-xs-2 control-label no-padding-right">规格型号</label>
+                                            <div class="col-xs-10">
+                                                <input id="model" name="form.product.model" type="text" class="input-sm form-control" v-model="detail.product.model"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="current_stock" class="col-xs-2 control-label no-padding-right">当前库存</label>
+                                            <div class="col-xs-10">
+                                                <input id="current_stock" name="form.product.current_stock" type="text" class="input-sm form-control" v-model.number="detail.product.current_stock"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="stock_lower_limit" class="col-xs-2 control-label no-padding-right">库存下限</label>
+                                            <div class="col-xs-10">
+                                                <input id="stock_lower_limit" name="form.product.stock_lower_limit" type="text" class="input-sm form-control" v-model.number="detail.product.stock_lower_limit"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="stock_upper_limit" class="col-xs-2 control-label no-padding-right">库存上限</label>
+                                            <div class="col-xs-10">
+                                                <input id="stock_upper_limit" name="form.product.stock_upper_limit" type="text" class="input-sm form-control" v-model.number="detail.product.stock_upper_limit"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="cost_price" class="col-xs-2 control-label no-padding-right">成本价</label>
+                                            <div class="col-xs-10">
+                                                <input id="cost_price" name="form.product.cost_price" type="text" class="input-sm form-control" v-model.number="detail.product.cost_price"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+
+                                        <div class="form-group">
+                                            <label for="retail_price" class="col-xs-2 control-label no-padding-right">零售价</label>
+                                            <div class="col-xs-10">
+                                                <input id="retail_price" name="form.product.retail_price" type="text" class="input-sm form-control" v-model.number="detail.product.retail_price"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="unit" class="col-xs-2 control-label no-padding-right">单位</label>
+                                            <div class="col-xs-10">
+                                                <input id="unit" name="form.product.unit" type="text" class="input-sm form-control" v-model="detail.product.unit"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="state" class="col-xs-2 control-label no-padding-right">状态</label>
+                                            <div class="col-xs-10">
+                                                <input id="state" name="form.product.state" type="text" class="input-sm form-control" v-model="detail.product.state"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveProduct()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="page-content">
-    <div class="row">
-        <div class="col-xs-12" style="padding: 0;">
-            <div class="gridToolBar clearfix">
-                <button class="btn btn-primary btn-sm" onclick="reloadList('#productList')">
-                    <i class="ace-icon fa fa-refresh"></i>
-                    刷新
-                </button>
-                <button class="btn btn-success btn-sm" onclick="showProductDetail(0)">
-                    <i class="ace-icon fa fa-plus"></i>
-                    新增
-                </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteProduct()">
-                    <i class="ace-icon fa fa-trash-o"></i>
-                    删除
-                </button>
-            </div>
-            <div>
-                <table id="productList" class="table table-striped table-bordered table-hover"></table>
-            </div>
-            <div id="productDetailDialogWrapper"></div>
-            <script type="text/javascript">
-                function showProductDetail(id) {
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "product": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#productList',
+                    {
+                        "sAjaxSource": '{%url "InventoryProduct.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "code", "title": "编码", "bSearchable": true},
+                            {"mDataProp": "name", "title": "品名", "bSearchable": true},
+                            {"mDataProp": "model", "title": "规格型号", "bSearchable": true},
+                            {"mDataProp": "current_stock", "title": "当前库存", "bSearchable": false},
+                            {"mDataProp": "stock_lower_limit", "title": "库存下限", "bSearchable": false},
+                            {"mDataProp": "stock_upper_limit", "title": "库存上限", "bSearchable": false},
+                            {"mDataProp": "unit", "title": "单位", "bSearchable": true},
+                            {"mDataProp": "cost_price", "title": "成本价", "bSearchable": false},
+                            {"mDataProp": "retail_price", "title": "零售价", "bSearchable": false},
+                            {"mDataProp": "state", "title": "状态", "bSearchable": true},
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                        ]
+                    }
+            );
+
+            $('#productList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showProductDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#productList');
+            },
+            showProductDetail: function (id) {
+                showMask("加载中...");
+                $.ajax({
+                           url: '{%url "InventoryProduct.DetailData"%}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#productDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveProduct: function () {
+                showMask("提交中...");
+                var form = $("#productDetailForm");
+                var valid = validate(form, {
+                    'form.product.code': {
+                        required: true, minlength: 2, maxlength: 20
+                    },
+                    'form.product.name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'form.product.model': {
+                        required: false, minlength: 2, maxlength: 200
+                    },
+                    'form.product.current_stock': {
+                        required: false, digits: true
+                    },
+                    'form.product.stock_lower_limit': {
+                        required: false, digits: true
+                    },
+                    'form.product.stock_upper_limit': {
+                        required: false, digits: true
+                    },
+                    'form.product.unit': {
+                        required: true, minlength: 1, maxlength: 10
+                    },
+                    'form.product.cost_price': {
+                        required: false, digits: true
+                    },
+                    'form.product.retail_price': {
+                        required: false, digits: true
+                    },
+                    'form.product.state': {
+                        required: true, minlength: 1
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
                     $.ajax({
-                               url: '{%url "InventoryProduct.Detail" %}',
+                               url: '{%url "InventoryProduct.Save"%}',
                                type: "POST",
-                               data: {
-                                   "id": id
-                               },
-                               success: function (result) {
-                                   if (result.success == false) {
-                                       $.msg.error(result.message);
-                                       return;
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
                                    }
-                                   $("#productDetailDialogWrapper").html(result);
-                                   $('#productDetailDialog').modal(modalOptions);
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#productDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
                                }
                            }
                     );
                 }
-
-                function deleteProduct() {
-                    var id_list = [];
-                    $('#productList tbody tr>td:first-child input:checkbox').each(function () {
-                        if (this.checked) {
-                            id_list.push($(this).val());
-                        }
-                    });
-
-                    if (id_list.length == 0) {
-                        $.msg.alert("请选择数据！");
-                        return;
+            },
+            deleteProduct: function () {
+                var id_list = [];
+                $('#productList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
                     }
+                });
 
-                    $.msg.confirm("确认要删除吗？", function () {
-                        $.ajax({
-                                   url: '{%url "InventoryProduct.Delete"%}',
-                                   type: "POST",
-                                   data: {"id_list": id_list},
-                                   success: function (data) {
-                                       if (data.success == false) {
-                                           $.msg.error(data.message);
-                                           return;
-                                       }
-                                       else {
-                                           $.msg.show(data.message);
-                                       }
-                                       reloadList('#productList');
-                                   }
-                               });
-                    });
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
                 }
 
-                $(function () {
-                    initDataTable(
-                            '#productList',
-                            {
-                                "sAjaxSource": '{%url "InventoryProduct.ListData"%}',
-                                "aaSorting": [[1, "asc"]],
-                                "aoColumns": [
-                                    {
-                                        "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
-                                        "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
-                                        "render": function (data, type, row) {
-                                            return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
-                                        }
-                                    },
-                                    {"mDataProp": "code", "title": "编码", "bSearchable": true},
-                                    {"mDataProp": "name", "title": "品名", "bSearchable": true},
-                                    {"mDataProp": "model", "title": "规格型号", "bSearchable": true},
-                                    {"mDataProp": "current_stock", "title": "当前库存", "bSearchable": false},
-                                    {"mDataProp": "stock_lower_limit", "title": "库存下限", "bSearchable": false},
-                                    {"mDataProp": "stock_upper_limit", "title": "库存上限", "bSearchable": false},
-                                    {"mDataProp": "unit", "title": "单位", "bSearchable": true},
-                                    {"mDataProp": "cost_price", "title": "成本价", "bSearchable": false},
-                                    {"mDataProp": "retail_price", "title": "零售价", "bSearchable": false},
-                                    {"mDataProp": "state", "title": "状态", "bSearchable": true},
-                                    {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                                    {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
-                                ]
-                            }
-                    );
-
-                    $('#productList tbody').on('dblclick', 'tr', function () {
-                        var id = $(this).find('td:first-child input:checkbox').val();
-                        showProductDetail(id);
-                    });
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "InventoryProduct.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
                 });
-            </script>
-
-        </div>
-    </div>
-</div>
+            }
+        }
+    });
+</script>
 {%footer%}
 

@@ -92,7 +92,7 @@ type Product struct {
 	StockUpperLimit core.NullInt    `xorm:"bigint null 'stock_upper_limit'" json:"stock_upper_limit" smith:"verbose_name=库存上限,min=0"`
 	Unit            string          `xorm:"nvarchar(50) notnull 'unit'" json:"unit" smith:"verbose_name=单位,min=1,max=10"`
 	CostPrice       core.NullInt    `xorm:"bigint null 'cost_price'" json:"cost_price" smith:"verbose_name=成本价,min=0"`
-	RetailPrice     core.NullInt    `xorm:"bigint null 'retail_price'" json:"retail_price" smith:"verbose_name=零售价,min=0"`
+	RetailPrice     int    `xorm:"bigint null 'retail_price'" json:"retail_price" smith:"verbose_name=零售价,min=0"`
 	State           string          `xorm:"nvarchar(10) notnull 'state'" json:"state" smith:"verbose_name=状态,min=1"`
 
 	CreateTime      core.Time       `xorm:"created notnull 'create_time'" json:"create_time"`

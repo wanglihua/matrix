@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type NullInt struct {
@@ -44,6 +45,8 @@ func (i *NullInt) UnmarshalJSON(data []byte) error {
 		err = json.Unmarshal(data, &i.Int64)
 	case map[string]interface{}:
 		err = json.Unmarshal(data, &i.NullInt64)
+	case string:
+		i.UnmarshalText(data)
 	case nil:
 		i.Valid = false
 		return nil
@@ -55,14 +58,15 @@ func (i *NullInt) UnmarshalJSON(data []byte) error {
 }
 
 func (i *NullInt) UnmarshalText(text []byte) error {
-	str := string(text)
+	str := strings.Trim(string(text), `"`)
 	if str == "" || str == "null" {
 		i.Valid = false
 		return nil
 	}
 	var err error
-	i.Int64, err = strconv.ParseInt(string(text), 10, 64)
+	i.Int64, err = strconv.ParseInt(str, 10, 64)
 	i.Valid = err == nil
+
 	return err
 }
 

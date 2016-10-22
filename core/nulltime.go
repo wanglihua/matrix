@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"time"
+	"strings"
 )
 
 // NullDate
@@ -73,7 +74,8 @@ func (t *NullDate) UnmarshalJSON(data []byte) error {
 	}
 	switch x := v.(type) {
 	case string:
-		err = t.Time.UnmarshalJSON(data)
+		//	err = t.Time.UnmarshalJSON(data)
+		t.UnmarshalText(data)
 	case map[string]interface{}:
 		ti, tiOK := x["Time"].(string)
 		valid, validOK := x["Valid"].(bool)
@@ -101,7 +103,7 @@ func (t NullDate) MarshalText() ([]byte, error) {
 }
 
 func (t *NullDate) UnmarshalText(text []byte) error {
-	str := string(text)
+	str := strings.Trim(string(text), `"`)
 	if str == "" || str == "null" {
 		t.Valid = false
 		return nil
@@ -190,7 +192,8 @@ func (t *NullTime) UnmarshalJSON(data []byte) error {
 	}
 	switch x := v.(type) {
 	case string:
-		err = t.Time.UnmarshalJSON(data)
+		//	err = t.Time.UnmarshalJSON(data)
+		t.UnmarshalText(data)
 	case map[string]interface{}:
 		ti, tiOK := x["Time"].(string)
 		valid, validOK := x["Valid"].(bool)
@@ -307,7 +310,8 @@ func (t *NullLongTime) UnmarshalJSON(data []byte) error {
 	}
 	switch x := v.(type) {
 	case string:
-		err = t.Time.UnmarshalJSON(data)
+		//	err = t.Time.UnmarshalJSON(data)
+		t.UnmarshalText(data)
 	case map[string]interface{}:
 		ti, tiOK := x["Time"].(string)
 		valid, validOK := x["Valid"].(bool)

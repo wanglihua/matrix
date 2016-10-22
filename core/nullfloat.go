@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type NullFloat struct {
@@ -43,6 +44,8 @@ func (f *NullFloat) UnmarshalJSON(data []byte) error {
 		f.Float64 = float64(x)
 	case map[string]interface{}:
 		err = json.Unmarshal(data, &f.NullFloat64)
+	case string:
+		f.UnmarshalText(data)
 	case nil:
 		f.Valid = false
 		return nil
@@ -54,7 +57,7 @@ func (f *NullFloat) UnmarshalJSON(data []byte) error {
 }
 
 func (f *NullFloat) UnmarshalText(text []byte) error {
-	str := string(text)
+	str := strings.Trim(string(text), `"`)
 	if str == "" || str == "null" {
 		f.Valid = false
 		return nil

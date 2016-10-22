@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"strconv"
+	"encoding/json"
 	"github.com/revel/revel"
-
 	"matrix/core"
 	"matrix/modules/inventory/models"
+	"strconv"
 )
 
 type InventoryProduct struct {
@@ -46,7 +46,7 @@ func (c InventoryProduct) ListData() revel.Result {
 }
 
 type ProductForm struct {
-	Product models.Product
+	Product models.Product `json:"product"`
 }
 
 func (f *ProductForm) IsCreate() bool {
@@ -91,74 +91,74 @@ func (f *ProductForm) Valid(validation *revel.Validation) bool {
 	return validation.HasErrors() == false
 }
 
-func (c InventoryProduct) Detail() revel.Result {
-	session := c.DbSession
+func (c InventoryProduct) DetailData() revel.Result {
+	db_session := c.DbSession
 
-	var productId int64
-	c.Params.Bind(&productId, "id")
+	var id int64
+	c.Params.Bind(&id, "id")
 
-	product := new(models.Product)
-	if productId != 0 {
-		has, err := session.Id(productId).Get(product)
+	var product models.Product
+	if id != 0 {
+		has, err := db_session.Id(id).Get(&product)
 		core.HandleError(err)
 		if has == false {
-			panic("指定的货品信息不存在！")
+			return c.RenderJson(core.JsonResult{Success: false, Message: "货品信息不存在！"})
 		}
 	}
 
-	form := new(ProductForm)
-	form.Product = *product
-	c.UnbindToRenderArgs(form, "form")
+	var detail_form ProductForm
+	detail_form.Product = product
 
-	return c.RenderTemplate("inventory/product/product_detail.html")
+	return c.RenderJson(detail_form)
 }
 
 func (c InventoryProduct) Save() revel.Result {
 	session := c.DbSession
 
-	form := new(ProductForm)
-	c.Params.Bind(form, "form")
+	var detail_form ProductForm
+	err := json.Unmarshal(c.GetRequestBody(), &detail_form)
+	core.HandleError(err)
 
-	if form.Valid(c.Validation) == false {
-		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
+	if detail_form.Valid(c.Validation) == false {
+		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
-	product := &form.Product
+	product := detail_form.Product
 
 	var affected int64
-	if form.IsCreate() {
+	if detail_form.IsCreate() {
 		codeCount, err := session.Where("code = ?", product.Code).Count(new(models.Product))
 		core.HandleError(err)
 		if codeCount != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！"})
 		}
 
 		nameCount, err := session.Where("name = ?", product.Name).Count(new(models.Product))
 		core.HandleError(err)
 		if nameCount != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！"})
 		}
 
-		affected, err = session.Insert(product)
+		affected, err = session.Insert(&product)
 		core.HandleError(err)
 	} else {
 		codeCount, err := session.Where("id <> ? and code = ?", product.Id, product.Code).Count(new(models.Product))
 		core.HandleError(err)
 		if codeCount != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！"})
 		}
 
 		nameCount, err := session.Where("id <> ? and name = ?", product.Id, product.Name).Count(new(models.Product))
 		core.HandleError(err)
 		if nameCount != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！"})
 		}
 
-		affected, err = session.Id(product.Id).Update(product)
+		affected, err = session.Id(product.Id).Update(&product)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -176,4 +176,3 @@ func (c InventoryProduct) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

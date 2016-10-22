@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 type NullBool struct {
@@ -43,6 +44,8 @@ func (b *NullBool) UnmarshalJSON(data []byte) error {
 		b.Bool = x
 	case map[string]interface{}:
 		err = json.Unmarshal(data, &b.NullBool)
+	case string:
+		b.UnmarshalText(data)
 	case nil:
 		b.Valid = false
 		return nil
@@ -54,7 +57,7 @@ func (b *NullBool) UnmarshalJSON(data []byte) error {
 }
 
 func (b *NullBool) UnmarshalText(text []byte) error {
-	str := string(text)
+	str := strings.Trim(string(text), `"`)
 	switch str {
 	case "", "null":
 		b.Valid = false
