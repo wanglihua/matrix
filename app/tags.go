@@ -36,6 +36,7 @@ func footerTemplateFunc() template.HTML {
 	return template.HTML(layout.GetFooter())
 }
 
-func intToStrTemplateFunc(val int) string {
-	return strconv.Itoa(val)
+func intToStrTemplateFunc(val interface{}) string {
+	return fmt.Sprintf("%d", val)
 }
+
