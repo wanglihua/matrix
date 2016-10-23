@@ -19,18 +19,20 @@ import (
 package config
 
 import (
-	entity_models "matrix/modules/st/models"
+	entity_models "matrix/modules/inventory/models"
 )
 
-var OutputBaseDir = "D:/projects/rc_sales_target/src"
+var OutputBaseDir = "/home/wanglihua/gopath/src/matrix"
 
+var ImportPath = "matrix"
 var ModuleTitleName = entity_models.ModuleTitleName
 var ModuleLowerCase = entity_models.ModuleLowerCase
 var ModuleChinese = entity_models.ModuleChinese
 var TablePrefix = entity_models.TablePrefix
 var ModelList = []interface{}{
-	entity_models.SalesMonthReport{},
+	entity_models.Product{},
 }
+
 
 	//sample field definition
 	//Field1 float64 `xorm:"decimal(18,4) notnull 'field1'" json:"field1" smith:"verbose_name=字段1,min=0,max=100"`
