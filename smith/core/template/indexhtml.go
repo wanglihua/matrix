@@ -52,7 +52,7 @@ var IndexHtmlTemplate = `{%header "{{.entity.EntityChinese}}" .%}
                                         <div class="form-group">
                                             <label for="{{$field.Column}}" class="col-xs-2 control-label no-padding-right">{{$field.VerboseName}}</label>
                                             <div class="col-xs-10">
-                                                <input id="{{$field.Column}}" name="detail.{{$.entity.EntityJson}}.{{$field.Column}}" type="text" class="input-sm form-control" v-model="detail.{{$.entity.EntityJson}}.{{$field.Column}}"/>
+                                                <input id="{{$field.Column}}" name="detail.{{$.entity.EntityJson}}.{{$field.Column}}" type="text" class="input-sm form-control" v-model{{if $field.IsNumber}}.number{{end}}="detail.{{$.entity.EntityJson}}.{{$field.Column}}"/>
                                             </div>
                                         </div>
                                     </div>

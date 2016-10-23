@@ -7,6 +7,7 @@ import (
 //var OutputBaseDir = "/home/wanglihua/gopath/src/matrix"
 var OutputBaseDir = "/home/wanglihua/code_gen"
 
+var ImportPath = "matrix"
 var ModuleTitleName = entity_models.ModuleTitleName
 var ModuleLowerCase = entity_models.ModuleLowerCase
 var ModuleChinese = entity_models.ModuleChinese

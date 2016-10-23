@@ -46,6 +46,7 @@ var ModelList = []interface{}{
 */
 
 var output_base_dir = config.OutputBaseDir
+var import_path = config.ImportPath
 var module_title_name = config.ModuleTitleName
 var module_lower_case = config.ModuleLowerCase
 var module_chinese = config.ModuleChinese
@@ -176,6 +177,7 @@ func main() {
 	for _, entity := range entityList {
 		controllerCode := smith_core.RenderCodeTemplate("controller", template.ControllerTemplate, map[string]interface{}{
 			"entity": entity,
+			"import_path" :import_path,
 		})
 
 		smith_core.WriteToFile(controllersDir + "/" + entityList[0].ModuleLowerCase + "_" + smith_core.ToUnderscore(entity.EntityCamelCase) + ".go", controllerCode)

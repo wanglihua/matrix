@@ -14,7 +14,7 @@ var MenuTemplate = `
                     <li id="{{$entity.ModuleLowerCase}}-{{LowerCase $entity.EntityCamelCase}}-menu" class="">
                         <a href="/{{$entity.ModuleLowerCase}}/{{LowerCase $entity.EntityCamelCase}}">
                             <i class="menu-icon fa fa-caret-right"></i>
-                            {{$entity.EntityChinese}}管理
+                            {{$entity.EntityChinese}}
                         </a>
                         <b class="arrow"></b>
                     </li>

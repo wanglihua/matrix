@@ -17,6 +17,14 @@ type Field struct {
 	Max         string //如果是数字型型就是最大值，如果是字符串型就是最大长度
 }
 
+func (f Field) IsNumber() bool {
+	if f.FieldType == fieldtype.Int || f.FieldType == fieldtype.BigInt || f.FieldType == fieldtype.Decimal || f.FieldType == fieldtype.Version {
+		return true
+	} else {
+		return false
+	}
+}
+
 type Entity struct {
 	ModuleTitleName string
 	ModuleLowerCase string

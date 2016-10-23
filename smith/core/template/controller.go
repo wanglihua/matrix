@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"github.com/revel/revel"
 
-	"matrix/core"
-	"matrix/modules/{{.entity.ModuleLowerCase}}/models"
+	"{{.import_path}}/core"
+	"{{.import_path}}/modules/{{.entity.ModuleLowerCase}}/models"
 )
 
 type {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}} struct {
