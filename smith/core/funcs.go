@@ -4,6 +4,7 @@ import (
 	"bytes"
 	xorm_core "github.com/go-xorm/core"
 	matrix_core "matrix/core"
+	"io/ioutil"
 	"os"
 	"reflect"
 	"strconv"
@@ -52,9 +53,16 @@ func AppendToFile(fileName string, code string) {
 	}
 
 	if checkFileIsExist(fileName) {
-		var file *os.File
 		var err error
-		file, err = os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, 0666) //打开文件
+		file_content_bytes, err := ioutil.ReadFile(fileName)
+		matrix_core.HandleError(err)
+
+		if strings.Contains(string(file_content_bytes), code) {
+			return //如果文件中已经包含该内容，就不做任何事
+		}
+
+		var file *os.File
+		file, err = os.OpenFile(fileName, os.O_APPEND, 0666) //打开文件
 		matrix_core.HandleError(err)
 
 		_, err = file.WriteString(code)

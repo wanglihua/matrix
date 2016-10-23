@@ -36,6 +36,7 @@ type Entity struct {
 	EntityJsonTag   string //比如: `json:"product"`
 	TableName       string
 	TablePrefix     string
+	Route           string
 
 	FieldList       []Field
 }
