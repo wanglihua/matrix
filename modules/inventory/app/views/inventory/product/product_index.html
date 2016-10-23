@@ -4,7 +4,7 @@
     <div class="breadcrumbs" id="breadcrumbs">
         <ul class="breadcrumb">
             <li>
-                <a href='url "Home.Index"'><i class="ace-icon fa fa-home home-icon"></i></a>
+                <a href='{%url "Home.Index%}"'><i class="ace-icon fa fa-home home-icon"></i></a>
             </li>
             <li class="parent" data-menu="inventory-menu">仓储管理</li>
             <li class="subparent" data-menu="inventory-prdmgr-menu">货品管理</li>
@@ -46,14 +46,14 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <form class="form-horizontal" role="form" id="productDetailForm">
-                                <input id="product_id" name="form.product.Id" type="hidden" v-model.number="detail.product.id"/>
-                                <input id="product_version" name="form.product.Version" type="hidden" v-model.number="detail.product.version"/>
+                                <input id="product_id" name="detail.product.id" type="hidden" v-model.number="detail.product.id"/>
+                                <input id="product_version" name="detail.product.version" type="hidden" v-model.number="detail.product.version"/>
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
                                             <label for="code" class="col-xs-2 control-label no-padding-right">编码</label>
                                             <div class="col-xs-10">
-                                                <input id="code" name="form.product.code" type="text" class="input-sm form-control" v-model="detail.product.code"/>
+                                                <input id="code" name="detail.product.code" type="text" class="input-sm form-control" v-model="detail.product.code"/>
                                             </div>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@
                                         <div class="form-group">
                                             <label for="name" class="col-xs-2 control-label no-padding-right">品名</label>
                                             <div class="col-xs-10">
-                                                <input id="name" name="form.product.name" type="text" class="input-sm form-control" v-model="detail.product.name"/>
+                                                <input id="name" name="detail.product.name" type="text" class="input-sm form-control" v-model="detail.product.name"/>
                                             </div>
                                         </div>
                                     </div>
@@ -73,7 +73,7 @@
                                         <div class="form-group">
                                             <label for="model" class="col-xs-2 control-label no-padding-right">规格型号</label>
                                             <div class="col-xs-10">
-                                                <input id="model" name="form.product.model" type="text" class="input-sm form-control" v-model="detail.product.model"/>
+                                                <input id="model" name="detail.product.model" type="text" class="input-sm form-control" v-model="detail.product.model"/>
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                                         <div class="form-group">
                                             <label for="current_stock" class="col-xs-2 control-label no-padding-right">当前库存</label>
                                             <div class="col-xs-10">
-                                                <input id="current_stock" name="form.product.current_stock" type="text" class="input-sm form-control" v-model.number="detail.product.current_stock"/>
+                                                <input id="current_stock" name="detail.product.current_stock" type="text" class="input-sm form-control" v-model.number="detail.product.current_stock"/>
                                             </div>
                                         </div>
                                     </div>
@@ -92,7 +92,7 @@
                                         <div class="form-group">
                                             <label for="stock_lower_limit" class="col-xs-2 control-label no-padding-right">库存下限</label>
                                             <div class="col-xs-10">
-                                                <input id="stock_lower_limit" name="form.product.stock_lower_limit" type="text" class="input-sm form-control" v-model.number="detail.product.stock_lower_limit"/>
+                                                <input id="stock_lower_limit" name="detail.product.stock_lower_limit" type="text" class="input-sm form-control" v-model.number="detail.product.stock_lower_limit"/>
                                             </div>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                         <div class="form-group">
                                             <label for="stock_upper_limit" class="col-xs-2 control-label no-padding-right">库存上限</label>
                                             <div class="col-xs-10">
-                                                <input id="stock_upper_limit" name="form.product.stock_upper_limit" type="text" class="input-sm form-control" v-model.number="detail.product.stock_upper_limit"/>
+                                                <input id="stock_upper_limit" name="detail.product.stock_upper_limit" type="text" class="input-sm form-control" v-model.number="detail.product.stock_upper_limit"/>
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +112,7 @@
                                         <div class="form-group">
                                             <label for="cost_price" class="col-xs-2 control-label no-padding-right">成本价</label>
                                             <div class="col-xs-10">
-                                                <input id="cost_price" name="form.product.cost_price" type="text" class="input-sm form-control" v-model.number="detail.product.cost_price"/>
+                                                <input id="cost_price" name="detail.product.cost_price" type="text" class="input-sm form-control" v-model.number="detail.product.cost_price"/>
                                             </div>
                                         </div>
                                     </div>
@@ -121,7 +121,7 @@
                                         <div class="form-group">
                                             <label for="retail_price" class="col-xs-2 control-label no-padding-right">零售价</label>
                                             <div class="col-xs-10">
-                                                <input id="retail_price" name="form.product.retail_price" type="text" class="input-sm form-control" v-model.number="detail.product.retail_price"/>
+                                                <input id="retail_price" name="detail.product.retail_price" type="text" class="input-sm form-control" v-model.number="detail.product.retail_price"/>
                                             </div>
                                         </div>
                                     </div>
@@ -132,7 +132,7 @@
                                         <div class="form-group">
                                             <label for="unit" class="col-xs-2 control-label no-padding-right">单位</label>
                                             <div class="col-xs-10">
-                                                <input id="unit" name="form.product.unit" type="text" class="input-sm form-control" v-model="detail.product.unit"/>
+                                                <input id="unit" name="detail.product.unit" type="text" class="input-sm form-control" v-model="detail.product.unit"/>
                                             </div>
                                         </div>
                                     </div>
@@ -141,7 +141,7 @@
                                         <div class="form-group">
                                             <label for="state" class="col-xs-2 control-label no-padding-right">状态</label>
                                             <div class="col-xs-10">
-                                                <input id="state" name="form.product.state" type="text" class="input-sm form-control" v-model="detail.product.state"/>
+                                                <input id="state" name="detail.product.state" type="text" class="input-sm form-control" v-model="detail.product.state"/>
                                             </div>
                                         </div>
                                     </div>
@@ -234,34 +234,34 @@
                 showMask("提交中...");
                 var form = $("#productDetailForm");
                 var valid = validate(form, {
-                    'form.product.code': {
+                    'detail.product.code': {
                         required: true, minlength: 2, maxlength: 20
                     },
-                    'form.product.name': {
+                    'detail.product.name': {
                         required: true, minlength: 2, maxlength: 100
                     },
-                    'form.product.model': {
+                    'detail.product.model': {
                         required: false, minlength: 2, maxlength: 200
                     },
-                    'form.product.current_stock': {
+                    'detail.product.current_stock': {
                         required: false, digits: true
                     },
-                    'form.product.stock_lower_limit': {
+                    'detail.product.stock_lower_limit': {
                         required: false, digits: true
                     },
-                    'form.product.stock_upper_limit': {
+                    'detail.product.stock_upper_limit': {
                         required: false, digits: true
                     },
-                    'form.product.unit': {
+                    'detail.product.unit': {
                         required: true, minlength: 1, maxlength: 10
                     },
-                    'form.product.cost_price': {
+                    'detail.product.cost_price': {
                         required: false, digits: true
                     },
-                    'form.product.retail_price': {
+                    'detail.product.retail_price': {
                         required: false, digits: true
                     },
-                    'form.product.state': {
+                    'detail.product.state': {
                         required: true, minlength: 1
                     }
                 });

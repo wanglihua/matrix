@@ -24,8 +24,10 @@ type Entity struct {
 	EntityTitleName string
 	EntityCamelCase string
 	EntityChinese   string
+	EntityJson      string //比如: product
+	EntityJsonTag   string //比如: `json:"product"`
 	TableName       string
 	TablePrefix     string
 
-	FieldList []Field
+	FieldList       []Field
 }

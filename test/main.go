@@ -2,30 +2,18 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 func main() {
-	var h *Hello
+	str := "hello world!"
 
-	var hh Hello1
+	split_str_list := strings.Split(str, "he3llo")
+	fmt.Println(len(split_str_list))
 
-	hh = h
-	hh.Hello1()
-
-	if hh == nil {
-		fmt.Println("nil")
-	} else {
-		fmt.Println("not nil")
+	split_str_list_len := len(split_str_list)
+	for i := 0; i < split_str_list_len; i++ {
+		fmt.Println(split_str_list[i])
 	}
 }
 
-type Hello1 interface {
-	Hello1()
-}
-
-type Hello struct {
-}
-
-func (h *Hello) Hello1() {
-	fmt.Println("Hello 1")
-}

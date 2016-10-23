@@ -61,7 +61,8 @@ func main() {
 		entity.ModuleTitleName = module_title_name
 		entity.ModuleLowerCase = module_lower_case
 		entity.ModuleChinese = module_chinese
-		entity.EntityTitleName, entity.EntityCamelCase, entity.EntityChinese, entity.TableName = get_model_info(model)
+		entity.EntityTitleName, entity.EntityCamelCase, entity.TableName, entity.EntityChinese, entity.EntityJson = get_model_info(model)
+		entity.EntityJsonTag = fmt.Sprintf("`json:\"%s\"`", entity.EntityJson); //在我们的模板定义中输出 ` 不太方便，所以在这里就先把 ` 放进去
 		entity.TablePrefix = table_prefix
 
 		entity.FieldList = make([]smith_core.Field, 0)
@@ -177,7 +178,7 @@ func main() {
 			"entity": entity,
 		})
 
-		smith_core.WriteToFile(controllersDir+"/"+entityList[0].ModuleLowerCase+"_"+smith_core.ToUnderscore(entity.EntityCamelCase)+".go", controllerCode)
+		smith_core.WriteToFile(controllersDir + "/" + entityList[0].ModuleLowerCase + "_" + smith_core.ToUnderscore(entity.EntityCamelCase) + ".go", controllerCode)
 	}
 
 	viewsDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/app/views/" + entityList[0].ModuleLowerCase + "/" + smith_core.ToUnderscore(entityList[0].EntityCamelCase) + "/"
@@ -190,13 +191,7 @@ func main() {
 			"entity": entity,
 		})
 
-		smith_core.WriteToFile(viewsDir+"/"+smith_core.ToUnderscore(entity.EntityCamelCase)+"_index.html", indexhtmlCode)
-
-		detailhtmlCode := smith_core.RenderCodeTemplate("detailhtml", template.DetailHtmlTemplate, map[string]interface{}{
-			"entity": entity,
-		})
-
-		smith_core.WriteToFile(viewsDir+"/"+smith_core.ToUnderscore(entity.EntityCamelCase)+"_detail.html", detailhtmlCode)
+		smith_core.WriteToFile(viewsDir + "/" + smith_core.ToUnderscore(entity.EntityCamelCase) + "_index.html", indexhtmlCode)
 	}
 
 	confDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/conf"
@@ -206,7 +201,7 @@ func main() {
 		"entityList": entityList,
 	})
 
-	smith_core.AppendToFile(confDir+"/routes", routeCode)
+	smith_core.AppendToFile(confDir + "/routes", routeCode)
 
 	menuDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/app/views/"
 	err = os.MkdirAll(menuDir, 0777)
@@ -215,28 +210,41 @@ func main() {
 		"entityList": entityList,
 	})
 
-	smith_core.WriteToFile(menuDir+"/menu.html", menuCode)
+	smith_core.WriteToFile(menuDir + "/menu.html", menuCode)
 
 	fmt.Println("Code Generated!")
 }
 
-func get_model_info(model interface{}) (title_name, camel_case_name, chinese_name, table_name string) {
+func get_model_info(model interface{}) (title_name, camel_case_name, table_name, chinese_name, entity_json string) {
 	model_type := reflect.TypeOf(model)
 	title_name = model_type.Name()
 	camel_case_name = strings.ToLower(title_name)[0:1] + title_name[1:]
 
 	model_value := reflect.ValueOf(model)
 
-	chinese_name = ""
-	if md, ok := model_value.Interface().(ModelDesc); ok {
-		model_desc := md.ModelDesc()
-		fmt.Sscanf(model_desc, "verbose_name=%s", &chinese_name)
-		chinese_name = strings.Split(chinese_name, ",")[0]
-	}
-
 	table_name = ""
 	if tn, ok := model_value.Interface().(TableName); ok {
 		table_name = tn.TableName()
+	}
+
+	chinese_name = title_name
+	entity_json = smith_core.ToUnderscore(camel_case_name)
+	if md, ok := model_value.Interface().(ModelDesc); ok {
+		model_desc := md.ModelDesc()
+		verbose_name_split_str_list := strings.Split(model_desc, "verbose_name")
+		if len(verbose_name_split_str_list) == 2 {
+			scan_count, _ := fmt.Sscanf(verbose_name_split_str_list[1], "=%s", &chinese_name)
+			if scan_count != 0 {
+				chinese_name = strings.TrimSpace(strings.Split(chinese_name, ",")[0])
+			}
+		}
+		entity_json_split_str_list := strings.Split(model_desc, "entity_json")
+		if len(entity_json_split_str_list) == 2 {
+			scan_count, _ := fmt.Sscanf(entity_json_split_str_list[1], "=%s", &entity_json)
+			if scan_count != 0 {
+				entity_json = strings.TrimSpace(strings.Split(entity_json, ",")[0])
+			}
+		}
 	}
 
 	return

@@ -4,126 +4,127 @@ var ControllerTemplate = `
 package controllers
 
 import (
-    "strconv"
-    "github.com/revel/revel"
+	"encoding/json"
+	"strconv"
+	"github.com/revel/revel"
 
-    "matrix/core"
-    "matrix/modules/{{.entity.ModuleLowerCase}}/models"
+	"matrix/core"
+	"matrix/modules/{{.entity.ModuleLowerCase}}/models"
 )
 
 type {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}} struct {
-    *revel.Controller
+	*revel.Controller
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Index() revel.Result {
-    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{Underscore .entity.EntityCamelCase}}/{{Underscore .entity.EntityCamelCase}}_index.html")
+	return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{Underscore .entity.EntityCamelCase}}/{{Underscore .entity.EntityCamelCase}}_index.html")
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) ListData() revel.Result {
-    session := c.DbSession
+	db_session := c.DbSession
 
-    filter, order, offset, limit := core.GetGridRequestParam(c.Request)
-    query := session.Where(filter)
+	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
+	query := db_session.Where(filter)
 
-    //query extra filter here
+	//query extra filter here
 
-    dataQuery := *query
-    if order != "" {
-        dataQuery = *dataQuery.OrderBy(order)
-    } else {
-        dataQuery = *dataQuery.Asc("id")
-    }
+	data_query := *query
+	if order != "" {
+		data_query = *data_query.OrderBy(order)
+	} else {
+		data_query = *data_query.Asc("id")
+	}
 
-    {{.entity.EntityCamelCase}}List := make([]models.{{.entity.EntityTitleName}}, 0, limit)
-    err := dataQuery.Limit(limit, offset).Find(&{{.entity.EntityCamelCase}}List)
-    core.HandleError(err)
+	{{Underscore .entity.EntityCamelCase}}_list := make([]models.{{.entity.EntityTitleName}}, 0, limit)
+	err := data_query.Limit(limit, offset).Find(&{{Underscore .entity.EntityCamelCase}}_list)
+	core.HandleError(err)
 
-    countQuery := *query
-    count, err := countQuery.Count(new(models.{{.entity.EntityTitleName}}))
-    core.HandleError(err)
+	count_query := *query
+	count, err := count_query.Count(new(models.{{.entity.EntityTitleName}}))
+	core.HandleError(err)
 
-    return c.RenderJson(core.GridResult{
-        Data:  {{.entity.EntityCamelCase}}List,
-        Total: count,
-    })
+	return c.RenderJson(core.GridResult{
+		Data:  {{Underscore .entity.EntityCamelCase}}_list,
+		Total: count,
+	})
 }
 
-type {{.entity.EntityTitleName}}Form struct {
-    {{.entity.EntityTitleName}} models.{{.entity.EntityTitleName}}
+type {{.entity.EntityTitleName}}DetailForm struct {
+	{{.entity.EntityTitleName}} models.{{.entity.EntityTitleName}} {{.entity.EntityJsonTag}}
 }
 
-func (f *{{.entity.EntityTitleName}}Form) IsCreate() bool {
-    return f.{{.entity.EntityTitleName}}.Id == 0
+func (f *{{.entity.EntityTitleName}}DetailForm) IsCreate() bool {
+	return f.{{.entity.EntityTitleName}}.Id == 0
 }
 
-func (f *{{.entity.EntityTitleName}}Form) Valid(validation *revel.Validation) bool { {{range $fieldIndex, $field := .entity.FieldList}}
+func (f *{{.entity.EntityTitleName}}DetailForm) Valid(validation *revel.Validation) bool { {{range $fieldIndex, $field := .entity.FieldList}}
 {{FieldValid $.entity $field}}{{end}}
-    return validation.HasErrors() == false
+	return validation.HasErrors() == false
 }
 
-func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Detail() revel.Result {
-    session := c.DbSession
+func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) DetailData() revel.Result {
+	db_session := c.DbSession
 
-    var {{.entity.EntityCamelCase}}Id int64
-    c.Params.Bind(&{{.entity.EntityCamelCase}}Id, "id")
+	var {{Underscore .entity.EntityCamelCase}}_id int64
+	c.Params.Bind(&{{Underscore .entity.EntityCamelCase}}_id, "id")
 
-    {{.entity.EntityCamelCase}} := new(models.{{.entity.EntityTitleName}})
-    if {{.entity.EntityCamelCase}}Id != 0 {
-        has, err := session.Id({{.entity.EntityCamelCase}}Id).Get({{.entity.EntityCamelCase}})
-        core.HandleError(err)
-        if has == false {
-            panic("指定的{{.entity.EntityChinese}}不存在！")
-        }
-    }
+	var {{Underscore .entity.EntityCamelCase}} models.{{.entity.EntityTitleName}}
+	if {{Underscore .entity.EntityCamelCase}}_id != 0 {
+		has, err := db_session.Id({{Underscore .entity.EntityCamelCase}}_id).Get(&{{Underscore .entity.EntityCamelCase}})
+		core.HandleError(err)
+		if has == false {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "指定的{{.entity.EntityChinese}}不存在！"})
+		}
+	}
 
-    form := new({{.entity.EntityTitleName}}Form)
-    form.{{.entity.EntityTitleName}} = *{{.entity.EntityCamelCase}}
-    c.UnbindToRenderArgs(form, "form")
+	var detail_form {{.entity.EntityTitleName}}DetailForm
+	detail_form.{{.entity.EntityTitleName}} = {{Underscore .entity.EntityCamelCase}}
 
-    return c.RenderTemplate("{{.entity.ModuleLowerCase}}/{{Underscore .entity.EntityCamelCase}}/{{Underscore .entity.EntityCamelCase}}_detail.html")
+	return c.RenderJson(detail_form)
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Result {
-    session := c.DbSession
+	db_session := c.DbSession
 
-    form := new({{.entity.EntityTitleName}}Form)
-    c.Params.Bind(form, "form")
+	var detail_form {{.entity.EntityTitleName}}DetailForm
+	err := json.Unmarshal(c.GetRequestBody(), &detail_form)
+	core.HandleError(err)
 
-    if form.Valid(c.Validation) == false {
-        return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage() })
-    }
+	if detail_form.Valid(c.Validation) == false {
+		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
+	}
 
-    {{.entity.EntityCamelCase}} := &form.{{.entity.EntityTitleName}}
+	{{Underscore .entity.EntityCamelCase}} := detail_form.{{.entity.EntityTitleName}}
 
-    var affected int64
-    var err error
-    if form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
+	var affected int64
+	var err error
+	if detail_form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
 {{CheckUniqueCreate $.entity $field}}{{end}}{{end}}
-        affected, err = session.Insert({{.entity.EntityCamelCase}})
-        core.HandleError(err)
-    } else { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
+		affected, err = db_session.Insert(&{{Underscore .entity.EntityCamelCase}})
+		core.HandleError(err)
+	} else { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
 {{CheckUniqueUpdate $.entity $field}}{{end}}{{end}}
-        affected, err = session.Id({{.entity.EntityCamelCase}}.Id).Update({{.entity.EntityCamelCase}})
-        core.HandleError(err)
+		affected, err = db_session.Id({{Underscore .entity.EntityCamelCase}}.Id).Update(&{{Underscore .entity.EntityCamelCase}})
+		core.HandleError(err)
 
-        if affected == 0 {
-            return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
-        }
-    }
+		if affected == 0 {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+		}
+	}
 
-    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
+	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
 }
 
 func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Delete() revel.Result {
-    session := c.DbSession
+	db_session := c.DbSession
 
-    {{.entity.EntityCamelCase}}IdList := make([]int64, 0)
-    c.Params.Bind(&{{.entity.EntityCamelCase}}IdList, "id_list")
+	{{Underscore .entity.EntityCamelCase}}_id_list := make([]int64, 0)
+	c.Params.Bind(&{{Underscore .entity.EntityCamelCase}}_id_list, "id_list")
 
-    affected, err := session.In("id", {{.entity.EntityCamelCase}}IdList).Delete(new(models.{{.entity.EntityTitleName}}))
-    core.HandleError(err)
+	affected, err := db_session.In("id", {{Underscore .entity.EntityCamelCase}}_id_list).Delete(new(models.{{.entity.EntityTitleName}}))
+	core.HandleError(err)
 
-    return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
+	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
 
 `

@@ -105,7 +105,7 @@ func (e Product) TableName() string {
 }
 
 func (e Product) ModelDesc() string {
-	return "verbose_name=货品信息"
+	return "verbose_name=货品信息,entity_json=product"
 }
 
 //---------------------------------------------------------------------------------------------------------------

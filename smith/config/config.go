@@ -4,7 +4,8 @@ import (
 	entity_models "matrix/modules/inventory/models"
 )
 
-var OutputBaseDir = "/home/wanglihua/gopath/src/matrix"
+//var OutputBaseDir = "/home/wanglihua/gopath/src/matrix"
+var OutputBaseDir = "/home/wanglihua/code_gen"
 
 var ModuleTitleName = entity_models.ModuleTitleName
 var ModuleLowerCase = entity_models.ModuleLowerCase
