@@ -255,6 +255,13 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
                         </a>
                         <b class="arrow"></b>
                     </li>
+                    <li id="inventory-stockiotype-menu" class="">
+                        <a href="/inventory/stock/io/type">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            出入库类型
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
                 </ul>
             </li>
             <li id="oa-menu" class="">

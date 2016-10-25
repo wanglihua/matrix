@@ -41,3 +41,9 @@ POST /inventory/capital/account/data/list     InventoryCapitalAccount.ListData
 POST /inventory/capital/account/data/detail   InventoryCapitalAccount.DetailData
 POST /inventory/capital/account/save          InventoryCapitalAccount.Save
 POST /inventory/capital/account/delete        InventoryCapitalAccount.Delete
+
+GET  /inventory/stock/io/type                 InventoryStockIoType.Index
+POST /inventory/stock/io/type/data/list       InventoryStockIoType.ListData
+POST /inventory/stock/io/type/data/detail     InventoryStockIoType.DetailData
+POST /inventory/stock/io/type/save            InventoryStockIoType.Save
+POST /inventory/stock/io/type/delete          InventoryStockIoType.Delete

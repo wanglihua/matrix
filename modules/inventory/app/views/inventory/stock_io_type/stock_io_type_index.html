@@ -1,0 +1,253 @@
+{%header "出入库类型" .%}
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="inventory-menu">仓储管理</li>
+            <li class="active" data-menu="inventory-stockiotype-menu">出入库类型</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList('#stockIoTypeList')">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-success btn-sm" @click="showStockIoTypeDetail(0)">
+                        <i class="ace-icon fa fa-plus"></i>
+                        新增
+                    </button>
+                    <button class="btn btn-danger btn-sm" @click="deleteStockIoType()">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                        删除
+                    </button>
+                </div>
+                <div>
+                    <table id="stockIoTypeList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="stockIoTypeDetailDialog">
+        <div class="modal-dialog" style="width: 580px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">出入库类型详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="stockIoTypeDetailForm">
+                                <input id="stock_io_type_id" name="detail.iotype.id" type="hidden" v-model.number="detail.iotype.id"/>
+                                <input id="stock_io_type_version" name="detail.iotype.version" type="hidden" v-model.number="detail.iotype.version"/>
+                                <div class="form-group">
+                                    <label for="type_cate" class="col-xs-2 control-label no-padding-right">类别</label>
+                                    <div class="col-xs-10">
+                                        <input id="type_cate" name="detail.iotype.type_cate" type="text" class="input-sm form-control" v-model="detail.iotype.type_cate"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="type_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                    <div class="col-xs-10">
+                                        <input id="type_name" name="detail.iotype.type_name" type="text" class="input-sm form-control" v-model="detail.iotype.type_name"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="type_code" class="col-xs-2 control-label no-padding-right">代码</label>
+                                    <div class="col-xs-10">
+                                        <input id="type_code" name="detail.iotype.type_code" type="text" class="input-sm form-control" v-model="detail.iotype.type_code"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bill_footer" class="col-xs-2 control-label no-padding-right">单据页脚</label>
+                                    <div class="col-xs-10">
+                                        <input id="bill_footer" name="detail.iotype.bill_footer" type="text" class="input-sm form-control" v-model="detail.iotype.bill_footer"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rec_pay" class="col-xs-2 control-label no-padding-right">形成应收应付</label>
+                                    <div class="col-xs-10">
+                                        <input id="rec_pay" name="detail.iotype.rec_pay" type="text" class="input-sm form-control" v-model="detail.iotype.rec_pay"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="type_state" class="col-xs-2 control-label no-padding-right">状态</label>
+                                    <div class="col-xs-10">
+                                        <input id="type_state" name="detail.iotype.type_state" type="text" class="input-sm form-control" v-model="detail.iotype.type_state"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveStockIoType()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "iotype": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#stockIoTypeList',
+                    {
+                        "sAjaxSource": '{%url "InventoryStockIoType.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "type_cate", "title": "类别", "bSearchable": true},
+                            {"mDataProp": "type_name", "title": "名称", "bSearchable": true},
+                            {"mDataProp": "type_code", "title": "代码", "bSearchable": true},
+                            {"mDataProp": "bill_footer", "title": "单据页脚", "bSearchable": true},
+                            {"mDataProp": "rec_pay", "title": "形成应收应付", "bSearchable": true},
+                            {"mDataProp": "type_state", "title": "状态", "bSearchable": true},
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                        ]
+                    }
+            );
+
+            $('#stockIoTypeList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showStockIoTypeDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#stockIoTypeList');
+            },
+            showStockIoTypeDetail: function (id) {
+                showMask("加载中...");
+                $.ajax({
+                           url: '{%url "InventoryStockIoType.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#stockIoTypeDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveStockIoType: function () {
+                showMask("提交中...");
+                var form = $("#stockIoTypeDetailForm");
+                var valid = validate(form, {
+                    'detail.iotype.type_cate': {
+                        required: true, minlength: 2, maxlength: 20
+                    },
+                    'detail.iotype.type_name': {
+                        required: true, minlength: 2, maxlength: 200
+                    },
+                    'detail.iotype.type_code': {
+                        required: true, minlength: 2, maxlength: 20
+                    },
+                    'detail.iotype.bill_footer': {
+                        required: false, minlength: 2, maxlength: 200
+                    },
+                    'detail.iotype.rec_pay': {
+                        required: false
+                    },
+                    'detail.iotype.type_state': {
+                        required: true, minlength: 1
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "InventoryStockIoType.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#stockIoTypeDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            deleteStockIoType: function () {
+                var id_list = [];
+                $('#stockIoTypeList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "InventoryStockIoType.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+

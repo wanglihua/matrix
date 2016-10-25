@@ -92,7 +92,7 @@ type Product struct {
 	StockUpperLimit core.NullInt    `xorm:"bigint null 'stock_upper_limit'" json:"stock_upper_limit" smith:"verbose_name=库存上限,min=0"`
 	Unit            string          `xorm:"nvarchar(50) notnull 'unit'" json:"unit" smith:"verbose_name=单位,min=1,max=10"`
 	CostPrice       core.NullInt    `xorm:"bigint null 'cost_price'" json:"cost_price" smith:"verbose_name=成本价,min=0"`
-	RetailPrice     int    `xorm:"bigint null 'retail_price'" json:"retail_price" smith:"verbose_name=零售价,min=0"`
+	RetailPrice     int             `xorm:"bigint null 'retail_price'" json:"retail_price" smith:"verbose_name=零售价,min=0"`
 	State           string          `xorm:"nvarchar(10) notnull 'state'" json:"state" smith:"verbose_name=状态,min=1"`
 
 	CreateTime      core.Time       `xorm:"created notnull 'create_time'" json:"create_time"`
@@ -170,3 +170,30 @@ func (e CapitalAccount) ModelDesc() string {
 }
 
 //---------------------------------------------------------------------------------------------------------------
+
+//stock in out type
+type StockIoType struct {
+	Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Cate       string           `xorm:"nvarchar(50) notnull 'type_cate'" json:"type_cate" smith:"verbose_name=类别,min=2,max=20"` //出库 或者 入库
+	Name       string           `xorm:"nvarchar(255) notnull unique 'type_name'" json:"type_name" smith:"verbose_name=名称,min=2,max=200"`
+	Code       string           `xorm:"nvarchar(50) notnull unique 'type_code'" json:"type_code" smith:"verbose_name=代码,min=2,max=20"`
+	Footer     core.NullString  `xorm:"nvarchar(255) null 'bill_footer'" json:"bill_footer" smith:"verbose_name=单据页脚,min=2,max=200"`
+	RecPay     core.NullBool    `xorm:"nvarchar(255) null 'rec_pay'" json:"rec_pay" smith:"verbose_name=形成应收应付"`
+	State      string           `xorm:"nvarchar(255) notnull 'type_state'" json:"type_state" smith:"verbose_name=状态,min=1"`
+
+	CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int              `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e StockIoType) TableName() string {
+	return TablePrefix + "stock_io_type"
+}
+
+func (e StockIoType) ModelDesc() string {
+	return "verbose_name=出入库类型,entity_json=iotype,route=stock/io/type"
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
