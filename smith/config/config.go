@@ -13,5 +13,5 @@ var ModuleLowerCase = entity_models.ModuleLowerCase
 var ModuleChinese = entity_models.ModuleChinese
 var TablePrefix = entity_models.TablePrefix
 var ModelList = []interface{}{
-	entity_models.CapitalAccount{},
+	entity_models.Handler{},
 }

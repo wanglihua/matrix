@@ -262,6 +262,20 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
                         </a>
                         <b class="arrow"></b>
                     </li>
+                    <li id="inventory-paytype-menu" class="">
+                        <a href="/inventory/pay/type">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            收付款类型
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
+                    <li id="inventory-handler-menu" class="">
+                        <a href="/inventory/handler">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            经手人
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
                 </ul>
             </li>
             <li id="oa-menu" class="">

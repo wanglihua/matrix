@@ -197,3 +197,47 @@ func (e StockIoType) ModelDesc() string {
 
 //---------------------------------------------------------------------------------------------------------------
 
+//payment type
+type PayType struct {
+	Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Cate       string           `xorm:"nvarchar(50) notnull 'type_cate'" json:"type_cate" smith:"verbose_name=类别,min=2,max=20"` //收款 或者 付款
+	Name       string           `xorm:"nvarchar(255) notnull unique 'type_name'" json:"type_name" smith:"verbose_name=名称,min=2,max=200"`
+	Prefix     string           `xorm:"nvarchar(20) notnull unique 'prefix'" json:"prefix" smith:"verbose_name=单据前缀,min=2,max=10"`
+	Remark     core.NullString  `xorm:"nvarchar(500) null 'remark'" json:"remark" smith:"verbose_name=描述,min=2,max=300"`
+	State      string           `xorm:"nvarchar(255) notnull 'type_state'" json:"type_state" smith:"verbose_name=状态,min=1"`
+
+	CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int              `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e PayType) TableName() string {
+	return TablePrefix + "pay_type"
+}
+
+func (e PayType) ModelDesc() string {
+	return "verbose_name=收付款类型,entity_json=paytype,route=pay/type"
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+type Handler struct {
+	Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Name       string           `xorm:"nvarchar(255) notnull unique index 'handler_name'" json:"handler_name" smith:"verbose_name=名称,min=2,max=100"`
+	Desc       core.NullString  `xorm:"nvarchar(500) null 'handler_desc'" json:"handler_desc" smith:"verbose_name=描述,min=2,max=300"`
+	State      string           `xorm:"nvarchar(255) notnull 'handler_state'" json:"handler_state" smith:"verbose_name=状态,min=1"`
+
+	CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int              `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e Handler) TableName() string {
+	return TablePrefix + "handler"
+}
+
+func (e Handler) ModelDesc() string {
+	return "verbose_name=经手人,entity_json=handler,route=handler"
+}

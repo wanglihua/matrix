@@ -47,3 +47,15 @@ POST /inventory/stock/io/type/data/list       InventoryStockIoType.ListData
 POST /inventory/stock/io/type/data/detail     InventoryStockIoType.DetailData
 POST /inventory/stock/io/type/save            InventoryStockIoType.Save
 POST /inventory/stock/io/type/delete          InventoryStockIoType.Delete
+
+GET  /inventory/pay/type                      InventoryPayType.Index
+POST /inventory/pay/type/data/list            InventoryPayType.ListData
+POST /inventory/pay/type/data/detail          InventoryPayType.DetailData
+POST /inventory/pay/type/save                 InventoryPayType.Save
+POST /inventory/pay/type/delete               InventoryPayType.Delete
+
+GET  /inventory/handler                       InventoryHandler.Index
+POST /inventory/handler/data/list             InventoryHandler.ListData
+POST /inventory/handler/data/detail           InventoryHandler.DetailData
+POST /inventory/handler/save                  InventoryHandler.Save
+POST /inventory/handler/delete                InventoryHandler.Delete
