@@ -35,3 +35,9 @@ POST /inventory/product/data/list             InventoryProduct.ListData
 POST /inventory/product/data/detail           InventoryProduct.DetailData
 POST /inventory/product/save                  InventoryProduct.Save
 POST /inventory/product/delete                InventoryProduct.Delete
+
+GET  /inventory/capital/account               InventoryCapitalAccount.Index
+POST /inventory/capital/account/data/list     InventoryCapitalAccount.ListData
+POST /inventory/capital/account/data/detail   InventoryCapitalAccount.DetailData
+POST /inventory/capital/account/save          InventoryCapitalAccount.Save
+POST /inventory/capital/account/delete        InventoryCapitalAccount.Delete

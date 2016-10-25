@@ -338,7 +338,7 @@ func TemplateFuncCheckUniqueCreate(entity Entity, field Field) string {
 		if isSingleUnique {
 			//是 单独 unique
 
-			template := `		{{.fieldCamelCase}}_count, err := db_session.Where("{{.field.Column}} = ?", {{.entity.EntityCamelCase}}.{{.field.Name}}).Count(&{{Underscore .entity.EntityCamelCase}})
+			template := `		{{.fieldCamelCase}}_count, err := db_session.Where("{{.field.Column}} = ?", {{Underscore .entity.EntityCamelCase}}.{{.field.Name}}).Count(&{{Underscore .entity.EntityCamelCase}})
 		core.HandleError(err)
 		if {{.fieldCamelCase}}_count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，{{.field.VerboseName}}已存在！" })
@@ -365,13 +365,13 @@ func TemplateFuncCheckUniqueCreate(entity Entity, field Field) string {
 
 				if isFirst {
 					fieldsCompare += uniqueField.Column + " = ?"
-					fieldsValue += entity.EntityCamelCase + "." + uniqueField.Name
+					fieldsValue += ToUnderscore(entity.EntityCamelCase) + "." + uniqueField.Name
 					chineseNames += uniqueField.VerboseName
 
 					isFirst = false
 				} else {
 					fieldsCompare += " and " + uniqueField.Column + " = ?"
-					fieldsValue += ", " + entity.EntityCamelCase + "." + uniqueField.Name
+					fieldsValue += ", " + ToUnderscore(entity.EntityCamelCase) + "." + uniqueField.Name
 					chineseNames += "、" + uniqueField.VerboseName
 				}
 
@@ -437,7 +437,7 @@ func TemplateFuncCheckUniqueUpdate(entity Entity, field Field) string {
 		if isSingleUnique {
 			//是 单独 unique
 
-			template := `		{{.fieldCamelCase}}_count, err := db_session.Where("id <> ? and {{.field.Column}} = ?", {{.entity.EntityCamelCase}}.Id, {{.entity.EntityCamelCase}}.{{.field.Name}}).Count(&{{Underscore .entity.EntityCamelCase}})
+			template := `		{{.fieldCamelCase}}_count, err := db_session.Where("id <> ? and {{.field.Column}} = ?", {{Underscore .entity.EntityCamelCase}}.Id, {{Underscore .entity.EntityCamelCase}}.{{.field.Name}}).Count(&{{Underscore .entity.EntityCamelCase}})
 		core.HandleError(err)
 		if {{.fieldCamelCase}}_count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，{{.field.VerboseName}}已存在！" })
@@ -455,7 +455,7 @@ func TemplateFuncCheckUniqueUpdate(entity Entity, field Field) string {
 		} else {
 			//是 组合 unique
 			fieldsCompare := "id <> ?"
-			fieldsValue := entity.EntityCamelCase + ".Id"
+			fieldsValue := ToUnderscore(entity.EntityCamelCase) + ".Id"
 			chineseNames := ""
 
 			isFirst := true
@@ -463,7 +463,7 @@ func TemplateFuncCheckUniqueUpdate(entity Entity, field Field) string {
 				compositeUniquekey := entity.ModuleTitleName + "_" + entity.EntityTitleName + "_" + uniqueField.Name
 
 				fieldsCompare += " and " + uniqueField.Column + " = ?"
-				fieldsValue += ", " + entity.EntityCamelCase + "." + uniqueField.Name
+				fieldsValue += ", " + ToUnderscore(entity.EntityCamelCase) + "." + uniqueField.Name
 
 				if isFirst {
 					chineseNames += uniqueField.VerboseName

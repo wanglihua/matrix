@@ -147,3 +147,26 @@ type StorageLoc struct {
 func (e StorageLoc) TableName() string {
 	return TablePrefix + "storage_loc"
 }
+
+//---------------------------------------------------------------------------------------------------------------
+
+type CapitalAccount struct {
+	Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Name       string           `xorm:"nvarchar(255) notnull unique 'account_name'" json:"account_name" smith:"verbose_name=名称,min=2,max=200"`
+	Remark     core.NullString  `xorm:"nvarchar(500) null 'remark'" json:"remark" smith:"verbose_name=描述,min=2,max=300"`
+
+	CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int              `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e CapitalAccount) TableName() string {
+	return TablePrefix + "capital_account"
+}
+
+func (e CapitalAccount) ModelDesc() string {
+	return "verbose_name=资金账户,entity_json=ca,route=capital/account"
+}
+
+//---------------------------------------------------------------------------------------------------------------

@@ -5,7 +5,7 @@ import (
 	"github.com/revel/revel"
 	"html/template"
 	"matrix/app/layout"
-	"strconv"
+	"fmt"
 )
 
 func registerTags() {
@@ -39,4 +39,3 @@ func footerTemplateFunc() template.HTML {
 func intToStrTemplateFunc(val interface{}) string {
 	return fmt.Sprintf("%d", val)
 }
-

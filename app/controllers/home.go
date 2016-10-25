@@ -39,6 +39,7 @@ func (c Home) SyncDbPost() revel.Result {
 	modelList = append(modelList, &inventoryModels.Product{})
 	modelList = append(modelList, &inventoryModels.Stock{})
 	modelList = append(modelList, &inventoryModels.StorageLoc{})
+	modelList = append(modelList, &inventoryModels.CapitalAccount{})
 	modelList = append(modelList, &oaModels.Worklog{})
 
 	db.Engine.Sync2(modelList...)

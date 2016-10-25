@@ -43,7 +43,7 @@ var ModelList = []interface{}{
 	//}
 
 	//func (e Entity) ModelDesc() string {
-	//	return "verbose_name=中文名;entity_json=product;route=inventory/product"
+	//	return "verbose_name=中文名;entity_json=product_cate;route=product/cate"
 	//}
 */
 
