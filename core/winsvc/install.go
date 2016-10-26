@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"golang.org/x/sys/windows/svc/eventlog"
 	"golang.org/x/sys/windows/svc/mgr"
 )
 
@@ -56,16 +55,11 @@ func InstallService(name, desc string) error {
 		s.Close()
 		return fmt.Errorf("service %s already exists", name)
 	}
-	s, err = m.CreateService(name, exepath, mgr.Config{DisplayName: desc}, "is", "auto-started")
+	s, err = m.CreateService(name, exepath, mgr.Config{DisplayName: desc, StartType: 1})
 	if err != nil {
 		return err
 	}
 	defer s.Close()
-	err = eventlog.InstallAsEventCreate(name, eventlog.Error|eventlog.Warning|eventlog.Info)
-	if err != nil {
-		s.Delete()
-		return fmt.Errorf("SetupEventLogSource() failed: %s", err)
-	}
 	return nil
 }
 
@@ -83,10 +77,6 @@ func RemoveService(name string) error {
 	err = s.Delete()
 	if err != nil {
 		return err
-	}
-	err = eventlog.Remove(name)
-	if err != nil {
-		return fmt.Errorf("RemoveEventLogSource() failed: %s", err)
 	}
 	return nil
 }

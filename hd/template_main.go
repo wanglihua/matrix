@@ -43,6 +43,32 @@ func main() {
 
     flag.Parse()
 
+	isIntSess, err := svc.IsAnInteractiveSession()
+	if err != nil {
+		log.Fatalf("failed to determine if we are running in an interactive session: %v", err)
+	}
+	if isIntSess == false {
+		run_web()
+	}
+
+	if strings.TrimSpace(*service_action) == "" {
+		run_web()
+	} else if *service_action == "install" {
+		winsvc.InstallService(app.AppName, app.AppName)
+	} else if *service_action == "remove" {
+		winsvc.RemoveService(app.AppName)
+	} else if *service_action == "start" {
+		winsvc.StartService(app.AppName)
+	} else if *service_action == "stop" {
+		winsvc.StopService(app.AppName)
+	} else if *service_action == "pause" {
+		winsvc.PauseService(app.AppName)
+	} else if *service_action == "continue" {
+		winsvc.ContinueService(app.AppName)
+	}
+}
+
+func run_web() {
     currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
     if err != nil {
         log.Fatal(err)
@@ -86,33 +112,6 @@ func main() {
         (*{{index $.ImportPaths .ImportPath}}.{{.StructName}})(nil),{{end}}
     }
 
-
-	isIntSess, err := svc.IsAnInteractiveSession()
-	if err != nil {
-		log.Fatalf("failed to determine if we are running in an interactive session: %v", err)
-	}
-	if isIntSess == false {
-		run_web()
-	}
-
-	if strings.TrimSpace(*service_action) == "" {
-		run_web()
-	} else if *service_action == "install" {
-		winsvc.InstallService(app.AppName, app.AppName)
-	} else if *service_action == "remove" {
-		winsvc.RemoveService(app.AppName)
-	} else if *service_action == "start" {
-		winsvc.StartService(app.AppName)
-	} else if *service_action == "stop" {
-		winsvc.StopService(app.AppName)
-	} else if *service_action == "pause" {
-		winsvc.PauseService(app.AppName)
-	} else if *service_action == "continue" {
-		winsvc.ContinueService(app.AppName)
-	}
-}
-
-func run_web() {
 	db.InitDatabase()
 
 	if revel.DevMode == false {
