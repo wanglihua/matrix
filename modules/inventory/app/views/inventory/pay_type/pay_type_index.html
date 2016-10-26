@@ -1,0 +1,263 @@
+{%header "收付款类型" .%}
+<div id="page">
+   <div class="breadcrumbs" id="breadcrumbs">
+       <ul class="breadcrumb">
+           <li>
+               <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+           </li>
+           <li class="parent" data-menu="inventory-menu">仓储管理</li>
+           <li class="active" data-menu="inventory-paytype-menu">收付款类型</li>
+       </ul>
+   </div>
+   <div class="page-content">
+       <div class="row">
+           <div class="col-xs-12" style="padding: 0;">
+               <div class="gridToolBar clearfix">
+                   <button class="btn btn-primary btn-sm" @click="reloadList('#payTypeList')">
+                       <i class="ace-icon fa fa-refresh"></i>
+                       刷新
+                   </button>
+                   <button class="btn btn-success btn-sm" @click="showPayTypeDetail(0)">
+                       <i class="ace-icon fa fa-plus"></i>
+                       新增
+                   </button>
+                   <button class="btn btn-danger btn-sm" @click="deletePayType()">
+                       <i class="ace-icon fa fa-trash-o"></i>
+                       删除
+                   </button>
+               </div>
+               <div>
+                   <table id="payTypeList" class="table table-striped table-bordered table-hover"></table>
+               </div>
+           </div>
+       </div>
+   </div>
+    <div class="modal fade" id="payTypeDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">收付款类型详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="payTypeDetailForm">
+                                <input id="pay_type_id" name="detail.paytype.id" type="hidden" v-model.number="detail.paytype.id"/>
+                                <input id="pay_type_version" name="detail.paytype.version" type="hidden" v-model.number="detail.paytype.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="type_cate" class="col-xs-2 control-label no-padding-right">类别</label>
+                                            <div class="col-xs-10">
+                                                <input id="type_cate" name="detail.paytype.type_cate" type="text" class="input-sm form-control" v-model="detail.paytype.type_cate"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="type_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                            <div class="col-xs-10">
+                                                <input id="type_name" name="detail.paytype.type_name" type="text" class="input-sm form-control" v-model="detail.paytype.type_name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="prefix" class="col-xs-2 control-label no-padding-right">单据前缀</label>
+                                            <div class="col-xs-10">
+                                                <input id="prefix" name="detail.paytype.prefix" type="text" class="input-sm form-control" v-model="detail.paytype.prefix"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="remark" class="col-xs-2 control-label no-padding-right">描述</label>
+                                            <div class="col-xs-10">
+                                                <input id="remark" name="detail.paytype.remark" type="text" class="input-sm form-control" v-model="detail.paytype.remark"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="type_state" class="col-xs-2 control-label no-padding-right">状态</label>
+                                            <div class="col-xs-10">
+                                                <input id="type_state" name="detail.paytype.type_state" type="text" class="input-sm form-control" v-model="detail.paytype.type_state"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="savePayType()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "paytype": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#payTypeList',
+                    {
+                        "sAjaxSource": '{%url "InventoryPayType.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "type_cate", "title": "类别", "bSearchable": true },
+                            {"mDataProp": "type_name", "title": "名称", "bSearchable": true },
+                            {"mDataProp": "prefix", "title": "单据前缀", "bSearchable": true },
+                            {"mDataProp": "remark", "title": "描述", "bSearchable": true },
+                            {"mDataProp": "type_state", "title": "状态", "bSearchable": true },
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                        ]
+                   }
+            );
+
+            $('#payTypeList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showPayTypeDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#payTypeList');
+            },
+            showPayTypeDetail: function (id) {
+                showMask("加载中...");
+                $.ajax({
+                           url: '{%url "InventoryPayType.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#payTypeDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            savePayType: function () {
+                showMask("提交中...");
+                var form = $("#payTypeDetailForm");
+                var valid = validate(form, {  
+                    'detail.paytype.type_cate': {
+                        required: true, minlength: 2, maxlength: 20
+                    },
+                    'detail.paytype.type_name': {
+                        required: true, minlength: 2, maxlength: 200
+                    },
+                    'detail.paytype.prefix': {
+                        required: true, minlength: 2, maxlength: 10
+                    },
+                    'detail.paytype.remark': {
+                        required: false, minlength: 2, maxlength: 300
+                    },
+                    'detail.paytype.type_state': {
+                        required: true, minlength: 1
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "InventoryPayType.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#payTypeDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            deletePayType: function () {
+                var id_list = [];
+                $('#payTypeList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "InventoryPayType.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+

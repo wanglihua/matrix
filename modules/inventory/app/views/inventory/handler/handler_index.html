@@ -1,0 +1,233 @@
+{%header "经手人" .%}
+<div id="page">
+   <div class="breadcrumbs" id="breadcrumbs">
+       <ul class="breadcrumb">
+           <li>
+               <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+           </li>
+           <li class="parent" data-menu="inventory-menu">仓储管理</li>
+           <li class="active" data-menu="inventory-handler-menu">经手人</li>
+       </ul>
+   </div>
+   <div class="page-content">
+       <div class="row">
+           <div class="col-xs-12" style="padding: 0;">
+               <div class="gridToolBar clearfix">
+                   <button class="btn btn-primary btn-sm" @click="reloadList('#handlerList')">
+                       <i class="ace-icon fa fa-refresh"></i>
+                       刷新
+                   </button>
+                   <button class="btn btn-success btn-sm" @click="showHandlerDetail(0)">
+                       <i class="ace-icon fa fa-plus"></i>
+                       新增
+                   </button>
+                   <button class="btn btn-danger btn-sm" @click="deleteHandler()">
+                       <i class="ace-icon fa fa-trash-o"></i>
+                       删除
+                   </button>
+               </div>
+               <div>
+                   <table id="handlerList" class="table table-striped table-bordered table-hover"></table>
+               </div>
+           </div>
+       </div>
+   </div>
+    <div class="modal fade" id="handlerDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">经手人详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="handlerDetailForm">
+                                <input id="handler_id" name="detail.handler.id" type="hidden" v-model.number="detail.handler.id"/>
+                                <input id="handler_version" name="detail.handler.version" type="hidden" v-model.number="detail.handler.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="handler_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                            <div class="col-xs-10">
+                                                <input id="handler_name" name="detail.handler.handler_name" type="text" class="input-sm form-control" v-model="detail.handler.handler_name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="handler_desc" class="col-xs-2 control-label no-padding-right">描述</label>
+                                            <div class="col-xs-10">
+                                                <input id="handler_desc" name="detail.handler.handler_desc" type="text" class="input-sm form-control" v-model="detail.handler.handler_desc"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="handler_state" class="col-xs-2 control-label no-padding-right">状态</label>
+                                            <div class="col-xs-10">
+                                                <input id="handler_state" name="detail.handler.handler_state" type="text" class="input-sm form-control" v-model="detail.handler.handler_state"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveHandler()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "handler": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#handlerList',
+                    {
+                        "sAjaxSource": '{%url "InventoryHandler.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "handler_name", "title": "名称", "bSearchable": true },
+                            {"mDataProp": "handler_desc", "title": "描述", "bSearchable": true },
+                            {"mDataProp": "handler_state", "title": "状态", "bSearchable": true },
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                        ]
+                   }
+            );
+
+            $('#handlerList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showHandlerDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#handlerList');
+            },
+            showHandlerDetail: function (id) {
+                showMask("加载中...");
+                $.ajax({
+                           url: '{%url "InventoryHandler.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#handlerDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveHandler: function () {
+                showMask("提交中...");
+                var form = $("#handlerDetailForm");
+                var valid = validate(form, {  
+                    'detail.handler.handler_name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.handler.handler_desc': {
+                        required: false, minlength: 2, maxlength: 300
+                    },
+                    'detail.handler.handler_state': {
+                        required: true, minlength: 1
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "InventoryHandler.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#handlerDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            deleteHandler: function () {
+                var id_list = [];
+                $('#handlerList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "InventoryHandler.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+
