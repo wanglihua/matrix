@@ -7,68 +7,36 @@
 package winsvc
 
 import (
-	"fmt"
-	"time"
-
-	"golang.org/x/sys/windows/svc"
-	"golang.org/x/sys/windows/svc/mgr"
+	"path/filepath"
+	"os/exec"
 )
 
 func StartService(name string) error {
-	m, err := mgr.Connect()
+	exe_path_file, err := get_exe_Path_file()
 	if err != nil {
 		return err
 	}
-	defer m.Disconnect()
-	s, err := m.OpenService(name)
-	if err != nil {
-		return fmt.Errorf("could not access service: %v", err)
-	}
-	defer s.Close()
-	err = s.Start("is", "manual-started")
-	if err != nil {
-		return fmt.Errorf("could not start service: %v", err)
-	}
-	return nil
+	exe_path := filepath.Dir(exe_path_file)
+	cmd := exec.Command(exe_path + "/tools/nssm.exe", "start", name, exe_path_file)
+	return cmd.Run()
 }
 
 func StopService(name string) error {
-	return  control_service(name, svc.Stop, svc.Stopped)
-}
-
-func PauseService(name string) error {
-	return  control_service(name, svc.Pause, svc.Paused)
-}
-
-func ContinueService(name string) error {
-	return  control_service(name, svc.Continue, svc.Running)
-}
-
-func control_service(name string, c svc.Cmd, to svc.State) error {
-	m, err := mgr.Connect()
+	exe_path_file, err := get_exe_Path_file()
 	if err != nil {
 		return err
 	}
-	defer m.Disconnect()
-	s, err := m.OpenService(name)
+	exe_path := filepath.Dir(exe_path_file)
+	cmd := exec.Command(exe_path + "/tools/nssm.exe", "stop", name, exe_path_file)
+	return cmd.Run()
+}
+
+func RestartService(name string) error {
+	exe_path_file, err := get_exe_Path_file()
 	if err != nil {
-		return fmt.Errorf("could not access service: %v", err)
+		return err
 	}
-	defer s.Close()
-	status, err := s.Control(c)
-	if err != nil {
-		return fmt.Errorf("could not send control=%d: %v", c, err)
-	}
-	timeout := time.Now().Add(10 * time.Second)
-	for status.State != to {
-		if timeout.Before(time.Now()) {
-			return fmt.Errorf("timeout waiting for service to go to state=%d", to)
-		}
-		time.Sleep(300 * time.Millisecond)
-		status, err = s.Query()
-		if err != nil {
-			return fmt.Errorf("could not retrieve service status: %v", err)
-		}
-	}
-	return nil
+	exe_path := filepath.Dir(exe_path_file)
+	cmd := exec.Command(exe_path + "/tools/nssm.exe", "restart", name, exe_path_file)
+	return cmd.Run()
 }

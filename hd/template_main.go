@@ -4,7 +4,6 @@ const MAIN_TEMPLATE = `package main
 
 import (
     "runtime/debug"
-    "flag"
     "reflect"
     "github.com/revel/revel"{{range $k, $v := $.ImportPaths}}
     {{$v}} "{{$k}}"{{end}}
@@ -18,7 +17,6 @@ import (
 	"{{.ImportPath}}/core/winsvc"
     "fmt"
     "strconv"
-	"golang.org/x/sys/windows/svc"
 	"strings"
 )
 
@@ -60,28 +58,35 @@ func main() {
 		}
 	}
 
-	isIntSess, err := svc.IsAnInteractiveSession()
-	if err != nil {
-		log.Fatalf("failed to determine if we are running in an interactive session: %v", err)
-	}
-	if isIntSess == false {
-		run_web()
-	}
-
+	var err error
 	if strings.TrimSpace(service_action) == "" {
+		show_cmd_usage()
 		run_web()
 	} else if service_action == "install" {
-		winsvc.InstallService(app.AppName, app.AppName)
+		err = winsvc.InstallService(app.AppName, app.AppName)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else if service_action == "remove" {
-		winsvc.RemoveService(app.AppName)
+		err = winsvc.RemoveService(app.AppName)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else if service_action == "start" {
-		winsvc.StartService(app.AppName)
+		err = winsvc.StartService(app.AppName)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else if service_action == "stop" {
-		winsvc.StopService(app.AppName)
-	} else if service_action == "pause" {
-		winsvc.PauseService(app.AppName)
-	} else if service_action == "continue" {
-		winsvc.ContinueService(app.AppName)
+		err = winsvc.StopService(app.AppName)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else if service_action == "restart" {
+		err = winsvc.RestartService(app.AppName)
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else {
 		show_cmd_usage()
 		os.Exit(0)
@@ -103,10 +108,9 @@ func show_cmd_usage() {
   启动应用Windows服务
 5 %[1]s service stop
   停止应用Windows服务
-6 %[1]s service pause
-  暂停应用Windows服务
-7 %[1]s service continue
-  继续应用Windows服务
+6 %[1]s service restart
+  重启应用Windows服务
+
 ` + "`" + `
 	fmt.Printf(usage, file_name)
 }

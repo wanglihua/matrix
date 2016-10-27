@@ -9,12 +9,11 @@ package winsvc
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
-
-	"golang.org/x/sys/windows/svc/mgr"
 )
 
-func get_exe_Path() (string, error) {
+func get_exe_Path_file() (string, error) {
 	prog := os.Args[0]
 	p, err := filepath.Abs(prog)
 	if err != nil {
@@ -41,42 +40,21 @@ func get_exe_Path() (string, error) {
 }
 
 func InstallService(name, desc string) error {
-	exepath, err := get_exe_Path()
+	exe_path_file, err := get_exe_Path_file()
 	if err != nil {
 		return err
 	}
-	m, err := mgr.Connect()
-	if err != nil {
-		return err
-	}
-	defer m.Disconnect()
-	s, err := m.OpenService(name)
-	if err == nil {
-		s.Close()
-		return fmt.Errorf("service %s already exists", name)
-	}
-	s, err = m.CreateService(name, exepath, mgr.Config{DisplayName: desc, StartType: 1})
-	if err != nil {
-		return err
-	}
-	defer s.Close()
-	return nil
+	exe_path := filepath.Dir(exe_path_file)
+	cmd := exec.Command(exe_path + "/tools/nssm.exe", "install", name, exe_path_file)
+	return cmd.Run()
 }
 
 func RemoveService(name string) error {
-	m, err := mgr.Connect()
+	exe_path_file, err := get_exe_Path_file()
 	if err != nil {
 		return err
 	}
-	defer m.Disconnect()
-	s, err := m.OpenService(name)
-	if err != nil {
-		return fmt.Errorf("service %s is not installed", name)
-	}
-	defer s.Close()
-	err = s.Delete()
-	if err != nil {
-		return err
-	}
-	return nil
+	exe_path := filepath.Dir(exe_path_file)
+	cmd := exec.Command(exe_path + "/tools/nssm.exe", "remove", name, "confirm")
+	return cmd.Run()
 }
