@@ -23,10 +23,10 @@ import (
 )
 
 var (
-	service_action *string = flag.String("service", "", "windows service action to perform: install remove start stop pause continue")
-	runMode        *string = flag.String("runMode", "prod", "Run mode: dev prod")
+	service_action string = ""
+	runMode        string = "prod"
 	port           int = 0
-	importPath     string = "matrix"
+	importPath     string = "{{.ImportPath}}"
 	srcPath        string = ""
 
     // So compiler won't complain if the generated code doesn't reference reflect package...
@@ -41,7 +41,24 @@ func main() {
         }
     }()
 
-    flag.Parse()
+	arg_len := len(os.Args)
+	if arg_len == 1 {
+		service_action = ""
+	} else if arg_len != 3 {
+		show_cmd_usage()
+		os.Exit(0)
+	} else  { // arg_len == 3
+		if strings.ToLower(os.Args[1]) != "service" {
+			show_cmd_usage()
+			os.Exit(0)
+		}
+
+		service_action = strings.ToLower(os.Args[2])
+		if service_action == "debug" {
+			service_action = ""
+			runMode = "dev"
+		}
+	}
 
 	isIntSess, err := svc.IsAnInteractiveSession()
 	if err != nil {
@@ -51,21 +68,47 @@ func main() {
 		run_web()
 	}
 
-	if strings.TrimSpace(*service_action) == "" {
+	if strings.TrimSpace(service_action) == "" {
 		run_web()
-	} else if *service_action == "install" {
+	} else if service_action == "install" {
 		winsvc.InstallService(app.AppName, app.AppName)
-	} else if *service_action == "remove" {
+	} else if service_action == "remove" {
 		winsvc.RemoveService(app.AppName)
-	} else if *service_action == "start" {
+	} else if service_action == "start" {
 		winsvc.StartService(app.AppName)
-	} else if *service_action == "stop" {
+	} else if service_action == "stop" {
 		winsvc.StopService(app.AppName)
-	} else if *service_action == "pause" {
+	} else if service_action == "pause" {
 		winsvc.PauseService(app.AppName)
-	} else if *service_action == "continue" {
+	} else if service_action == "continue" {
 		winsvc.ContinueService(app.AppName)
+	} else {
+		show_cmd_usage()
+		os.Exit(0)
 	}
+}
+
+func show_cmd_usage() {
+	_, file_name :=  filepath.Split(os.Args[0])
+	file_name = strings.TrimSuffix(file_name, filepath.Ext(file_name))
+
+	usage := ` + "`" + `命令行用法：
+1 %[1]s
+  直接运行应用，不安装成Windows服务
+2 %[1]s service install
+  将应用安装成Windows服务
+3 %[1]s service remove
+  移除应用已安装的Windows服务
+4 %[1]s service start
+  启动应用Windows服务
+5 %[1]s service stop
+  停止应用Windows服务
+6 %[1]s service pause
+  暂停应用Windows服务
+7 %[1]s service continue
+  继续应用Windows服务
+` + "`" + `
+	fmt.Printf(usage, file_name)
 }
 
 func run_web() {
@@ -75,7 +118,7 @@ func run_web() {
     }
     lic_file_path := currentDir + string(os.PathSeparator) + "app.lic"
 
-    if *runMode == "prod" {
+    if runMode == "prod" {
         importPath = "{{.ImportPath}}"
         srcPath = currentDir
         lic_file_path = currentDir + string(os.PathSeparator) + "{{.ImportPath}}" + string(os.PathSeparator) + "app.lic"
@@ -83,7 +126,7 @@ func run_web() {
 
     lic.ValidAppLic(app.AppName, lic_file_path)
 
-    revel.Init(*runMode, importPath, srcPath)
+    revel.Init(runMode, importPath, srcPath)
     revel.INFO.Println("Running revel server")
 
     {{range $i, $c := .Controllers}}
