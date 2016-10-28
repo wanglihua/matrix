@@ -1,4 +1,5 @@
 *.exe
+!nssm.exe
 *.exe~
 .idea
 .svn
@@ -8,4 +9,3 @@ test-results/
 /main.go
 /app/routes/routes.go
 /*.db
-

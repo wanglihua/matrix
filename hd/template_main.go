@@ -63,27 +63,27 @@ func main() {
 		show_cmd_usage()
 		run_web()
 	} else if service_action == "install" {
-		err = winsvc.InstallService(app.AppName, app.AppName)
+		err = winsvc.InstallService(app.AppName, app.AppName, "{{.ImportPath}}")
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "remove" {
-		err = winsvc.RemoveService(app.AppName)
+		err = winsvc.RemoveService(app.AppName, "{{.ImportPath}}")
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "start" {
-		err = winsvc.StartService(app.AppName)
+		err = winsvc.StartService(app.AppName, "{{.ImportPath}}")
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "stop" {
-		err = winsvc.StopService(app.AppName)
+		err = winsvc.StopService(app.AppName, "{{.ImportPath}}")
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "restart" {
-		err = winsvc.RestartService(app.AppName)
+		err = winsvc.RestartService(app.AppName, "{{.ImportPath}}")
 		if err != nil {
 			log.Fatal(err)
 		}
