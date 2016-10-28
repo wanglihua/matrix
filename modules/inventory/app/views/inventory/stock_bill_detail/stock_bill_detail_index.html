@@ -1,0 +1,338 @@
+{%header "出入库单详细" .%}
+<div id="page">
+   <div class="breadcrumbs" id="breadcrumbs">
+       <ul class="breadcrumb">
+           <li>
+               <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+           </li>
+           <li class="parent" data-menu="inventory-menu">仓储管理</li>
+           <li class="active" data-menu="inventory-stockbilldetail-menu">出入库单详细</li>
+       </ul>
+   </div>
+   <div class="page-content">
+       <div class="row">
+           <div class="col-xs-12" style="padding: 0;">
+               <div class="gridToolBar clearfix">
+                   <button class="btn btn-primary btn-sm" @click="reloadList('#stockBillDetailList')">
+                       <i class="ace-icon fa fa-refresh"></i>
+                       刷新
+                   </button>
+                   <button class="btn btn-success btn-sm" @click="showStockBillDetailDetail(0)">
+                       <i class="ace-icon fa fa-plus"></i>
+                       新增
+                   </button>
+                   <button class="btn btn-danger btn-sm" @click="deleteStockBillDetail()">
+                       <i class="ace-icon fa fa-trash-o"></i>
+                       删除
+                   </button>
+               </div>
+               <div>
+                   <table id="stockBillDetailList" class="table table-striped table-bordered table-hover"></table>
+               </div>
+           </div>
+       </div>
+   </div>
+    <div class="modal fade" id="stockBillDetailDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">出入库单详细详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="stockBillDetailDetailForm">
+                                <input id="stock_bill_detail_id" name="detail.billdetail.id" type="hidden" v-model.number="detail.billdetail.id"/>
+                                <input id="stock_bill_detail_version" name="detail.billdetail.version" type="hidden" v-model.number="detail.billdetail.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="BiillId" class="col-xs-2 control-label no-padding-right">出入库单</label>
+                                            <div class="col-xs-10">
+                                                <input id="BiillId" name="detail.billdetail.BiillId" type="text" class="input-sm form-control" v-model.number="detail.billdetail.BiillId"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="code" class="col-xs-2 control-label no-padding-right">编码</label>
+                                            <div class="col-xs-10">
+                                                <input id="code" name="detail.billdetail.code" type="text" class="input-sm form-control" v-model="detail.billdetail.code"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="name" class="col-xs-2 control-label no-padding-right">品名</label>
+                                            <div class="col-xs-10">
+                                                <input id="name" name="detail.billdetail.name" type="text" class="input-sm form-control" v-model="detail.billdetail.name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="model" class="col-xs-2 control-label no-padding-right">规格型号</label>
+                                            <div class="col-xs-10">
+                                                <input id="model" name="detail.billdetail.model" type="text" class="input-sm form-control" v-model="detail.billdetail.model"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="unit" class="col-xs-2 control-label no-padding-right">单位</label>
+                                            <div class="col-xs-10">
+                                                <input id="unit" name="detail.billdetail.unit" type="text" class="input-sm form-control" v-model="detail.billdetail.unit"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="retail_price" class="col-xs-2 control-label no-padding-right">价格</label>
+                                            <div class="col-xs-10">
+                                                <input id="retail_price" name="detail.billdetail.retail_price" type="text" class="input-sm form-control" v-model.number="detail.billdetail.retail_price"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="quantity" class="col-xs-2 control-label no-padding-right">数量</label>
+                                            <div class="col-xs-10">
+                                                <input id="quantity" name="detail.billdetail.quantity" type="text" class="input-sm form-control" v-model.number="detail.billdetail.quantity"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="retail_price" class="col-xs-2 control-label no-padding-right">金额</label>
+                                            <div class="col-xs-10">
+                                                <input id="retail_price" name="detail.billdetail.retail_price" type="text" class="input-sm form-control" v-model.number="detail.billdetail.retail_price"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="batch" class="col-xs-2 control-label no-padding-right">批号</label>
+                                            <div class="col-xs-10">
+                                                <input id="batch" name="detail.billdetail.batch" type="text" class="input-sm form-control" v-model="detail.billdetail.batch"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="remark" class="col-xs-2 control-label no-padding-right">备注</label>
+                                            <div class="col-xs-10">
+                                                <input id="remark" name="detail.billdetail.remark" type="text" class="input-sm form-control" v-model="detail.billdetail.remark"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveStockBillDetail()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "billdetail": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#stockBillDetailList',
+                    {
+                        "sAjaxSource": '{%url "InventoryStockBillDetail.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "BiillId", "title": "出入库单", "bSearchable": false },
+                            {"mDataProp": "code", "title": "编码", "bSearchable": true },
+                            {"mDataProp": "name", "title": "品名", "bSearchable": true },
+                            {"mDataProp": "model", "title": "规格型号", "bSearchable": true },
+                            {"mDataProp": "unit", "title": "单位", "bSearchable": true },
+                            {"mDataProp": "retail_price", "title": "价格", "bSearchable": false },
+                            {"mDataProp": "quantity", "title": "数量", "bSearchable": false },
+                            {"mDataProp": "retail_price", "title": "金额", "bSearchable": false },
+                            {"mDataProp": "batch", "title": "批号", "bSearchable": true },
+                            {"mDataProp": "remark", "title": "备注", "bSearchable": true },
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                        ]
+                   }
+            );
+
+            $('#stockBillDetailList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showStockBillDetailDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#stockBillDetailList');
+            },
+            showStockBillDetailDetail: function (id) {
+                showMask("加载中...");
+                $.ajax({
+                           url: '{%url "InventoryStockBillDetail.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#stockBillDetailDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveStockBillDetail: function () {
+                showMask("提交中...");
+                var form = $("#stockBillDetailDetailForm");
+                var valid = validate(form, {  
+                    'detail.billdetail.BiillId': {
+                        required: false, digits: true
+                    },
+                    'detail.billdetail.code': {
+                        required: true, minlength: 2, maxlength: 20
+                    },
+                    'detail.billdetail.name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.billdetail.model': {
+                        required: false, maxlength: 200
+                    },
+                    'detail.billdetail.unit': {
+                        required: true, minlength: 1, maxlength: 10
+                    },
+                    'detail.billdetail.retail_price': {
+                        required: true, digits: true
+                    },
+                    'detail.billdetail.quantity': {
+                        required: true, digits: true
+                    },
+                    'detail.billdetail.retail_price': {
+                        required: true, digits: true
+                    },
+                    'detail.billdetail.batch': {
+                        required: false, maxlength: 50
+                    },
+                    'detail.billdetail.remark': {
+                        required: false, maxlength: 300
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "InventoryStockBillDetail.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#stockBillDetailDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            deleteStockBillDetail: function () {
+                var id_list = [];
+                $('#stockBillDetailList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "InventoryStockBillDetail.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+

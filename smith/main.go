@@ -189,7 +189,7 @@ func main() {
 		smith_core.WriteToFile(controllersDir + "/" + entityList[0].ModuleLowerCase + "_" + smith_core.ToUnderscore(entity.EntityCamelCase) + ".go", controllerCode)
 	}
 
-	viewsDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/app/views/" + entityList[0].ModuleLowerCase + "/" + smith_core.ToUnderscore(entityList[0].EntityCamelCase) + "/"
+	viewsDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/app/views/" + entityList[0].ModuleLowerCase
 	err = os.MkdirAll(viewsDir, 0777)
 	core.HandleError(err)
 
@@ -198,8 +198,10 @@ func main() {
 		indexhtmlCode := smith_core.RenderCodeTemplate("indexhtml", template.IndexHtmlTemplate, map[string]interface{}{
 			"entity": entity,
 		})
-
-		smith_core.WriteToFile(viewsDir + "/" + smith_core.ToUnderscore(entity.EntityCamelCase) + "_index.html", indexhtmlCode)
+		entity_view_dir := viewsDir + "/" +smith_core.ToUnderscore(entity.EntityCamelCase)
+		err = os.MkdirAll(entity_view_dir, 0777)
+		core.HandleError(err)
+		smith_core.WriteToFile(entity_view_dir + "/"+ smith_core.ToUnderscore(entity.EntityCamelCase) + "_index.html", indexhtmlCode)
 	}
 
 	confDir := output_base_dir + "/modules/" + entityList[0].ModuleLowerCase + "/conf"

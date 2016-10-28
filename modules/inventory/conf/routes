@@ -59,3 +59,15 @@ POST /inventory/handler/data/list             InventoryHandler.ListData
 POST /inventory/handler/data/detail           InventoryHandler.DetailData
 POST /inventory/handler/save                  InventoryHandler.Save
 POST /inventory/handler/delete                InventoryHandler.Delete
+
+GET  /inventory/stock/bill                    InventoryStockBill.Index
+POST /inventory/stock/bill/data/list          InventoryStockBill.ListData
+POST /inventory/stock/bill/data/detail        InventoryStockBill.DetailData
+POST /inventory/stock/bill/save               InventoryStockBill.Save
+POST /inventory/stock/bill/delete             InventoryStockBill.Delete
+
+GET  /inventory/stock/bill/detail             InventoryStockBillDetail.Index
+POST /inventory/stock/bill/detail/data/list   InventoryStockBillDetail.ListData
+POST /inventory/stock/bill/detail/data/detail InventoryStockBillDetail.DetailData
+POST /inventory/stock/bill/detail/save        InventoryStockBillDetail.Save
+POST /inventory/stock/bill/detail/delete      InventoryStockBillDetail.Delete

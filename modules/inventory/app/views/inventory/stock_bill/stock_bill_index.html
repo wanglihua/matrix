@@ -1,0 +1,308 @@
+{%header "出入库单" .%}
+<div id="page">
+   <div class="breadcrumbs" id="breadcrumbs">
+       <ul class="breadcrumb">
+           <li>
+               <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+           </li>
+           <li class="parent" data-menu="inventory-menu">仓储管理</li>
+           <li class="active" data-menu="inventory-stockbill-menu">出入库单</li>
+       </ul>
+   </div>
+   <div class="page-content">
+       <div class="row">
+           <div class="col-xs-12" style="padding: 0;">
+               <div class="gridToolBar clearfix">
+                   <button class="btn btn-primary btn-sm" @click="reloadList('#stockBillList')">
+                       <i class="ace-icon fa fa-refresh"></i>
+                       刷新
+                   </button>
+                   <button class="btn btn-success btn-sm" @click="showStockBillDetail(0)">
+                       <i class="ace-icon fa fa-plus"></i>
+                       新增
+                   </button>
+                   <button class="btn btn-danger btn-sm" @click="deleteStockBill()">
+                       <i class="ace-icon fa fa-trash-o"></i>
+                       删除
+                   </button>
+               </div>
+               <div>
+                   <table id="stockBillList" class="table table-striped table-bordered table-hover"></table>
+               </div>
+           </div>
+       </div>
+   </div>
+    <div class="modal fade" id="stockBillDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">出入库单详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="stockBillDetailForm">
+                                <input id="stock_bill_id" name="detail.bill.id" type="hidden" v-model.number="detail.bill.id"/>
+                                <input id="stock_bill_version" name="detail.bill.version" type="hidden" v-model.number="detail.bill.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="bill_code" class="col-xs-2 control-label no-padding-right">出入库单号</label>
+                                            <div class="col-xs-10">
+                                                <input id="bill_code" name="detail.bill.bill_code" type="text" class="input-sm form-control" v-model="detail.bill.bill_code"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="bill_date" class="col-xs-2 control-label no-padding-right">出入库日期</label>
+                                            <div class="col-xs-10">
+                                                <input id="bill_date" name="detail.bill.bill_date" type="text" class="input-sm form-control" v-model="detail.bill.bill_date"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="type_id" class="col-xs-2 control-label no-padding-right">出入库类型</label>
+                                            <div class="col-xs-10">
+                                                <input id="type_id" name="detail.bill.type_id" type="text" class="input-sm form-control" v-model.number="detail.bill.type_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="stock_id" class="col-xs-2 control-label no-padding-right">仓库</label>
+                                            <div class="col-xs-10">
+                                                <input id="stock_id" name="detail.bill.stock_id" type="text" class="input-sm form-control" v-model.number="detail.bill.stock_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="handler_id" class="col-xs-2 control-label no-padding-right">经手人</label>
+                                            <div class="col-xs-10">
+                                                <input id="handler_id" name="detail.bill.handler_id" type="text" class="input-sm form-control" v-model.number="detail.bill.handler_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="object_id" class="col-xs-2 control-label no-padding-right">往来对象</label>
+                                            <div class="col-xs-10">
+                                                <input id="object_id" name="detail.bill.object_id" type="text" class="input-sm form-control" v-model.number="detail.bill.object_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="remark" class="col-xs-2 control-label no-padding-right">备注</label>
+                                            <div class="col-xs-10">
+                                                <input id="remark" name="detail.bill.remark" type="text" class="input-sm form-control" v-model="detail.bill.remark"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="bill_state" class="col-xs-2 control-label no-padding-right">状态</label>
+                                            <div class="col-xs-10">
+                                                <input id="bill_state" name="detail.bill.bill_state" type="text" class="input-sm form-control" v-model="detail.bill.bill_state"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveStockBill()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "bill": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#stockBillList',
+                    {
+                        "sAjaxSource": '{%url "InventoryStockBill.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "bill_code", "title": "出入库单号", "bSearchable": true },
+                            {"mDataProp": "bill_date", "title": "出入库日期", "bSearchable": false },
+                            {"mDataProp": "type_id", "title": "出入库类型", "bSearchable": false },
+                            {"mDataProp": "stock_id", "title": "仓库", "bSearchable": false },
+                            {"mDataProp": "handler_id", "title": "经手人", "bSearchable": false },
+                            {"mDataProp": "object_id", "title": "往来对象", "bSearchable": false },
+                            {"mDataProp": "remark", "title": "备注", "bSearchable": true },
+                            {"mDataProp": "bill_state", "title": "状态", "bSearchable": true },
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                        ]
+                   }
+            );
+
+            $('#stockBillList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showStockBillDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#stockBillList');
+            },
+            showStockBillDetail: function (id) {
+                showMask("加载中...");
+                $.ajax({
+                           url: '{%url "InventoryStockBill.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#stockBillDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveStockBill: function () {
+                showMask("提交中...");
+                var form = $("#stockBillDetailForm");
+                var valid = validate(form, {  
+                    'detail.bill.bill_code': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.bill.bill_date': {
+                        required: true
+                    },
+                    'detail.bill.type_id': {
+                        required: true, digits: true
+                    },
+                    'detail.bill.stock_id': {
+                        required: true, digits: true
+                    },
+                    'detail.bill.handler_id': {
+                        required: true, digits: true
+                    },
+                    'detail.bill.object_id': {
+                        required: true, digits: true
+                    },
+                    'detail.bill.remark': {
+                        required: false, maxlength: 300
+                    },
+                    'detail.bill.bill_state': {
+                        required: true, minlength: 1
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "InventoryStockBill.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#stockBillDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            deleteStockBill: function () {
+                var id_list = [];
+                $('#stockBillList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "InventoryStockBill.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+
