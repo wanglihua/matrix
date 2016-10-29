@@ -8,28 +8,18 @@ package winsvc
 
 import (
 	"os/exec"
-	"path/filepath"
 )
 
-
-
-
-func InstallService(name, desc string, import_path string) error {
+func InstallService(name, desc string, import_path string, run_mode string) error {
 	exe_path_file, err := get_exe_Path_file()
 	if err != nil {
 		return err
 	}
-	exe_path := filepath.Dir(exe_path_file)
-	cmd := exec.Command(exe_path + "/tools/nssm.exe", "install", name, exe_path_file)
+	cmd := exec.Command(get_nssm_path_file(import_path, run_mode), "install", name, exe_path_file)
 	return cmd.Run()
 }
 
-func RemoveService(name string, import_path string) error {
-	exe_path_file, err := get_exe_Path_file()
-	if err != nil {
-		return err
-	}
-	exe_path := filepath.Dir(exe_path_file)
-	cmd := exec.Command(exe_path + "/tools/nssm.exe", "remove", name, "confirm")
+func RemoveService(name string, import_path string, run_mode string) error {
+	cmd := exec.Command(get_nssm_path_file(import_path, run_mode), "remove", name, "confirm")
 	return cmd.Run()
 }

@@ -44,11 +44,11 @@ func main() {
 		service_action = ""
 	} else if arg_len != 3 {
 		show_cmd_usage()
-		os.Exit(0)
+		log.Fatal("应用启动参数不正确！")
 	} else  { // arg_len == 3
 		if strings.ToLower(os.Args[1]) != "service" {
 			show_cmd_usage()
-			os.Exit(0)
+			log.Fatal("应用启动参数不正确！")
 		}
 
 		service_action = strings.ToLower(os.Args[2])
@@ -63,33 +63,33 @@ func main() {
 		show_cmd_usage()
 		run_web()
 	} else if service_action == "install" {
-		err = winsvc.InstallService(app.AppName, app.AppName, "{{.ImportPath}}")
+		err = winsvc.InstallService(app.AppName, app.AppName, "{{.ImportPath}}", runMode)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "remove" {
-		err = winsvc.RemoveService(app.AppName, "{{.ImportPath}}")
+		err = winsvc.RemoveService(app.AppName, "{{.ImportPath}}", runMode)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "start" {
-		err = winsvc.StartService(app.AppName, "{{.ImportPath}}")
+		err = winsvc.StartService(app.AppName, "{{.ImportPath}}", runMode)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "stop" {
-		err = winsvc.StopService(app.AppName, "{{.ImportPath}}")
+		err = winsvc.StopService(app.AppName, "{{.ImportPath}}", runMode)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else if service_action == "restart" {
-		err = winsvc.RestartService(app.AppName, "{{.ImportPath}}")
+		err = winsvc.RestartService(app.AppName, "{{.ImportPath}}", runMode)
 		if err != nil {
 			log.Fatal(err)
 		}
 	} else {
 		show_cmd_usage()
-		os.Exit(0)
+		log.Fatal("应用启动参数不正确！")
 	}
 }
 

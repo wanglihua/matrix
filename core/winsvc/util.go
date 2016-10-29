@@ -32,11 +32,15 @@ func get_exe_Path_file() (string, error) {
 	return "", err
 }
 
-func get_nssm_path_file(import_path string) string {
+func get_nssm_path_file(import_path string, run_mode string) string {
 	exe_path_file, err := get_exe_Path_file()
 	if err != nil {
 		panic(err)
 	}
 	exe_path := filepath.Dir(exe_path_file)
-	return exe_path + "/" + import_path + "/tools/nssm.exe"
+	if run_mode == "dev" {
+		return exe_path + "/tools/nssm.exe"
+	} else {
+		return exe_path + "/" + import_path + "/tools/nssm.exe"
+	}
 }
