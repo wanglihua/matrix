@@ -48,9 +48,9 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="BiillId" class="col-xs-2 control-label no-padding-right">出入库单</label>
+                                            <label for="bill_id" class="col-xs-2 control-label no-padding-right">出入库单</label>
                                             <div class="col-xs-10">
-                                                <input id="BiillId" name="detail.billdetail.BiillId" type="text" class="input-sm form-control" v-model.number="detail.billdetail.BiillId"/>
+                                                <input id="bill_id" name="detail.billdetail.bill_id" type="text" class="input-sm form-control" v-model.number="detail.billdetail.bill_id"/>
                                             </div>
                                         </div>
                                     </div>
@@ -103,9 +103,9 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="retail_price" class="col-xs-2 control-label no-padding-right">价格</label>
+                                            <label for="price" class="col-xs-2 control-label no-padding-right">价格</label>
                                             <div class="col-xs-10">
-                                                <input id="retail_price" name="detail.billdetail.retail_price" type="text" class="input-sm form-control" v-model.number="detail.billdetail.retail_price"/>
+                                                <input id="price" name="detail.billdetail.price" type="text" class="input-sm form-control" v-model.number="detail.billdetail.price"/>
                                             </div>
                                         </div>
                                     </div>
@@ -125,9 +125,9 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="retail_price" class="col-xs-2 control-label no-padding-right">金额</label>
+                                            <label for="amount" class="col-xs-2 control-label no-padding-right">金额</label>
                                             <div class="col-xs-10">
-                                                <input id="retail_price" name="detail.billdetail.retail_price" type="text" class="input-sm form-control" v-model.number="detail.billdetail.retail_price"/>
+                                                <input id="amount" name="detail.billdetail.amount" type="text" class="input-sm form-control" v-model.number="detail.billdetail.amount"/>
                                             </div>
                                         </div>
                                     </div>
@@ -193,14 +193,14 @@
                                     return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                 }
                             },
-                            {"mDataProp": "BiillId", "title": "出入库单", "bSearchable": false },
+                            {"mDataProp": "bill_id", "title": "出入库单", "bSearchable": false },
                             {"mDataProp": "code", "title": "编码", "bSearchable": true },
                             {"mDataProp": "name", "title": "品名", "bSearchable": true },
                             {"mDataProp": "model", "title": "规格型号", "bSearchable": true },
                             {"mDataProp": "unit", "title": "单位", "bSearchable": true },
-                            {"mDataProp": "retail_price", "title": "价格", "bSearchable": false },
+                            {"mDataProp": "price", "title": "价格", "bSearchable": false },
                             {"mDataProp": "quantity", "title": "数量", "bSearchable": false },
-                            {"mDataProp": "retail_price", "title": "金额", "bSearchable": false },
+                            {"mDataProp": "amount", "title": "金额", "bSearchable": false },
                             {"mDataProp": "batch", "title": "批号", "bSearchable": true },
                             {"mDataProp": "remark", "title": "备注", "bSearchable": true },
                             {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
@@ -242,8 +242,8 @@
                 showMask("提交中...");
                 var form = $("#stockBillDetailDetailForm");
                 var valid = validate(form, {  
-                    'detail.billdetail.BiillId': {
-                        required: false, digits: true
+                    'detail.billdetail.bill_id': {
+                        required: true, digits: true
                     },
                     'detail.billdetail.code': {
                         required: true, minlength: 2, maxlength: 20
@@ -257,13 +257,13 @@
                     'detail.billdetail.unit': {
                         required: true, minlength: 1, maxlength: 10
                     },
-                    'detail.billdetail.retail_price': {
+                    'detail.billdetail.price': {
                         required: true, digits: true
                     },
                     'detail.billdetail.quantity': {
                         required: true, digits: true
                     },
-                    'detail.billdetail.retail_price': {
+                    'detail.billdetail.amount': {
                         required: true, digits: true
                     },
                     'detail.billdetail.batch': {

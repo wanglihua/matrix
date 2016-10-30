@@ -249,10 +249,10 @@ type StockBill struct {
 
 	Code       string           `xorm:"nvarchar(255) notnull unique index 'bill_code'" json:"bill_code" smith:"verbose_name=出入库单号,min=2,max=100"`
 	Date       core.Date        `xorm:"datetime notnull 'bill_date'" json:"bill_date" smith:"verbose_name=出入库日期"`
-	TypeId     int64            `xorm:"bigint notnull 'type_id'" json:"type_id" smith:"verbose_name=出入库类型"` //对应于出入库类型表中Id
-	StockId    int64            `xorm:"bigint notnull 'stock_id'" json:"stock_id" smith:"verbose_name=仓库"` //对应于仓库表中Id
+	TypeId     int64            `xorm:"bigint notnull 'type_id'" json:"type_id" smith:"verbose_name=出入库类型"`     //对应于出入库类型表中Id
+	StockId    int64            `xorm:"bigint notnull 'stock_id'" json:"stock_id" smith:"verbose_name=仓库"`      //对应于仓库表中Id
 	HandlerId  int64            `xorm:"bigint notnull 'handler_id'" json:"handler_id" smith:"verbose_name=经手人"` //对应于经手人表中Id
-	ObjectId   int64            `xorm:"bigint notnull 'object_id'" json:"object_id" smith:"verbose_name=往来对象"` //供应商或客户表中Id
+	ObjectId   int64            `xorm:"bigint notnull 'object_id'" json:"object_id" smith:"verbose_name=往来对象"`  //供应商或客户表中Id
 	Remark     core.NullString  `xorm:"nvarchar(500) null 'remark'" json:"remark" smith:"verbose_name=备注,max=300"`
 	State      string           `xorm:"nvarchar(255) notnull 'bill_state'" json:"bill_state" smith:"verbose_name=状态,min=1"`
 
@@ -272,22 +272,22 @@ func (e StockBill) ModelDesc() string {
 //---------------------------------------------------------------------------------------------------------------
 
 type StockBillDetail struct {
-	Id              int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+	Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
-	BiillId         int64            `xorm:"bigint notnull'bill_id'" json:"bill_id" smith:"verbose_name=出入库单"`
-	Code            string           `xorm:"nvarchar(50) notnull unique index 'code'" json:"code" smith:"verbose_name=编码,min=2,max=20"`
-	Name            string           `xorm:"nvarchar(255) notnull unique index 'name'" json:"name" smith:"verbose_name=品名,min=2,max=100"`
-	Model           core.NullString  `xorm:"nvarchar(255) null 'model'" json:"model" smith:"verbose_name=规格型号,max=200"`
-	Unit            string           `xorm:"nvarchar(50) notnull 'unit'" json:"unit" smith:"verbose_name=单位,min=1,max=10"`
-	Price           int              `xorm:"bigint notnull 'retail_price'" json:"retail_price" smith:"verbose_name=价格,min=0"`
-	Quantity        int              `xorm:"bigint notnull 'quantity'" json:"quantity" smith:"verbose_name=数量,min=0"`
-	Amount          int              `xorm:"bigint notnull 'retail_price'" json:"retail_price" smith:"verbose_name=金额,min=0"`
-	Batch           core.NullString  `xorm:"nvarchar(100) null 'batch'" json:"batch" smith:"verbose_name=批号,max=50"`
-	Remark          core.NullString  `xorm:"nvarchar(500) null 'remark'" json:"remark" smith:"verbose_name=备注,max=300"`
+	BillId     int64            `xorm:"bigint notnull 'bill_id'" json:"bill_id" smith:"verbose_name=出入库单"`
+	Code       string           `xorm:"nvarchar(50) notnull index 'code'" json:"code" smith:"verbose_name=编码,min=2,max=20"`
+	Name       string           `xorm:"nvarchar(255) notnull index 'name'" json:"name" smith:"verbose_name=品名,min=2,max=100"`
+	Model      core.NullString  `xorm:"nvarchar(255) null 'model'" json:"model" smith:"verbose_name=规格型号,max=200"`
+	Unit       string           `xorm:"nvarchar(50) notnull 'unit'" json:"unit" smith:"verbose_name=单位,min=1,max=10"`
+	Price      int              `xorm:"bigint notnull 'price'" json:"price" smith:"verbose_name=价格,min=0"`
+	Quantity   int              `xorm:"bigint notnull 'quantity'" json:"quantity" smith:"verbose_name=数量,min=0"`
+	Amount     int              `xorm:"bigint notnull 'amount'" json:"amount" smith:"verbose_name=金额,min=0"`
+	Batch      core.NullString  `xorm:"nvarchar(100) null 'batch'" json:"batch" smith:"verbose_name=批号,max=50"`
+	Remark     core.NullString  `xorm:"nvarchar(500) null 'remark'" json:"remark" smith:"verbose_name=备注,max=300"`
 
-	CreateTime      core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
-	UpdateTime      core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
-	Version         int              `xorm:"version notnull 'version'" json:"version"`
+	CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int              `xorm:"version notnull 'version'" json:"version"`
 }
 
 func (e StockBillDetail) TableName() string {

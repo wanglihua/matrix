@@ -36,18 +36,21 @@ func (c Home) SyncDbPost() revel.Result {
 	modelList = append(modelList, &inventory_models.Supplier{})
 	modelList = append(modelList, &inventory_models.Client{})
 	modelList = append(modelList, &inventory_models.ProductCate{})
+
 	modelList = append(modelList, &inventory_models.Product{})
 	modelList = append(modelList, &inventory_models.Stock{})
 	modelList = append(modelList, &inventory_models.StorageLoc{})
 	modelList = append(modelList, &inventory_models.CapitalAccount{})
 	modelList = append(modelList, &inventory_models.StockIoType{})
+
 	modelList = append(modelList, &inventory_models.PayType{})
 	modelList = append(modelList, &inventory_models.Handler{})
 	modelList = append(modelList, &inventory_models.StockBill{})
 	modelList = append(modelList, &inventory_models.StockBillDetail{})
 	modelList = append(modelList, &oa_models.Worklog{})
 
-	db.Engine.Sync2(modelList...)
+	err := db.Engine.Sync2(modelList...)
+	core.HandleError(err)
 
 	session := c.DbSession
 	user := new(auth_models.User)

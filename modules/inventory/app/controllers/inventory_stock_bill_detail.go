@@ -56,6 +56,7 @@ func (f *StockBillDetailDetailForm) IsCreate() bool {
 }
 
 func (f *StockBillDetailDetailForm) Valid(validation *revel.Validation) bool { 
+	validation.Required(f.StockBillDetail.BillId).Message("出入库单不能为空！")
 
 	validation.Required(f.StockBillDetail.Code).Message("编码不能为空！")
 	if f.StockBillDetail.Code != "" {
@@ -138,33 +139,9 @@ func (c InventoryStockBillDetail) Save() revel.Result {
 
 	var affected int64
 	if detail_form.IsCreate() {
-		code_count, err := db_session.Where("code = ?", stock_bill_detail.Code).Count(&stock_bill_detail)
-		core.HandleError(err)
-		if code_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！" })
-		}
-
-		name_count, err := db_session.Where("name = ?", stock_bill_detail.Name).Count(&stock_bill_detail)
-		core.HandleError(err)
-		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！" })
-		}
-
 		affected, err = db_session.Insert(&stock_bill_detail)
 		core.HandleError(err)
 	} else { 
-		code_count, err := db_session.Where("id <> ? and code = ?", stock_bill_detail.Id, stock_bill_detail.Code).Count(&stock_bill_detail)
-		core.HandleError(err)
-		if code_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！" })
-		}
-
-		name_count, err := db_session.Where("id <> ? and name = ?", stock_bill_detail.Id, stock_bill_detail.Name).Count(&stock_bill_detail)
-		core.HandleError(err)
-		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！" })
-		}
-
 		affected, err = db_session.Id(stock_bill_detail.Id).Update(&stock_bill_detail)
 		core.HandleError(err)
 
