@@ -44,11 +44,11 @@ func main() {
 		service_action = ""
 	} else if arg_len != 3 {
 		show_cmd_usage()
-		log.Fatal("应用启动参数不正确！")
+		log.Fatal("P001应用启动参数不正确！")
 	} else  { // arg_len == 3
 		if strings.ToLower(os.Args[1]) != "service" {
 			show_cmd_usage()
-			log.Fatal("应用启动参数不正确！")
+			log.Fatal("P002应用启动参数不正确！")
 		}
 
 		service_action = strings.ToLower(os.Args[2])
@@ -89,7 +89,7 @@ func main() {
 		}
 	} else {
 		show_cmd_usage()
-		log.Fatal("应用启动参数不正确！")
+		log.Fatal("P003应用启动参数不正确！")
 	}
 }
 
