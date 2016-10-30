@@ -5,10 +5,10 @@ import (
 	"matrix/app/models"
 	"matrix/core"
 	"matrix/db"
-	authModels "matrix/modules/auth/models"
-	inventoryModels "matrix/modules/inventory/models"
-	oaModels "matrix/modules/oa/models"
-	weixinModels "matrix/modules/weixin/models"
+	auth_models "matrix/modules/auth/models"
+	inventory_models "matrix/modules/inventory/models"
+	oa_models "matrix/modules/oa/models"
+	weixin_models "matrix/modules/weixin/models"
 )
 
 type Home struct {
@@ -26,37 +26,37 @@ func (c Home) SyncDb() revel.Result {
 func (c Home) SyncDbPost() revel.Result {
 
 	modelList := make([]interface{}, 0)
-	modelList = append(modelList, &authModels.User{})
-	modelList = append(modelList, &authModels.Admin{})
-	modelList = append(modelList, &authModels.Group{})
-	modelList = append(modelList, &authModels.GroupUser{})
-	modelList = append(modelList, &weixinModels.Config{})
-	modelList = append(modelList, &weixinModels.Menu{})
+	modelList = append(modelList, &auth_models.User{})
+	modelList = append(modelList, &auth_models.Admin{})
+	modelList = append(modelList, &auth_models.Group{})
+	modelList = append(modelList, &auth_models.GroupUser{})
+	modelList = append(modelList, &weixin_models.Config{})
+	modelList = append(modelList, &weixin_models.Menu{})
 	modelList = append(modelList, &models.Config{})
-	modelList = append(modelList, &inventoryModels.Supplier{})
-	modelList = append(modelList, &inventoryModels.Client{})
-	modelList = append(modelList, &inventoryModels.ProductCate{})
-	modelList = append(modelList, &inventoryModels.Product{})
-	modelList = append(modelList, &inventoryModels.Stock{})
-	modelList = append(modelList, &inventoryModels.StorageLoc{})
-	modelList = append(modelList, &inventoryModels.CapitalAccount{})
-	modelList = append(modelList, &inventoryModels.StockIoType{})
-	modelList = append(modelList, &inventoryModels.PayType{})
-	modelList = append(modelList, &inventoryModels.Handler{})
-	modelList = append(modelList, &inventoryModels.StockBill{})
-	modelList = append(modelList, &inventoryModels.StockBillDetail{})
-	modelList = append(modelList, &oaModels.Worklog{})
+	modelList = append(modelList, &inventory_models.Supplier{})
+	modelList = append(modelList, &inventory_models.Client{})
+	modelList = append(modelList, &inventory_models.ProductCate{})
+	modelList = append(modelList, &inventory_models.Product{})
+	modelList = append(modelList, &inventory_models.Stock{})
+	modelList = append(modelList, &inventory_models.StorageLoc{})
+	modelList = append(modelList, &inventory_models.CapitalAccount{})
+	modelList = append(modelList, &inventory_models.StockIoType{})
+	modelList = append(modelList, &inventory_models.PayType{})
+	modelList = append(modelList, &inventory_models.Handler{})
+	modelList = append(modelList, &inventory_models.StockBill{})
+	modelList = append(modelList, &inventory_models.StockBillDetail{})
+	modelList = append(modelList, &oa_models.Worklog{})
 
 	db.Engine.Sync2(modelList...)
 
 	session := c.DbSession
-	user := new(authModels.User)
+	user := new(auth_models.User)
 	user.LoginName = "admin"
 	user.NickName = "管理员"
 	user.Password = core.EncryptPassword("111111")
 	session.Insert(user)
 
-	admin := new(authModels.Admin)
+	admin := new(auth_models.Admin)
 	admin.UserId = user.Id
 	session.Insert(admin)
 
