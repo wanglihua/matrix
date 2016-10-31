@@ -297,3 +297,25 @@ func (e StockBillDetail) TableName() string {
 func (e StockBillDetail) ModelDesc() string {
 	return "verbose_name=出入库单详细,entity_json=billdetail,route=stock/bill/detail"
 }
+
+type Config struct {
+	Id                 int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	BillInAutoApprove  core.NullBool    `xorm:"bit null 'bill_in_auto_approve'" json:"bill_in_auto_approve" smith:"verbose_name=入库单自动审核"`
+	BillOutAutoApprove core.NullBool    `xorm:"bit null 'bill_out_auto_approve'" json:"bill_out_auto_approve" smith:"verbose_name=出库单自动审核"`
+	PayInAutoApprove   core.NullBool    `xorm:"bit null 'pay_in_auto_approve'" json:"pay_in_auto_approve" smith:"verbose_name=收款单自动审核"`
+	PayOutAutoApprove  core.NullBool    `xorm:"bit null 'pay_out_auto_approve'" json:"pay_out_auto_approve" smith:"verbose_name=付款单自动审核"`
+
+	CreateTime         core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime         core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version            int              `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e Config) TableName() string {
+	return TablePrefix + "config"
+}
+
+func (e Config) ModelDesc() string {
+	return "verbose_name=系统配置,entity_json=config,route=config"
+}
+

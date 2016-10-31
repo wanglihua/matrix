@@ -97,7 +97,6 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Save() revel.Res
 	{{Underscore .entity.EntityCamelCase}} := detail_form.{{.entity.EntityTitleName}}
 
 	var affected int64
-	var err error
 	if detail_form.IsCreate() { {{range $fieldIndex, $field := .entity.FieldList}}{{if ne $field.Unique "false"}}
 {{CheckUniqueCreate $.entity $field}}{{end}}{{end}}
 		affected, err = db_session.Insert(&{{Underscore .entity.EntityCamelCase}})

@@ -71,3 +71,9 @@ POST /inventory/stock/bill/detail/data/list   InventoryStockBillDetail.ListData
 POST /inventory/stock/bill/detail/data/detail InventoryStockBillDetail.DetailData
 POST /inventory/stock/bill/detail/save        InventoryStockBillDetail.Save
 POST /inventory/stock/bill/detail/delete      InventoryStockBillDetail.Delete
+
+GET  /inventory/config                        InventoryConfig.Index
+POST /inventory/config/data/list              InventoryConfig.ListData
+POST /inventory/config/data/detail            InventoryConfig.DetailData
+POST /inventory/config/save                   InventoryConfig.Save
+POST /inventory/config/delete                 InventoryConfig.Delete

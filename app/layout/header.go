@@ -290,6 +290,13 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
                         </a>
                         <b class="arrow"></b>
                     </li>
+                    <li id="inventory-config-menu" class="">
+                        <a href="/inventory/config">
+                            <i class="menu-icon fa fa-caret-right"></i>
+                            系统配置
+                        </a>
+                        <b class="arrow"></b>
+                    </li>
                 </ul>
             </li>
             <li id="oa-menu" class="">
