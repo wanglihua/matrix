@@ -8,6 +8,7 @@ package winsvc
 
 import (
 	"os/exec"
+	"fmt"
 )
 
 func InstallService(name, desc string, import_path string, run_mode string) error {
@@ -16,10 +17,22 @@ func InstallService(name, desc string, import_path string, run_mode string) erro
 		return err
 	}
 	cmd := exec.Command(get_nssm_path_file(import_path, run_mode), "install", name, exe_path_file)
-	return cmd.Run()
+	err = cmd.Run()
+	if err == nil {
+		fmt.Println("Windows服务安装成功！")
+		return nil
+	} else {
+		return err
+	}
 }
 
 func RemoveService(name string, import_path string, run_mode string) error {
 	cmd := exec.Command(get_nssm_path_file(import_path, run_mode), "remove", name, "confirm")
-	return cmd.Run()
+	err := cmd.Run()
+	if err == nil {
+		fmt.Println("Windows服务移除成功！")
+		return nil
+	} else {
+		return err
+	}
 }
