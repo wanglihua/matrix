@@ -83,6 +83,7 @@ func (e ProductCate) ModelDesc() string {
 type Product struct {
 	Id              int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
+	CateId          int64           `xorm:"bigint notnull 'cate_id'" json:"cate_id" smith:"verbose_name=类别"` //对应于货品类别表中Id
 	Code            string          `xorm:"nvarchar(50) notnull unique index 'code'" json:"code" smith:"verbose_name=编码,min=2,max=20"`
 	Name            string          `xorm:"nvarchar(255) notnull unique index 'name'" json:"name" smith:"verbose_name=品名,min=2,max=100"`
 	Model           core.NullString `xorm:"nvarchar(255) null 'model'" json:"model" smith:"verbose_name=规格型号,max=200"`

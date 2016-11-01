@@ -51,6 +51,23 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
+                                            <label for="cate_id" class="col-xs-2 control-label no-padding-right">类别</label>
+                                            <div class="col-xs-10">
+                                                <select id="cate_id" name="detail.product.cate_id" class="input-sm form-control" v-model="detail.product.cate_id">
+                                                    <template v-for="cate in detail.cate_list">
+                                                        <option :value="cate.id">{{cate.cate_name}}</option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
                                             <label for="code" class="col-xs-2 control-label no-padding-right">编码</label>
                                             <div class="col-xs-10">
                                                 <input id="code" name="detail.product.code" type="text" class="input-sm form-control" v-model="detail.product.code"/>
@@ -66,7 +83,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="row">
                                     <div class="col-xs-6">
@@ -117,7 +133,6 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-6">
-
                                         <div class="form-group">
                                             <label for="retail_price" class="col-xs-2 control-label no-padding-right">零售价</label>
                                             <div class="col-xs-10">
@@ -176,7 +191,7 @@
                     '#productList',
                     {
                         "sAjaxSource": '{%url "InventoryProduct.ListData"%}',
-                        "aaSorting": [[1, "asc"]],
+                        "aaSorting": [[12, "desc"]],
                         "aoColumns": [
                             {
                                 "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
@@ -185,6 +200,7 @@
                                     return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                 }
                             },
+                            {"mDataProp": "cate_id", "title": "类别", "bSearchable": true},
                             {"mDataProp": "code", "title": "编码", "bSearchable": true},
                             {"mDataProp": "name", "title": "品名", "bSearchable": true},
                             {"mDataProp": "model", "title": "规格型号", "bSearchable": true},

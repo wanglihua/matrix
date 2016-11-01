@@ -46,7 +46,8 @@ func (c InventoryProduct) ListData() revel.Result {
 }
 
 type ProductDetailForm struct {
-	Product models.Product `json:"product"`
+	Product         models.Product `json:"product"`
+	ProductCateList []models.ProductCate `json:"cate_list"`
 }
 
 func (f *ProductDetailForm) IsCreate() bool {
@@ -97,6 +98,8 @@ func (c InventoryProduct) DetailData() revel.Result {
 	var product_id int64
 	c.Params.Bind(&product_id, "id")
 
+	var detail_form ProductDetailForm
+
 	var product models.Product
 	if product_id != 0 {
 		has, err := db_session.Id(product_id).Get(&product)
@@ -106,8 +109,12 @@ func (c InventoryProduct) DetailData() revel.Result {
 		}
 	}
 
-	var detail_form ProductDetailForm
+	product_cate_list := make([]models.ProductCate, 0)
+	err := db_session.Find(&product_cate_list)
+	core.HandleError(err)
+
 	detail_form.Product = product
+	detail_form.ProductCateList = product_cate_list
 
 	return c.RenderJson(detail_form)
 }
