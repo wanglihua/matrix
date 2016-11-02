@@ -194,25 +194,25 @@
                         "aaSorting": [[12, "desc"]],
                         "aoColumns": [
                             {
-                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "mDataProp": "p.id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
                                 "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
                                 "render": function (data, type, row) {
                                     return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                 }
                             },
-                            {"mDataProp": "cate_id", "title": "类别", "bSearchable": true},
-                            {"mDataProp": "code", "title": "编码", "bSearchable": true},
-                            {"mDataProp": "name", "title": "品名", "bSearchable": true},
-                            {"mDataProp": "model", "title": "规格型号", "bSearchable": true},
-                            {"mDataProp": "current_stock", "title": "当前库存", "bSearchable": false},
-                            {"mDataProp": "stock_lower_limit", "title": "库存下限", "bSearchable": false},
-                            {"mDataProp": "stock_upper_limit", "title": "库存上限", "bSearchable": false},
-                            {"mDataProp": "unit", "title": "单位", "bSearchable": true},
-                            {"mDataProp": "cost_price", "title": "成本价", "bSearchable": false},
-                            {"mDataProp": "retail_price", "title": "零售价", "bSearchable": false},
-                            {"mDataProp": "state", "title": "状态", "bSearchable": true},
-                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                            {"mDataProp": "c.cate_name", "title": "类别", "bSearchable": true},
+                            {"mDataProp": "p.code", "title": "编码", "bSearchable": true},
+                            {"mDataProp": "p.name", "title": "品名", "bSearchable": true},
+                            {"mDataProp": "p.model", "title": "规格型号", "bSearchable": true},
+                            {"mDataProp": "p.current_stock", "title": "当前库存", "bSearchable": false},
+                            {"mDataProp": "p.stock_lower_limit", "title": "库存下限", "bSearchable": false},
+                            {"mDataProp": "p.stock_upper_limit", "title": "库存上限", "bSearchable": false},
+                            {"mDataProp": "p.unit", "title": "单位", "bSearchable": true},
+                            {"mDataProp": "p.cost_price", "title": "成本价", "bSearchable": false},
+                            {"mDataProp": "p.retail_price", "title": "零售价", "bSearchable": false},
+                            {"mDataProp": "p.state", "title": "状态", "bSearchable": true},
+                            {"mDataProp": "p.create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                            {"mDataProp": "p.update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                         ]
                     }
             );

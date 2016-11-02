@@ -16,11 +16,20 @@ func (c InventoryProduct) Index() revel.Result {
 	return c.RenderTemplate("inventory/product/product_index.html")
 }
 
+type ProductView struct {
+	models.ProductCate `xorm:"extends" json:"c"`
+	models.Product     `xorm:"extends" json:"p"`
+}
+
 func (c InventoryProduct) ListData() revel.Result {
 	db_session := c.DbSession
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
-	query := db_session.Where(filter)
+	query := db_session.
+		Select("c.*, p.*").
+		Table(models.TablePrefix+"product").Alias("p").
+		Join("inner", []string{models.TablePrefix + "product_cate", "c"}, "c.id = p.cate_id").
+		Where(filter)
 
 	//query extra filter here
 
@@ -28,15 +37,15 @@ func (c InventoryProduct) ListData() revel.Result {
 	if order != "" {
 		data_query = *data_query.OrderBy(order)
 	} else {
-		data_query = *data_query.Asc("id")
+		data_query = *data_query.Asc("p.id")
 	}
 
-	product_list := make([]models.Product, 0, limit)
+	product_list := make([]ProductView, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&product_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.Product))
+	count, err := count_query.Count(new(ProductView))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -46,7 +55,7 @@ func (c InventoryProduct) ListData() revel.Result {
 }
 
 type ProductDetailForm struct {
-	Product         models.Product `json:"product"`
+	Product         models.Product       `json:"product"`
 	ProductCateList []models.ProductCate `json:"cate_list"`
 }
 
