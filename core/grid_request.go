@@ -7,12 +7,12 @@ import (
 )
 
 func GetGridRequestParam(request *revel.Request) (filter string, order string, offset int, limit int) {
-	if len(request.Form["iColumns"]) == 0 {
-		filter = "" // return
-		order = ""  // return
-		offset = 0  // return
-		limit = 10  // return
+	filter = "" // return
+	order = ""  // return
+	offset = 0  // return
+	limit = 10  // return
 
+	if len(request.Form["iColumns"]) == 0 {
 		return
 	}
 
@@ -69,7 +69,7 @@ func GetGridRequestParam(request *revel.Request) (filter string, order string, o
 	if len(request.Form["iDisplayStart"]) != 0 {
 		offset, _ = strconv.Atoi(request.Form["iDisplayStart"][0]) // return
 	}
-	if len(request.Form["iDisplayLength"]) == 0 {
+	if len(request.Form["iDisplayLength"]) != 0 {
 		limit, _ = strconv.Atoi(request.Form["iDisplayLength"][0]) // return
 	}
 
