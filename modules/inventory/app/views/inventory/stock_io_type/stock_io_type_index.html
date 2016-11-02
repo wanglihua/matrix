@@ -147,6 +147,7 @@
             },
             showStockIoTypeDetail: function (id) {
                 showMask("加载中...");
+                $("#stockIoTypeDetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "InventoryStockIoType.DetailData" %}',
                            type: "POST",

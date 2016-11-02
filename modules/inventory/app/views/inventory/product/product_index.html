@@ -228,6 +228,7 @@
             },
             showProductDetail: function (id) {
                 showMask("加载中...");
+                $("#productDetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "InventoryProduct.DetailData"%}',
                            type: "POST",

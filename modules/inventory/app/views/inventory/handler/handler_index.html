@@ -136,6 +136,7 @@
             },
             showHandlerDetail: function (id) {
                 showMask("加载中...");
+                $("#handlerDetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "InventoryHandler.DetailData" %}',
                            type: "POST",

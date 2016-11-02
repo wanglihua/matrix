@@ -71,12 +71,12 @@ window.onresize = function () {
 };
 
 /*
-$(document).ajaxStart(function () {
-    showMask("数据加载中，请稍候");
-}).ajaxStop(function () {
-    hideMask();
-});
-*/
+ $(document).ajaxStart(function () {
+ showMask("数据加载中，请稍候");
+ }).ajaxStop(function () {
+ hideMask();
+ });
+ */
 
 //显示遮照层
 function showMask(text) {
@@ -303,7 +303,7 @@ function validate(form, rules, errorPlacement) {
                     $(e).remove();
                 },
                 errorElement: 'div',
-                errorClass: 'help-block inline',
+                errorClass: 'help-block inline err-div',
                 focusInvalid: false,
                 ignore: "",
                 errorPlacement: function (error, element) {
@@ -331,7 +331,7 @@ function validate(form, rules, errorPlacement) {
                     $(e).remove();
                 },
                 errorElement: 'div',
-                errorClass: 'help-block inline',
+                errorClass: 'help-block inline err-div',
                 focusInvalid: false,
                 ignore: "",
                 errorPlacement: errorPlacement
@@ -342,6 +342,10 @@ function validate(form, rules, errorPlacement) {
     return form.valid();
 }
 
+$.fn.clearValidation = function () {
+    $(this).find("div.has-error").removeClass('has-error');
+    $(this).find("div.err-div").remove();
+};
 
 /*
  function getCookie(name) {

@@ -160,6 +160,7 @@
             },
             showPayTypeDetail: function (id) {
                 showMask("加载中...");
+                $("#payTypeDetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "InventoryPayType.DetailData" %}',
                            type: "POST",

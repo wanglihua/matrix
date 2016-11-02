@@ -115,6 +115,7 @@
             },
             showCapitalAccountDetail: function (id) {
                 showMask("加载中...");
+                $("#capitalAccountDetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "InventoryCapitalAccount.DetailData" %}',
                            type: "POST",

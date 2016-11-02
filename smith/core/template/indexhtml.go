@@ -114,6 +114,7 @@ var IndexHtmlTemplate = `{%header "{{.entity.EntityChinese}}" .%}
             },
             show{{.entity.EntityTitleName}}Detail: function (id) {
                 showMask("加载中...");
+                $("#{{.entity.EntityCamelCase}}DetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "{{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}.DetailData" %}',
                            type: "POST",

@@ -220,6 +220,7 @@
             },
             showStockBillDetailDetail: function (id) {
                 showMask("加载中...");
+                $("#stockBillDetailDetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "InventoryStockBillDetail.DetailData" %}',
                            type: "POST",

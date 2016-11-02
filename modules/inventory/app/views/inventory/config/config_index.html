@@ -148,6 +148,7 @@
             },
             showConfigDetail: function (id) {
                 showMask("加载中...");
+                $("#configDetailForm").clearValidation();
                 $.ajax({
                            url: '{%url "InventoryConfig.DetailData" %}',
                            type: "POST",
