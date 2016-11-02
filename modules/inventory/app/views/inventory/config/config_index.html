@@ -19,27 +19,44 @@
                                 <input id="config_id" name="detail.config.id" type="hidden" v-model.number="detail.config.id"/>
                                 <input id="config_version" name="detail.config.version" type="hidden" v-model.number="detail.config.version"/>
                                 <div class="form-group">
-                                    <label for="bill_in_auto_approve" class="col-xs-2 control-label no-padding-right">入库单自动审核</label>
-                                    <div class="col-xs-10">
-                                        <input id="bill_in_auto_approve" name="detail.config.bill_in_auto_approve" type="text" class="input-sm form-control" v-model="detail.config.bill_in_auto_approve"/>
+                                    <label for="bill_in_auto_approve" class="col-xs-4 control-label no-padding-right">入库单自动审核</label>
+                                    <div class="col-xs-8">
+                                        <!--<input id="bill_in_auto_approve" name="detail.config.bill_in_auto_approve" type="checkbox" class="input-sm form-control" v-model.number="detail.config.bill_in_auto_approve"/>-->
+                                        <!--<input id="bill_in_auto_approve" name="detail.config.bill_in_auto_approve" type="text" class="input-sm form-control" v-model.number="detail.config.bill_in_auto_approve"/>-->
+                                        <select id="bill_in_auto_approve" name="detail.config.bill_in_auto_approve" class="input-sm form-control" v-model.number="detail.config.bill_in_auto_approve">
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="bill_out_auto_approve" class="col-xs-2 control-label no-padding-right">出库单自动审核</label>
-                                    <div class="col-xs-10">
-                                        <input id="bill_out_auto_approve" name="detail.config.bill_out_auto_approve" type="text" class="input-sm form-control" v-model="detail.config.bill_out_auto_approve"/>
+                                    <label for="bill_out_auto_approve" class="col-xs-4 control-label no-padding-right">出库单自动审核</label>
+                                    <div class="col-xs-8">
+                                        <!--<input id="bill_out_auto_approve" name="detail.config.bill_out_auto_approve" type="text" class="input-sm form-control" v-model.number="detail.config.bill_out_auto_approve"/>-->
+                                        <select id="bill_out_auto_approve" name="detail.config.bill_out_auto_approve" class="input-sm form-control" v-model.number="detail.config.bill_out_auto_approve">
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pay_in_auto_approve" class="col-xs-2 control-label no-padding-right">收款单自动审核</label>
-                                    <div class="col-xs-10">
-                                        <input id="pay_in_auto_approve" name="detail.config.pay_in_auto_approve" type="text" class="input-sm form-control" v-model="detail.config.pay_in_auto_approve"/>
+                                    <label for="pay_in_auto_approve" class="col-xs-4 control-label no-padding-right">收款单自动审核</label>
+                                    <div class="col-xs-8">
+                                        <!--<input id="pay_in_auto_approve" name="detail.config.pay_in_auto_approve" type="text" class="input-sm form-control" v-model.number="detail.config.pay_in_auto_approve"/>-->
+                                        <select id="pay_in_auto_approve" name="detail.config.pay_in_auto_approve" class="input-sm form-control" v-model.number="detail.config.pay_in_auto_approve">
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="pay_out_auto_approve" class="col-xs-2 control-label no-padding-right">付款单自动审核</label>
-                                    <div class="col-xs-10">
-                                        <input id="pay_out_auto_approve" name="detail.config.pay_out_auto_approve" type="text" class="input-sm form-control" v-model="detail.config.pay_out_auto_approve"/>
+                                    <label for="pay_out_auto_approve" class="col-xs-4 control-label no-padding-right">付款单自动审核</label>
+                                    <div class="col-xs-8">
+                                        <!--<input id="pay_out_auto_approve" name="detail.config.pay_out_auto_approve" type="text" class="input-sm form-control" v-model.number="detail.config.pay_out_auto_approve"/>-->
+                                        <select id="pay_out_auto_approve" name="detail.config.pay_out_auto_approve" class="input-sm form-control" v-model.number="detail.config.pay_out_auto_approve">
+                                            <option value="0">否</option>
+                                            <option value="1">是</option>
+                                        </select>
                                     </div>
                                 </div>
                             </form>
@@ -90,16 +107,16 @@
                 var form = $("#configDetailForm");
                 var valid = validate(form, {
                     'detail.config.bill_in_auto_approve': {
-                        required: false
+                        required: false, digits: true
                     },
                     'detail.config.bill_out_auto_approve': {
-                        required: false
+                        required: false, digits: true
                     },
                     'detail.config.pay_in_auto_approve': {
-                        required: false
+                        required: false, digits: true
                     },
                     'detail.config.pay_out_auto_approve': {
-                        required: false
+                        required: false, digits: true
                     }
                 });
 
@@ -122,6 +139,8 @@
                                        $.msg.show(data.message);
                                        //return;
                                    }
+                                   //更新数据，特别是version
+                                   vm.showConfigDetail();
                                }
                            }
                     );
