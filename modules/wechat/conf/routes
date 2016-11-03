@@ -1,5 +1,3 @@
-GET /wechat/static/*filepath        Static.ServeModule(wechat, static)
-
 GET  /wechat/home                    WechatHome.Index
 GET  /wechat/callback                WechatCallback.Sign
 POST /wechat/callback                WechatCallback.Reply

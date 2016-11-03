@@ -1,5 +1,3 @@
-GET /auth/static/*filepath           Static.ServeModule(auth, static)
-
 GET  /auth/profile                    AuthProfile.Index
 POST /auth/profile/save               AuthProfile.Save
 

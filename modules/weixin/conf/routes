@@ -1,5 +1,3 @@
-GET /weixin/static/*filepath         Static.ServeModule(weixin, static)
-
 GET  /weixin/home                    WeixinHome.Index
 
 GET  /weixin/config                  WeixinConfig.Index
