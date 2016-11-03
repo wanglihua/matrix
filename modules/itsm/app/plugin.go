@@ -6,6 +6,6 @@ import (
 
 func init() {
 	revel.OnAppStart(func() {
-		//revel.TRACE.Println("repair moudle start!")
+		//revel.TRACE.Println("itsm moudle start!")
 	})
 }

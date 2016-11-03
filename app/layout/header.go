@@ -1,36 +1,35 @@
 package layout
 
 import (
-    "bytes"
-    "github.com/go-xorm/xorm"
-    "github.com/revel/revel"
-    "matrix/core"
+	"bytes"
+	"github.com/go-xorm/xorm"
+	"github.com/revel/revel"
+	"matrix/app/layout/menu"
+	"matrix/core"
 )
 
 func GetHeader(title string, db_session *xorm.Session, web_session revel.Session) string {
-    sys_name := GetSysName(db_session)
+	sys_name := GetSysName(db_session)
 
-    login_user := core.GetLoginUser(web_session)
-    login_user_nick_name := "未登录"
-    is_admin := false
-    if login_user != nil {
-        login_user_nick_name = login_user.NickName
-        is_admin = login_user.IsAdmin
-    }
+	login_user := core.GetLoginUser(web_session)
+	login_user_nick_name := "未登录"
+	if login_user != nil {
+		login_user_nick_name = login_user.NickName
+	}
 
-    var header_buffer bytes.Buffer
-    header_buffer.WriteString(`<!DOCTYPE html>
+	var header_buffer bytes.Buffer
+	header_buffer.WriteString(`<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta charset="utf-8"/>
     <title>`)
 
-    header_buffer.WriteString(title)
-    header_buffer.WriteString("-")
-    header_buffer.WriteString(sys_name)
+	header_buffer.WriteString(title)
+	header_buffer.WriteString("-")
+	header_buffer.WriteString(sys_name)
 
-    header_buffer.WriteString(`</title>
+	header_buffer.WriteString(`</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     <link type="text/css" rel="stylesheet" href="/static/ace/css/all.css" class="ace-main-stylesheet" id="main-ace-style" />
     <!--[if lte IE 9]>
@@ -41,13 +40,13 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
     <![endif]-->
     <link type="text/css" rel="stylesheet" href="/static/site.css"/>`)
 
-    if revel.DevMode {
-        header_buffer.WriteString(`<script type="text/javascript" src="/static/js/vue.js"></script>`)
-    } else {
-        header_buffer.WriteString(`<script type="text/javascript" src="/static/js/vue.min.js"></script>`)
-    }
+	if revel.DevMode {
+		header_buffer.WriteString(`<script type="text/javascript" src="/static/js/vue.js"></script>`)
+	} else {
+		header_buffer.WriteString(`<script type="text/javascript" src="/static/js/vue.min.js"></script>`)
+	}
 
-    header_buffer.WriteString(`<!--[if !IE]> -->
+	header_buffer.WriteString(`<!--[if !IE]> -->
     <script type="text/javascript">
         window.jQuery || document.write("<script type='text/javascript' src='/static/ace/js/jquery.min.js'>" + "<" + "/script>");
     </script>
@@ -61,7 +60,7 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
         if ('ontouchstart' in document.documentElement) document.write("<script type='text/javascript' src='/static/ace/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     </script>`)
 
-    header_buffer.WriteString(`
+	header_buffer.WriteString(`
         <script type="text/javascript" src="/static/ace/js/all1.js"></script>
         <!--[if lte IE 8]>
         <script type="text/javascript" src="/static/ace/js/html5shiv.min.js"></script>
@@ -71,7 +70,7 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
         <script type="text/javascript" src="/static/js/js.cookie.js"></script>
         <script type="text/javascript" src="/static/site.js"></script>`)
 
-    header_buffer.WriteString(`
+	header_buffer.WriteString(`
 </head>
 
 <body class="no-skin">
@@ -97,9 +96,9 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
             <a href="/" class="navbar-brand">
                 <small>`)
 
-    header_buffer.WriteString(sys_name)
+	header_buffer.WriteString(sys_name)
 
-    header_buffer.WriteString(`</small>
+	header_buffer.WriteString(`</small>
             </a>
             </div>
         <div class="navbar-buttons navbar-header pull-right" role="navigation">
@@ -109,9 +108,9 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
                         <img class="nav-user-photo" src="/static/ace/avatars/user3.jpg" alt="user photo"/>
                                 <span class="user-info"><small>欢迎！</small>`)
 
-    header_buffer.WriteString(login_user_nick_name)
+	header_buffer.WriteString(login_user_nick_name)
 
-    header_buffer.WriteString(`</span>
+	header_buffer.WriteString(`</span>
                         <i class="ace-icon fa fa-caret-down"></i>
                     </a>
                     <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
@@ -185,281 +184,17 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
             }
         </script>
         <ul class="nav nav-list">
-            <li id="inventory-menu" class="">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-truck"></i>
-                    <span class="menu-text">仓储管理</span>
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-                <b class="arrow"></b>
-                <ul class="submenu">
-                    <li id="inventory-relparty-menu" class="">
-                        <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text">往来单位</span>
-                            <b class="arrow fa fa-angle-down"></b>
-                        </a>
-                        <b class="arrow"></b>
-                        <ul class="submenu">
-                            <li id="inventory-supplier-menu">
-                                <a href="/inventory/supplier">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    供应商管理
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                            <li id="inventory-client-menu">
-                                <a href="/inventory/client">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    客户管理
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                        </ul>
-                    </li>
-                    <li id="inventory-prdmgr-menu" class="">
-                        <a href="#" class="dropdown-toggle">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            <span class="menu-text">货品管理</span>
-                            <b class="arrow fa fa-angle-down"></b>
-                        </a>
-                        <b class="arrow"></b>
-                        <ul class="submenu">
-                            <li id="inventory-prdcate-menu">
-                                <a href="/inventory/product/cate">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    货品类别
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                            <li id="inventory-product-menu">
-                                <a href="/inventory/product">
-                                    <i class="menu-icon fa fa-caret-right"></i>
-                                    货品信息
-                                </a>
-                                <b class="arrow"></b>
-                            </li>
-                        </ul>
-                    </li>
-                    <li id="inventory-stock-menu" class="">
-                        <a href="/inventory/stock">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            仓库信息
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="inventory-capitalaccount-menu" class="">
-                        <a href="/inventory/capital/account">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            资金账户
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="inventory-stockiotype-menu" class="">
-                        <a href="/inventory/stock/io/type">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            出入库类型
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="inventory-paytype-menu" class="">
-                        <a href="/inventory/pay/type">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            收付款类型
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="inventory-handler-menu" class="">
-                        <a href="/inventory/handler">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            经手人
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="inventory-stockbill-menu" class="">
-                        <a href="/inventory/stock/bill">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            出入库单
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="inventory-stockbilldetail-menu" class="">
-                        <a href="/inventory/stock/bill/detail">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            出入库单详细
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="inventory-config-menu" class="">
-                        <a href="/inventory/config">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            系统配置
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
-            </li>
-            <li id="oa-menu" class="">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-files-o"></i>
-                    <span class="menu-text">办公系统</span>
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-                <b class="arrow"></b>
-                <ul class="submenu">
-
-                    <li id="oa-worklog-menu" class="">
-                        <a href="/oa/worklog">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            工作日志
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="oa-worklogadmin-menu" class="">
-                        <a href="/oa/worklog/admin">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            日志管理
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-
-                </ul>
-            </li>
-
 `)
 
-    if is_admin {
-        header_buffer.WriteString(`
-            <li id="auth-menu" class="">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-users"></i>
-                    <span class="menu-text">权限管理</span>
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-                <b class="arrow"></b>
-                <ul class="submenu">
-                    <li id="auth-user-menu" class="">
-                        <a href="/auth/user">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            用户管理
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="auth-admin-menu" class="">
-                        <a href="/auth/admin">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            管理员组
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="auth-group-menu" class="">
-                        <a href="/auth/group">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            群组管理
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
-            </li>
-            <li id="weixin-menu" class="">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-wechat"></i>
-                    <span class="menu-text">微信管理</span>
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-                <b class="arrow"></b>
-                <ul class="submenu">
-                    <li id="weixin-config-menu" class="">
-                        <a href="/weixin/config">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            微信配置
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="weixin-menu-menu" class="">
-                        <a href="/weixin/menu">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            微信菜单
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
-            </li>
-            <li id="settings-menu" class="">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-cog"></i>
-                    <span class="menu-text">系统配置</span>
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-                <b class="arrow"></b>
-                <ul class="submenu">
-                    <li id="settings-config-menu" class="">
-                        <a href="/config">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            参数配置
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
-            </li>
-`)
-    }
-    header_buffer.WriteString(`
-            <li id="help-menu" class="">
-                <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-book"></i>
-                    <span class="menu-text">帮助中心</span>
-                    <b class="arrow fa fa-angle-down"></b>
-                </a>
-                <b class="arrow"></b>
-                <ul class="submenu">
-                    <li id="help-index-menu" class="">
-                        <a href="/help">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            帮助中心
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="help-faq-menu" class="">
-                        <a href="/help/faq">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            常见问题
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="help-bug-menu" class="">
-                        <a href="/help/bug">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            Bug提报
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="help-requirement-menu" class="">
-                        <a href="/help/requirement">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            需求建议
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="help-license-menu" class="">
-                        <a href="/help/license">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            使用授权
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                    <li id="help-about-menu" class="">
-                        <a href="/help/about">
-                            <i class="menu-icon fa fa-caret-right"></i>
-                            关于
-                        </a>
-                        <b class="arrow"></b>
-                    </li>
-                </ul>
-            </li>
-`)
+	header_buffer.WriteString(menu.GetInventoryMenu(db_session, web_session))
+	header_buffer.WriteString(menu.GetOaMenu(db_session, web_session))
+	header_buffer.WriteString(menu.GetItsmMenu(db_session, web_session))
+	header_buffer.WriteString(menu.GetWeixinMenu(db_session, web_session))
+	header_buffer.WriteString(menu.GetAuthMenu(db_session, web_session))
+	header_buffer.WriteString(menu.GetSettingMenu(db_session, web_session))
+	header_buffer.WriteString(menu.GetHelpMenu(db_session, web_session))
 
-    header_buffer.WriteString(`
+	header_buffer.WriteString(`
         <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
             <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
         </div>
@@ -473,5 +208,5 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
 
     <div class="main-content">
 `)
-    return header_buffer.String()
+	return header_buffer.String()
 }

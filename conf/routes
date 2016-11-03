@@ -4,7 +4,7 @@ module:auth
 module:wechat
 module:weixin
 module:inventory
-module:repair
+module:itsm
 module:oa
 module:jobs
 module:pprof
