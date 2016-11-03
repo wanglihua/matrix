@@ -8,7 +8,111 @@ var ModuleTitleName = "Itsm"
 var ModuleLowerCase = "itsm"
 var ModuleChinese = "ITSM"
 
-var TablePrefix = "hd_repair_"
+var TablePrefix = "hd_itsm_"
+
+//---------------------------------------------------------------------------------------------------------------
+
+type EventType struct {
+	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Name string          `xorm:"nvarchar(50) notnull index 'type_name'" json:"type_name" smith:"verbose_name=名称,min=1,max=30"`
+	Desc core.NullString `xorm:"nvarchar(500) 'type_desc'" json:"type_desc" smith:"verbose_name=描述"`
+
+	CreateTime core.Time `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int       `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e EventType) TableName() string {
+	return TablePrefix + "event_type"
+}
+
+func (e EventType) ModelDesc() string {
+	return "verbose_name=事件类型,entity_json=type,route=event/type"
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+type ServiceArea struct {
+	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Name string          `xorm:"nvarchar(50) notnull index 'area_name'" json:"area_name" smith:"verbose_name=名称,min=1,max=30"`
+	Desc core.NullString `xorm:"nvarchar(500) 'area_desc'" json:"area_desc" smith:"verbose_name=描述"`
+
+	CreateTime core.Time `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int       `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e ServiceArea) TableName() string {
+	return TablePrefix + "service_area"
+}
+
+func (e ServiceArea) ModelDesc() string {
+	return "verbose_name=服务区域,entity_json=area,route=service/area"
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+type EngineerGroup struct {
+	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Name string          `xorm:"nvarchar(50) notnull index 'group_name'" json:"group_name" smith:"verbose_name=名称,min=1,max=30"`
+	Desc core.NullString `xorm:"nvarchar(500) 'group_desc'" json:"group_desc" smith:"verbose_name=描述"`
+
+	CreateTime core.Time `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int       `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e EngineerGroup) TableName() string {
+	return TablePrefix + "engineer_group"
+}
+
+func (e EngineerGroup) ModelDesc() string {
+	return "verbose_name=工程师组,entity_json=group,route=engineer/group"
+}
+
+//---------------------------------------------------------------------------------------------------------------
+/*
+ITSM_Engineer
+
+	[Id] [uniqueidentifier] NULL,
+	[EgrName] [varchar](20) NOT NULL,
+	[EgrImg] [varchar](50) NULL,
+	[EgrWxId] [varchar](20) NOT NULL,
+	[Phone] [nvarchar](50) NULL,
+	[TntId] [uniqueidentifier] NOT NULL,
+	[EventType] [nvarchar](200) NULL,
+	[ServiceArea] [nvarchar](200) NULL,
+	[Group] [nvarchar](200) NULL,
+	[IsMgr] [int] NULL,
+	[CreateUser] [varchar](20) NULL,
+	[CreateTime] [datetime] NULL,
+	[ModifyUser] [varchar](20) NULL,
+	[ModifyTime] [datetime] NULL,
+	[RowVersion] [timestamp] NOT NULL,
+
+*/
+
+type Engineer struct {
+	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	Name  string `xorm:"nvarchar(20) notnull index 'egr_name'" json:"egr_name" smith:"verbose_name=姓名,min=1,max=10"`
+	Phone string `xorm:"nvarchar(50) null 'phone'" json:"phone" smith:"verbose_name=联系电话,min=1,max=30"`
+
+	CreateTime core.Time `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int       `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e Engineer) TableName() string {
+	return TablePrefix + "engineer"
+}
+
+func (e Engineer) ModelDesc() string {
+	return "verbose_name=工程师,entity_json=engineer,route=engineer"
+}
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -16,7 +120,7 @@ type KnowledgeCate struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Name     string          `xorm:"nvarchar(50) notnull index 'cate_name'" json:"cate_name" smith:"verbose_name=标题,min=2,max=20"`
-	Desc     core.NullString `xorm:"text 'cate_desc'" json:"cate_desc" smith:"verbose_name=描述"`
+	Desc     core.NullString `xorm:"nvarchar(500) 'cate_desc'" json:"cate_desc" smith:"verbose_name=描述"`
 	ParentId int64           `xorm:"bigint notnull index 'parent_id'" json:"parent_id" smith:"verbose_name=父类"`
 
 	CreateTime core.Time `xorm:"created notnull 'create_time'" json:"create_time"`
