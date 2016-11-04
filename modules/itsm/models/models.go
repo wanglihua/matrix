@@ -74,22 +74,13 @@ func (e EngineerGroup) ModelDesc() string {
 }
 
 //---------------------------------------------------------------------------------------------------------------
-/*
-ITSM_Engineer
-
-	[EgrName] [varchar](20) NOT NULL, --user
-	[EgrWxId] [varchar](20) NOT NULL, --user
-	[Phone] [nvarchar](50) NULL, --user
-	[sex] --user
-	[IsMgr] [int] NULL,-- manager
-
-*/
 
 type Engineer struct {
 	Id         int64        `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
-	Name       string       `xorm:"nvarchar(20) notnull index 'egr_name'" json:"egr_name" smith:"verbose_name=姓名,min=1,max=10"`
-	Phone      string       `xorm:"nvarchar(50) null 'phone'" json:"phone" smith:"verbose_name=联系电话,min=1,max=30"`
+	UserId     int64        `xorm:"bigint notnull index 'user_id'" json:"user_id" smith:"verbose_name=用户id"` //对应于auth用户表中的id
+
+	//工程师特有的其他字段信息
 
 	CreateTime core.Time    `xorm:"created notnull 'create_time'" json:"create_time"`
 	UpdateTime core.Time    `xorm:"updated notnull 'update_time'" json:"update_time"`
@@ -165,6 +156,28 @@ func (e EngineerEventType) TableName() string {
 
 func (e EngineerEventType) ModelDesc() string {
 	return "verbose_name=工程师事件类型设定,entity_json=et,route=engineer/event/type"
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+type EngineerManager struct {
+	Id         int64        `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+
+	EngineerId int64        `xorm:"bigint notnull index 'engineer_id'" json:"engineer_id" smith:"verbose_name=工程师id"`
+
+	//别的可以考虑的字段，可以是 事件类型id，服务区域id等等
+
+	CreateTime core.Time    `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time    `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int          `xorm:"version notnull 'version'" json:"version"`
+}
+
+func (e EngineerManager) TableName() string {
+	return TablePrefix + "engineer_manager"
+}
+
+func (e EngineerManager) ModelDesc() string {
+	return "verbose_name=工程师经理,entity_json=manager,route=engineer/manager"
 }
 
 //---------------------------------------------------------------------------------------------------------------
