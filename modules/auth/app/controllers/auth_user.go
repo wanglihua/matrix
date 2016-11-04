@@ -136,3 +136,5 @@ func (c AuthUser) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
+
+//从微信企业号同步用户的功能

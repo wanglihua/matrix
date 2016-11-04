@@ -1,4 +1,9 @@
 <script type='text/javascript'>
+
+$(function() {
+    $("#user_sex").val("{%.form_User_Sex%}")
+});
+
 function saveUser() {
     showMask("提交中...");
     var form = $("#userDetailForm");

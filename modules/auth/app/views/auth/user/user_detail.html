@@ -1,5 +1,5 @@
 <div class="modal fade" id="userDetailDialog">
-    <div class="modal-dialog" style="width: 440px;">
+    <div class="modal-dialog" style="width: 580px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
@@ -21,6 +21,27 @@
                                 <label for="user_nick_name" class="col-xs-2 control-label no-padding-right">用户名</label>
                                 <div class="col-xs-10">
                                     <input id="user_nick_name" name="form.User.NickName" type="text" class="input-sm form-control" value="{%.form_User_NickName%}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="user_sex" class="col-xs-2 control-label no-padding-right">性别</label>
+                                <div class="col-xs-10">
+                                    <select id="user_sex" name="form.User.Sex" class="input-sm form-control">
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="user_phone" class="col-xs-2 control-label no-padding-right">联系电话</label>
+                                <div class="col-xs-10">
+                                    <input id="user_phone" name="form.User.Phone" type="text" class="input-sm form-control" value="{%.form_User_Phone%}"/>
+                                </div>
+                            </div>
+                           <div class="form-group">
+                                <label for="user_weixin_id" class="col-xs-2 control-label no-padding-right">微信企业号Id</label>
+                                <div class="col-xs-10">
+                                    <input id="user_weixin_id" name="form.User.WeixinId" type="text" class="input-sm form-control" value="{%.form_User_WeixinId%}"/>
                                 </div>
                             </div>
                             {%if .is_create%}
