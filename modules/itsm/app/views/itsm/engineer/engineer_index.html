@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="engineerDetailDialog">
+    <div class="modal fade" id="engineerAddDialog">
         <div class="modal-dialog" style="width: 680px;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -42,21 +42,7 @@
                 <div class="modal-body clearfix">
                     <div class="row">
                         <div class="col-xs-12">
-                            <form class="form-horizontal" role="form" id="engineerDetailForm">
-                                <input id="engineer_id" name="detail.engineer.id" type="hidden" v-model.number="detail.engineer.id"/>
-                                <input id="engineer_version" name="detail.engineer.version" type="hidden" v-model.number="detail.engineer.version"/>
-                                <div class="row">
-                                    <div class="col-xs-6">
-                                        <div class="form-group">
-                                            <label for="user_id" class="col-xs-2 control-label no-padding-right">用户id</label>
-                                            <div class="col-xs-10">
-                                                <input id="user_id" name="detail.engineer.user_id" type="text" class="input-sm form-control" v-model.number="detail.engineer.user_id"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -106,10 +92,12 @@
                     }
             );
 
+            /*
             $('#engineerList tbody').on('dblclick', 'tr', function () {
                 var id = $(this).find('td:first-child input:checkbox').val();
                 vm.showEngineerDetail(id);
             });
+            */
         },
         methods: {
             reloadList: function () {
@@ -131,7 +119,7 @@
                                    return;
                                }
                                vm.detail = result;
-                               $('#engineerDetailDialog').modal(modalOptions);
+                               $('#engineerAddDialog').modal(modalOptions);
                            }
                        }
                 );
@@ -162,7 +150,7 @@
                                    }
                                    else {
                                        $.msg.show(data.message);
-                                       $('#engineerDetailDialog').modal('hide');
+                                       $('#engineerAddDialog').modal('hide');
                                        vm.reloadList();
                                        //return;
                                    }
