@@ -1,0 +1,17 @@
+GET  /itsm/event/type                    ItsmEventType.Index
+POST /itsm/event/type/data/list          ItsmEventType.ListData
+POST /itsm/event/type/data/detail        ItsmEventType.DetailData
+POST /itsm/event/type/save               ItsmEventType.Save
+POST /itsm/event/type/delete             ItsmEventType.Delete
+
+GET  /itsm/service/area                  ItsmServiceArea.Index
+POST /itsm/service/area/data/list        ItsmServiceArea.ListData
+POST /itsm/service/area/data/detail      ItsmServiceArea.DetailData
+POST /itsm/service/area/save             ItsmServiceArea.Save
+POST /itsm/service/area/delete           ItsmServiceArea.Delete
+
+GET  /itsm/engineer                      ItsmEngineer.Index
+POST /itsm/engineer/data/list            ItsmEngineer.ListData
+POST /itsm/engineer/add/data/list        ItsmEngineer.AddListData
+POST /itsm/engineer/add/save             ItsmEngineer.AddSave
+POST /itsm/engineer/delete               ItsmEngineer.Delete

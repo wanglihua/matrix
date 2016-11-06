@@ -7,6 +7,7 @@ import (
 	"matrix/db"
 	auth_models "matrix/modules/auth/models"
 	inventory_models "matrix/modules/inventory/models"
+	itsm_models "matrix/modules/itsm/models"
 	oa_models "matrix/modules/oa/models"
 	weixin_models "matrix/modules/weixin/models"
 )
@@ -25,32 +26,36 @@ func (c Home) SyncDb() revel.Result {
 
 func (c Home) SyncDbPost() revel.Result {
 
-	modelList := make([]interface{}, 0)
-	modelList = append(modelList, &auth_models.User{})
-	modelList = append(modelList, &auth_models.Admin{})
-	modelList = append(modelList, &auth_models.Group{})
-	modelList = append(modelList, &auth_models.GroupUser{})
-	modelList = append(modelList, &weixin_models.Config{})
-	modelList = append(modelList, &weixin_models.Menu{})
-	modelList = append(modelList, &models.Config{})
-	modelList = append(modelList, &inventory_models.Supplier{})
-	modelList = append(modelList, &inventory_models.Client{})
-	modelList = append(modelList, &inventory_models.ProductCate{})
+	model_list := make([]interface{}, 0)
+	model_list = append(model_list, &auth_models.User{})
+	model_list = append(model_list, &auth_models.Admin{})
+	model_list = append(model_list, &auth_models.Group{})
+	model_list = append(model_list, &auth_models.GroupUser{})
+	model_list = append(model_list, &weixin_models.Config{})
+	model_list = append(model_list, &weixin_models.Menu{})
+	model_list = append(model_list, &models.Config{})
+	model_list = append(model_list, &inventory_models.Supplier{})
+	model_list = append(model_list, &inventory_models.Client{})
+	model_list = append(model_list, &inventory_models.ProductCate{})
 
-	modelList = append(modelList, &inventory_models.Product{})
-	modelList = append(modelList, &inventory_models.Stock{})
-	modelList = append(modelList, &inventory_models.StorageLoc{})
-	modelList = append(modelList, &inventory_models.CapitalAccount{})
-	modelList = append(modelList, &inventory_models.StockIoType{})
+	model_list = append(model_list, &inventory_models.Product{})
+	model_list = append(model_list, &inventory_models.Stock{})
+	model_list = append(model_list, &inventory_models.StorageLoc{})
+	model_list = append(model_list, &inventory_models.CapitalAccount{})
+	model_list = append(model_list, &inventory_models.StockIoType{})
 
-	modelList = append(modelList, &inventory_models.PayType{})
-	modelList = append(modelList, &inventory_models.Handler{})
-	modelList = append(modelList, &inventory_models.StockBill{})
-	modelList = append(modelList, &inventory_models.StockBillDetail{})
-	modelList = append(modelList, &inventory_models.Config{})
-	modelList = append(modelList, &oa_models.Worklog{})
+	model_list = append(model_list, &inventory_models.PayType{})
+	model_list = append(model_list, &inventory_models.Handler{})
+	model_list = append(model_list, &inventory_models.StockBill{})
+	model_list = append(model_list, &inventory_models.StockBillDetail{})
+	model_list = append(model_list, &inventory_models.Config{})
+	model_list = append(model_list, &oa_models.Worklog{})
 
-	err := db.Engine.Sync2(modelList...)
+	model_list = append(model_list, &itsm_models.ServiceArea{})
+	model_list = append(model_list, &itsm_models.EventType{})
+	model_list = append(model_list, &itsm_models.Engineer{})
+
+	err := db.Engine.Sync2(model_list...)
 	core.HandleError(err)
 
 	session := c.DbSession
