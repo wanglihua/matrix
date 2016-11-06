@@ -158,17 +158,24 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
     <script type="text/javascript">
         $(function () {
             try {
-                var parentMenuName = $("div#breadcrumbs ul.breadcrumb li.parent").data().menu;
-                var activeMenuName = $("div#breadcrumbs ul.breadcrumb li.active").data().menu;
-                var parentMenu = $("#" + parentMenuName);
+                var parentMenuId = $("div#breadcrumbs ul.breadcrumb li.parent").data().menu;
+                var activeMenuId = $("div#breadcrumbs ul.breadcrumb li.active").data().menu;
+                var parentMenu = $("#" + parentMenuId);
                 parentMenu.addClass("open");
-                parentMenu.find("#" + activeMenuName).addClass("active");
+                parentMenu.find("#" + activeMenuId).addClass("active");
 
-                var subParentBreadcrumb = $("div#breadcrumbs ul.breadcrumb li.subparent");
-                if(subParentBreadcrumb.size() != 0) {
-                    var subParentMenuName = $("div#breadcrumbs ul.breadcrumb li.subparent").data().menu;
-                    var subParentMenu = $("#" + subParentMenuName);
-                    subParentMenu.addClass("open");
+                var pparentBreadcrumb = $("div#breadcrumbs ul.breadcrumb li.pparent");
+                if(pparentBreadcrumb.size() != 0) {
+                    var pparentMenuId = pparentBreadcrumb.data().menu;
+                    var pparentMenu = $("#" + pparentMenuId);
+                    pparentMenu.addClass("open");
+                }
+
+                var ppparentBreadcrumb = $("div#breadcrumbs ul.breadcrumb li.ppparent");
+                if(ppparentBreadcrumb.size() != 0) {
+                    var ppparentMenuId = ppparentBreadcrumb.data().menu;
+                    var ppparentMenu = $("#" + ppparentMenuId);
+                    ppparentMenu.addClass("open");
                 }
             }
             catch (e) {
