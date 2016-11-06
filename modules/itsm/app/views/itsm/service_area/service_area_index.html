@@ -1,0 +1,209 @@
+{%header "服务区域" .%}
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="itsm-menu">ITSM</li>
+            <li class="active" data-menu="itsm-servicearea-menu">服务区域</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList('#serviceAreaList')">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-success btn-sm" @click="showServiceAreaDetail(0)">
+                        <i class="ace-icon fa fa-plus"></i>
+                        新增
+                    </button>
+                    <button class="btn btn-danger btn-sm" @click="deleteServiceArea()">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                        删除
+                    </button>
+                </div>
+                <div>
+                    <table id="serviceAreaList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="serviceAreaDetailDialog">
+        <div class="modal-dialog" style="width: 580px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">服务区域详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="serviceAreaDetailForm">
+                                <input id="service_area_id" name="detail.area.id" type="hidden" v-model.number="detail.area.id"/>
+                                <input id="service_area_version" name="detail.area.version" type="hidden" v-model.number="detail.area.version"/>
+                                <div class="form-group">
+                                    <label for="area_name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                    <div class="col-xs-10">
+                                        <input id="area_name" name="detail.area.area_name" type="text" class="input-sm form-control" v-model="detail.area.area_name"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="area_desc" class="col-xs-2 control-label no-padding-right">描述</label>
+                                    <div class="col-xs-10">
+                                        <textarea id="area_desc" name="detail.area.area_desc" type="text" class="input-sm form-control" rows="2" v-model="detail.area.area_desc"></textarea>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveServiceArea()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "area": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#serviceAreaList',
+                    {
+                        "sAjaxSource": '{%url "ItsmServiceArea.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "area_name", "title": "名称", "bSearchable": true},
+                            {"mDataProp": "area_desc", "title": "描述", "bSearchable": true},
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                        ]
+                    }
+            );
+
+            $('#serviceAreaList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showServiceAreaDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#serviceAreaList');
+            },
+            showServiceAreaDetail: function (id) {
+                showMask("加载中...");
+                $("#serviceAreaDetailForm").clearValidation();
+                $.ajax({
+                           url: '{%url "ItsmServiceArea.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#serviceAreaDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveServiceArea: function () {
+                showMask("提交中...");
+                var form = $("#serviceAreaDetailForm");
+                var valid = validate(form, {
+                    'detail.area.area_name': {
+                        required: true, minlength: 1, maxlength: 30
+                    },
+                    'detail.area.area_desc': {
+                        required: false
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "ItsmServiceArea.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#serviceAreaDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            deleteServiceArea: function () {
+                var id_list = [];
+                $('#serviceAreaList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "ItsmServiceArea.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+
