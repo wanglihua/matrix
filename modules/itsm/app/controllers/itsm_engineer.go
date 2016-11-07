@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"github.com/revel/revel"
 	"strconv"
 	
@@ -153,77 +153,28 @@ func (c ItsmEngineer) DetailData() revel.Result {
 	core.HandleError(err)
 	
 	if engineer_id != 0 {
-		//group
-		var group_list = make([]struct {
-			GroupId int64 `xorm:"'group_id'"`
-		}, 0)
-		sql := `SELECT DISTINCT s.group_id AS group_id FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_group_setting s ON e.id = s.engineer_id WHERE e.id = ?;`
-		err = db_session.Sql(sql, engineer_id).Find(&group_list)
-		core.HandleError(err)
-		
-		engineer_group_id_list := make([]int64, 0)
-		for _, group := range group_list {
-			engineer_group_id_list = append(engineer_group_id_list, group.GroupId)
-		}
-		detail_form.EngineerGroup = engineer_group_id_list
-		
-		//service area
-		var service_area_list = make([]struct {
-			ServiceAreaId int64 `xorm:"'service_area_id'"`
-		}, 0)
-		sql = `SELECT DISTINCT a.service_area_id AS service_area_id FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_service_area a ON e.id = a.engineer_id WHERE e.id = ?;`
-		err = db_session.Sql(sql, engineer_id).Find(&service_area_list)
-		core.HandleError(err)
-		
-		service_area_id_list := make([]int64, 0)
-		for _, service_area := range service_area_list {
-			service_area_id_list = append(service_area_id_list, service_area.ServiceAreaId)
-		}
-		detail_form.ServiceArea = service_area_id_list
-		
-		//event type
-		var event_type_list = make([]struct {
-			EventTypeId int64 `xorm:"'event_type_id'"`
-		}, 0)
-		sql = `SELECT DISTINCT t.type_id AS event_type_id FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_event_type t ON e.id = t.engineer_id WHERE e.id = ?;`
-		err = db_session.Sql(sql, engineer_id).Find(&event_type_list)
-		core.HandleError(err)
-		
-		event_type_id_list := make([]int64, 0)
-		for _, event_type := range event_type_list {
-			event_type_id_list = append(event_type_id_list, event_type.EventTypeId)
-		}
-		detail_form.EventType = event_type_id_list
-		
-		//is manager
-		var manager_count struct {
-			ManagerCount int `xorm:"'manager_count'"`
-		}
-		sql = `SELECT count(DISTINCT m.id) AS manager_count FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_manager m ON e.id = m.engineer_id WHERE e.id = ?;`
-		_, err = db_session.Sql(sql, engineer_id).Get(&manager_count)
-		core.HandleError(err)
-		if manager_count.ManagerCount == 0 {
-			detail_form.IsManager = 0
-		} else {
-			detail_form.IsManager = 1
-		}
+		detail_form.EngineerGroup = engineer_service.GetEngineerGroupIdList(db_session, engineer_id);
+		detail_form.ServiceArea = engineer_service.GetEngineerServiceAreaIdList(db_session, engineer_id)
+		detail_form.EventType = engineer_service.GetEngineerEventTypeIdList(db_session, engineer_id)
+		detail_form.IsManager = engineer_service.GetEngineerIsManager(db_session, engineer_id)
 	}
 	
 	return c.RenderJson(detail_form)
 }
 
 func (c ItsmEngineer) Save() revel.Result {
-	//db_session := c.DbSession
+	/*
+	db_session := c.DbSession
 	
 	var detail_form EngineerDetailForm
 	err := json.Unmarshal(c.GetRequestBody(), &detail_form)
 	core.HandleError(err)
 	
-	//engineer_id := detail_form.EngineerId
+	engineer_id := detail_form.EngineerId
 	
-	if len(detail_form.EngineerGroup) != 0 {
-		
-	}
+	group_id_list_db := engineer_service.GetEngineerGroupIdList(db_session, engineer_id)
+	group_id_list_ui := detail_form.EngineerGroup
+	*/
 	
 	return c.RenderJson(true)
 }
