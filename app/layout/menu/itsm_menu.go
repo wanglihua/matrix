@@ -16,7 +16,7 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
 	buffer.WriteString(`
 <li id="itsm-menu" class="">
     <a href="#" class="dropdown-toggle">
-    <i class="menu-icon fa fa-users"></i>
+    <i class="menu-icon fa fa-table"></i>
     <span class="menu-text">ITSM</span>
     <b class="arrow fa fa-angle-down"></b>
 </a>

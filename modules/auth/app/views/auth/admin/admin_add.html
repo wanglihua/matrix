@@ -1,5 +1,5 @@
 <div class="modal fade" id="adminAddDialog">
-    <div class="modal-dialog" style="width: 660px;">
+    <div class="modal-dialog" style="width: 780px;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
@@ -41,16 +41,13 @@
                         },
                         {"mDataProp": "login_name", "title": "登录名", "bSearchable": true},
                         {"mDataProp": "nick_name", "title": "用户名", "bSearchable": true},
+                        {"mDataProp": "sex", "title": "性别", "bSearchable": true},
+                        {"mDataProp": "phone", "title": "联系电话", "bSearchable": true},
                         {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
                         {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                     ]
                 }
         );
-
-        $('#userList tbody').on('dblclick', 'tr', function () {
-            var id = $(this).find('td:first-child input:checkbox').val();
-            showUserDetail(id);
-        });
     });
 
     function adminAddSave() {
