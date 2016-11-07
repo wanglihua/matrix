@@ -1,4 +1,6 @@
 {%header "工程师" .%}
+<link rel="stylesheet" type="text/css" href="/static/ace/css/chosen.min.css"/>
+<script type="text/javascript" src="/static/ace/js/chosen.jquery.min.js"></script>
 <div id="page">
     <div class="breadcrumbs" id="breadcrumbs">
         <ul class="breadcrumb">
@@ -204,5 +206,45 @@
         }
     });
 </script>
+
+<div class="row">
+    <div class="col-xs-2"></div>
+    <div class="col-xs-6">
+        <select multiple="" class="chosen-select form-control" id="mul_select" data-placeholder="Choose a State...">
+            <option value="AL">Alabama</option>
+            <option value="AK">Alaska</option>
+            <option value="AZ">Arizona</option>
+            <option value="AR">Arkansas</option>
+            <option value="CA">California</option>
+            <option value="CO">Colorado</option>
+            <option value="CT">Connecticut</option>
+            <option value="DE">Delaware</option>
+            <option value="FL">Florida</option>
+            <option value="GA">Georgia</option>
+            <option value="HI">Hawaii</option>
+            <option value="ID">Idaho</option>
+            <option value="IL">Illinois</option>
+            <option value="IN">Indiana</option>
+            <option value="IA">Iowa</option>
+            <option value="KS">Kansas</option>
+        </select>
+    </div>
+    <div class="col-xs-4">
+        <button id="btnHello" onclick="hello()">Hello</button>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#mul_select").chosen({allow_single_deselect: true});
+
+        $("#mul_select").val(['AL','AK','AZ']);
+        $("#mul_select").trigger('chosen:updated');
+    });
+
+    function hello() {
+        alert($("#mul_select").val()[0]);
+    }
+</script>
+
 {%footer%}
 

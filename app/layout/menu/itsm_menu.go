@@ -38,6 +38,13 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
         </a>
         <b class="arrow"></b>
     </li>
+    <li id="itsm-engineergroup-menu" class="">
+        <a href="/itsm/engineer/group">
+            <i class="menu-icon fa fa-caret-right"></i>
+            工程师分组
+        </a>
+        <b class="arrow"></b>
+    </li>
 	<li id="itsm-engineer-menu" class="">
 		<a href="/itsm/engineer">
 			<i class="menu-icon fa fa-caret-right"></i>
@@ -47,7 +54,7 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
 	</li>
 </ul>
 </li>
-	`)
+`)
 
 	return buffer.String()
 }

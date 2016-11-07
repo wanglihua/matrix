@@ -53,7 +53,12 @@ func (c Home) SyncDbPost() revel.Result {
 
 	model_list = append(model_list, &itsm_models.ServiceArea{})
 	model_list = append(model_list, &itsm_models.EventType{})
+	model_list = append(model_list, &itsm_models.EngineerGroup{})
 	model_list = append(model_list, &itsm_models.Engineer{})
+	model_list = append(model_list, &itsm_models.EngineerGroupSetting{})
+	model_list = append(model_list, &itsm_models.EngineerServiceArea{})
+	model_list = append(model_list, &itsm_models.EngineerEventType{})
+	model_list = append(model_list, &itsm_models.EngineerManager{})
 
 	err := db.Engine.Sync2(model_list...)
 	core.HandleError(err)

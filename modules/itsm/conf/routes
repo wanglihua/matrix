@@ -15,3 +15,13 @@ POST /itsm/engineer/data/list            ItsmEngineer.ListData
 POST /itsm/engineer/add/data/list        ItsmEngineer.AddListData
 POST /itsm/engineer/add/save             ItsmEngineer.AddSave
 POST /itsm/engineer/delete               ItsmEngineer.Delete
+POST /itsm/engineer/data/detail          ItsmEngineer.DetailData
+POST /itsm/engineer/save                 ItsmEngineer.Save
+
+
+GET  /itsm/engineer/group                ItsmEngineerGroup.Index
+POST /itsm/engineer/group/data/list      ItsmEngineerGroup.ListData
+POST /itsm/engineer/group/data/detail    ItsmEngineerGroup.DetailData
+POST /itsm/engineer/group/save           ItsmEngineerGroup.Save
+POST /itsm/engineer/group/delete         ItsmEngineerGroup.Delete
+
