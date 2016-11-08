@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"github.com/revel/revel"
 	"strconv"
 	
@@ -163,7 +163,6 @@ func (c ItsmEngineer) DetailData() revel.Result {
 }
 
 func (c ItsmEngineer) Save() revel.Result {
-	/*
 	db_session := c.DbSession
 	
 	var detail_form EngineerDetailForm
@@ -174,7 +173,11 @@ func (c ItsmEngineer) Save() revel.Result {
 	
 	group_id_list_db := engineer_service.GetEngineerGroupIdList(db_session, engineer_id)
 	group_id_list_ui := detail_form.EngineerGroup
-	*/
+	
+	add_group_id_list := engineer_service.GetIntListInThisNotInThat(group_id_list_ui, group_id_list_db)
+	delete_group_id_list := engineer_service.GetIntListInThisNotInThat(group_id_list_db, group_id_list_ui)
+	engineer_service.AddEngineerToGroups(db_session, engineer_id, add_group_id_list)
+	engineer_service.RemoveEngineerFromGroups(db_session, engineer_id, delete_group_id_list)
 	
 	return c.RenderJson(true)
 }
