@@ -88,9 +88,12 @@ func (_ EngineerService) GetIntListInThisNotInThat(this_list []int64, that_list 
 }
 
 func (_ EngineerService) AddEngineerToGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
+	if group_id_list == nil || len(group_id_list) == 0 {
+		return
+	}
 	egineer_group_setting_list := make([]itsm_models.EngineerGroupSetting, 0)
 	for _, group_id := range group_id_list {
-		var engineer_group_setting  itsm_models.EngineerGroupSetting
+		var engineer_group_setting itsm_models.EngineerGroupSetting
 		engineer_group_setting.EngineerId = engineer_id
 		engineer_group_setting.GroupId = group_id
 		egineer_group_setting_list = append(egineer_group_setting_list, engineer_group_setting)
@@ -99,10 +102,13 @@ func (_ EngineerService) AddEngineerToGroups(db_session *xorm.Session, engineer_
 }
 
 func (_ EngineerService) RemoveEngineerFromGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
-	sql:=`
+	if group_id_list == nil || len(group_id_list) == 0 {
+		return
+	}
+	sql := `
 DELETE FROM hd_itsm_engineer_group_setting WHERE engineer_id = ? AND group_id IN (%s)
 `
-	group_id_str_list := make([]string, 0)
+	group_id_str_list := make([]string, len(group_id_list))
 	for _, group_id := range group_id_list {
 		group_id_str_list = append(group_id_str_list, fmt.Sprint(group_id))
 	}
@@ -110,18 +116,60 @@ DELETE FROM hd_itsm_engineer_group_setting WHERE engineer_id = ? AND group_id IN
 	db_session.Exec(sql, engineer_id)
 }
 
-func (_ EngineerService) AddServiceAreaToGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
-	
+func (_ EngineerService) AddEngineerToServiceAreas(db_session *xorm.Session, engineer_id int64, service_area_id_list []int64) {
+	if service_area_id_list == nil || len(service_area_id_list) == 0 {
+		return
+	}
+	egineer_service_area_list := make([]itsm_models.EngineerServiceArea, 0)
+	for _, service_area_id := range service_area_id_list {
+		var engineer_service_area itsm_models.EngineerServiceArea
+		engineer_service_area.EngineerId = engineer_id
+		engineer_service_area.ServiceAreaId = service_area_id
+		egineer_service_area_list = append(egineer_service_area_list, engineer_service_area)
+	}
+	db_session.Insert(&egineer_service_area_list)
 }
 
-func (_ EngineerService) RemoveServiceAreaFromGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
-	
+func (_ EngineerService) RemoveEngineerFromServiceAreas(db_session *xorm.Session, engineer_id int64, service_area_id_list []int64) {
+	if service_area_id_list == nil || len(service_area_id_list) == 0 {
+		return
+	}
+	sql := `
+DELETE FROM hd_itsm_engineer_service_area WHERE engineer_id = ? AND service_area_id IN (%s)
+`
+	service_area_id_str_list := make([]string, len(service_area_id_list))
+	for _, service_area_id := range service_area_id_list {
+		service_area_id_str_list = append(service_area_id_str_list, fmt.Sprint(service_area_id))
+	}
+	sql = fmt.Sprintf(sql, strings.Join(service_area_id_str_list, ","))
+	db_session.Exec(sql, engineer_id)
 }
 
-func (_ EngineerService) AddEventTypeToGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
-	
+func (_ EngineerService) AddEngineerToEventTypes(db_session *xorm.Session, engineer_id int64, event_type_id_list []int64) {
+	if event_type_id_list == nil || len(event_type_id_list) == 0 {
+		return
+	}
+	egineer_event_type_list := make([]itsm_models.EngineerEventType, 0)
+	for _, event_type_id := range event_type_id_list {
+		var engineer_event_type itsm_models.EngineerEventType
+		engineer_event_type.EngineerId = engineer_id
+		engineer_event_type.EventTypeId = event_type_id
+		egineer_event_type_list = append(egineer_event_type_list, engineer_event_type)
+	}
+	db_session.Insert(&egineer_event_type_list)
 }
 
-func (_ EngineerService) RemoveEventTypeFromGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
-	
+func (_ EngineerService) RemoveEngineerFromEventTypes(db_session *xorm.Session, engineer_id int64, event_type_id_list []int64) {
+	if event_type_id_list == nil || len(event_type_id_list) == 0 {
+		return
+	}
+	sql := `
+DELETE FROM hd_itsm_engineer_event_type WHERE engineer_id = ? AND type_id IN (%s);
+`
+	event_type_id_str_list := make([]string, len(event_type_id_list))
+	for _, event_type_id := range event_type_id_list {
+		event_type_id_str_list = append(event_type_id_str_list, fmt.Sprint(event_type_id))
+	}
+	sql = fmt.Sprintf(sql, strings.Join(event_type_id_str_list, ","))
+	db_session.Exec(sql, engineer_id)
 }

@@ -173,11 +173,26 @@ func (c ItsmEngineer) Save() revel.Result {
 	
 	group_id_list_db := engineer_service.GetEngineerGroupIdList(db_session, engineer_id)
 	group_id_list_ui := detail_form.EngineerGroup
-	
 	add_group_id_list := engineer_service.GetIntListInThisNotInThat(group_id_list_ui, group_id_list_db)
 	delete_group_id_list := engineer_service.GetIntListInThisNotInThat(group_id_list_db, group_id_list_ui)
 	engineer_service.AddEngineerToGroups(db_session, engineer_id, add_group_id_list)
 	engineer_service.RemoveEngineerFromGroups(db_session, engineer_id, delete_group_id_list)
+	
+	service_area_id_list_db := engineer_service.GetEngineerServiceAreaIdList(db_session, engineer_id)
+	service_area_id_list_ui := detail_form.ServiceArea
+	add_service_area_id_list := engineer_service.GetIntListInThisNotInThat(service_area_id_list_ui, service_area_id_list_db)
+	delete_service_area_id_list := engineer_service.GetIntListInThisNotInThat(service_area_id_list_db, service_area_id_list_ui)
+	engineer_service.AddEngineerToServiceAreas(db_session, engineer_id, add_service_area_id_list)
+	engineer_service.RemoveEngineerFromServiceAreas(db_session, engineer_id, delete_service_area_id_list)
+	
+	event_type_id_list_db := engineer_service.GetEngineerEventTypeIdList(db_session, engineer_id)
+	event_type_id_list_ui := detail_form.EventType
+	add_event_type_id_list := engineer_service.GetIntListInThisNotInThat(event_type_id_list_ui, event_type_id_list_db)
+	delete_event_type_id_list := engineer_service.GetIntListInThisNotInThat(event_type_id_list_db, event_type_id_list_ui)
+	engineer_service.AddEngineerToEventTypes(db_session, engineer_id, add_event_type_id_list)
+	engineer_service.RemoveEngineerFromEventTypes(db_session, engineer_id, delete_event_type_id_list)
+	
+	//todo: others
 	
 	return c.RenderJson(true)
 }
