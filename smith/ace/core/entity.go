@@ -1,6 +1,6 @@
 package core
 
-import "matrix/smith/core/fieldtype"
+import "matrix/smith/ace/core/fieldtype"
 
 type Field struct {
 	VerboseName string
@@ -38,5 +38,5 @@ type Entity struct {
 	TablePrefix     string
 	Route           string
 
-	FieldList       []Field
+	FieldList []Field
 }

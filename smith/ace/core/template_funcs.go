@@ -1,7 +1,7 @@
 package core
 
 import (
-	"matrix/smith/core/fieldtype"
+	"matrix/smith/ace/core/fieldtype"
 	"strings"
 )
 
@@ -269,7 +269,7 @@ func TemplateFuncFieldValid(entity Entity, field Field) string {
 		}
 	}
 
-	if field.FieldType == fieldtype.NVarchar  && field.Null == true {
+	if field.FieldType == fieldtype.NVarchar && field.Null == true {
 		minSizeTemplate := `	if f.{{.entityTitleName}}.{{.fieldName}}.Valid == true {
 		validation.MinSize(f.{{.entityTitleName}}.{{.fieldName}}.String, {{.minLength}}).Message("{{.fieldVerboseName}}长度不能小于{{.minLength}}！")
 	}

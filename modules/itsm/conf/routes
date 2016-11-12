@@ -25,3 +25,4 @@ POST /itsm/engineer/group/data/detail    ItsmEngineerGroup.DetailData
 POST /itsm/engineer/group/save           ItsmEngineerGroup.Save
 POST /itsm/engineer/group/delete         ItsmEngineerGroup.Delete
 
+GET  /itsm/equipment/type                ItsmEquipmentType.Index

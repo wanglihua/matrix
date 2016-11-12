@@ -8,4 +8,3 @@ POST /{{$entity.ModuleLowerCase}}/{{LowerCase $entity.Route}}/data/detail       
 POST /{{$entity.ModuleLowerCase}}/{{LowerCase $entity.Route}}/save               {{$entity.ModuleTitleName}}{{$entity.EntityTitleName}}.Save
 POST /{{$entity.ModuleLowerCase}}/{{LowerCase $entity.Route}}/delete             {{$entity.ModuleTitleName}}{{$entity.EntityTitleName}}.Delete
 {{end}}`
-

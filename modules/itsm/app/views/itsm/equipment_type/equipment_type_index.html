@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta charset="utf-8"/>
+    <title>Home-测试系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <link type="text/css" rel="stylesheet" href="/static/lib/font-awesome/css/font-awesome.min.css"/>
+    <link type="text/css" rel="stylesheet" href="/static/lib/element/theme-default/index.css"/>
+    <script type="text/javascript" src="/static/lib/vue/vue.js"></script>
+    <script type="text/javascript" src="/static/lib/element/index.js"></script>
+    <script type="text/javascript" src="/static/lib/jquery/jquery.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="/static/matrix.css"/>
+    <script type="text/javascript" src="/static/matrix.js"></script>
+</head>
+<body>
+<div id="navbar" class="navbar">
+    <span class="system-title">测试系统</span>
+</div>
+<div id="main-container" class="main-container">
+    <div id="sidebar" class="sidebar">
+        <el-menu id="nav-select" default-active="1-1" mode="horizontal">
+            <el-submenu index="1">
+                <template slot="title">我的工作台</template>
+                <el-menu-item index="1-1">选项1</el-menu-item>
+                <el-menu-item index="1-2">选项2</el-menu-item>
+                <el-menu-item index="1-3">选项3</el-menu-item>
+            </el-submenu>
+        </el-menu>
+        <el-menu id="nav-menu" default-active="1-1">
+            <el-menu-item-group title="分组一">
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-message"></i>导航一</template>
+                    <el-menu-item index="1-1">选项1</el-menu-item>
+                    <el-menu-item index="1-2">选项2</el-menu-item>
+                    <el-menu-item index="1-3">选项3</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="2">
+                    <i class="el-icon-menu"></i>导航二
+                </el-menu-item>
+                <el-menu-item index="3">
+                    <i class="el-icon-setting"></i>导航三
+                </el-menu-item>
+            </el-menu-item-group>
+        </el-menu>
+    </div>
+    <div id="main-content" class="main-content">
+    </div>
+</div>
+<script type="text/javascript">
+    var sider_vm = new Vue({
+        el: '#sidebar',
+        data: {}
+    });
+</script>
+</body>
+</html>
