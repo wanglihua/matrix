@@ -1,15 +1,14 @@
 package service
 
 import (
+	"fmt"
 	"github.com/go-xorm/xorm"
 	"matrix/core"
 	itsm_models "matrix/modules/itsm/models"
-	"fmt"
 	"strings"
 )
 
 type EngineerService struct {
-	
 }
 
 func (_ EngineerService) GetEngineerGroupIdList(db_session *xorm.Session, engineer_id int64) []int64 {
@@ -19,7 +18,7 @@ func (_ EngineerService) GetEngineerGroupIdList(db_session *xorm.Session, engine
 	sql := `SELECT DISTINCT s.group_id AS group_id FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_group_setting s ON e.id = s.engineer_id WHERE e.id = ?;`
 	err := db_session.Sql(sql, engineer_id).Find(&group_list)
 	core.HandleError(err)
-	
+
 	engineer_group_id_list := make([]int64, 0)
 	for _, group := range group_list {
 		engineer_group_id_list = append(engineer_group_id_list, group.GroupId)
@@ -34,7 +33,7 @@ func (_ EngineerService) GetEngineerServiceAreaIdList(db_session *xorm.Session, 
 	sql := `SELECT DISTINCT a.service_area_id AS service_area_id FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_service_area a ON e.id = a.engineer_id WHERE e.id = ?;`
 	err := db_session.Sql(sql, engineer_id).Find(&service_area_list)
 	core.HandleError(err)
-	
+
 	service_area_id_list := make([]int64, 0)
 	for _, service_area := range service_area_list {
 		service_area_id_list = append(service_area_id_list, service_area.ServiceAreaId)
@@ -49,7 +48,7 @@ func (_ EngineerService) GetEngineerEventTypeIdList(db_session *xorm.Session, en
 	sql := `SELECT DISTINCT t.type_id AS event_type_id FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_event_type t ON e.id = t.engineer_id WHERE e.id = ?;`
 	err := db_session.Sql(sql, engineer_id).Find(&event_type_list)
 	core.HandleError(err)
-	
+
 	event_type_id_list := make([]int64, 0)
 	for _, event_type := range event_type_list {
 		event_type_id_list = append(event_type_id_list, event_type.EventTypeId)
@@ -171,5 +170,30 @@ DELETE FROM hd_itsm_engineer_event_type WHERE engineer_id = ? AND type_id IN (%s
 		event_type_id_str_list = append(event_type_id_str_list, fmt.Sprint(event_type_id))
 	}
 	sql = fmt.Sprintf(sql, strings.Join(event_type_id_str_list, ","))
+	db_session.Exec(sql, engineer_id)
+}
+
+func (_ EngineerService) IsEngineerManager(db_session *xorm.Session, engineer_id int64) bool {
+	sql := `
+SELECT count(*) as count FROM hd_itsm_engineer_manager WHERE engineer_id = ?
+`
+	var count_result struct {
+		Count int64 `xorm:"'count'"`
+	}
+	_, err := db_session.Sql(sql, engineer_id).Get(&count_result)
+	core.HandleError(err)
+	return count_result.Count != 0
+}
+
+func (_ EngineerService) AddEngineerToManager(db_session *xorm.Session, engineer_id int64) {
+	var engineer_manager itsm_models.EngineerManager
+	engineer_manager.EngineerId = engineer_id
+	db_session.Insert(&engineer_manager)
+}
+
+func (_ EngineerService) RemoveEngineerFromManager(db_session *xorm.Session, engineer_id int64) {
+	sql := `
+DELETE FROM hd_itsm_engineer_manager WHERE engineer_id = ?
+`
 	db_session.Exec(sql, engineer_id)
 }

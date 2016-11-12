@@ -59,13 +59,69 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="engineerDetailDialog">
+        <div class="modal-dialog" style="width: 580px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">工程师详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="engineerDetailForm">
+                                <div class="form-group">
+                                    <label for="service_area" class="col-xs-2 control-label no-padding-right">服务区域</label>
+                                    <div class="col-xs-10">
+                                        <select id="service_area" multiple="" class="chosen-select form-control" data-placeholder="请选择服务区域..." v-model="detail.service_area">
+                                            <option value=""></option>
+                                            <template v-for="service_area in detail.service_area_list">
+                                                <option :value="service_area.id">{{service_area.area_name}}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveEngineer()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
     var vm = new Vue({
         el: "#page",
         data: {
             "detail": {
-                "engineer": {}
+                "engineer": {},
+                "service_area": [],
+                "service_area_list": [
+                    {
+                        "id": 1,
+                        "area_name": "Service Area 1",
+                        "area_desc": null,
+                        "create_time": "2016-11-07 22:39",
+                        "update_time": "2016-11-07 22:39",
+                        "version": 1
+                    },
+                    {
+                        "id": 2,
+                        "area_name": "Service Area 2",
+                        "area_desc": null,
+                        "create_time": "2016-11-07 22:39",
+                        "update_time": "2016-11-07 22:39",
+                        "version": 1
+                    }
+                ]
             }
         },
         mounted: function () {
@@ -94,18 +150,70 @@
                     }
             );
 
-            /*
-             $('#engineerList tbody').on('dblclick', 'tr', function () {
-             var id = $(this).find('td:first-child input:checkbox').val();
-             vm.showEngineerDetail(id);
-             });
-             */
+            $('#engineerList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showEngineerDetail(id);
+            });
+
         },
         methods: {
             reloadList: function () {
                 reloadList('#engineerList');
             },
-            showAddEngineer: function (id) {
+            showEngineerDetail: function (id) {
+                showMask("加载中...");
+                $("#engineerDetailForm").clearValidation();
+                $.ajax({
+                           url: '{%url "ItsmEngineer.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+
+                               $('#engineerDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveEngineer: function () {
+                showMask("提交中...");
+                var form = $("#engineerDetailForm");
+                var valid = validate(form, {});
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "ItsmEngineer.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#engineerDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            showAddEngineer: function () {
                 var userListDataTableCount = $("#userList_wrapper").size();
                 if (userListDataTableCount == 0) {
                     initDataTable(
@@ -206,44 +314,16 @@
         }
     });
 </script>
-
-<div class="row">
-    <div class="col-xs-2"></div>
-    <div class="col-xs-6">
-        <select multiple="" class="chosen-select form-control" id="mul_select" data-placeholder="Choose a State...">
-            <option value="AL">Alabama</option>
-            <option value="AK">Alaska</option>
-            <option value="AZ">Arizona</option>
-            <option value="AR">Arkansas</option>
-            <option value="CA">California</option>
-            <option value="CO">Colorado</option>
-            <option value="CT">Connecticut</option>
-            <option value="DE">Delaware</option>
-            <option value="FL">Florida</option>
-            <option value="GA">Georgia</option>
-            <option value="HI">Hawaii</option>
-            <option value="ID">Idaho</option>
-            <option value="IL">Illinois</option>
-            <option value="IN">Indiana</option>
-            <option value="IA">Iowa</option>
-            <option value="KS">Kansas</option>
-        </select>
-    </div>
-    <div class="col-xs-4">
-        <button id="btnHello" onclick="hello()">Hello</button>
-    </div>
-</div>
 <script type="text/javascript">
     $(function () {
-        $("#mul_select").chosen({allow_single_deselect: true});
+        var service_area = $("#service_area");
+        service_area.chosen({allow_single_deselect: true});
+        service_area.trigger('chosen:updated');
 
-        $("#mul_select").val(['AL','AK','AZ']);
-        $("#mul_select").trigger('chosen:updated');
+        $(".chosen-container").removeAttr("style");
+        $(".chosen-container input").removeAttr("style");
+        $(".chosen-container input").addClass("form-control");
     });
-
-    function hello() {
-        alert($("#mul_select").val()[0]);
-    }
 </script>
 
 {%footer%}
