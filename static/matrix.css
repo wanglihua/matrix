@@ -119,6 +119,7 @@ div.main-content {
 
 div.main-content div#page-content {
     padding-left: 10px;
+    padding-right: 10px;
 }
 
 div#page-content div#breadcrumb {
@@ -164,4 +165,9 @@ div.el-table {
 
 .el-pager li {
     font-size: 12px;
+}
+
+.el-pagination {
+    text-align: right;
+    margin-top: 5px;
 }

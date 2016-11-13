@@ -86,15 +86,7 @@
                         <el-table-column prop="address2" label="地址" min-width="580"></el-table-column>
                     </el-table>
                 </template>
-            </div>
-            <div>
-                <el-pagination
-                        :current-page="5"
-                        :page-sizes="[100, 200, 300, 400]"
-                        :page-size="100"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="400">
-                </el-pagination>
+                <el-pagination :current-page="5" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400"></el-pagination>
             </div>
         </div>
         <script type="text/javascript">
