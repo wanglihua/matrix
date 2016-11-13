@@ -7,32 +7,79 @@ body {
 }
 
 div.navbar {
-    height: 35px;
+    height: 40px;
     background-color: #20a0ff;
     padding-left: 10px;
 }
 
+div.navbar::after {
+    content: '';
+    clear: both;
+}
+
 div.navbar span.system-title {
-    line-height: 35px;
+    line-height: 40px;
     color: white;
     font-size: 16px;
     font-weight: bold;
 }
 
-div.main-container {
+div.navbar #login-select > .el-submenu .el-submenu__title {
+    font-weight: bold;
+    color: white;
+}
+
+div.navbar #login-select > .el-submenu .el-submenu__title > i {
+    font-size: 14px;
+    color: white;
+}
+
+div.navbar #login-select > .el-submenu:hover .el-submenu__title {
+    /*border-style: none;*/
+    color: #475669;
+    background-color: #eff2f7;
+}
+
+div.navbar #login-select > .el-submenu:hover .el-submenu__title > i {
+    color: #475669;
+}
+
+div.navbar #login-select .el-menu-item, div.navbar #login-select > .el-submenu .el-submenu__title {
+    font-size: 12px;
+    height: 40px;
+    line-height: 40px;
 
 }
 
+div.navbar #login-select {
+    border-radius: 0;
+    background-color: transparent;
+}
+
+div.navbar #login-select > li.el-submenu > ul.el-menu {
+    top: 40px;
+    left: auto;
+    right: 0;
+}
+
+div.main-container {
+    min-height: 100%;
+}
+
 div.main-container::after {
+    content: '';
     clear: both;
 }
 
 div.sidebar {
     float: left;
     width: 180px;
+    min-height: 100%;
+    background-color: #eff2f7;
 }
 
 div.sidebar #nav-select {
+    border-radius: 0;
     border-bottom: 2px solid #d3dce6;
 }
 
@@ -68,4 +115,17 @@ div.sidebar #nav-menu .el-menu-item, div.sidebar #nav-menu .el-submenu__title {
 
 div.main-content {
     margin-left: 180px;
+}
+
+div.main-content div#page-content {
+    padding-left: 10px;
+}
+
+div#page-content div#breadcrumb {
+}
+
+div#page-content div#breadcrumb div.el-breadcrumb{
+    font-size: 12px;
+    height: 40px;
+    line-height: 40px;
 }
