@@ -2,6 +2,7 @@ package menu
 
 import (
 	"bytes"
+
 	"github.com/go-xorm/xorm"
 	"github.com/revel/revel"
 )
@@ -30,7 +31,13 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
         </a>
         <b class="arrow"></b>
     </li>
-
+    <li id="itsm-eventstatus-menu" class="">
+        <a href="/itsm/event/status">
+            <i class="menu-icon fa fa-caret-right"></i>
+            事件状态
+        </a>
+        <b class="arrow"></b>
+    </li>
     <li id="itsm-servicearea-menu" class="">
         <a href="/itsm/service/area">
             <i class="menu-icon fa fa-caret-right"></i>

@@ -26,3 +26,9 @@ POST /itsm/engineer/group/save           ItsmEngineerGroup.Save
 POST /itsm/engineer/group/delete         ItsmEngineerGroup.Delete
 
 GET  /itsm/equipment/type                ItsmEquipmentType.Index
+
+GET  /itsm/event/status                    ItsmEventStatus.Index
+POST /itsm/event/status/data/list          ItsmEventStatus.ListData
+POST /itsm/event/status/data/detail        ItsmEventStatus.DetailData
+POST /itsm/event/status/save               ItsmEventStatus.Save
+POST /itsm/event/status/delete             ItsmEventStatus.Delete

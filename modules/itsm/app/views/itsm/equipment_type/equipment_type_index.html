@@ -60,20 +60,18 @@
             <div id="toolbar">
                 <div id="breadcrumb">
                     <el-breadcrumb separator="/">
-                        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                        <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
                         <el-breadcrumb-item>活动管理</el-breadcrumb-item>
                         <el-breadcrumb-item>活动列表</el-breadcrumb-item>
                         <el-breadcrumb-item>活动详情</el-breadcrumb-item>
                     </el-breadcrumb>
                 </div>
                 <div id="buttons">
-                    <el-button-group>
-                        <el-button size="small" :plain="true" type="info"><i class="btn-icon fa fa-refresh"></i>刷新</el-button>
-                        <el-button size="small" :plain="true" type="info"><i class="btn-icon fa fa-search"></i>搜索</el-button>
-                        <el-button size="small" :plain="true" type="success"><i class="btn-icon fa fa-plus"></i>新建</el-button>
-                        <el-button size="small" :plain="true" type="warning"><i class="btn-icon fa fa-pencil"></i>编辑</el-button>
-                        <el-button size="small" :plain="true" type="danger"><i class="btn-icon fa fa-trash-o"></i>删除</el-button>
-                    </el-button-group>
+                    <el-button size="small" :plain="true" type="info"><i class="btn-icon fa fa-refresh"></i>刷新</el-button>
+                    <el-button size="small" :plain="true" type="info"><i class="btn-icon fa fa-search"></i>搜索</el-button>
+                    <el-button size="small" :plain="true" type="success"><i class="btn-icon fa fa-plus"></i>新建</el-button>
+                    <el-button size="small" :plain="true" type="warning"><i class="btn-icon fa fa-pencil"></i>编辑</el-button>
+                    <el-button size="small" :plain="true" type="danger"><i class="btn-icon fa fa-trash-o"></i>删除</el-button>
                 </div>
             </div>
             <div>
