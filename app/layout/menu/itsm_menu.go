@@ -38,6 +38,21 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
         </a>
         <b class="arrow"></b>
     </li>
+    <li id="itsm-eventpriority-menu" class="">
+        <a href="/itsm/event/priority">
+            <i class="menu-icon fa fa-caret-right"></i>
+            事件优先级
+        </a>
+        <b class="arrow"></b>
+    </li>
+
+    <li id="itsm-eventlog-menu" class="">
+        <a href="/itsm/event/log">
+            <i class="menu-icon fa fa-caret-right"></i>
+            事件日志
+        </a>
+        <b class="arrow"></b>
+    </li>	
     <li id="itsm-servicearea-menu" class="">
         <a href="/itsm/service/area">
             <i class="menu-icon fa fa-caret-right"></i>
@@ -59,6 +74,53 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
 		</a>
 		<b class="arrow"></b>
 	</li>
+    <li id="itsm-equipmentstatus-menu" class="">
+        <a href="/itsm/equipment/status">
+            <i class="menu-icon fa fa-caret-right"></i>
+            设备状态
+        </a>
+        <b class="arrow"></b>
+    </li>
+
+    <li id="itsm-equipmenttype-menu" class="">
+        <a href="/itsm/equipment/type">
+            <i class="menu-icon fa fa-caret-right"></i>
+            设备类型
+        </a>
+        <b class="arrow"></b>
+    </li>
+
+    <li id="itsm-equipment-menu" class="">
+        <a href="/itsm/equipment">
+            <i class="menu-icon fa fa-caret-right"></i>
+            设备
+        </a>
+        <b class="arrow"></b>
+    </li>
+
+    <li id="itsm-applicationstatus-menu" class="">
+        <a href="/itsm/application/status">
+            <i class="menu-icon fa fa-caret-right"></i>
+            应用状态
+        </a>
+        <b class="arrow"></b>
+    </li>
+
+    <li id="itsm-applicationtype-menu" class="">
+        <a href="/itsm/application/type">
+            <i class="menu-icon fa fa-caret-right"></i>
+            应用类型
+        </a>
+        <b class="arrow"></b>
+    </li>
+
+    <li id="itsm-application-menu" class="">
+        <a href="/itsm/application">
+            <i class="menu-icon fa fa-caret-right"></i>
+            应用
+        </a>
+        <b class="arrow"></b>
+    </li>	
 </ul>
 </li>
 `)

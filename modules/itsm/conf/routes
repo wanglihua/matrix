@@ -25,10 +25,57 @@ POST /itsm/engineer/group/data/detail    ItsmEngineerGroup.DetailData
 POST /itsm/engineer/group/save           ItsmEngineerGroup.Save
 POST /itsm/engineer/group/delete         ItsmEngineerGroup.Delete
 
-GET  /itsm/equipment/type                ItsmEquipmentType.Index
-
 GET  /itsm/event/status                    ItsmEventStatus.Index
 POST /itsm/event/status/data/list          ItsmEventStatus.ListData
 POST /itsm/event/status/data/detail        ItsmEventStatus.DetailData
 POST /itsm/event/status/save               ItsmEventStatus.Save
 POST /itsm/event/status/delete             ItsmEventStatus.Delete
+
+
+GET  /itsm/event/priority                    ItsmEventPriority.Index
+POST /itsm/event/priority/data/list          ItsmEventPriority.ListData
+POST /itsm/event/priority/data/detail        ItsmEventPriority.DetailData
+POST /itsm/event/priority/save               ItsmEventPriority.Save
+POST /itsm/event/priority/delete             ItsmEventPriority.Delete
+
+GET  /itsm/event/log                    ItsmEventLog.Index
+POST /itsm/event/log/data/list          ItsmEventLog.ListData
+POST /itsm/event/log/data/detail        ItsmEventLog.DetailData
+POST /itsm/event/log/save               ItsmEventLog.Save
+POST /itsm/event/log/delete             ItsmEventLog.Delete
+
+GET  /itsm/equipment/status                    ItsmEquipmentStatus.Index
+POST /itsm/equipment/status/data/list          ItsmEquipmentStatus.ListData
+POST /itsm/equipment/status/data/detail        ItsmEquipmentStatus.DetailData
+POST /itsm/equipment/status/save               ItsmEquipmentStatus.Save
+POST /itsm/equipment/status/delete             ItsmEquipmentStatus.Delete
+
+GET  /itsm/equipment/type                    ItsmEquipmentType.Index
+POST /itsm/equipment/type/data/list          ItsmEquipmentType.ListData
+POST /itsm/equipment/type/data/detail        ItsmEquipmentType.DetailData
+POST /itsm/equipment/type/save               ItsmEquipmentType.Save
+POST /itsm/equipment/type/delete             ItsmEquipmentType.Delete
+
+GET  /itsm/equipment                    ItsmEquipment.Index
+POST /itsm/equipment/data/list          ItsmEquipment.ListData
+POST /itsm/equipment/data/detail        ItsmEquipment.DetailData
+POST /itsm/equipment/save               ItsmEquipment.Save
+POST /itsm/equipment/delete             ItsmEquipment.Delete
+
+GET  /itsm/application/status                    ItsmApplicationStatus.Index
+POST /itsm/application/status/data/list          ItsmApplicationStatus.ListData
+POST /itsm/application/status/data/detail        ItsmApplicationStatus.DetailData
+POST /itsm/application/status/save               ItsmApplicationStatus.Save
+POST /itsm/application/status/delete             ItsmApplicationStatus.Delete
+
+GET  /itsm/application/type                    ItsmApplicationType.Index
+POST /itsm/application/type/data/list          ItsmApplicationType.ListData
+POST /itsm/application/type/data/detail        ItsmApplicationType.DetailData
+POST /itsm/application/type/save               ItsmApplicationType.Save
+POST /itsm/application/type/delete             ItsmApplicationType.Delete
+
+GET  /itsm/application                    ItsmApplication.Index
+POST /itsm/application/data/list          ItsmApplication.ListData
+POST /itsm/application/data/detail        ItsmApplication.DetailData
+POST /itsm/application/save               ItsmApplication.Save
+POST /itsm/application/delete             ItsmApplication.Delete

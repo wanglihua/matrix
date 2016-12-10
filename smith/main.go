@@ -25,7 +25,9 @@ var module_lower_case = entity_models.ModuleLowerCase
 var module_chinese = entity_models.ModuleChinese
 var table_prefix = entity_models.TablePrefix
 var model_list = []interface{}{
-	entity_models.EventStatus{},
+	entity_models.EventPriority{}, entity_models.EventLog{},
+	entity_models.EquipmentStatus{}, entity_models.EquipmentType{}, entity_models.Equipment{},
+	entity_models.ApplicationStatus{}, entity_models.ApplicationType{}, entity_models.Application{},
 }
 
 /*
