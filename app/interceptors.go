@@ -1,16 +1,18 @@
 package app
 
 import (
-	"github.com/revel/revel"
+	"fmt"
 	"matrix/app/routes"
 	"matrix/core"
 	"matrix/db"
 	"strings"
+
+	"github.com/revel/revel"
 )
 
 func BeforeInterceptor(c *revel.Controller) revel.Result {
 	if isStaticRequest(c) == false {
-		revel.TRACE.Println("begin ------------------------------------------------------------------")
+		revel.TRACE.Println(blue_paint(fmt.Sprintf("begin action %s", c.Action)))
 		//revel.TRACE.Println("session id: " + c.Session.Id())
 
 		//在这之前的数据库访问请自行开启 db session
@@ -43,7 +45,7 @@ func FinallyInterceptor(c *revel.Controller) revel.Result {
 		c.DbSession.Close() //模板tags中的数据库访问请自行开启 db session
 
 		//revel.TRACE.Println("session id: " + c.Session.Id())
-		revel.TRACE.Println("end --------------------------------------------------------------------")
+		revel.TRACE.Println(green_paint(fmt.Sprintf("end   action %s\n", c.Action)))
 	}
 
 	return nil
@@ -78,8 +80,6 @@ func userAuth(c *revel.Controller) revel.Result {
 	if c.Name == "Static" || c.Name == "TestRunner" {
 		return nil
 	}
-
-	revel.TRACE.Println("action: " + c.Action)
 
 	if c.Action == "Login.Index" || c.Action == "Login.Login" {
 		return nil

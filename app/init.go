@@ -1,16 +1,26 @@
 package app
 
 import (
-	"github.com/revel/revel"
 	"runtime"
+
+	"github.com/agtorre/gocolorize"
+	"github.com/revel/revel"
 )
 
 var AppName string = "matrix"
+
+var green_paint, blue_paint func(v ...interface{}) string
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	revel.TimeFormats = append(revel.TimeFormats, "2006-01-02 15:04:05")
+
+	var green, blue gocolorize.Colorize
+	green.SetColor(gocolorize.Green)
+	blue.SetColor(gocolorize.Blue)
+	green_paint = green.Paint
+	blue_paint = blue.Paint
 
 	//revel.InterceptMethod((*service.BaseController).Before, revel.BEFORE)
 	//revel.InterceptMethod((*service.BaseController).Finally, revel.FINALLY)
