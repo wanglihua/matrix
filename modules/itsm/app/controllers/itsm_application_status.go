@@ -1,9 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
 	"strconv"
+
 	"github.com/revel/revel"
 
 	"matrix/core"
@@ -55,13 +55,16 @@ func (f *ApplicationStatusDetailForm) IsCreate() bool {
 	return f.ApplicationStatus.Id == 0
 }
 
-func (f *ApplicationStatusDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *ApplicationStatusDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.ApplicationStatus.Name).Message("名称不能为空！")
 	if f.ApplicationStatus.Name != "" {
 		validation.MinSize(f.ApplicationStatus.Name, 2).Message("名称长度不能小于2！")
 	}
 	if f.ApplicationStatus.Name != "" {
 		validation.MaxSize(f.ApplicationStatus.Name, 20).Message("名称长度不能大于20！")
+	}
+	if f.ApplicationStatus.Description.Valid == true && f.ApplicationStatus.Description.String != "" {
+		validation.MaxSize(f.ApplicationStatus.Description.String, 300).Message("描述长度不能大于300！")
 	}
 
 	return validation.HasErrors() == false
@@ -102,15 +105,15 @@ func (c ItsmApplicationStatus) Save() revel.Result {
 	application_status := detail_form.ApplicationStatus
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&application_status)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(application_status.Id).Update(&application_status)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -128,4 +131,3 @@ func (c ItsmApplicationStatus) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

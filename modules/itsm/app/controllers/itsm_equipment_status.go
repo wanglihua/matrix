@@ -1,9 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
 	"strconv"
+
 	"github.com/revel/revel"
 
 	"matrix/core"
@@ -55,13 +55,16 @@ func (f *EquipmentStatusDetailForm) IsCreate() bool {
 	return f.EquipmentStatus.Id == 0
 }
 
-func (f *EquipmentStatusDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *EquipmentStatusDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.EquipmentStatus.Name).Message("名称不能为空！")
 	if f.EquipmentStatus.Name != "" {
 		validation.MinSize(f.EquipmentStatus.Name, 2).Message("名称长度不能小于2！")
 	}
 	if f.EquipmentStatus.Name != "" {
 		validation.MaxSize(f.EquipmentStatus.Name, 20).Message("名称长度不能大于20！")
+	}
+	if f.EquipmentStatus.Description.Valid == true && f.EquipmentStatus.Description.String != "" {
+		validation.MaxSize(f.EquipmentStatus.Description.String, 300).Message("描述长度不能大于300！")
 	}
 
 	return validation.HasErrors() == false
@@ -102,15 +105,15 @@ func (c ItsmEquipmentStatus) Save() revel.Result {
 	equipment_status := detail_form.EquipmentStatus
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&equipment_status)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(equipment_status.Id).Update(&equipment_status)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -128,4 +131,3 @@ func (c ItsmEquipmentStatus) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

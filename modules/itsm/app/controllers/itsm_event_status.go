@@ -1,9 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
 	"strconv"
+
 	"github.com/revel/revel"
 
 	"matrix/core"
@@ -55,7 +55,7 @@ func (f *EventStatusDetailForm) IsCreate() bool {
 	return f.EventStatus.Id == 0
 }
 
-func (f *EventStatusDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *EventStatusDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.EventStatus.Name).Message("名称不能为空！")
 	if f.EventStatus.Name != "" {
 		validation.MinSize(f.EventStatus.Name, 1).Message("名称长度不能小于1！")
@@ -63,7 +63,9 @@ func (f *EventStatusDetailForm) Valid(validation *revel.Validation) bool {
 	if f.EventStatus.Name != "" {
 		validation.MaxSize(f.EventStatus.Name, 30).Message("名称长度不能大于30！")
 	}
-
+	if f.EventStatus.Desc.Valid == true && f.EventStatus.Desc.String != "" {
+		validation.MaxSize(f.EventStatus.Desc.String, 300).Message("描述长度不能大于300！")
+	}
 
 	return validation.HasErrors() == false
 }
@@ -103,15 +105,15 @@ func (c ItsmEventStatus) Save() revel.Result {
 	event_status := detail_form.EventStatus
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&event_status)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(event_status.Id).Update(&event_status)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -129,4 +131,3 @@ func (c ItsmEventStatus) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

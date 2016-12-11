@@ -120,7 +120,7 @@ var Event_Status_YQC_Id int64 = 7000
 type EventStatus struct {
 	Id         int64           `xorm:"bigint notnull pk 'id'" json:"id"`
 	Name       string          `xorm:"nvarchar(50) notnull index 'status_name'" json:"status_name" smith:"verbose_name=名称,min=1,max=30"`
-	Desc       core.NullString `xorm:"nvarchar(500) 'status_desc'" json:"status_desc" smith:"verbose_name=描述"`
+	Desc       core.NullString `xorm:"nvarchar(500) 'status_desc'" json:"status_desc" smith:"verbose_name=描述,max=300"`
 	CreateTime core.Time       `xorm:"created notnull 'create_time'" json:"create_time"`
 	UpdateTime core.Time       `xorm:"updated notnull 'update_time'" json:"update_time"`
 	Version    int             `xorm:"version notnull 'version'" json:"version"`
@@ -310,11 +310,12 @@ func (e Equipment) ModelDesc() string {
 //---------------------------------------------------------------------------------------------------------------
 
 type EquipmentStatus struct {
-	Id         int64     `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
-	Name       string    `xorm:"nvarchar(50) notnull index 'name'" json:"name" smith:"verbose_name=名称,min=2,max=20"`
-	CreateTime core.Time `xorm:"created notnull 'create_time'" json:"create_time"`
-	UpdateTime core.Time `xorm:"updated notnull 'update_time'" json:"update_time"`
-	Version    int       `xorm:"version notnull 'version'" json:"version"`
+	Id          int64           `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+	Name        string          `xorm:"nvarchar(50) notnull index 'name'" json:"name" smith:"verbose_name=名称,min=2,max=20"`
+	Description core.NullString `xorm:"nvarchar(500) 'description'" json:"description" smith:"verbose_name=描述,max=300"`
+	CreateTime  core.Time       `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime  core.Time       `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version     int             `xorm:"version notnull 'version'" json:"version"`
 }
 
 func (e EquipmentStatus) TableName() string {
@@ -366,11 +367,12 @@ func (e Application) ModelDesc() string {
 //---------------------------------------------------------------------------------------------------------------
 
 type ApplicationStatus struct {
-	Id         int64     `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
-	Name       string    `xorm:"nvarchar(50) notnull index 'name'" json:"name" smith:"verbose_name=名称,min=2,max=20"`
-	CreateTime core.Time `xorm:"created notnull 'create_time'" json:"create_time"`
-	UpdateTime core.Time `xorm:"updated notnull 'update_time'" json:"update_time"`
-	Version    int       `xorm:"version notnull 'version'" json:"version"`
+	Id          int64           `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+	Name        string          `xorm:"nvarchar(50) notnull index 'name'" json:"name" smith:"verbose_name=名称,min=2,max=20"`
+	Description core.NullString `xorm:"nvarchar(500) 'description'" json:"description" smith:"verbose_name=描述, max=300"`
+	CreateTime  core.Time       `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime  core.Time       `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version     int             `xorm:"version notnull 'version'" json:"version"`
 }
 
 func (e ApplicationStatus) TableName() string {

@@ -33,7 +33,7 @@
        </div>
    </div>
     <div class="modal fade" id="applicationStatusDetailDialog">
-        <div class="modal-dialog" style="width: 680px;">
+        <div class="modal-dialog" style="width: 580px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
@@ -46,7 +46,7 @@
                                 <input id="application_status_id" name="detail.application_status.id" type="hidden" v-model.number="detail.application_status.id"/>
                                 <input id="application_status_version" name="detail.application_status.version" type="hidden" v-model.number="detail.application_status.version"/>
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
                                             <div class="col-xs-10">
@@ -55,7 +55,16 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="name" class="col-xs-2 control-label no-padding-right">描述</label>
+                                            <div class="col-xs-10">
+                                                <textarea id="description" name="detail.application_status.description" rows="2" class="input-sm form-control" v-model="detail.application_status.description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -94,7 +103,8 @@
                                     return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                 }
                             },
-                            {"mDataProp": "name", "title": "名称", "bSearchable": true },
+                            {"mDataProp": "name", "title": "名称", "bSearchable": true, "width": 250 },
+                            {"mDataProp": "description", "title": "描述", "bSearchable": true },
                             {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
                             {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
                         ]
@@ -137,7 +147,10 @@
                 var valid = validate(form, {  
                     'detail.application_status.name': {
                         required: true, minlength: 2, maxlength: 20
-                    }
+                    },
+                    'detail.application_status.description': {
+                        required: false, maxlength: 300
+                    }					
                 });
 
                 if (!valid) {
