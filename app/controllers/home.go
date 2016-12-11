@@ -71,6 +71,7 @@ func (c Home) SyncDbPost() revel.Result {
 	model_list = append(model_list, &itsm_models.EngineerServiceArea{})
 	model_list = append(model_list, &itsm_models.EngineerEventType{})
 	model_list = append(model_list, &itsm_models.EngineerManager{})
+	model_list = append(model_list, &itsm_models.Event{})
 	model_list = append(model_list, &itsm_models.EventType{})
 	model_list = append(model_list, &itsm_models.EventStatus{})
 	model_list = append(model_list, &itsm_models.EventPriority{})

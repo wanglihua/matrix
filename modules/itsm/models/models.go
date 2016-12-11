@@ -58,7 +58,8 @@ type Event struct {
 	RequestUserId int64           `xorm:"bigint notnull index 'request_user_id'" json:"request_user_id" smith:"verbose_name=请求用户"`
 	EngineerId    core.NullInt    `xorm:"bigint index 'engineer_id'" json:"engineer_id" smith:"verbose_name=工程师"`
 	AreaId        int64           `xorm:"bigint notnull index 'area_id'" json:"area_id" smith:"verbose_name=服务区域"`
-	EventDesc     core.NullString `xorm:"nvarchar(500) 'event_desc'" json:"event_desc" smith:"verbose_name=描述"`
+	Location      string          `xorm:"nvarchar(500) notnull 'location'" json:"location" smith:"verbose_name=地点"`
+	Description   core.NullString `xorm:"nvarchar(500) 'description'" json:"description" smith:"verbose_name=描述"`
 	Solution      core.NullString `xorm:"nvarchar(500) 'solution'" json:"solution" smith:"verbose_name=解决方案"`
 	SrcEventId    core.NullInt    `xorm:"bigint  index 'src_event_id'" json:"src_event_id" smith:"verbose_name=源事件"`
 	StatusId      int64           `xorm:"bigint notnull index 'status_id'" json:"status_id" smith:"verbose_name=状态"`

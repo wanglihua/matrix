@@ -79,3 +79,21 @@ POST /itsm/application/data/list          ItsmApplication.ListData
 POST /itsm/application/data/detail        ItsmApplication.DetailData
 POST /itsm/application/save               ItsmApplication.Save
 POST /itsm/application/delete             ItsmApplication.Delete
+
+GET  /itsm/event/apply                    ItsmEventApply.Index
+POST /itsm/event/apply/data/list          ItsmEventApply.ListData
+POST /itsm/event/apply/data/detail        ItsmEventApply.DetailData
+POST /itsm/event/apply/save               ItsmEventApply.Save
+POST /itsm/event/apply/delete             ItsmEventApply.Delete
+
+GET  /itsm/event/process                  ItsmEventProcess.Index
+POST /itsm/event/process/data/list        ItsmEventProcess.ListData
+POST /itsm/event/process/data/detail      ItsmEventProcess.DetailData
+POST /itsm/event/process/save             ItsmEventProcess.Save
+POST /itsm/event/process/delete           ItsmEventProcess.Delete
+
+GET  /itsm/event/manage                   ItsmEventManage.Index
+POST /itsm/event/manage/data/list         ItsmEventManage.ListData
+POST /itsm/event/manage/data/detail       ItsmEventManage.DetailData
+POST /itsm/event/manage/save              ItsmEventManage.Save
+POST /itsm/event/manage/delete            ItsmEventManage.Delete

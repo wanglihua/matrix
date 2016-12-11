@@ -10,5 +10,6 @@ test-results/
 /app/routes/routes.go
 /*.db
 /matrix
+/smith/smith
 \#*\#
 *~
