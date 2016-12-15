@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"github.com/revel/revel"
 	"matrix/core"
+
+	"github.com/revel/revel"
 )
 
 type Help struct {
