@@ -1,0 +1,69 @@
+{%header "代码生成" .%}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+        </li>
+        <li class="parent" data-menu="settings-code_generate">代码生成</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="row">
+        <div class="col-xs-12" style="padding: 0;">
+            <div class="widget-box" style="border-style:none;width:960px; ">
+                <div class="widget-body">
+                    <div class="widget-main">
+                        <form class="form-horizontal" id="codeForm" style="margin: 20px 0 30px 0;">
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <input type="text" id="result_type" name="result_type" class="form-control input-sm" placeholder="查询结果类型，使用下划线方式给出" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <textarea id="sql_query" name="sql_query" rows="5" class="form-control input-sm" placeholder="要查询的SQL"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="wizard-actions">
+                            <button class="btn btn-sm btn-primary" onclick="saveConfig()">
+                                <i class="ace-icon fa fa-floppy-o"></i>
+                                生成
+                            </button>
+                        </div>
+                        <hr />
+                        <div>
+                            <textarea id="result_code" name="result_code" rows="18" class="form-control input-sm" style="font-family: 'consolas'" placeholder="生成的数据库查询代码"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function saveConfig() {
+        showMask("提交中...");
+
+        $.ajax({
+            url: '{% url "CodeGenerate.Code" %}',
+            type: "POST",
+            data: {
+                "result_type": $("#result_type").val(),
+                "sql_query": $("#sql_query").val()
+            },
+            success: function(data) {
+                hideMask();
+                if (data.success == false) {
+                    $.msg.error(data.message);
+                    //return;
+                } else {
+                    //$.msg.show(data.message);
+                    $("#result_code").val(data.code);
+                    //return;
+                }
+            }
+        });
+    }
+</script>
+{%footer%}

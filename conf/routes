@@ -23,6 +23,9 @@ POST /logout                    Login.Logout
 GET  /config                    SysConfig.Index
 POST /config/save               SysConfig.Save
 
+GET  /code/generate             CodeGenerate.Index
+POST /code/generate             CodeGenerate.Code
+
 GET /help                       Help.Index
 GET /help/faq                   Help.Faq
 GET /help/bug                   Help.Bug
