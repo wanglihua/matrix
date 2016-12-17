@@ -8,7 +8,7 @@ var ModuleTitleName = "Inventory"
 var ModuleLowerCase = "inventory"
 var ModuleChinese = "仓储管理"
 
-var TablePrefix = "hd_inventory_"
+var TablePrefix = "inventory_"
 
 //---------------------------------------------------------------------------------------------------------------
 

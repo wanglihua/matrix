@@ -27,7 +27,7 @@ func (c AuthGroup) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := session.
-		Select(strings.Replace("hd_auth_group.*, (SELECT count(*) FROM hd_auth_group_user WHERE group_id = hd_auth_group.id) as user_count", "hd_auth_", models.TablePrefix, -1)).
+		Select("auth_group.*, (SELECT count(*) FROM auth_group_user WHERE group_id = auth_group.id) as user_count").
 		Where(filter)
 
 	dataQuery := *query

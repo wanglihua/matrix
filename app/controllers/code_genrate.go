@@ -31,6 +31,12 @@ func (c CodeGenerate) Code() revel.Result {
 	var sql_query string
 	c.Params.Bind(&sql_query, "sql_query")
 
+	var query_type string
+	c.Params.Bind(&query_type, "query_type")
+
+	var member_type string
+	c.Params.Bind(&member_type, "member_type")
+
 	db_driver, _ := revel.Config.String("db.driver")
 	db_url, _ := revel.Config.String("db.url")
 
@@ -49,7 +55,7 @@ func (c CodeGenerate) Code() revel.Result {
 			ManagerCount int `xorm:"'manager_count'"`
 		}
 		var manager_count ManagerCount
-		sql := `SELECT count(DISTINCT m.id) AS manager_count FROM hd_itsm_engineer e INNER JOIN hd_itsm_engineer_manager m ON e.id = m.engineer_id WHERE e.id = ?;`
+		sql := `SELECT count(DISTINCT m.id) AS manager_count FROM itsm_engineer e INNER JOIN itsm_engineer_manager m ON e.id = m.engineer_id WHERE e.id = ?;`
 		_, err := db_session.Sql(sql, engineer_id).Get(&manager_count)
 		core.HandleError(err)
 	*/
@@ -76,13 +82,25 @@ func (c CodeGenerate) Code() revel.Result {
 	code_buffer.WriteString(fmt.Sprintf("type %s struct {\n", result_struct_type))
 
 	for _, column := range columns {
-		code_buffer.WriteString(fmt.Sprintf("\t%s Core.NullString `xorm:\"'%s'\"`\n", under_score_to_title(column), column))
+		code_buffer.WriteString(fmt.Sprintf("\t%s %s `xorm:\"'%s'\"`\n", under_score_to_title(column), member_type, column))
 	}
 	code_buffer.WriteString("}\n\n")
 
-	code_buffer.WriteString(fmt.Sprintf("var %s %s\n", result_type, result_struct_type))
+	if query_type == "find" {
+		code_buffer.WriteString(fmt.Sprintf("var %s_list = make([]%s,0)\n", result_type, result_struct_type))
+	}
+	if query_type == "get" {
+		code_buffer.WriteString(fmt.Sprintf("var %s %s\n", result_type, result_struct_type))
+	}
 	code_buffer.WriteString(fmt.Sprintf("sql := `%s`\n", sql_query))
-	code_buffer.WriteString(fmt.Sprintf("_, err := db_session.Sql(sql).Get(&%s)\n", result_type))
+
+	if query_type == "find" {
+		code_buffer.WriteString(fmt.Sprintf("_, err := db_session.Sql(sql).Find(&%s_list)\n", result_type))
+	}
+	if query_type == "get" {
+		code_buffer.WriteString(fmt.Sprintf("_, err := db_session.Sql(sql).Get(&%s)\n", result_type))
+	}
+
 	code_buffer.WriteString("core.HandleError(err)")
 
 	return c.RenderJson(map[string]interface{}{

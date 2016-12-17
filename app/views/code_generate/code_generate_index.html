@@ -16,12 +16,27 @@
                         <form class="form-horizontal" id="codeForm" style="margin: 20px 0 30px 0;">
                             <div class="form-group">
                                 <div class="col-xs-12">
-                                    <input type="text" id="result_type" name="result_type" class="form-control input-sm" placeholder="查询结果类型，使用下划线方式给出" />
+                                    <input type="text" id="result_type" name="result_type" class="form-control input-sm" placeholder="查询结果类型，使用下划线方式给出"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-xs-12">
                                     <textarea id="sql_query" name="sql_query" rows="5" class="form-control input-sm" placeholder="要查询的SQL"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-6">
+                                    <select id="query_type" name="query_type" class="form-control input-sm">
+                                        <option value="find">Find Query</option>
+                                        <option value="get">Get Query</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-6">
+                                    <select id="member_type" name="member_type" class="form-control input-sm">
+                                        <option value="string">string member type</option>
+                                        <option value="core.NullString">core.NullString member type</option>
+                                        <option value="int64">int64 member type</option>
+                                    </select>
                                 </div>
                             </div>
                         </form>
@@ -31,7 +46,7 @@
                                 生成
                             </button>
                         </div>
-                        <hr />
+                        <hr/>
                         <div>
                             <textarea id="result_code" name="result_code" rows="18" class="form-control input-sm" style="font-family: 'consolas'" placeholder="生成的数据库查询代码"></textarea>
                         </div>
@@ -46,24 +61,26 @@
         showMask("提交中...");
 
         $.ajax({
-            url: '{% url "CodeGenerate.Code" %}',
-            type: "POST",
-            data: {
-                "result_type": $("#result_type").val(),
-                "sql_query": $("#sql_query").val()
-            },
-            success: function(data) {
-                hideMask();
-                if (data.success == false) {
-                    $.msg.error(data.message);
-                    //return;
-                } else {
-                    //$.msg.show(data.message);
-                    $("#result_code").val(data.code);
-                    //return;
-                }
-            }
-        });
+                   url: '{% url "CodeGenerate.Code" %}',
+                   type: "POST",
+                   data: {
+                       "result_type": $("#result_type").val(),
+                       "sql_query": $("#sql_query").val(),
+                       "query_type": $("#query_type").val(),
+                       "member_type": $("#member_type").val()
+                   },
+                   success: function (data) {
+                       hideMask();
+                       if (data.success == false) {
+                           $.msg.error(data.message);
+                           //return;
+                       } else {
+                           //$.msg.show(data.message);
+                           $("#result_code").val(data.code);
+                           //return;
+                       }
+                   }
+               });
     }
 </script>
 {%footer%}

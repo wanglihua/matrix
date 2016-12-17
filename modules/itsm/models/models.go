@@ -8,7 +8,7 @@ var ModuleTitleName = "Itsm"
 var ModuleLowerCase = "itsm"
 var ModuleChinese = "ITSM"
 
-var TablePrefix = "hd_itsm_"
+var TablePrefix = "itsm_"
 
 //---------------------------------------------------------------------------------------------------------------
 

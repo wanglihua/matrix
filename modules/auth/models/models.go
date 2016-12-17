@@ -4,21 +4,21 @@ import (
 	"matrix/core"
 )
 
-var TablePrefix = "hd_auth_"
+var TablePrefix = "auth_"
 
 //---------------------------------------------------------------------------------------------------------------
 
 type User struct {
-	Id         int64            `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
-	LoginName  string           `xorm:"nvarchar(255) notnull unique index 'login_name'" json:"login_name"`
-	NickName   string           `xorm:"nvarchar(255) notnull 'nick_name'" json:"nick_name"`
-	Password   string           `xorm:"nvarchar(255) notnull 'password'" json:"password"`
-	Phone      core.NullString  `xorm:"nvarchar(50) null 'phone'" json:"phone" smith:"verbose_name=联系电话,max=30"`
-	WeixinId   core.NullString  `xorm:"nvarchar(200) null 'weixin_id'" json:"weixin_id" smith:"verbose_name=企业号微信id,max=150"`
-	Sex        core.NullString  `xorm:"nvarchar(10) null 'sex'" json:"sex" smith:"verbose_name=企业号微信id,max=4"`
-	CreateTime core.Time        `xorm:"created notnull 'create_time'" json:"create_time"`
-	UpdateTime core.Time        `xorm:"updated notnull 'update_time'" json:"update_time"`
-	Version    int              `xorm:"version notnull 'version'" json:"version"`
+	Id         int64           `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+	LoginName  string          `xorm:"nvarchar(255) notnull unique index 'login_name'" json:"login_name"`
+	NickName   string          `xorm:"nvarchar(255) notnull 'nick_name'" json:"nick_name"`
+	Password   string          `xorm:"nvarchar(255) notnull 'password'" json:"password"`
+	Phone      core.NullString `xorm:"nvarchar(50) null 'phone'" json:"phone" smith:"verbose_name=联系电话,max=30"`
+	WeixinId   core.NullString `xorm:"nvarchar(200) null 'weixin_id'" json:"weixin_id" smith:"verbose_name=企业号微信id,max=150"`
+	Sex        core.NullString `xorm:"nvarchar(10) null 'sex'" json:"sex" smith:"verbose_name=企业号微信id,max=4"`
+	CreateTime core.Time       `xorm:"created notnull 'create_time'" json:"create_time"`
+	UpdateTime core.Time       `xorm:"updated notnull 'update_time'" json:"update_time"`
+	Version    int             `xorm:"version notnull 'version'" json:"version"`
 }
 
 func (e User) TableName() string {
@@ -54,7 +54,7 @@ func (e Group) TableName() string {
 //---------------------------------------------------------------------------------------------------------------
 
 type GroupUser struct {
-	Id      int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	GroupId int64 `xorm:"bigint notnull index 'group_id'" json:"group_id"`
 	UserId  int64 `xorm:"bigint notnull index 'user_id'" json:"user_id"`
