@@ -214,7 +214,7 @@ func main() {
 
 func get_model_info(model interface{}) (title_name, camel_case_name, table_name, chinese_name, entity_json, route string) {
 	model_type := reflect.TypeOf(model)
-	title_name = model_type.Name()
+	title_name = strings.TrimRight(model_type.Name(), "Info")
 	camel_case_name = strings.ToLower(title_name)[0:1] + title_name[1:]
 
 	model_value := reflect.ValueOf(model)
