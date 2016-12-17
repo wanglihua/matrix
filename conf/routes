@@ -24,7 +24,7 @@ GET  /config                    SysConfig.Index
 POST /config/save               SysConfig.Save
 
 GET  /code/generate             CodeGenerate.Index
-POST /code/generate             CodeGenerate.Code
+POST /code/generate/query       CodeGenerate.CodeQuery
 
 GET /help                       Help.Index
 GET /help/faq                   Help.Faq

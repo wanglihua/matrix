@@ -18,7 +18,7 @@ func (c InventoryConfig) Index() revel.Result {
 }
 
 type ConfigDetailForm struct {
-	Config models.Config `json:"config"`
+	Config models.ConfigInfo `json:"config"`
 }
 
 func (f *ConfigDetailForm) IsCreate() bool {
@@ -32,7 +32,7 @@ func (f *ConfigDetailForm) Valid(validation *revel.Validation) bool {
 func (c InventoryConfig) DetailData() revel.Result {
 	db_session := c.DbSession
 
-	var config models.Config
+	var config models.ConfigInfo
 	_, err := db_session.Limit(1, 0).Get(&config)
 	core.HandleError(err)
 

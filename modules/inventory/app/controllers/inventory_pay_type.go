@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/inventory/models"
@@ -33,12 +32,12 @@ func (c InventoryPayType) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	pay_type_list := make([]models.PayType, 0, limit)
+	pay_type_list := make([]models.PayTypeInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&pay_type_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.PayType))
+	count, err := count_query.Count(new(models.PayTypeInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,14 +47,14 @@ func (c InventoryPayType) ListData() revel.Result {
 }
 
 type PayTypeDetailForm struct {
-	PayType models.PayType `json:"paytype"`
+	PayType models.PayTypeInfo `json:"paytype"`
 }
 
 func (f *PayTypeDetailForm) IsCreate() bool {
 	return f.PayType.Id == 0
 }
 
-func (f *PayTypeDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *PayTypeDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.PayType.Cate).Message("类别不能为空！")
 	if f.PayType.Cate != "" {
 		validation.MinSize(f.PayType.Cate, 2).Message("类别长度不能小于2！")
@@ -101,7 +100,7 @@ func (c InventoryPayType) DetailData() revel.Result {
 	var pay_type_id int64
 	c.Params.Bind(&pay_type_id, "id")
 
-	var pay_type models.PayType
+	var pay_type models.PayTypeInfo
 	if pay_type_id != 0 {
 		has, err := db_session.Id(pay_type_id).Get(&pay_type)
 		core.HandleError(err)
@@ -134,35 +133,35 @@ func (c InventoryPayType) Save() revel.Result {
 		name_count, err := db_session.Where("type_name = ?", pay_type.Name).Count(&pay_type)
 		core.HandleError(err)
 		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		prefix_count, err := db_session.Where("prefix = ?", pay_type.Prefix).Count(&pay_type)
 		core.HandleError(err)
 		if prefix_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，单据前缀已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，单据前缀已存在！"})
 		}
 
 		affected, err = db_session.Insert(&pay_type)
 		core.HandleError(err)
-	} else { 
+	} else {
 		name_count, err := db_session.Where("id <> ? and type_name = ?", pay_type.Id, pay_type.Name).Count(&pay_type)
 		core.HandleError(err)
 		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		prefix_count, err := db_session.Where("id <> ? and prefix = ?", pay_type.Id, pay_type.Prefix).Count(&pay_type)
 		core.HandleError(err)
 		if prefix_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，单据前缀已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，单据前缀已存在！"})
 		}
 
 		affected, err = db_session.Id(pay_type.Id).Update(&pay_type)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -175,9 +174,8 @@ func (c InventoryPayType) Delete() revel.Result {
 	pay_type_id_list := make([]int64, 0)
 	c.Params.Bind(&pay_type_id_list, "id_list")
 
-	affected, err := db_session.In("id", pay_type_id_list).Delete(new(models.PayType))
+	affected, err := db_session.In("id", pay_type_id_list).Delete(new(models.PayTypeInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

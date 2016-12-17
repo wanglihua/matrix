@@ -33,12 +33,12 @@ func (c ItsmApplicationStatus) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	application_status_list := make([]models.ApplicationStatus, 0, limit)
+	application_status_list := make([]models.ApplicationStatusInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&application_status_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.ApplicationStatus))
+	count, err := count_query.Count(new(models.ApplicationStatusInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,7 +48,7 @@ func (c ItsmApplicationStatus) ListData() revel.Result {
 }
 
 type ApplicationStatusDetailForm struct {
-	ApplicationStatus models.ApplicationStatus `json:"application_status"`
+	ApplicationStatus models.ApplicationStatusInfo `json:"application_status"`
 }
 
 func (f *ApplicationStatusDetailForm) IsCreate() bool {
@@ -76,7 +76,7 @@ func (c ItsmApplicationStatus) DetailData() revel.Result {
 	var application_status_id int64
 	c.Params.Bind(&application_status_id, "id")
 
-	var application_status models.ApplicationStatus
+	var application_status models.ApplicationStatusInfo
 	if application_status_id != 0 {
 		has, err := db_session.Id(application_status_id).Get(&application_status)
 		core.HandleError(err)
@@ -126,7 +126,7 @@ func (c ItsmApplicationStatus) Delete() revel.Result {
 	application_status_id_list := make([]int64, 0)
 	c.Params.Bind(&application_status_id_list, "id_list")
 
-	affected, err := db_session.In("id", application_status_id_list).Delete(new(models.ApplicationStatus))
+	affected, err := db_session.In("id", application_status_id_list).Delete(new(models.ApplicationStatusInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

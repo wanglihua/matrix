@@ -31,12 +31,12 @@ func (c WeixinMenu) ListData() revel.Result {
 	dataQuery := *query
 	dataQuery = *dataQuery.Asc("menu_order")
 
-	menuList := make([]models.Menu, 0, limit)
+	menuList := make([]models.MenuInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&menuList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.Menu))
+	count, err := countQuery.Count(new(models.MenuInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -46,7 +46,7 @@ func (c WeixinMenu) ListData() revel.Result {
 }
 
 type MenuForm struct {
-	Menu                   models.Menu
+	Menu                   models.MenuInfo
 	MenuLevelSelectOptions []core.SelectOption
 	MenuTypeSelectOptions  []core.SelectOption
 }
@@ -107,7 +107,7 @@ func (c WeixinMenu) Detail() revel.Result {
 	var menuId int64
 	c.Params.Bind(&menuId, "id")
 
-	menu := new(models.Menu)
+	menu := new(models.MenuInfo)
 	if menuId != 0 {
 		has, err := session.Id(menuId).Get(menu)
 		core.HandleError(err)
@@ -228,7 +228,7 @@ func (c WeixinMenu) Download() revel.Result {
 	weixinButtonListJason, err := weixinMenuJason.GetObjectArray("menu", "button")
 	core.HandleError(err)
 
-	menuList := make([]models.Menu, 0)
+	menuList := make([]models.MenuInfo, 0)
 	menuOrder := 1
 	for _, weixinButtonJason := range weixinButtonListJason {
 		weixinSubButtonListJason, err := weixinButtonJason.GetObjectArray("sub_button")
@@ -243,7 +243,7 @@ func (c WeixinMenu) Download() revel.Result {
 			menuList = append(menuList, menu)
 		} else {
 			//有子菜单
-			var menu models.Menu
+			var menu models.MenuInfo
 			menuName, err := weixinButtonJason.GetString("name")
 			core.HandleError(err)
 
@@ -292,8 +292,8 @@ func (c WeixinMenu) Download() revel.Result {
 	return c.RenderJson(core.JsonResult{Success: true, Message: "微信菜单下载成功!"})
 }
 
-func getWeixinMenuFromJason(jasonObject *jason.Object) models.Menu {
-	var menu models.Menu
+func getWeixinMenuFromJason(jasonObject *jason.Object) models.MenuInfo {
+	var menu models.MenuInfo
 
 	var err error
 	menu.Name, err = jasonObject.GetString("name")
@@ -327,7 +327,7 @@ func (c WeixinMenu) Upload() revel.Result {
 	*/
 
 	var err error
-	menuList := make([]models.Menu, 0)
+	menuList := make([]models.MenuInfo, 0)
 	err = session.Asc("menu_order").Find(&menuList)
 	core.HandleError(err)
 
@@ -485,7 +485,7 @@ func (c WeixinMenu) Delete() revel.Result {
 	menuIdList := make([]int64, 0)
 	c.Params.Bind(&menuIdList, "id_list")
 
-	menu := new(models.Menu)
+	menu := new(models.MenuInfo)
 	affected, err := session.In("id", menuIdList).Delete(menu)
 	core.HandleError(err)
 

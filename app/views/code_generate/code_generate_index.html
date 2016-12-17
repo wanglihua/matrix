@@ -61,7 +61,7 @@
         showMask("提交中...");
 
         $.ajax({
-                   url: '{% url "CodeGenerate.Code" %}',
+                   url: '{% url "CodeGenerate.CodeQuery" %}',
                    type: "POST",
                    data: {
                        "result_type": $("#result_type").val(),

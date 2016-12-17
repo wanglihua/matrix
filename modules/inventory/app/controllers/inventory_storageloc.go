@@ -39,12 +39,12 @@ func (c InventoryStorageLoc) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	storageLocList := make([]models.StorageLoc, 0, limit)
+	storageLocList := make([]models.StorageLocInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&storageLocList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.StorageLoc))
+	count, err := countQuery.Count(new(models.StorageLocInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -54,7 +54,7 @@ func (c InventoryStorageLoc) ListData() revel.Result {
 }
 
 type StorageLocForm struct {
-	StorageLoc models.StorageLoc
+	StorageLoc models.StorageLocInfo
 }
 
 func (f *StorageLocForm) IsCreate() bool {
@@ -96,7 +96,7 @@ func (c InventoryStorageLoc) Detail() revel.Result {
 	var storageLocId int64
 	c.Params.Bind(&storageLocId, "id")
 
-	storageLoc := new(models.StorageLoc)
+	storageLoc := new(models.StorageLocInfo)
 	if storageLocId != 0 {
 		has, err := session.Id(storageLocId).Get(storageLoc)
 		core.HandleError(err)
@@ -130,13 +130,13 @@ func (c InventoryStorageLoc) Save() revel.Result {
 
 	var affected int64
 	if form.IsCreate() {
-		codeCount, err := session.Where("stock_id = ? and stock_code = ?", storageLoc.StockId, storageLoc.Code).Count(new(models.StorageLoc))
+		codeCount, err := session.Where("stock_id = ? and stock_code = ?", storageLoc.StockId, storageLoc.Code).Count(new(models.StorageLocInfo))
 		core.HandleError(err)
 		if codeCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编号已存在！"})
 		}
 
-		nameCount, err := session.Where("stock_id = ? and stock_name = ?", storageLoc.StockId, storageLoc.Name).Count(new(models.StorageLoc))
+		nameCount, err := session.Where("stock_id = ? and stock_name = ?", storageLoc.StockId, storageLoc.Name).Count(new(models.StorageLocInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
@@ -145,13 +145,13 @@ func (c InventoryStorageLoc) Save() revel.Result {
 		affected, err = session.Insert(storageLoc)
 		core.HandleError(err)
 	} else {
-		codeCount, err := session.Where("id <> ? and stock_id = ? and stock_code = ?", storageLoc.Id, storageLoc.StockId, storageLoc.Code).Count(new(models.StorageLoc))
+		codeCount, err := session.Where("id <> ? and stock_id = ? and stock_code = ?", storageLoc.Id, storageLoc.StockId, storageLoc.Code).Count(new(models.StorageLocInfo))
 		core.HandleError(err)
 		if codeCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编号已存在！"})
 		}
 
-		nameCount, err := session.Where("id <> ? and stock_id = ? and stock_name = ?", storageLoc.Id, storageLoc.StockId, storageLoc.Name).Count(new(models.StorageLoc))
+		nameCount, err := session.Where("id <> ? and stock_id = ? and stock_name = ?", storageLoc.Id, storageLoc.StockId, storageLoc.Name).Count(new(models.StorageLocInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
@@ -174,7 +174,7 @@ func (c InventoryStorageLoc) Delete() revel.Result {
 	storageLocIdList := make([]int64, 0)
 	c.Params.Bind(&storageLocIdList, "id_list")
 
-	storageLoc := new(models.StorageLoc)
+	storageLoc := new(models.StorageLocInfo)
 	affected, err := session.In("id", storageLocIdList).Delete(storageLoc)
 	core.HandleError(err)
 

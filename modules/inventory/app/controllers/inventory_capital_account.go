@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/inventory/models"
@@ -33,12 +32,12 @@ func (c InventoryCapitalAccount) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	capital_account_list := make([]models.CapitalAccount, 0, limit)
+	capital_account_list := make([]models.CapitalAccountInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&capital_account_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.CapitalAccount))
+	count, err := count_query.Count(new(models.CapitalAccountInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,14 +47,14 @@ func (c InventoryCapitalAccount) ListData() revel.Result {
 }
 
 type CapitalAccountDetailForm struct {
-	CapitalAccount models.CapitalAccount `json:"ca"`
+	CapitalAccount models.CapitalAccountInfo `json:"ca"`
 }
 
 func (f *CapitalAccountDetailForm) IsCreate() bool {
 	return f.CapitalAccount.Id == 0
 }
 
-func (f *CapitalAccountDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *CapitalAccountDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.CapitalAccount.Name).Message("名称不能为空！")
 	if f.CapitalAccount.Name != "" {
 		validation.MinSize(f.CapitalAccount.Name, 2).Message("名称长度不能小于2！")
@@ -80,7 +79,7 @@ func (c InventoryCapitalAccount) DetailData() revel.Result {
 	var capital_account_id int64
 	c.Params.Bind(&capital_account_id, "id")
 
-	var capital_account models.CapitalAccount
+	var capital_account models.CapitalAccountInfo
 	if capital_account_id != 0 {
 		has, err := db_session.Id(capital_account_id).Get(&capital_account)
 		core.HandleError(err)
@@ -113,23 +112,23 @@ func (c InventoryCapitalAccount) Save() revel.Result {
 		name_count, err := db_session.Where("account_name = ?", capital_account.Name).Count(&capital_account)
 		core.HandleError(err)
 		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		affected, err = db_session.Insert(&capital_account)
 		core.HandleError(err)
-	} else { 
+	} else {
 		name_count, err := db_session.Where("id <> ? and account_name = ?", capital_account.Id, capital_account.Name).Count(&capital_account)
 		core.HandleError(err)
 		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		affected, err = db_session.Id(capital_account.Id).Update(&capital_account)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -142,9 +141,8 @@ func (c InventoryCapitalAccount) Delete() revel.Result {
 	capital_account_id_list := make([]int64, 0)
 	c.Params.Bind(&capital_account_id_list, "id_list")
 
-	affected, err := db_session.In("id", capital_account_id_list).Delete(new(models.CapitalAccount))
+	affected, err := db_session.In("id", capital_account_id_list).Delete(new(models.CapitalAccountInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

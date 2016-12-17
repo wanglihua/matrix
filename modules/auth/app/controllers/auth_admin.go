@@ -17,8 +17,8 @@ func (c AuthAdmin) Index() revel.Result {
 }
 
 type AdminView struct {
-	models.Admin `xorm:"extends" json:"a"`
-	models.User  `xorm:"extends" json:"u"`
+	models.AdminInfo `xorm:"extends" json:"a"`
+	models.UserInfo  `xorm:"extends" json:"u"`
 }
 
 func (c AuthAdmin) ListData() revel.Result {
@@ -75,12 +75,12 @@ func (c AuthAdmin) AddListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	userList := make([]models.User, 0, limit)
+	userList := make([]models.UserInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&userList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.User))
+	count, err := countQuery.Count(new(models.UserInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -100,7 +100,7 @@ func (c AuthAdmin) AddSave() revel.Result {
 	}
 
 	for _, userId := range userIdList {
-		admin := new(models.Admin)
+		admin := new(models.AdminInfo)
 		admin.UserId = userId
 		_, err := session.Insert(admin)
 		core.HandleError(err)
@@ -115,7 +115,7 @@ func (c AuthAdmin) Remove() revel.Result {
 	adminIdList := make([]int, 0)
 	c.Params.Bind(&adminIdList, "id_list")
 
-	admin := new(models.Admin)
+	admin := new(models.AdminInfo)
 	count, err := session.Count(admin)
 	if int64(len(adminIdList)) == count {
 		return c.RenderJson(core.JsonResult{Success: false, Message: "移除失败，管理员不能全部移除!"})

@@ -15,7 +15,7 @@ var appSecret = ""
 
 func GetToken(session *xorm.Session) string {
 	if token == "" {
-		config := new(models.Config)
+		config := new(models.ConfigInfo)
 		_, err := session.Limit(1).Get(config)
 		core.HandleError(err)
 
@@ -27,7 +27,7 @@ func GetToken(session *xorm.Session) string {
 
 func GetEncodingAesKey(session *xorm.Session) string {
 	if encodingAesKey == "" {
-		config := new(models.Config)
+		config := new(models.ConfigInfo)
 		_, err := session.Limit(1).Get(config)
 		core.HandleError(err)
 
@@ -39,7 +39,7 @@ func GetEncodingAesKey(session *xorm.Session) string {
 
 func GetAppId(session *xorm.Session) string {
 	if appId == "" {
-		config := new(models.Config)
+		config := new(models.ConfigInfo)
 		_, err := session.Limit(1).Get(config)
 		core.HandleError(err)
 
@@ -51,7 +51,7 @@ func GetAppId(session *xorm.Session) string {
 
 func GetAppSecret(session *xorm.Session) string {
 	if appSecret == "" {
-		config := new(models.Config)
+		config := new(models.ConfigInfo)
 		_, err := session.Limit(1).Get(config)
 		core.HandleError(err)
 

@@ -8,7 +8,7 @@ var TablePrefix = "weixin_"
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Config struct {
+type ConfigInfo struct {
 	Id             int64     `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 	Token          string    `xorm:"nvarchar(255) notnull 'token'" json:"token"`
 	EncodingAesKey string    `xorm:"nvarchar(255) 'encoding_aes_key'" json:"encoding_aes_key"`
@@ -19,13 +19,13 @@ type Config struct {
 	Version        int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Config) TableName() string {
+func (e ConfigInfo) TableName() string {
 	return TablePrefix + "config"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Menu struct {
+type MenuInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Name  string `xorm:"nvarchar(30) notnull 'menu_name'" json:"menu_name"`
@@ -39,11 +39,11 @@ type Menu struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Menu) TableName() string {
+func (e MenuInfo) TableName() string {
 	return TablePrefix + "menu"
 }
 
-type MenuList []Menu
+type MenuList []MenuInfo
 
 func (l MenuList) Len() int {
 	return len(l)

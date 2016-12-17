@@ -32,12 +32,12 @@ func (c InventoryProductCate) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	productCateList := make([]models.ProductCate, 0, limit)
+	productCateList := make([]models.ProductCateInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&productCateList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.ProductCate))
+	count, err := countQuery.Count(new(models.ProductCateInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -47,7 +47,7 @@ func (c InventoryProductCate) ListData() revel.Result {
 }
 
 type ProductCateForm struct {
-	ProductCate models.ProductCate `json:"cate"`
+	ProductCate models.ProductCateInfo `json:"cate"`
 }
 
 func (f *ProductCateForm) IsCreate() bool {
@@ -79,7 +79,7 @@ func (c InventoryProductCate) DetailData() revel.Result {
 	var id int64
 	c.Params.Bind(&id, "id")
 
-	var product_cate models.ProductCate
+	var product_cate models.ProductCateInfo
 	if id != 0 {
 		has, err := db_session.Id(id).Get(&product_cate)
 		core.HandleError(err)
@@ -109,7 +109,7 @@ func (c InventoryProductCate) Save() revel.Result {
 
 	var affected int64
 	if detail_form.IsCreate() {
-		nameCount, err := session.Where("cate_name = ?", productCate.Name).Count(new(models.ProductCate))
+		nameCount, err := session.Where("cate_name = ?", productCate.Name).Count(new(models.ProductCateInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
@@ -118,7 +118,7 @@ func (c InventoryProductCate) Save() revel.Result {
 		affected, err = session.Insert(&productCate)
 		core.HandleError(err)
 	} else {
-		nameCount, err := session.Where("id <> ? and cate_name = ?", productCate.Id, productCate.Name).Count(new(models.ProductCate))
+		nameCount, err := session.Where("id <> ? and cate_name = ?", productCate.Id, productCate.Name).Count(new(models.ProductCateInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
@@ -141,7 +141,7 @@ func (c InventoryProductCate) Delete() revel.Result {
 	productCateIdList := make([]int64, 0)
 	c.Params.Bind(&productCateIdList, "id_list")
 
-	affected, err := session.In("id", productCateIdList).Delete(new(models.ProductCate))
+	affected, err := session.In("id", productCateIdList).Delete(new(models.ProductCateInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

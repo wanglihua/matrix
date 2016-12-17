@@ -7,7 +7,7 @@ import (
 )
 
 type UserDetailForm struct {
-	User models.User
+	User models.UserInfo
 
 	PasswordAgain    string
 	NewPassword      string

@@ -17,8 +17,8 @@ func (c OaWorklogAdmin) Index() revel.Result {
 }
 
 type WorklogAdminView struct {
-	models.Worklog  `xorm:"extends" json:"l"`
-	authModels.User `xorm:"extends" json:"u"`
+	models.WorklogInfo  `xorm:"extends" json:"l"`
+	authModels.UserInfo `xorm:"extends" json:"u"`
 }
 
 func (c OaWorklogAdmin) ListData() revel.Result {
@@ -45,7 +45,7 @@ func (c OaWorklogAdmin) ListData() revel.Result {
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.Worklog))
+	count, err := countQuery.Count(new(models.WorklogInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -55,7 +55,7 @@ func (c OaWorklogAdmin) ListData() revel.Result {
 }
 
 type WorklogAdminForm struct {
-	Worklog models.Worklog
+	Worklog models.WorklogInfo
 }
 
 func (f *WorklogAdminForm) IsCreate() bool {
@@ -102,7 +102,7 @@ func (c OaWorklogAdmin) Detail() revel.Result {
 	var worklogId int64
 	c.Params.Bind(&worklogId, "id")
 
-	worklog := new(models.Worklog)
+	worklog := new(models.WorklogInfo)
 	has, err := session.Id(worklogId).Get(worklog)
 	core.HandleError(err)
 	if has == false {
@@ -114,7 +114,7 @@ func (c OaWorklogAdmin) Detail() revel.Result {
 
 	c.UnbindToRenderArgs(form, "form")
 
-	user := new(authModels.User)
+	user := new(authModels.UserInfo)
 	_, err = session.Id(worklog.UserId).Get(user)
 	core.HandleError(err)
 

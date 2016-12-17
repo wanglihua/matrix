@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/itsm/models"
@@ -33,12 +32,12 @@ func (c ItsmEventPriority) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	event_priority_list := make([]models.EventPriority, 0, limit)
+	event_priority_list := make([]models.EventPriorityInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&event_priority_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.EventPriority))
+	count, err := count_query.Count(new(models.EventPriorityInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,14 +47,14 @@ func (c ItsmEventPriority) ListData() revel.Result {
 }
 
 type EventPriorityDetailForm struct {
-	EventPriority models.EventPriority `json:"priority"`
+	EventPriority models.EventPriorityInfo `json:"priority"`
 }
 
 func (f *EventPriorityDetailForm) IsCreate() bool {
 	return f.EventPriority.Id == 0
 }
 
-func (f *EventPriorityDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *EventPriorityDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.EventPriority.Name).Message("名称不能为空！")
 	if f.EventPriority.Name != "" {
 		validation.MinSize(f.EventPriority.Name, 1).Message("名称长度不能小于1！")
@@ -63,7 +62,6 @@ func (f *EventPriorityDetailForm) Valid(validation *revel.Validation) bool {
 	if f.EventPriority.Name != "" {
 		validation.MaxSize(f.EventPriority.Name, 30).Message("名称长度不能大于30！")
 	}
-
 
 	return validation.HasErrors() == false
 }
@@ -74,7 +72,7 @@ func (c ItsmEventPriority) DetailData() revel.Result {
 	var event_priority_id int64
 	c.Params.Bind(&event_priority_id, "id")
 
-	var event_priority models.EventPriority
+	var event_priority models.EventPriorityInfo
 	if event_priority_id != 0 {
 		has, err := db_session.Id(event_priority_id).Get(&event_priority)
 		core.HandleError(err)
@@ -103,15 +101,15 @@ func (c ItsmEventPriority) Save() revel.Result {
 	event_priority := detail_form.EventPriority
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&event_priority)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(event_priority.Id).Update(&event_priority)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -124,9 +122,8 @@ func (c ItsmEventPriority) Delete() revel.Result {
 	event_priority_id_list := make([]int64, 0)
 	c.Params.Bind(&event_priority_id_list, "id_list")
 
-	affected, err := db_session.In("id", event_priority_id_list).Delete(new(models.EventPriority))
+	affected, err := db_session.In("id", event_priority_id_list).Delete(new(models.EventPriorityInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

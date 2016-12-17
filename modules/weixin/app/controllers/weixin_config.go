@@ -11,7 +11,7 @@ type WeixinConfig struct {
 }
 
 type ConfigForm struct {
-	Config models.Config
+	Config models.ConfigInfo
 }
 
 func (f *ConfigForm) Valid(validation *revel.Validation) bool {
@@ -38,7 +38,7 @@ func (f *ConfigForm) Valid(validation *revel.Validation) bool {
 func (c WeixinConfig) Index() revel.Result {
 	session := c.DbSession
 
-	config := new(models.Config)
+	config := new(models.ConfigInfo)
 	_, err := session.Limit(1).Get(config)
 	core.HandleError(err)
 
@@ -59,7 +59,7 @@ func (c WeixinConfig) Save() revel.Result {
 		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
-	configInDb := new(models.Config)
+	configInDb := new(models.ConfigInfo)
 	has, err := session.Limit(1).Get(configInDb)
 	core.HandleError(err)
 

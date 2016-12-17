@@ -29,7 +29,7 @@ func (c Login) Login() revel.Result {
 		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
-	user := new(models.User)
+	user := new(models.UserInfo)
 	has, err := session.Where("login_name = ?", form.LoginName).Get(user)
 	core.HandleError(err)
 
@@ -47,7 +47,7 @@ func (c Login) Login() revel.Result {
 	loginUser.LoginName = user.LoginName
 	loginUser.NickName = user.NickName
 
-	admin_count, err := session.Where("user_id = ?", user.Id).Count(new(models.Admin))
+	admin_count, err := session.Where("user_id = ?", user.Id).Count(new(models.AdminInfo))
 	core.HandleError(err)
 	loginUser.IsAdmin = false
 	if admin_count != 0 {

@@ -22,9 +22,9 @@ func (c AuthGroupUser) Index() revel.Result {
 }
 
 type GroupUserView struct {
-	models.GroupUser `xorm:"extends" json:"gu"`
-	models.Group     `xorm:"extends" json:"g"`
-	models.User      `xorm:"extends" json:"u"`
+	models.GroupUserInfo `xorm:"extends" json:"gu"`
+	models.GroupInfo     `xorm:"extends" json:"g"`
+	models.UserInfo      `xorm:"extends" json:"u"`
 }
 
 func (c AuthGroupUser) ListData() revel.Result {
@@ -81,7 +81,7 @@ func (c AuthGroupUser) AddListData() revel.Result {
 
 	//get group user id list
 	userIdQuery := session.Where("group_id = ?", groupId)
-	groupUserList := make([]models.GroupUser, 0)
+	groupUserList := make([]models.GroupUserInfo, 0)
 	userIdQuery.Select("user_id").Find(&groupUserList)
 	userIdList := make([]string, 0)
 	for _, groupUser := range groupUserList {
@@ -102,12 +102,12 @@ func (c AuthGroupUser) AddListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	userList := make([]models.User, 0, limit)
+	userList := make([]models.UserInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&userList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.User))
+	count, err := countQuery.Count(new(models.UserInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -126,7 +126,7 @@ func (c AuthGroupUser) AddSave() revel.Result {
 	c.Params.Bind(&addUserIdList, "userIdList")
 
 	for _, userId := range addUserIdList {
-		groupUser := new(models.GroupUser)
+		groupUser := new(models.GroupUserInfo)
 		groupUser.UserId = userId
 		groupUser.GroupId = groupId
 
@@ -142,7 +142,7 @@ func (c AuthGroupUser) Remove() revel.Result {
 	groupUserIdList := make([]int64, 0)
 	c.Params.Bind(&groupUserIdList, "id_list")
 
-	groupUser := new(models.GroupUser)
+	groupUser := new(models.GroupUserInfo)
 	affected, err := session.In("id", groupUserIdList).Delete(groupUser)
 	core.HandleError(err)
 

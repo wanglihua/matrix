@@ -9,7 +9,7 @@ var sysName = ""
 
 func GetSysName(dbsession *xorm.Session) string {
 	if sysName == "" {
-		config := new(models.Config)
+		config := new(models.ConfigInfo)
 		has, _ := dbsession.Limit(1).Get(config)
 		if has {
 			sysName = config.SysName

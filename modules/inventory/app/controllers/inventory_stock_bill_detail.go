@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/inventory/models"
@@ -33,12 +32,12 @@ func (c InventoryStockBillDetail) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	stock_bill_detail_list := make([]models.StockBillDetail, 0, limit)
+	stock_bill_detail_list := make([]models.StockBillDetailInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&stock_bill_detail_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.StockBillDetail))
+	count, err := count_query.Count(new(models.StockBillDetailInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,14 +47,14 @@ func (c InventoryStockBillDetail) ListData() revel.Result {
 }
 
 type StockBillDetailDetailForm struct {
-	StockBillDetail models.StockBillDetail `json:"billdetail"`
+	StockBillDetail models.StockBillDetailInfo `json:"billdetail"`
 }
 
 func (f *StockBillDetailDetailForm) IsCreate() bool {
 	return f.StockBillDetail.Id == 0
 }
 
-func (f *StockBillDetailDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *StockBillDetailDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.StockBillDetail.BillId).Message("出入库单不能为空！")
 
 	validation.Required(f.StockBillDetail.Code).Message("编码不能为空！")
@@ -109,7 +108,7 @@ func (c InventoryStockBillDetail) DetailData() revel.Result {
 	var stock_bill_detail_id int64
 	c.Params.Bind(&stock_bill_detail_id, "id")
 
-	var stock_bill_detail models.StockBillDetail
+	var stock_bill_detail models.StockBillDetailInfo
 	if stock_bill_detail_id != 0 {
 		has, err := db_session.Id(stock_bill_detail_id).Get(&stock_bill_detail)
 		core.HandleError(err)
@@ -141,12 +140,12 @@ func (c InventoryStockBillDetail) Save() revel.Result {
 	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&stock_bill_detail)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(stock_bill_detail.Id).Update(&stock_bill_detail)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -159,9 +158,8 @@ func (c InventoryStockBillDetail) Delete() revel.Result {
 	stock_bill_detail_id_list := make([]int64, 0)
 	c.Params.Bind(&stock_bill_detail_id_list, "id_list")
 
-	affected, err := db_session.In("id", stock_bill_detail_id_list).Delete(new(models.StockBillDetail))
+	affected, err := db_session.In("id", stock_bill_detail_id_list).Delete(new(models.StockBillDetailInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

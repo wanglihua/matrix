@@ -33,12 +33,12 @@ func (c ItsmEquipmentStatus) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	equipment_status_list := make([]models.EquipmentStatus, 0, limit)
+	equipment_status_list := make([]models.EquipmentStatusInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&equipment_status_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.EquipmentStatus))
+	count, err := count_query.Count(new(models.EquipmentStatusInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,7 +48,7 @@ func (c ItsmEquipmentStatus) ListData() revel.Result {
 }
 
 type EquipmentStatusDetailForm struct {
-	EquipmentStatus models.EquipmentStatus `json:"equipment_status"`
+	EquipmentStatus models.EquipmentStatusInfo `json:"equipment_status"`
 }
 
 func (f *EquipmentStatusDetailForm) IsCreate() bool {
@@ -76,7 +76,7 @@ func (c ItsmEquipmentStatus) DetailData() revel.Result {
 	var equipment_status_id int64
 	c.Params.Bind(&equipment_status_id, "id")
 
-	var equipment_status models.EquipmentStatus
+	var equipment_status models.EquipmentStatusInfo
 	if equipment_status_id != 0 {
 		has, err := db_session.Id(equipment_status_id).Get(&equipment_status)
 		core.HandleError(err)
@@ -126,7 +126,7 @@ func (c ItsmEquipmentStatus) Delete() revel.Result {
 	equipment_status_id_list := make([]int64, 0)
 	c.Params.Bind(&equipment_status_id_list, "id_list")
 
-	affected, err := db_session.In("id", equipment_status_id_list).Delete(new(models.EquipmentStatus))
+	affected, err := db_session.In("id", equipment_status_id_list).Delete(new(models.EquipmentStatusInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

@@ -17,14 +17,10 @@ type CodeGenerate struct {
 func (c CodeGenerate) Index() revel.Result {
 	//session := c.DbSession
 
-	xx := strings.ToUpper("ddd")
-
-	fmt.Println(xx)
-
 	return c.RenderTemplate("code_generate/code_generate_index.html")
 }
 
-func (c CodeGenerate) Code() revel.Result {
+func (c CodeGenerate) CodeQuery() revel.Result {
 	var result_type string
 	c.Params.Bind(&result_type, "result_type")
 

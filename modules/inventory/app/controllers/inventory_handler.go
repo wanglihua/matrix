@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/inventory/models"
@@ -33,12 +32,12 @@ func (c InventoryHandler) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	handler_list := make([]models.Handler, 0, limit)
+	handler_list := make([]models.HandlerInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&handler_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.Handler))
+	count, err := count_query.Count(new(models.HandlerInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,14 +47,14 @@ func (c InventoryHandler) ListData() revel.Result {
 }
 
 type HandlerDetailForm struct {
-	Handler models.Handler `json:"handler"`
+	Handler models.HandlerInfo `json:"handler"`
 }
 
 func (f *HandlerDetailForm) IsCreate() bool {
 	return f.Handler.Id == 0
 }
 
-func (f *HandlerDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *HandlerDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.Handler.Name).Message("名称不能为空！")
 	if f.Handler.Name != "" {
 		validation.MinSize(f.Handler.Name, 2).Message("名称长度不能小于2！")
@@ -85,7 +84,7 @@ func (c InventoryHandler) DetailData() revel.Result {
 	var handler_id int64
 	c.Params.Bind(&handler_id, "id")
 
-	var handler models.Handler
+	var handler models.HandlerInfo
 	if handler_id != 0 {
 		has, err := db_session.Id(handler_id).Get(&handler)
 		core.HandleError(err)
@@ -118,23 +117,23 @@ func (c InventoryHandler) Save() revel.Result {
 		name_count, err := db_session.Where("handler_name = ?", handler.Name).Count(&handler)
 		core.HandleError(err)
 		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		affected, err = db_session.Insert(&handler)
 		core.HandleError(err)
-	} else { 
+	} else {
 		name_count, err := db_session.Where("id <> ? and handler_name = ?", handler.Id, handler.Name).Count(&handler)
 		core.HandleError(err)
 		if name_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，名称已存在！"})
 		}
 
 		affected, err = db_session.Id(handler.Id).Update(&handler)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -147,9 +146,8 @@ func (c InventoryHandler) Delete() revel.Result {
 	handler_id_list := make([]int64, 0)
 	c.Params.Bind(&handler_id_list, "id_list")
 
-	affected, err := db_session.In("id", handler_id_list).Delete(new(models.Handler))
+	affected, err := db_session.In("id", handler_id_list).Delete(new(models.HandlerInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

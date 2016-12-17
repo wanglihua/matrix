@@ -33,12 +33,12 @@ func (c AuthUser) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	userList := make([]models.User, 0, limit)
+	userList := make([]models.UserInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&userList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.User))
+	count, err := countQuery.Count(new(models.UserInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -53,7 +53,7 @@ func (c AuthUser) Detail() revel.Result {
 	var userId int64
 	c.Params.Bind(&userId, "id")
 
-	user := new(models.User)
+	user := new(models.UserInfo)
 	if userId != 0 {
 		has, err := session.Id(userId).Get(user)
 		core.HandleError(err)
@@ -84,7 +84,7 @@ func (c AuthUser) Save() revel.Result {
 
 	var affected int64
 	if form.IsCreate() {
-		count, err := session.Where("login_name = ?", user.LoginName).Count(new(models.User))
+		count, err := session.Where("login_name = ?", user.LoginName).Count(new(models.UserInfo))
 		core.HandleError(err)
 		if count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，登录名已存在！"})
@@ -95,7 +95,7 @@ func (c AuthUser) Save() revel.Result {
 		affected, err = session.Insert(user)
 		core.HandleError(err)
 	} else {
-		count, err := session.Where("id <> ? and login_name = ?", user.Id, user.LoginName).Count(new(models.User))
+		count, err := session.Where("id <> ? and login_name = ?", user.Id, user.LoginName).Count(new(models.UserInfo))
 		core.HandleError(err)
 		if count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，登录名已存在！"})
@@ -124,13 +124,13 @@ func (c AuthUser) Delete() revel.Result {
 	userIdList := make([]int64, 0)
 	c.Params.Bind(&userIdList, "id_list")
 
-	count, err := session.In("user_id", userIdList).Count(new(models.Admin))
+	count, err := session.In("user_id", userIdList).Count(new(models.AdminInfo))
 	core.HandleError(err)
 	if count != 0 {
 		return c.RenderJson(core.JsonResult{Success: false, Message: "不能删除管理员！"})
 	}
 
-	user := new(models.User)
+	user := new(models.UserInfo)
 	affected, err := session.In("id", userIdList).Delete(user)
 	core.HandleError(err)
 

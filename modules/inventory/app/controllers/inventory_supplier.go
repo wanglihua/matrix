@@ -31,12 +31,12 @@ func (c InventorySupplier) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	supplierList := make([]models.Supplier, 0, limit)
+	supplierList := make([]models.SupplierInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&supplierList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.Supplier))
+	count, err := countQuery.Count(new(models.SupplierInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -46,7 +46,7 @@ func (c InventorySupplier) ListData() revel.Result {
 }
 
 type SupplierForm struct {
-	Supplier models.Supplier
+	Supplier models.SupplierInfo
 }
 
 func (f *SupplierForm) IsCreate() bool {
@@ -115,7 +115,7 @@ func (c InventorySupplier) Detail() revel.Result {
 	var supplierId int64
 	c.Params.Bind(&supplierId, "id")
 
-	supplier := new(models.Supplier)
+	supplier := new(models.SupplierInfo)
 	if supplierId != 0 {
 		has, err := session.Id(supplierId).Get(supplier)
 		core.HandleError(err)
@@ -145,13 +145,13 @@ func (c InventorySupplier) Save() revel.Result {
 
 	var affected int64
 	if form.IsCreate() {
-		nameCount, err := session.Where("sup_name = ?", supplier.Name).Count(new(models.Supplier))
+		nameCount, err := session.Where("sup_name = ?", supplier.Name).Count(new(models.SupplierInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，供应商名称已存在！"})
 		}
 
-		codeCount, err := session.Where("sup_code = ?", supplier.Code).Count(new(models.Supplier))
+		codeCount, err := session.Where("sup_code = ?", supplier.Code).Count(new(models.SupplierInfo))
 		core.HandleError(err)
 		if codeCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，供应商编号已存在！"})
@@ -160,13 +160,13 @@ func (c InventorySupplier) Save() revel.Result {
 		affected, err = session.Insert(supplier)
 		core.HandleError(err)
 	} else {
-		nameCount, err := session.Where("id <> ? and sup_name = ?", supplier.Id, supplier.Name).Count(new(models.Supplier))
+		nameCount, err := session.Where("id <> ? and sup_name = ?", supplier.Id, supplier.Name).Count(new(models.SupplierInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，供应商名称已存在！"})
 		}
 
-		codeCount, err := session.Where("id <> ? and sup_code = ?", supplier.Id, supplier.Code).Count(new(models.Supplier))
+		codeCount, err := session.Where("id <> ? and sup_code = ?", supplier.Id, supplier.Code).Count(new(models.SupplierInfo))
 		core.HandleError(err)
 		if codeCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，供应商编号已存在！"})
@@ -189,7 +189,7 @@ func (c InventorySupplier) Delete() revel.Result {
 	supplierIdList := make([]int64, 0)
 	c.Params.Bind(&supplierIdList, "id_list")
 
-	supplier := new(models.Supplier)
+	supplier := new(models.SupplierInfo)
 	affected, err := session.In("id", supplierIdList).Delete(supplier)
 	core.HandleError(err)
 

@@ -17,8 +17,8 @@ func (c InventoryProduct) Index() revel.Result {
 }
 
 type ProductView struct {
-	models.ProductCate `xorm:"extends" json:"c"`
-	models.Product     `xorm:"extends" json:"p"`
+	models.ProductCateInfo `xorm:"extends" json:"c"`
+	models.ProductInfo     `xorm:"extends" json:"p"`
 }
 
 func (c InventoryProduct) ListData() revel.Result {
@@ -55,8 +55,8 @@ func (c InventoryProduct) ListData() revel.Result {
 }
 
 type ProductDetailForm struct {
-	Product         models.Product       `json:"product"`
-	ProductCateList []models.ProductCate `json:"cate_list"`
+	Product         models.ProductInfo       `json:"product"`
+	ProductCateList []models.ProductCateInfo `json:"cate_list"`
 }
 
 func (f *ProductDetailForm) IsCreate() bool {
@@ -109,7 +109,7 @@ func (c InventoryProduct) DetailData() revel.Result {
 
 	var detail_form ProductDetailForm
 
-	var product models.Product
+	var product models.ProductInfo
 	if product_id != 0 {
 		has, err := db_session.Id(product_id).Get(&product)
 		core.HandleError(err)
@@ -118,7 +118,7 @@ func (c InventoryProduct) DetailData() revel.Result {
 		}
 	}
 
-	product_cate_list := make([]models.ProductCate, 0)
+	product_cate_list := make([]models.ProductCateInfo, 0)
 	err := db_session.Find(&product_cate_list)
 	core.HandleError(err)
 
@@ -143,13 +143,13 @@ func (c InventoryProduct) Save() revel.Result {
 
 	var affected int64
 	if detail_form.IsCreate() {
-		code_count, err := db_session.Where("code = ?", product.Code).Count(new(models.Product))
+		code_count, err := db_session.Where("code = ?", product.Code).Count(new(models.ProductInfo))
 		core.HandleError(err)
 		if code_count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！"})
 		}
 
-		name_count, err := db_session.Where("name = ?", product.Name).Count(new(models.Product))
+		name_count, err := db_session.Where("name = ?", product.Name).Count(new(models.ProductInfo))
 		core.HandleError(err)
 		if name_count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！"})
@@ -158,13 +158,13 @@ func (c InventoryProduct) Save() revel.Result {
 		affected, err = db_session.Insert(&product)
 		core.HandleError(err)
 	} else {
-		code_count, err := db_session.Where("id <> ? and code = ?", product.Id, product.Code).Count(new(models.Product))
+		code_count, err := db_session.Where("id <> ? and code = ?", product.Id, product.Code).Count(new(models.ProductInfo))
 		core.HandleError(err)
 		if code_count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！"})
 		}
 
-		name_count, err := db_session.Where("id <> ? and name = ?", product.Id, product.Name).Count(new(models.Product))
+		name_count, err := db_session.Where("id <> ? and name = ?", product.Id, product.Name).Count(new(models.ProductInfo))
 		core.HandleError(err)
 		if name_count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，品名已存在！"})
@@ -187,7 +187,7 @@ func (c InventoryProduct) Delete() revel.Result {
 	product_id_list := make([]int64, 0)
 	c.Params.Bind(&product_id_list, "id_list")
 
-	affected, err := db_session.In("id", product_id_list).Delete(new(models.Product))
+	affected, err := db_session.In("id", product_id_list).Delete(new(models.ProductInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

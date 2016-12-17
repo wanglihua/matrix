@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/itsm/models"
@@ -33,12 +32,12 @@ func (c ItsmEventLog) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	event_log_list := make([]models.EventLog, 0, limit)
+	event_log_list := make([]models.EventLogInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&event_log_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.EventLog))
+	count, err := count_query.Count(new(models.EventLogInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,18 +47,17 @@ func (c ItsmEventLog) ListData() revel.Result {
 }
 
 type EventLogDetailForm struct {
-	EventLog models.EventLog `json:"log"`
+	EventLog models.EventLogInfo `json:"log"`
 }
 
 func (f *EventLogDetailForm) IsCreate() bool {
 	return f.EventLog.Id == 0
 }
 
-func (f *EventLogDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *EventLogDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.EventLog.EventId).Message("事件不能为空！")
 
 	validation.Required(f.EventLog.Reason).Message("事由不能为空！")
-
 
 	return validation.HasErrors() == false
 }
@@ -70,7 +68,7 @@ func (c ItsmEventLog) DetailData() revel.Result {
 	var event_log_id int64
 	c.Params.Bind(&event_log_id, "id")
 
-	var event_log models.EventLog
+	var event_log models.EventLogInfo
 	if event_log_id != 0 {
 		has, err := db_session.Id(event_log_id).Get(&event_log)
 		core.HandleError(err)
@@ -99,15 +97,15 @@ func (c ItsmEventLog) Save() revel.Result {
 	event_log := detail_form.EventLog
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&event_log)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(event_log.Id).Update(&event_log)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -120,9 +118,8 @@ func (c ItsmEventLog) Delete() revel.Result {
 	event_log_id_list := make([]int64, 0)
 	c.Params.Bind(&event_log_id_list, "id_list")
 
-	affected, err := db_session.In("id", event_log_id_list).Delete(new(models.EventLog))
+	affected, err := db_session.In("id", event_log_id_list).Delete(new(models.EventLogInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

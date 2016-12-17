@@ -20,8 +20,8 @@ func (c ItsmEngineer) Index() revel.Result {
 }
 
 type EngineerView struct {
-	auth_models.User `xorm:"extends" json:"u"`
-	models.Engineer  `xorm:"extends" json:"e"`
+	auth_models.UserInfo `xorm:"extends" json:"u"`
+	models.EngineerInfo  `xorm:"extends" json:"e"`
 }
 
 func (c ItsmEngineer) ListData() revel.Result {
@@ -73,12 +73,12 @@ func (c ItsmEngineer) AddListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	userList := make([]auth_models.User, 0, limit)
+	userList := make([]auth_models.UserInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&userList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(auth_models.User))
+	count, err := countQuery.Count(new(auth_models.UserInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -98,7 +98,7 @@ func (c ItsmEngineer) AddSave() revel.Result {
 	}
 
 	for _, userId := range userIdList {
-		engineer := new(models.Engineer)
+		engineer := new(models.EngineerInfo)
 		engineer.UserId = userId
 		_, err := session.Insert(engineer)
 		core.HandleError(err)
@@ -113,16 +113,16 @@ func (c ItsmEngineer) Delete() revel.Result {
 	engineer_id_list := make([]int64, 0)
 	c.Params.Bind(&engineer_id_list, "id_list")
 
-	affected, err := db_session.In("id", engineer_id_list).Delete(new(models.Engineer))
+	affected, err := db_session.In("id", engineer_id_list).Delete(new(models.EngineerInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
 
 type EngineerDetailForm struct {
-	ServiceAreaList   []models.ServiceArea   `json:"service_area_list"`
-	EventTypeList     []models.EventType     `json:"event_type_list"`
-	EngineerGroupList []models.EngineerGroup `json:"engineer_group_list"`
+	ServiceAreaList   []models.ServiceAreaInfo   `json:"service_area_list"`
+	EventTypeList     []models.EventTypeInfo     `json:"event_type_list"`
+	EngineerGroupList []models.EngineerGroupInfo `json:"engineer_group_list"`
 
 	EngineerId int64 `json:"engineer_id"`
 
@@ -140,15 +140,15 @@ func (c ItsmEngineer) DetailData() revel.Result {
 
 	var detail_form EngineerDetailForm
 
-	detail_form.ServiceAreaList = make([]models.ServiceArea, 0)
+	detail_form.ServiceAreaList = make([]models.ServiceAreaInfo, 0)
 	err := db_session.Find(&(detail_form.ServiceAreaList))
 	core.HandleError(err)
 
-	detail_form.EventTypeList = make([]models.EventType, 0)
+	detail_form.EventTypeList = make([]models.EventTypeInfo, 0)
 	err = db_session.Find(&(detail_form.EventTypeList))
 	core.HandleError(err)
 
-	detail_form.EngineerGroupList = make([]models.EngineerGroup, 0)
+	detail_form.EngineerGroupList = make([]models.EngineerGroupInfo, 0)
 	err = db_session.Find(&(detail_form.EngineerGroupList))
 	core.HandleError(err)
 

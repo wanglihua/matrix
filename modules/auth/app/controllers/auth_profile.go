@@ -16,7 +16,7 @@ func (c AuthProfile) Index() revel.Result {
 	session := c.DbSession
 
 	loginUserId := core.GetLoginUser(c.Session).UserId
-	loginUser := new(models.User)
+	loginUser := new(models.UserInfo)
 	_, err := session.Id(loginUserId).Get(loginUser)
 	core.HandleError(err)
 
@@ -36,7 +36,7 @@ func (c AuthProfile) Save() revel.Result {
 	}
 
 	loginUserId := core.GetLoginUser(c.Session).UserId
-	loginUser := new(models.User)
+	loginUser := new(models.UserInfo)
 	_, err := session.Id(loginUserId).Get(loginUser)
 	core.HandleError(err)
 

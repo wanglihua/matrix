@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/itsm/models"
@@ -33,12 +32,12 @@ func (c ItsmEquipment) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	equipment_list := make([]models.Equipment, 0, limit)
+	equipment_list := make([]models.EquipmentInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&equipment_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.Equipment))
+	count, err := count_query.Count(new(models.EquipmentInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,14 +47,14 @@ func (c ItsmEquipment) ListData() revel.Result {
 }
 
 type EquipmentDetailForm struct {
-	Equipment models.Equipment `json:"equipment"`
+	Equipment models.EquipmentInfo `json:"equipment"`
 }
 
 func (f *EquipmentDetailForm) IsCreate() bool {
 	return f.Equipment.Id == 0
 }
 
-func (f *EquipmentDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *EquipmentDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.Equipment.Code).Message("编码不能为空！")
 	if f.Equipment.Code != "" {
 		validation.MinSize(f.Equipment.Code, 2).Message("编码长度不能小于2！")
@@ -83,7 +82,7 @@ func (c ItsmEquipment) DetailData() revel.Result {
 	var equipment_id int64
 	c.Params.Bind(&equipment_id, "id")
 
-	var equipment models.Equipment
+	var equipment models.EquipmentInfo
 	if equipment_id != 0 {
 		has, err := db_session.Id(equipment_id).Get(&equipment)
 		core.HandleError(err)
@@ -112,27 +111,27 @@ func (c ItsmEquipment) Save() revel.Result {
 	equipment := detail_form.Equipment
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		code_count, err := db_session.Where("code = ?", equipment.Code).Count(&equipment)
 		core.HandleError(err)
 		if code_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！"})
 		}
 
 		affected, err = db_session.Insert(&equipment)
 		core.HandleError(err)
-	} else { 
+	} else {
 		code_count, err := db_session.Where("id <> ? and code = ?", equipment.Id, equipment.Code).Count(&equipment)
 		core.HandleError(err)
 		if code_count != 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，编码已存在！"})
 		}
 
 		affected, err = db_session.Id(equipment.Id).Update(&equipment)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -145,9 +144,8 @@ func (c ItsmEquipment) Delete() revel.Result {
 	equipment_id_list := make([]int64, 0)
 	c.Params.Bind(&equipment_id_list, "id_list")
 
-	affected, err := db_session.In("id", equipment_id_list).Delete(new(models.Equipment))
+	affected, err := db_session.In("id", equipment_id_list).Delete(new(models.EquipmentInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

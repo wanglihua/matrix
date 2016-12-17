@@ -12,7 +12,7 @@ var TablePrefix = "inventory_"
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Supplier struct {
+type SupplierInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Name        string `xorm:"nvarchar(255) notnull unique index 'sup_name'" json:"sup_name"`
@@ -29,13 +29,13 @@ type Supplier struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Supplier) TableName() string {
+func (e SupplierInfo) TableName() string {
 	return TablePrefix + "supplier"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Client struct {
+type ClientInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Name        string `xorm:"nvarchar(255) notnull unique index 'client_name'" json:"client_name"`
@@ -52,13 +52,13 @@ type Client struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Client) TableName() string {
+func (e ClientInfo) TableName() string {
 	return TablePrefix + "client"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type ProductCate struct {
+type ProductCateInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Name string          `xorm:"nvarchar(255) notnull unique index 'cate_name'" json:"cate_name" smith:"verbose_name=名称,min=2,max=100"`
@@ -69,17 +69,17 @@ type ProductCate struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e ProductCate) TableName() string {
+func (e ProductCateInfo) TableName() string {
 	return TablePrefix + "product_cate"
 }
 
-func (e ProductCate) ModelDesc() string {
+func (e ProductCateInfo) ModelDesc() string {
 	return "verbose_name=货品类别"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Product struct {
+type ProductInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	CateId int64           `xorm:"bigint notnull index 'cate_id'" json:"cate_id" smith:"verbose_name=类别"` //对应于货品类别表中Id
@@ -100,17 +100,17 @@ type Product struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Product) TableName() string {
+func (e ProductInfo) TableName() string {
 	return TablePrefix + "product"
 }
 
-func (e Product) ModelDesc() string {
+func (e ProductInfo) ModelDesc() string {
 	return "verbose_name=货品信息,entity_json=product"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Stock struct {
+type StockInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Code    string `xorm:"nvarchar(100) notnull unique index 'stock_code'" json:"stock_code"`
@@ -125,13 +125,13 @@ type Stock struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Stock) TableName() string {
+func (e StockInfo) TableName() string {
 	return TablePrefix + "stock"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type StorageLoc struct {
+type StorageLocInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Code    string `xorm:"nvarchar(100) notnull unique(uq_storage_loc_code) 'stock_code'" json:"stock_code"`
@@ -144,13 +144,13 @@ type StorageLoc struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e StorageLoc) TableName() string {
+func (e StorageLocInfo) TableName() string {
 	return TablePrefix + "storage_loc"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type CapitalAccount struct {
+type CapitalAccountInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Name   string          `xorm:"nvarchar(255) notnull unique 'account_name'" json:"account_name" smith:"verbose_name=名称,min=2,max=200"`
@@ -161,18 +161,18 @@ type CapitalAccount struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e CapitalAccount) TableName() string {
+func (e CapitalAccountInfo) TableName() string {
 	return TablePrefix + "capital_account"
 }
 
-func (e CapitalAccount) ModelDesc() string {
+func (e CapitalAccountInfo) ModelDesc() string {
 	return "verbose_name=资金账户,entity_json=ca,route=capital/account"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 //stock in out type
-type StockIoType struct {
+type StockIoTypeInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Cate   string          `xorm:"nvarchar(50) notnull 'type_cate'" json:"type_cate" smith:"verbose_name=类别,min=2,max=20"` //出库 或者 入库
@@ -187,18 +187,18 @@ type StockIoType struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e StockIoType) TableName() string {
+func (e StockIoTypeInfo) TableName() string {
 	return TablePrefix + "stock_io_type"
 }
 
-func (e StockIoType) ModelDesc() string {
+func (e StockIoTypeInfo) ModelDesc() string {
 	return "verbose_name=出入库类型,entity_json=iotype,route=stock/io/type"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 //payment type
-type PayType struct {
+type PayTypeInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Cate   string          `xorm:"nvarchar(50) notnull 'type_cate'" json:"type_cate" smith:"verbose_name=类别,min=2,max=20"` //收款 或者 付款
@@ -212,17 +212,17 @@ type PayType struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e PayType) TableName() string {
+func (e PayTypeInfo) TableName() string {
 	return TablePrefix + "pay_type"
 }
 
-func (e PayType) ModelDesc() string {
+func (e PayTypeInfo) ModelDesc() string {
 	return "verbose_name=收付款类型,entity_json=paytype,route=pay/type"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Handler struct {
+type HandlerInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Name  string          `xorm:"nvarchar(255) notnull unique index 'handler_name'" json:"handler_name" smith:"verbose_name=名称,min=2,max=100"`
@@ -234,17 +234,17 @@ type Handler struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Handler) TableName() string {
+func (e HandlerInfo) TableName() string {
 	return TablePrefix + "handler"
 }
 
-func (e Handler) ModelDesc() string {
+func (e HandlerInfo) ModelDesc() string {
 	return "verbose_name=经手人,entity_json=handler,route=handler"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type StockBill struct {
+type StockBillInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	Code      string          `xorm:"nvarchar(255) notnull unique index 'bill_code'" json:"bill_code" smith:"verbose_name=出入库单号,min=2,max=100"`
@@ -261,17 +261,17 @@ type StockBill struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e StockBill) TableName() string {
+func (e StockBillInfo) TableName() string {
 	return TablePrefix + "stock_bill"
 }
 
-func (e StockBill) ModelDesc() string {
+func (e StockBillInfo) ModelDesc() string {
 	return "verbose_name=出入库单,entity_json=bill,route=stock/bill"
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-type StockBillDetail struct {
+type StockBillDetailInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	BillId   int64           `xorm:"bigint notnull 'bill_id'" json:"bill_id" smith:"verbose_name=出入库单"`
@@ -290,15 +290,15 @@ type StockBillDetail struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e StockBillDetail) TableName() string {
+func (e StockBillDetailInfo) TableName() string {
 	return TablePrefix + "stock_bill_detail"
 }
 
-func (e StockBillDetail) ModelDesc() string {
+func (e StockBillDetailInfo) ModelDesc() string {
 	return "verbose_name=出入库单详细,entity_json=billdetail,route=stock/bill/detail"
 }
 
-type Config struct {
+type ConfigInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	BillInAutoApprove  core.NullInt `xorm:"int null 'bill_in_auto_approve'" json:"bill_in_auto_approve" smith:"verbose_name=入库单自动审核"`
@@ -311,10 +311,10 @@ type Config struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Config) TableName() string {
+func (e ConfigInfo) TableName() string {
 	return TablePrefix + "config"
 }
 
-func (e Config) ModelDesc() string {
+func (e ConfigInfo) ModelDesc() string {
 	return "verbose_name=系统配置,entity_json=config,route=config"
 }

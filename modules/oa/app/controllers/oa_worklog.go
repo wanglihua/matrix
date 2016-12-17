@@ -37,12 +37,12 @@ func (c OaWorklog) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	worklogList := make([]models.Worklog, 0, limit)
+	worklogList := make([]models.WorklogInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&worklogList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.Worklog))
+	count, err := countQuery.Count(new(models.WorklogInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -52,7 +52,7 @@ func (c OaWorklog) ListData() revel.Result {
 }
 
 type WorklogForm struct {
-	Worklog models.Worklog
+	Worklog models.WorklogInfo
 }
 
 func (f *WorklogForm) IsCreate() bool {
@@ -99,7 +99,7 @@ func (c OaWorklog) Detail() revel.Result {
 	var worklogId int64
 	c.Params.Bind(&worklogId, "id")
 
-	worklog := new(models.Worklog)
+	worklog := new(models.WorklogInfo)
 	if worklogId != 0 {
 		has, err := session.Id(worklogId).Get(worklog)
 		core.HandleError(err)
@@ -122,7 +122,7 @@ func (c OaWorklog) Detail() revel.Result {
 	if form.IsCreate() {
 		user_nick_name = core.GetLoginUser(c.Session).NickName
 	} else {
-		user := new(authModels.User)
+		user := new(authModels.UserInfo)
 		_, err := session.Id(worklog.UserId).Get(user)
 		core.HandleError(err)
 
@@ -183,13 +183,13 @@ func (c OaWorklog) Delete() revel.Result {
 		worklogIdStrList = append(worklogIdStrList, fmt.Sprint(worklogId))
 	}
 	filter := fmt.Sprintf("user_id = %d and id in(%s)", loginUserId, strings.Join(worklogIdStrList, ","))
-	count, err := session.Where(filter).Count(new(models.Worklog))
+	count, err := session.Where(filter).Count(new(models.WorklogInfo))
 	core.HandleError(err)
 	if count < int64(len(worklogIdList)) {
 		return c.RenderJson(core.JsonResult{Success: false, Message: "部分工作日志不存在或不属于当前登录人！"})
 	}
 
-	affected, err := session.In("id", worklogIdList).Delete(new(models.Worklog))
+	affected, err := session.In("id", worklogIdList).Delete(new(models.WorklogInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

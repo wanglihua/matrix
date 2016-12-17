@@ -6,7 +6,6 @@ import (
 	"matrix/core"
 	"matrix/modules/auth/models"
 	"strconv"
-	"strings"
 )
 
 type AuthGroup struct {
@@ -18,8 +17,8 @@ func (c AuthGroup) Index() revel.Result {
 }
 
 type GroupView struct {
-	models.Group `xorm:"extends"`
-	UserCount    int `xorm:"bigint 'user_count'" json:"user_count"`
+	models.GroupInfo `xorm:"extends"`
+	UserCount        int `xorm:"bigint 'user_count'" json:"user_count"`
 }
 
 func (c AuthGroup) ListData() revel.Result {
@@ -54,7 +53,7 @@ func (c AuthGroup) ListData() revel.Result {
 }
 
 type GroupForm struct {
-	Group models.Group
+	Group models.GroupInfo
 }
 
 func (f *GroupForm) IsCreate() bool {
@@ -75,7 +74,7 @@ func (c AuthGroup) Detail() revel.Result {
 	var groupId int64
 	c.Params.Bind(&groupId, "id")
 
-	group := new(models.Group)
+	group := new(models.GroupInfo)
 	if groupId != 0 {
 		has, err := session.Id(groupId).Get(group)
 		core.HandleError(err)
@@ -106,7 +105,7 @@ func (c AuthGroup) Save() revel.Result {
 
 	var affected int64
 	if form.IsCreate() {
-		count, err := session.Where("group_name = ?", group.GroupName).Count(new(models.Group))
+		count, err := session.Where("group_name = ?", group.GroupName).Count(new(models.GroupInfo))
 		core.HandleError(err)
 		if count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！"})
@@ -115,7 +114,7 @@ func (c AuthGroup) Save() revel.Result {
 		affected, err = session.Insert(group)
 		core.HandleError(err)
 	} else {
-		count, err := session.Where("id <> ? and group_name = ?", group.Id, group.GroupName).Count(new(models.Group))
+		count, err := session.Where("id <> ? and group_name = ?", group.Id, group.GroupName).Count(new(models.GroupInfo))
 		core.HandleError(err)
 		if count != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，群组名已存在！"})
@@ -138,7 +137,7 @@ func (c AuthGroup) Delete() revel.Result {
 	groupIdList := make([]int64, 0)
 	c.Params.Bind(&groupIdList, "id_list")
 
-	group := new(models.Group)
+	group := new(models.GroupInfo)
 	affected, err := session.In("id", groupIdList).Delete(group)
 	core.HandleError(err)
 

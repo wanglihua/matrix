@@ -90,9 +90,9 @@ func (_ EngineerService) AddEngineerToGroups(db_session *xorm.Session, engineer_
 	if group_id_list == nil || len(group_id_list) == 0 {
 		return
 	}
-	egineer_group_setting_list := make([]itsm_models.EngineerGroupSetting, 0)
+	egineer_group_setting_list := make([]itsm_models.EngineerGroupSettingInfo, 0)
 	for _, group_id := range group_id_list {
-		var engineer_group_setting itsm_models.EngineerGroupSetting
+		var engineer_group_setting itsm_models.EngineerGroupSettingInfo
 		engineer_group_setting.EngineerId = engineer_id
 		engineer_group_setting.GroupId = group_id
 		egineer_group_setting_list = append(egineer_group_setting_list, engineer_group_setting)
@@ -119,9 +119,9 @@ func (_ EngineerService) AddEngineerToServiceAreas(db_session *xorm.Session, eng
 	if service_area_id_list == nil || len(service_area_id_list) == 0 {
 		return
 	}
-	egineer_service_area_list := make([]itsm_models.EngineerServiceArea, 0)
+	egineer_service_area_list := make([]itsm_models.EngineerServiceAreaInfo, 0)
 	for _, service_area_id := range service_area_id_list {
-		var engineer_service_area itsm_models.EngineerServiceArea
+		var engineer_service_area itsm_models.EngineerServiceAreaInfo
 		engineer_service_area.EngineerId = engineer_id
 		engineer_service_area.ServiceAreaId = service_area_id
 		egineer_service_area_list = append(egineer_service_area_list, engineer_service_area)
@@ -148,9 +148,9 @@ func (_ EngineerService) AddEngineerToEventTypes(db_session *xorm.Session, engin
 	if event_type_id_list == nil || len(event_type_id_list) == 0 {
 		return
 	}
-	egineer_event_type_list := make([]itsm_models.EngineerEventType, 0)
+	egineer_event_type_list := make([]itsm_models.EngineerEventTypeInfo, 0)
 	for _, event_type_id := range event_type_id_list {
-		var engineer_event_type itsm_models.EngineerEventType
+		var engineer_event_type itsm_models.EngineerEventTypeInfo
 		engineer_event_type.EngineerId = engineer_id
 		engineer_event_type.EventTypeId = event_type_id
 		egineer_event_type_list = append(egineer_event_type_list, engineer_event_type)
@@ -186,7 +186,7 @@ SELECT count(*) as count FROM itsm_engineer_manager WHERE engineer_id = ?
 }
 
 func (_ EngineerService) AddEngineerToManager(db_session *xorm.Session, engineer_id int64) {
-	var engineer_manager itsm_models.EngineerManager
+	var engineer_manager itsm_models.EngineerManagerInfo
 	engineer_manager.EngineerId = engineer_id
 	db_session.Insert(&engineer_manager)
 }

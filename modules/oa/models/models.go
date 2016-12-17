@@ -8,7 +8,7 @@ var TablePrefix = "oa_"
 
 //---------------------------------------------------------------------------------------------------------------
 
-type Worklog struct {
+type WorklogInfo struct {
 	Id int64 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
 
 	UserId    int64         `xorm:"bigint notnull index 'user_id'" json:"user_id"`
@@ -24,6 +24,6 @@ type Worklog struct {
 	Version    int       `xorm:"version notnull 'version'" json:"version"`
 }
 
-func (e Worklog) TableName() string {
+func (e WorklogInfo) TableName() string {
 	return TablePrefix + "worklog"
 }

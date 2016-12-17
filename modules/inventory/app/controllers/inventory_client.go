@@ -31,12 +31,12 @@ func (c InventoryClient) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	clientList := make([]models.Client, 0, limit)
+	clientList := make([]models.ClientInfo, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&clientList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(models.Client))
+	count, err := countQuery.Count(new(models.ClientInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -46,7 +46,7 @@ func (c InventoryClient) ListData() revel.Result {
 }
 
 type ClientForm struct {
-	Client models.Client
+	Client models.ClientInfo
 }
 
 func (f *ClientForm) IsCreate() bool {
@@ -115,7 +115,7 @@ func (c InventoryClient) Detail() revel.Result {
 	var clientId int64
 	c.Params.Bind(&clientId, "id")
 
-	client := new(models.Client)
+	client := new(models.ClientInfo)
 	if clientId != 0 {
 		has, err := session.Id(clientId).Get(client)
 		core.HandleError(err)
@@ -145,13 +145,13 @@ func (c InventoryClient) Save() revel.Result {
 
 	var affected int64
 	if form.IsCreate() {
-		nameCount, err := session.Where("client_name = ?", client.Name).Count(new(models.Client))
+		nameCount, err := session.Where("client_name = ?", client.Name).Count(new(models.ClientInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，客户名称已存在！"})
 		}
 
-		codeCount, err := session.Where("client_code = ?", client.Code).Count(new(models.Client))
+		codeCount, err := session.Where("client_code = ?", client.Code).Count(new(models.ClientInfo))
 		core.HandleError(err)
 		if codeCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，客户编号已存在！"})
@@ -160,13 +160,13 @@ func (c InventoryClient) Save() revel.Result {
 		affected, err = session.Insert(client)
 		core.HandleError(err)
 	} else {
-		nameCount, err := session.Where("id <> ? and client_name = ?", client.Id, client.Name).Count(new(models.Client))
+		nameCount, err := session.Where("id <> ? and client_name = ?", client.Id, client.Name).Count(new(models.ClientInfo))
 		core.HandleError(err)
 		if nameCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，客户名称已存在！"})
 		}
 
-		codeCount, err := session.Where("id <> ? and client_code = ?", client.Id, client.Code).Count(new(models.Client))
+		codeCount, err := session.Where("id <> ? and client_code = ?", client.Id, client.Code).Count(new(models.ClientInfo))
 		core.HandleError(err)
 		if codeCount != 0 {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "保存失败，客户编号已存在！"})
@@ -189,7 +189,7 @@ func (c InventoryClient) Delete() revel.Result {
 	clientIdList := make([]int64, 0)
 	c.Params.Bind(&clientIdList, "id_list")
 
-	client := new(models.Client)
+	client := new(models.ClientInfo)
 	affected, err := session.In("id", clientIdList).Delete(client)
 	core.HandleError(err)
 

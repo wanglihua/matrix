@@ -1,10 +1,9 @@
-
 package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"github.com/revel/revel"
+	"strconv"
 
 	"matrix/core"
 	"matrix/modules/itsm/models"
@@ -33,12 +32,12 @@ func (c ItsmEquipmentType) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	equipment_type_list := make([]models.EquipmentType, 0, limit)
+	equipment_type_list := make([]models.EquipmentTypeInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&equipment_type_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.EquipmentType))
+	count, err := count_query.Count(new(models.EquipmentTypeInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,14 +47,14 @@ func (c ItsmEquipmentType) ListData() revel.Result {
 }
 
 type EquipmentTypeDetailForm struct {
-	EquipmentType models.EquipmentType `json:"equipment_type"`
+	EquipmentType models.EquipmentTypeInfo `json:"equipment_type"`
 }
 
 func (f *EquipmentTypeDetailForm) IsCreate() bool {
 	return f.EquipmentType.Id == 0
 }
 
-func (f *EquipmentTypeDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *EquipmentTypeDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.EquipmentType.Name).Message("名称不能为空！")
 	if f.EquipmentType.Name != "" {
 		validation.MinSize(f.EquipmentType.Name, 2).Message("名称长度不能小于2！")
@@ -73,7 +72,7 @@ func (c ItsmEquipmentType) DetailData() revel.Result {
 	var equipment_type_id int64
 	c.Params.Bind(&equipment_type_id, "id")
 
-	var equipment_type models.EquipmentType
+	var equipment_type models.EquipmentTypeInfo
 	if equipment_type_id != 0 {
 		has, err := db_session.Id(equipment_type_id).Get(&equipment_type)
 		core.HandleError(err)
@@ -102,15 +101,15 @@ func (c ItsmEquipmentType) Save() revel.Result {
 	equipment_type := detail_form.EquipmentType
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&equipment_type)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(equipment_type.Id).Update(&equipment_type)
 		core.HandleError(err)
 
 		if affected == 0 {
-			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！" })
+			return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
 		}
 	}
 
@@ -123,9 +122,8 @@ func (c ItsmEquipmentType) Delete() revel.Result {
 	equipment_type_id_list := make([]int64, 0)
 	c.Params.Bind(&equipment_type_id_list, "id_list")
 
-	affected, err := db_session.In("id", equipment_type_id_list).Delete(new(models.EquipmentType))
+	affected, err := db_session.In("id", equipment_type_id_list).Delete(new(models.EquipmentTypeInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-

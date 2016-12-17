@@ -33,12 +33,12 @@ func (c ItsmEventProcess) ListData() revel.Result {
 		data_query = *data_query.Asc("id")
 	}
 
-	event_list := make([]models.Event, 0, limit)
+	event_list := make([]models.EventInfo, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&event_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.Event))
+	count, err := count_query.Count(new(models.EventInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -48,7 +48,7 @@ func (c ItsmEventProcess) ListData() revel.Result {
 }
 
 type EventProcessDetailForm struct {
-	Event models.Event `json:"event"`
+	Event models.EventInfo `json:"event"`
 }
 
 func (f *EventProcessDetailForm) IsCreate() bool {
@@ -85,7 +85,7 @@ func (c ItsmEventProcess) DetailData() revel.Result {
 	var event_id int64
 	c.Params.Bind(&event_id, "id")
 
-	var event models.Event
+	var event models.EventInfo
 	if event_id != 0 {
 		has, err := db_session.Id(event_id).Get(&event)
 		core.HandleError(err)
@@ -135,7 +135,7 @@ func (c ItsmEventProcess) Delete() revel.Result {
 	event_id_list := make([]int64, 0)
 	c.Params.Bind(&event_id_list, "id_list")
 
-	affected, err := db_session.In("id", event_id_list).Delete(new(models.Event))
+	affected, err := db_session.In("id", event_id_list).Delete(new(models.EventInfo))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
