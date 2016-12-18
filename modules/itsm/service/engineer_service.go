@@ -27,18 +27,18 @@ func (_ EngineerService) GetEngineerGroupIdList(db_session *xorm.Session, engine
 }
 
 func (_ EngineerService) GetEngineerServiceAreaIdList(db_session *xorm.Session, engineer_id int64) []int64 {
-	var service_area_list = make([]struct {
+	var area_list = make([]struct {
 		ServiceAreaId int64 `xorm:"'service_area_id'"`
 	}, 0)
 	sql := `SELECT DISTINCT a.service_area_id AS service_area_id FROM itsm_engineer e INNER JOIN itsm_engineer_service_area a ON e.id = a.engineer_id WHERE e.id = ?;`
-	err := db_session.Sql(sql, engineer_id).Find(&service_area_list)
+	err := db_session.Sql(sql, engineer_id).Find(&area_list)
 	core.HandleError(err)
 
-	service_area_id_list := make([]int64, 0)
-	for _, service_area := range service_area_list {
-		service_area_id_list = append(service_area_id_list, service_area.ServiceAreaId)
+	area_id_list := make([]int64, 0)
+	for _, area := range area_list {
+		area_id_list = append(area_id_list, area.ServiceAreaId)
 	}
-	return service_area_id_list
+	return area_id_list
 }
 
 func (_ EngineerService) GetEngineerEventTypeIdList(db_session *xorm.Session, engineer_id int64) []int64 {
@@ -120,10 +120,10 @@ func (_ EngineerService) AddEngineerToServiceAreas(db_session *xorm.Session, eng
 		return
 	}
 	egineer_service_area_list := make([]itsm_models.EngineerServiceAreaInfo, 0)
-	for _, service_area_id := range service_area_id_list {
+	for _, area_id := range service_area_id_list {
 		var engineer_service_area itsm_models.EngineerServiceAreaInfo
 		engineer_service_area.EngineerId = engineer_id
-		engineer_service_area.ServiceAreaId = service_area_id
+		engineer_service_area.ServiceAreaId = area_id
 		egineer_service_area_list = append(egineer_service_area_list, engineer_service_area)
 	}
 	db_session.Insert(&egineer_service_area_list)
@@ -134,13 +134,13 @@ func (_ EngineerService) RemoveEngineerFromServiceAreas(db_session *xorm.Session
 		return
 	}
 	sql := `
-DELETE FROM itsm_engineer_service_area WHERE engineer_id = ? AND service_area_id IN (%s)
+DELETE FROM itsm_engineer_service_area WHERE engineer_id = ? AND area_id IN (%s)
 `
-	service_area_id_str_list := make([]string, len(service_area_id_list))
-	for _, service_area_id := range service_area_id_list {
-		service_area_id_str_list = append(service_area_id_str_list, fmt.Sprint(service_area_id))
+	area_id_str_list := make([]string, len(service_area_id_list))
+	for _, area_id := range service_area_id_list {
+		area_id_str_list = append(area_id_str_list, fmt.Sprint(area_id))
 	}
-	sql = fmt.Sprintf(sql, strings.Join(service_area_id_str_list, ","))
+	sql = fmt.Sprintf(sql, strings.Join(area_id_str_list, ","))
 	db_session.Exec(sql, engineer_id)
 }
 
