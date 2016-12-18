@@ -9,23 +9,23 @@ import (
 	"unicode/utf8"
 )
 
-var cmdLic = &Command{
-	UsageLine: "lic [lic app name] [lic date]",
-	Short:     "lic applicatoin",
+var cmdMeta = &Command{
+	UsageLine: "meta [module_to_generate_meta]",
+	Short:     "Generate models meta",
 	Long: `
-    generate lic for application
-    hd lic lic_app_name lic_date (lic_app_name may not be same with import path)
-    sample: hd lic matrix 20161231
+    generate meta for application
+    module_to_generate_meta can be "all" for all models, "app" for app root modles, or other app's modules names.
+    sample: hd meta auth
 `,
 }
 
 func init() {
-	cmdLic.Run = generate_lic
+	cmdMeta.Run = generate_meta
 }
 
-func generate_lic(cmd *Command, args []string) int {
+func generate_meta(cmd *Command, args []string) int {
 	if len(args) < 2 {
-		fmt.Fprint(os.Stderr, cmdLic.Long)
+		fmt.Fprint(os.Stderr, cmdMeta.Long)
 		return 1
 	}
 

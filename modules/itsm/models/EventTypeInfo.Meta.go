@@ -1,6 +1,6 @@
 package models
 
-type EventTypeCols struct {
+type event_type_cols_type struct {
 	Id         string
 	Name       string
 	Desc       string
@@ -9,20 +9,13 @@ type EventTypeCols struct {
 	Version    string
 }
 
-func (c EventTypeCols) init() {
-	c.Id = "id"
-	c.Name = "type_name"
-	c.Desc = "type_desc"
-	c.CreateTime = "create_time"
-	c.UpdateTime = "update_time"
-	c.Version = "version"
-}
+var EventTypeCols event_type_cols_type
 
-var event_type_cols EventTypeCols
-
-func GetEventTypeCols() EventTypeCols {
-	if event_type_cols.Id == "" {
-		event_type_cols.init()
-	}
-	return event_type_cols
+func init() {
+	EventTypeCols.Id = "id"
+	EventTypeCols.Name = "type_name"
+	EventTypeCols.Desc = "type_desc"
+	EventTypeCols.CreateTime = "create_time"
+	EventTypeCols.UpdateTime = "update_time"
+	EventTypeCols.Version = "version"
 }
