@@ -39,7 +39,7 @@ var model_list = []interface{}{
 func main() {
 	var err error
 
-	entityList := smith_core.GetEntityList(model_list, module_title_name, module_lower_case, module_chinese, table_prefix)
+	entityList := smith_core.GetEntityList(model_list, module_title_name, module_lower_case, module_chinese, table_prefix, false)
 
 	err = os.MkdirAll(output_base_dir, 0777) //创建目录，如果目录已经存在就不会创建，这里是保证目录存在
 	core.HandleError(err)

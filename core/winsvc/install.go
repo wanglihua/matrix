@@ -1,8 +1,8 @@
 package winsvc
 
 import (
-	"os/exec"
 	"fmt"
+	"os/exec"
 )
 
 func InstallService(name, desc string, import_path string, run_mode string) error {

@@ -28,17 +28,17 @@ func init() {
 
 func generateRoute(cmd *Command, args []string) int {
 	/*
-	    if len(args) < 1 {
-	        fmt.Fprintf(os.Stderr, "%s\n%s", cmdRoute.UsageLine, cmdRoute.Long)
-	        return 1
-	    }
+		    if len(args) < 1 {
+		        fmt.Fprintf(os.Stderr, "%s\n%s", cmdRoute.UsageLine, cmdRoute.Long)
+		        return 1
+		    }
 
-		importPath := args[0]
+			importPath := args[0]
 
-	    runMode := "dev"
-	    if len(args) >= 2 {
-	        runMode = args[1]
-	    }
+		    runMode := "dev"
+		    if len(args) >= 2 {
+		        runMode = args[1]
+		    }
 	*/
 
 	currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))

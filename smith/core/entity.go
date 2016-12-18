@@ -47,7 +47,7 @@ type Entity struct {
 	FieldList []Field
 }
 
-func GetEntityList(model_list []interface{}, module_title_name string, module_lower_case string, module_chinese string, table_prefix string) []Entity {
+func GetEntityList(model_list []interface{}, module_title_name string, module_lower_case string, module_chinese string, table_prefix string, for_meta bool) []Entity {
 	entityList := make([]Entity, 0)
 	for _, model := range model_list {
 		entity := Entity{}
@@ -71,7 +71,7 @@ func GetEntityList(model_list []interface{}, module_title_name string, module_lo
 			model_field := model_type.Field(model_field_index)
 
 			field.Name = model_field.Name
-			if field.Name == "Id" || field.Name == "CreateTime" || field.Name == "UpdateTime" || field.Name == "Version" {
+			if for_meta == false && (field.Name == "Id" || field.Name == "CreateTime" || field.Name == "UpdateTime" || field.Name == "Version") {
 				continue
 			}
 
@@ -84,7 +84,7 @@ func GetEntityList(model_list []interface{}, module_title_name string, module_lo
 				field.FieldType = fieldtype.Int
 			case xorm_core.BigInt:
 				field.FieldType = fieldtype.BigInt
-			case xorm_core.Varchar, xorm_core.NVarchar, xorm_core.Text, xorm_core.TinyText, xorm_core.MediumInt, xorm_core.LongText:
+			case xorm_core.Varchar, xorm_core.NVarchar, xorm_core.Text, xorm_core.TinyText, xorm_core.MediumText, xorm_core.LongText:
 				field.FieldType = fieldtype.NVarchar
 			case xorm_core.Date, xorm_core.DateTime, xorm_core.Time, xorm_core.TimeStamp, xorm_core.TimeStampz:
 				field.FieldType = fieldtype.DateTime
@@ -168,7 +168,10 @@ func GetEntityList(model_list []interface{}, module_title_name string, module_lo
 
 func GetModelInfo(model interface{}) (title_name, camel_case_name, table_name, chinese_name, entity_json, route string) {
 	model_type := reflect.TypeOf(model)
-	title_name = strings.TrimRight(model_type.Name(), "Info")
+	title_name = model_type.Name()
+	if strings.HasSuffix(title_name, "Info") {
+		title_name = strings.TrimSuffix(title_name, "Info")
+	}
 	camel_case_name = strings.ToLower(title_name)[0:1] + title_name[1:]
 
 	model_value := reflect.ValueOf(model)

@@ -1,11 +1,11 @@
 package app
 
 import (
+	"fmt"
 	"github.com/go-xorm/xorm"
 	"github.com/revel/revel"
 	"html/template"
 	"matrix/app/layout"
-	"fmt"
 )
 
 func registerTags() {

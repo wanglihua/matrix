@@ -1,9 +1,9 @@
 package winsvc
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
-	"fmt"
 )
 
 func get_exe_Path_file() (string, error) {

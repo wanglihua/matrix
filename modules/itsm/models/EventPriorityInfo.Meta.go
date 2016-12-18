@@ -1,6 +1,6 @@
 package models
 
-var EventTypeCols = struct {
+var EventPriorityCols = struct {
 	Id         string
 	Name       string
 	Desc       string
@@ -9,8 +9,8 @@ var EventTypeCols = struct {
 	Version    string
 }{
 	Id:         "id",
-	Name:       "type_name",
-	Desc:       "type_desc",
+	Name:       "priority_name",
+	Desc:       "priority_desc",
 	CreateTime: "create_time",
 	UpdateTime: "update_time",
 	Version:    "version",

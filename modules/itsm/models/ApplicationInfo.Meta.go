@@ -1,16 +1,18 @@
 package models
 
-var EventTypeCols = struct {
+var ApplicationCols = struct {
 	Id         string
+	Code       string
 	Name       string
-	Desc       string
+	StatusId   string
 	CreateTime string
 	UpdateTime string
 	Version    string
 }{
 	Id:         "id",
-	Name:       "type_name",
-	Desc:       "type_desc",
+	Code:       "code",
+	Name:       "name",
+	StatusId:   "status_id",
 	CreateTime: "create_time",
 	UpdateTime: "update_time",
 	Version:    "version",

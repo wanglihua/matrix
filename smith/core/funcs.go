@@ -13,6 +13,35 @@ import (
 	"time"
 )
 
+func ForceWriteToFile(fileName string, code string) {
+
+	checkFileIsExist := func(filename string) bool {
+		var exist = true
+		if _, err := os.Stat(filename); os.IsNotExist(err) {
+			exist = false
+		}
+
+		return exist
+	}
+
+	if checkFileIsExist(fileName) {
+		err := os.Remove(fileName)
+		matrix_core.HandleError(err)
+	}
+
+	var file *os.File
+	var err error
+
+	file, err = os.Create(fileName) //创建文件
+	matrix_core.HandleError(err)
+
+	_, err = file.WriteString(code)
+	matrix_core.HandleError(err)
+
+	file.Sync()
+	file.Close()
+}
+
 func WriteToFile(fileName string, code string) {
 
 	checkFileIsExist := func(filename string) bool {
