@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+// ForceWriteToFile 写入内容到文件，如果文件原来就存在将被覆盖
 func ForceWriteToFile(fileName string, code string) {
 
 	checkFileIsExist := func(filename string) bool {
@@ -42,6 +43,7 @@ func ForceWriteToFile(fileName string, code string) {
 	file.Close()
 }
 
+// WriteToFile 写入内容到文件，如果文件原来就存在，就忽略
 func WriteToFile(fileName string, code string) {
 
 	checkFileIsExist := func(filename string) bool {

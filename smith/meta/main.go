@@ -67,6 +67,6 @@ func main() {
 		err := os.MkdirAll(models_dir, 0777)
 		core.HandleError(err)
 		meta_path_file := path.Join(models_dir, fmt.Sprintf("%sInfo.Meta.go", entity.EntityTitleName))
-		smith_core.ForceWriteToFile(meta_path_file, code_buffer.String())
+		smith_core.WriteToFile(meta_path_file, code_buffer.String())
 	}
 }
