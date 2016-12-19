@@ -48,7 +48,9 @@ func (c ItsmEventApply) ListData() revel.Result {
 }
 
 type EventApplyDetailForm struct {
-	Event models.EventInfo `json:"event"`
+	Event           models.EventInfo         `json:"event"`
+	EventTypeList   []models.EventTypeInfo   `json:"event_type_list"`
+	ServiceAreaList []models.ServiceAreaInfo `json:"service_area_list"`
 }
 
 func (f *EventApplyDetailForm) IsCreate() bool {
@@ -94,8 +96,18 @@ func (c ItsmEventApply) DetailData() revel.Result {
 		}
 	}
 
+	var event_type_list = make([]models.EventTypeInfo, 0)
+	err := db_session.Find(&event_type_list)
+	core.HandleError(err)
+
+	var service_area_list = make([]models.ServiceAreaInfo, 0)
+	err = db_session.Find(&service_area_list)
+	core.HandleError(err)
+
 	var detail_form EventApplyDetailForm
 	detail_form.Event = event
+	detail_form.EventTypeList = event_type_list
+	detail_form.ServiceAreaList = service_area_list
 
 	return c.RenderJson(detail_form)
 }
@@ -111,14 +123,22 @@ func (c ItsmEventApply) Save() revel.Result {
 		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
-	event := detail_form.Event
+	event_in_ui := detail_form.Event
 
 	var affected int64
 	if detail_form.IsCreate() {
-		affected, err = db_session.Insert(&event)
+		//todo: 按规则生成 code
+		affected, err = db_session.Insert(&event_in_ui)
 		core.HandleError(err)
 	} else {
-		affected, err = db_session.Id(event.Id).Update(&event)
+		var event_in_db models.EventInfo
+		_, err := db_session.Id(event_in_ui.Id).Get(&event_in_db)
+		core.HandleError(err)
+
+		//todo: 更新数据库各字段
+		event_in_db.Description = event_in_ui.Description
+
+		affected, err = db_session.Id(event_in_ui.Id).Update(&event_in_db)
 		core.HandleError(err)
 
 		if affected == 0 {

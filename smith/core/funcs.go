@@ -15,17 +15,7 @@ import (
 
 // ForceWriteToFile 写入内容到文件，如果文件原来就存在将被覆盖
 func ForceWriteToFile(fileName string, code string) {
-
-	checkFileIsExist := func(filename string) bool {
-		var exist = true
-		if _, err := os.Stat(filename); os.IsNotExist(err) {
-			exist = false
-		}
-
-		return exist
-	}
-
-	if checkFileIsExist(fileName) {
+	if IsFileExist(fileName) {
 		err := os.Remove(fileName)
 		matrix_core.HandleError(err)
 	}
@@ -45,17 +35,7 @@ func ForceWriteToFile(fileName string, code string) {
 
 // WriteToFile 写入内容到文件，如果文件原来就存在，就忽略
 func WriteToFile(fileName string, code string) {
-
-	checkFileIsExist := func(filename string) bool {
-		var exist = true
-		if _, err := os.Stat(filename); os.IsNotExist(err) {
-			exist = false
-		}
-
-		return exist
-	}
-
-	if checkFileIsExist(fileName) {
+	if IsFileExist(fileName) {
 		return //文件存在就返回，不做任何事情
 	} else {
 		var file *os.File
@@ -73,17 +53,7 @@ func WriteToFile(fileName string, code string) {
 }
 
 func AppendToFile(fileName string, code string) {
-
-	checkFileIsExist := func(filename string) bool {
-		var exist = true
-		if _, err := os.Stat(filename); os.IsNotExist(err) {
-			exist = false
-		}
-
-		return exist
-	}
-
-	if checkFileIsExist(fileName) {
+	if IsFileExist(fileName) {
 		var err error
 		file_content_bytes, err := ioutil.ReadFile(fileName)
 		matrix_core.HandleError(err)
@@ -350,4 +320,13 @@ func ToUnderscore(str string) string {
 		}
 	}
 	return strings.Join(newCharArray, "")
+}
+
+func IsFileExist(filename string) bool {
+	var exist = true
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		exist = false
+	}
+
+	return exist
 }
