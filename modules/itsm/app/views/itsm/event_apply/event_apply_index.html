@@ -43,12 +43,15 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <form class="form-horizontal" role="form" id="eventDetailForm">
-                                <input id="event_id" name="detail.event.id" type="hidden" v-model.number="detail.event.id"/>
-                                <input id="event_version" name="detail.event.version" type="hidden" v-model.number="detail.event.version"/>
+                                <input id="event_id" name="detail.event.id" type="hidden"
+                                       v-model.number="detail.event.id"/>
+                                <input id="event_version" name="detail.event.version" type="hidden"
+                                       v-model.number="detail.event.version"/>
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="type_id" class="col-xs-2 control-label no-padding-right">事件类型</label>
+                                            <label for="type_id"
+                                                   class="col-xs-2 control-label no-padding-right">事件类型</label>
                                             <div class="col-xs-10">
                                                 <select id="type_id" name="detail.event.type_id" class="input-sm form-control" v-model.number="detail.event.type_id">
                                                     <template v-for="event_type in detail.event_type_list">
@@ -63,9 +66,9 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="request_user_id" class="col-xs-2 control-label no-padding-right">请求用户</label>
+                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">请求用户</label>
                                             <div class="col-xs-10">
-                                                <input id="request_user_id" name="detail.event.request_user_id" type="text" class="input-sm form-control" v-model.number="detail.event.request_user_id"/>
+                                                <input id="apply_user_id" name="detail.event.apply_user_id" type="text" class="input-sm form-control" v-model.number="detail.event.apply_user_id"/>
                                             </div>
                                         </div>
                                     </div>
@@ -74,9 +77,12 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="engineer_id" class="col-xs-2 control-label no-padding-right">工程师</label>
+                                            <label for="engineer_id"
+                                                   class="col-xs-2 control-label no-padding-right">工程师</label>
                                             <div class="col-xs-10">
-                                                <input id="engineer_id" name="detail.event.engineer_id" type="text" class="input-sm form-control" v-model.number="detail.event.engineer_id"/>
+                                                <input id="engineer_id" name="detail.event.engineer_id" type="text"
+                                                       class="input-sm form-control"
+                                                       v-model.number="detail.event.engineer_id"/>
                                             </div>
                                         </div>
                                     </div>
@@ -85,11 +91,15 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="area_id" class="col-xs-2 control-label no-padding-right">区域</label>
+                                            <label for="area_id"
+                                                   class="col-xs-2 control-label no-padding-right">区域</label>
                                             <div class="col-xs-10">
-                                                <select id="area_id" name="detail.event.area_id" class="input-sm form-control" v-model.number="detail.event.area_id">
+                                                <select id="area_id" name="detail.event.area_id"
+                                                        class="input-sm form-control"
+                                                        v-model.number="detail.event.area_id">
                                                     <template v-for="service_area in detail.service_area_list">
-                                                        <option :value="service_area.id">{{service_area.area_name}}</option>
+                                                        <option :value="service_area.id">{{service_area.area_name}}
+                                                        </option>
                                                     </template>
                                                 </select>
                                             </div>
@@ -100,9 +110,11 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="location" class="col-xs-2 control-label no-padding-right">地点</label>
+                                            <label for="location"
+                                                   class="col-xs-2 control-label no-padding-right">地点</label>
                                             <div class="col-xs-10">
-                                                <input id="location" name="detail.event.location" type="text" class="input-sm form-control" v-model="detail.event.location"/>
+                                                <input id="location" name="detail.event.location" type="text"
+                                                       class="input-sm form-control" v-model="detail.event.location"/>
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +125,9 @@
                                         <div class="form-group">
                                             <label for="description" class="col-xs-2 control-label no-padding-right">事件描述</label>
                                             <div class="col-xs-10">
-                                                <input id="description" name="detail.event.description" type="text" class="input-sm form-control" v-model="detail.event.description"/>
+                                                <input id="description" name="detail.event.description" type="text"
+                                                       class="input-sm form-control"
+                                                       v-model="detail.event.description"/>
                                             </div>
                                         </div>
                                     </div>
@@ -143,7 +157,8 @@
             "detail": {
                 "event": {},
                 "event_type_list": [],
-                "service_area_list": []
+                "service_area_list": [],
+                "apply_user": {}
             }
         },
         mounted: function () {
@@ -154,7 +169,11 @@
                     "aaSorting": [[1, "asc"]],
                     "aoColumns": [
                         {
-                            "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                            "mDataProp": "id",
+                            "bSearchable": false,
+                            "orderable": false,
+                            "sClass": "center",
+                            "width": 50,
                             "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
                             "render": function (data, type, row) {
                                 return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
@@ -190,21 +209,21 @@
                 showMask("加载中...");
                 $("#eventDetailForm").clearValidation();
                 $.ajax({
-                           url: '{%url "ItsmEventApply.DetailData" %}',
-                           type: "POST",
-                           data: {
-                               "id": id
-                           },
-                           success: function (result) {
-                               hideMask();
-                               if (result.success == false) {
-                                   $.msg.error(result.message);
-                                   return;
-                               }
-                               vm.detail = result;
-                               $('#eventDetailDialog').modal(modalOptions);
-                           }
-                       }
+                        url: '{%url "ItsmEventApply.DetailData" %}',
+                        type: "POST",
+                        data: {
+                            "id": id
+                        },
+                        success: function (result) {
+                            hideMask();
+                            if (result.success == false) {
+                                $.msg.error(result.message);
+                                return;
+                            }
+                            vm.detail = result;
+                            $('#eventDetailDialog').modal(modalOptions);
+                        }
+                    }
                 );
             },
             saveEvent: function () {
@@ -250,25 +269,25 @@
                     hideMask();
                 } else {
                     $.ajax({
-                               url: '{%url "ItsmEventApply.Save"%}',
-                               type: "POST",
-                               processData: false,
-                               contentType: 'application/json',
-                               data: JSON.stringify(vm.detail),
-                               success: function (data) {
-                                   hideMask();
-                                   if (data.success == false) {
-                                       $.msg.error(data.message);
-                                       //return;
-                                   }
-                                   else {
-                                       $.msg.show(data.message);
-                                       $('#eventDetailDialog').modal('hide');
-                                       vm.reloadList();
-                                       //return;
-                                   }
-                               }
-                           }
+                            url: '{%url "ItsmEventApply.Save"%}',
+                            type: "POST",
+                            processData: false,
+                            contentType: 'application/json',
+                            data: JSON.stringify(vm.detail),
+                            success: function (data) {
+                                hideMask();
+                                if (data.success == false) {
+                                    $.msg.error(data.message);
+                                    //return;
+                                }
+                                else {
+                                    $.msg.show(data.message);
+                                    $('#eventDetailDialog').modal('hide');
+                                    vm.reloadList();
+                                    //return;
+                                }
+                            }
+                        }
                     );
                 }
             },
@@ -287,20 +306,20 @@
 
                 $.msg.confirm("确认要删除吗？", function () {
                     $.ajax({
-                               url: '{%url "ItsmEventApply.Delete"%}',
-                               type: "POST",
-                               data: {"id_list": id_list},
-                               success: function (data) {
-                                   if (data.success == false) {
-                                       $.msg.error(data.message);
-                                       return;
-                                   }
-                                   else {
-                                       $.msg.show(data.message);
-                                   }
-                                   vm.reloadList();
-                               }
-                           });
+                        url: '{%url "ItsmEventApply.Delete"%}',
+                        type: "POST",
+                        data: {"id_list": id_list},
+                        success: function (data) {
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                            }
+                            vm.reloadList();
+                        }
+                    });
                 });
             }
         }

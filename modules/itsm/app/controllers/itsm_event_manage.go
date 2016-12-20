@@ -68,7 +68,7 @@ func (f *EventManageDetailForm) Valid(validation *revel.Validation) bool {
 
 	validation.Required(f.Event.PriorityId).Message("优先级不能为空！")
 
-	validation.Required(f.Event.RequestUserId).Message("请求用户不能为空！")
+	validation.Required(f.Event.ApplyUserId).Message("提报用户不能为空！")
 
 	validation.Required(f.Event.AreaId).Message("服务区域不能为空！")
 

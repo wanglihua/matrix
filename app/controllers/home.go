@@ -33,17 +33,6 @@ func (c Home) SyncDbPost() revel.Result {
 	model_list = append(model_list, &auth_models.GroupInfo{})
 	model_list = append(model_list, &auth_models.GroupUserInfo{})
 
-	session := c.DbSession
-	user := new(auth_models.UserInfo)
-	user.LoginName = "admin"
-	user.NickName = "管理员"
-	user.Password = core.EncryptPassword("111111")
-	session.Insert(user)
-
-	admin := new(auth_models.AdminInfo)
-	admin.UserId = user.Id
-	session.Insert(admin)
-
 	model_list = append(model_list, &weixin_models.ConfigInfo{})
 	model_list = append(model_list, &weixin_models.MenuInfo{})
 	model_list = append(model_list, &models.ConfigInfo{})
@@ -85,6 +74,17 @@ func (c Home) SyncDbPost() revel.Result {
 
 	err := db.Engine.Sync2(model_list...)
 	core.HandleError(err)
+
+	session := c.DbSession
+	user := new(auth_models.UserInfo)
+	user.LoginName = "admin"
+	user.NickName = "管理员"
+	user.Password = core.EncryptPassword("111111")
+	session.Insert(user)
+
+	admin := new(auth_models.AdminInfo)
+	admin.UserId = user.Id
+	session.Insert(admin)
 
 	//event status insert begin
 

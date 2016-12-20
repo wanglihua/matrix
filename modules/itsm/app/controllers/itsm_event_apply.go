@@ -8,6 +8,7 @@ import (
 
 	"matrix/core"
 	"matrix/modules/itsm/models"
+	auth_models "matrix/modules/auth/models"
 )
 
 type ItsmEventApply struct {
@@ -49,6 +50,7 @@ func (c ItsmEventApply) ListData() revel.Result {
 
 type EventApplyDetailForm struct {
 	Event           models.EventInfo         `json:"event"`
+	ApplyUser       auth_models.UserInfo     `json:"apply_user"`
 	EventTypeList   []models.EventTypeInfo   `json:"event_type_list"`
 	ServiceAreaList []models.ServiceAreaInfo `json:"service_area_list"`
 }
@@ -70,7 +72,7 @@ func (f *EventApplyDetailForm) Valid(validation *revel.Validation) bool {
 
 	validation.Required(f.Event.PriorityId).Message("优先级不能为空！")
 
-	validation.Required(f.Event.RequestUserId).Message("请求用户不能为空！")
+	validation.Required(f.Event.ApplyUserId).Message("提报用户不能为空！")
 
 	validation.Required(f.Event.AreaId).Message("服务区域不能为空！")
 
@@ -104,10 +106,19 @@ func (c ItsmEventApply) DetailData() revel.Result {
 	err = db_session.Find(&service_area_list)
 	core.HandleError(err)
 
+	login_user := core.GetLoginUser(c.Session)
+	login_user_id := login_user.UserId
+	event.ApplyUserId = login_user_id
+
+	var apply_user auth_models.UserInfo
+	_, err = db_session.Id(login_user_id).Get(&apply_user)
+	core.HandleError(err)
+
 	var detail_form EventApplyDetailForm
 	detail_form.Event = event
 	detail_form.EventTypeList = event_type_list
 	detail_form.ServiceAreaList = service_area_list
+	detail_form.ApplyUser = apply_user
 
 	return c.RenderJson(detail_form)
 }
