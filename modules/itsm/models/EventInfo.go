@@ -9,6 +9,7 @@ type EventInfo struct {
 	Code              string                `xorm:"nvarchar(20) notnull index 'code'" json:"code" smith:"verbose_name=编号,min=1,max=10"`
 	TypeId            int64                 `xorm:"bigint notnull index 'type_id'" json:"type_id" smith:"verbose_name=类型"`
 	PriorityId        int64                 `xorm:"bigint notnull 'priority_id'" json:"priority_id" smith:"verbose_name=优先级"`
+	ApplyDepartmentId int64                 `xorm:"bigint notnull 'apply_department_id'" json:"apply_department_id" smith:"verbose_name=提报部门"`
 	ApplyUserId       int64                 `xorm:"bigint notnull index 'apply_user_id'" json:"apply_user_id" smith:"verbose_name=提报用户"`
 	EngineerId        core.NullInt          `xorm:"bigint index 'engineer_id'" json:"engineer_id" smith:"verbose_name=工程师"`
 	AreaId            int64                 `xorm:"bigint notnull index 'area_id'" json:"area_id" smith:"verbose_name=服务区域"`
