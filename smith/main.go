@@ -9,17 +9,15 @@ import (
 	"os"
 )
 
-//var output_base_dir = "/home/wanglihua/code_gen"
-//var output_base_dir = "z:/GoPath/src/Matrix"
-
-var output_base_dir = "/home/wanglihua/gopath/src/matrix"
+//var output_base_dir = "/home/wanglihua/gopath/src/matrix"
+var output_base_dir = "z:/GoPath/src/matrix"
 var import_path = "matrix"
 var module_title_name = entity_models.ModuleTitleName
 var module_lower_case = entity_models.ModuleLowerCase
 var module_chinese = entity_models.ModuleChinese
 var table_prefix = entity_models.TablePrefix
 var model_list = []interface{}{
-	entity_models.EventInfo{},
+	entity_models.EventApplyDepartmentInfo{},
 }
 
 /*

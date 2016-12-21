@@ -35,12 +35,12 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) ListData() revel
 		data_query = *data_query.Asc("id")
 	}
 
-	{{Underscore .entity.EntityCamelCase}}_list := make([]models.{{.entity.EntityTitleName}}, 0, limit)
+	{{Underscore .entity.EntityCamelCase}}_list := make([]models.{{.entity.EntityTitleName}}Info, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&{{Underscore .entity.EntityCamelCase}}_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.{{.entity.EntityTitleName}}))
+	count, err := count_query.Count(new(models.{{.entity.EntityTitleName}}Info))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -50,7 +50,7 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) ListData() revel
 }
 
 type {{.entity.EntityTitleName}}DetailForm struct {
-	{{.entity.EntityTitleName}} models.{{.entity.EntityTitleName}} {{.entity.EntityJsonTag}}
+	{{.entity.EntityTitleName}} models.{{.entity.EntityTitleName}}Info {{.entity.EntityJsonTag}}
 }
 
 func (f *{{.entity.EntityTitleName}}DetailForm) IsCreate() bool {
@@ -68,7 +68,7 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) DetailData() rev
 	var {{Underscore .entity.EntityCamelCase}}_id int64
 	c.Params.Bind(&{{Underscore .entity.EntityCamelCase}}_id, "id")
 
-	var {{Underscore .entity.EntityCamelCase}} models.{{.entity.EntityTitleName}}
+	var {{Underscore .entity.EntityCamelCase}} models.{{.entity.EntityTitleName}}Info
 	if {{Underscore .entity.EntityCamelCase}}_id != 0 {
 		has, err := db_session.Id({{Underscore .entity.EntityCamelCase}}_id).Get(&{{Underscore .entity.EntityCamelCase}})
 		core.HandleError(err)
@@ -120,7 +120,7 @@ func (c {{.entity.ModuleTitleName}}{{.entity.EntityTitleName}}) Delete() revel.R
 	{{Underscore .entity.EntityCamelCase}}_id_list := make([]int64, 0)
 	c.Params.Bind(&{{Underscore .entity.EntityCamelCase}}_id_list, "id_list")
 
-	affected, err := db_session.In("id", {{Underscore .entity.EntityCamelCase}}_id_list).Delete(new(models.{{.entity.EntityTitleName}}))
+	affected, err := db_session.In("id", {{Underscore .entity.EntityCamelCase}}_id_list).Delete(new(models.{{.entity.EntityTitleName}}Info))
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})

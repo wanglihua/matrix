@@ -48,13 +48,17 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="type_id" class="col-xs-2 control-label no-padding-right">事件类型</label>
+                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">事件单号</label>
                                             <div class="col-xs-10">
-                                                <select id="type_id" name="detail.event.type_id" class="input-sm form-control" v-model.number="detail.event.type_id">
-                                                    <template v-for="event_type in detail.event_type_list">
-                                                        <option :value="event_type.id">{{event_type.type_name}}</option>
-                                                    </template>
-                                                </select>
+                                                <input id="event_code" name="detail.event.code" type="text" disabled="disabled" class="input-sm form-control" v-model="detail.event.code" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">提报部门</label>
+                                            <div class="col-xs-10">
+                                                <input id="apply_department_id" name="detail.event.apply_department_id" type="text" class="input-sm form-control" />
                                             </div>
                                         </div>
                                     </div>
@@ -66,13 +70,33 @@
                                             <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">提报用户</label>
                                             <div class="col-xs-10">
                                                 <input id="apply_user_id" name="detail.event.apply_user_id" type="hidden" v-model.number="detail.event.apply_user_id"/>
-                                                <input id="apply_user_name" name="detail.event.apply_user_name" type="text" disabled="disabled" class="input-sm form-control" v-model.number="detail.apply_user.nick_name"/>
+                                                <input id="apply_user_name" name="detail.event.apply_user_name" type="text" disabled="disabled" class="input-sm form-control" v-model="detail.apply_user.nick_name"/>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">联系电话</label>
+                                            <div class="col-xs-10">
+                                                <input id="event_contact" name="detail.event.contact" type="text" class="input-sm form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
 
+                                </div>
                                 <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="type_id" class="col-xs-2 control-label no-padding-right">事件类型</label>
+                                            <div class="col-xs-10">
+                                                <select id="type_id" name="detail.event.type_id" class="input-sm form-control" v-model.number="detail.event.type_id">
+                                                    <template v-for="event_type in detail.event_type_list">
+                                                        <option :value="event_type.id">{{event_type.type_name}}</option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-xs-6">
                                         <div class="form-group">
                                             <label for="engineer_id" class="col-xs-2 control-label no-padding-right">工程师</label>
@@ -101,9 +125,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
                                             <label for="location" class="col-xs-2 control-label no-padding-right">提报地点</label>
@@ -115,11 +136,11 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
-                                            <label for="description" class="col-xs-2 control-label no-padding-right">事件描述</label>
-                                            <div class="col-xs-10">
-                                                <input id="description" name="detail.event.description" type="text" class="input-sm form-control" v-model="detail.event.description"/>
+                                            <label for="description" class="col-xs-1 control-label no-padding-right">事件描述</label>
+                                            <div class="col-xs-11">
+                                                <textarea id="description" name="detail.event.description" rows="5" class="input-sm form-control" v-model="detail.event.description"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -170,7 +191,7 @@
                                 return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                             }
                         },
-                        {"mDataProp": "code", "title": "编号", "bSearchable": true},
+                        {"mDataProp": "code", "title": "单号", "bSearchable": true},
                         {"mDataProp": "type_id", "title": "类型", "bSearchable": false},
                         {"mDataProp": "priority_id", "title": "优先级", "bSearchable": false},
                         {"mDataProp": "request_user_id", "title": "请求用户", "bSearchable": false},

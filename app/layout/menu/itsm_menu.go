@@ -87,6 +87,13 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
         </a>
         <b class="arrow"></b>
     </li>
+    <li id="itsm-eventapplydepartment-menu" class="">
+        <a href="/itsm/event/apply/department">
+            <i class="menu-icon fa fa-caret-right"></i>
+            事件提报部门
+        </a>
+        <b class="arrow"></b>
+    </li>
 	<li id="itsm-engineer-menu" class="">
 		<a href="/itsm/engineer">
 			<i class="menu-icon fa fa-caret-right"></i>

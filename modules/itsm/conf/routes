@@ -97,3 +97,9 @@ POST /itsm/event/manage/data/list         ItsmEventManage.ListData
 POST /itsm/event/manage/data/detail       ItsmEventManage.DetailData
 POST /itsm/event/manage/save              ItsmEventManage.Save
 POST /itsm/event/manage/delete            ItsmEventManage.Delete
+
+GET  /itsm/event/apply/department                    ItsmEventApplyDepartment.Index
+POST /itsm/event/apply/department/data/list          ItsmEventApplyDepartment.ListData
+POST /itsm/event/apply/department/data/detail        ItsmEventApplyDepartment.DetailData
+POST /itsm/event/apply/department/save               ItsmEventApplyDepartment.Save
+POST /itsm/event/apply/department/delete             ItsmEventApplyDepartment.Delete
