@@ -43,15 +43,12 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <form class="form-horizontal" role="form" id="eventDetailForm">
-                                <input id="event_id" name="detail.event.id" type="hidden"
-                                       v-model.number="detail.event.id"/>
-                                <input id="event_version" name="detail.event.version" type="hidden"
-                                       v-model.number="detail.event.version"/>
+                                <input id="event_id" name="detail.event.id" type="hidden" v-model.number="detail.event.id"/>
+                                <input id="event_version" name="detail.event.version" type="hidden" v-model.number="detail.event.version"/>
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="type_id"
-                                                   class="col-xs-2 control-label no-padding-right">事件类型</label>
+                                            <label for="type_id" class="col-xs-2 control-label no-padding-right">事件类型</label>
                                             <div class="col-xs-10">
                                                 <select id="type_id" name="detail.event.type_id" class="input-sm form-control" v-model.number="detail.event.type_id">
                                                     <template v-for="event_type in detail.event_type_list">
@@ -66,9 +63,10 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">请求用户</label>
+                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">提报用户</label>
                                             <div class="col-xs-10">
-                                                <input id="apply_user_id" name="detail.event.apply_user_id" type="text" class="input-sm form-control" v-model.number="detail.event.apply_user_id"/>
+                                                <input id="apply_user_id" name="detail.event.apply_user_id" type="hidden" v-model.number="detail.event.apply_user_id"/>
+                                                <input id="apply_user_name" name="detail.event.apply_user_name" type="text" disabled="disabled" class="input-sm form-control" v-model.number="detail.apply_user.nick_name"/>
                                             </div>
                                         </div>
                                     </div>
@@ -77,12 +75,13 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="engineer_id"
-                                                   class="col-xs-2 control-label no-padding-right">工程师</label>
+                                            <label for="engineer_id" class="col-xs-2 control-label no-padding-right">工程师</label>
                                             <div class="col-xs-10">
-                                                <input id="engineer_id" name="detail.event.engineer_id" type="text"
-                                                       class="input-sm form-control"
-                                                       v-model.number="detail.event.engineer_id"/>
+                                                <select id="engineer_id" name="detail.event.engineer_id" class="input-sm form-control" v-model.number="detail.event.engineer_id">
+                                                    <template v-for="engineer in detail.engineer_list">
+                                                        <option :value="engineer.id">{{engineer.nick_name}}</option>
+                                                    </template>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -91,12 +90,9 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="area_id"
-                                                   class="col-xs-2 control-label no-padding-right">区域</label>
+                                            <label for="area_id" class="col-xs-2 control-label no-padding-right">提报区域</label>
                                             <div class="col-xs-10">
-                                                <select id="area_id" name="detail.event.area_id"
-                                                        class="input-sm form-control"
-                                                        v-model.number="detail.event.area_id">
+                                                <select id="area_id" name="detail.event.area_id" class="input-sm form-control" v-model.number="detail.event.area_id">
                                                     <template v-for="service_area in detail.service_area_list">
                                                         <option :value="service_area.id">{{service_area.area_name}}
                                                         </option>
@@ -110,11 +106,9 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="location"
-                                                   class="col-xs-2 control-label no-padding-right">地点</label>
+                                            <label for="location" class="col-xs-2 control-label no-padding-right">提报地点</label>
                                             <div class="col-xs-10">
-                                                <input id="location" name="detail.event.location" type="text"
-                                                       class="input-sm form-control" v-model="detail.event.location"/>
+                                                <input id="location" name="detail.event.location" type="text" class="input-sm form-control" v-model="detail.event.location"/>
                                             </div>
                                         </div>
                                     </div>
@@ -125,15 +119,11 @@
                                         <div class="form-group">
                                             <label for="description" class="col-xs-2 control-label no-padding-right">事件描述</label>
                                             <div class="col-xs-10">
-                                                <input id="description" name="detail.event.description" type="text"
-                                                       class="input-sm form-control"
-                                                       v-model="detail.event.description"/>
+                                                <input id="description" name="detail.event.description" type="text" class="input-sm form-control" v-model="detail.event.description"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-
                             </form>
                         </div>
                     </div>
@@ -156,9 +146,10 @@
         data: {
             "detail": {
                 "event": {},
+                "apply_user": {},
                 "event_type_list": [],
                 "service_area_list": [],
-                "apply_user": {}
+                "engineer_list": []
             }
         },
         mounted: function () {

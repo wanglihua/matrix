@@ -78,7 +78,7 @@ func (c CodeGenerate) CodeQuery() revel.Result {
 	code_buffer.WriteString(fmt.Sprintf("type %s struct {\n", result_struct_type))
 
 	for _, column := range columns {
-		code_buffer.WriteString(fmt.Sprintf("\t%s %s `xorm:\"'%s'\"`\n", under_score_to_title(column), member_type, column))
+		code_buffer.WriteString(fmt.Sprintf("\t%s %s `xorm:\"'%s'\" json:\"%s\"`\n", under_score_to_title(column), member_type, column, column))
 	}
 	code_buffer.WriteString("}\n\n")
 
@@ -91,7 +91,7 @@ func (c CodeGenerate) CodeQuery() revel.Result {
 	code_buffer.WriteString(fmt.Sprintf("sql := `%s`\n", sql_query))
 
 	if query_type == "find" {
-		code_buffer.WriteString(fmt.Sprintf("_, err := db_session.Sql(sql).Find(&%s_list)\n", result_type))
+		code_buffer.WriteString(fmt.Sprintf("err := db_session.Sql(sql).Find(&%s_list)\n", result_type))
 	}
 	if query_type == "get" {
 		code_buffer.WriteString(fmt.Sprintf("_, err := db_session.Sql(sql).Get(&%s)\n", result_type))
