@@ -1,4 +1,4 @@
-package service
+package engineer_service
 
 import (
 	"fmt"
@@ -8,10 +8,7 @@ import (
 	"strings"
 )
 
-type EngineerService struct {
-}
-
-func (_ EngineerService) GetEngineerGroupIdList(db_session *xorm.Session, engineer_id int64) []int64 {
+func GetEngineerGroupIdList(db_session *xorm.Session, engineer_id int64) []int64 {
 	var group_list = make([]struct {
 		GroupId int64 `xorm:"'group_id'"`
 	}, 0)
@@ -26,7 +23,7 @@ func (_ EngineerService) GetEngineerGroupIdList(db_session *xorm.Session, engine
 	return engineer_group_id_list
 }
 
-func (_ EngineerService) GetEngineerServiceAreaIdList(db_session *xorm.Session, engineer_id int64) []int64 {
+func GetEngineerServiceAreaIdList(db_session *xorm.Session, engineer_id int64) []int64 {
 	var area_list = make([]struct {
 		ServiceAreaId int64 `xorm:"'service_area_id'"`
 	}, 0)
@@ -41,7 +38,7 @@ func (_ EngineerService) GetEngineerServiceAreaIdList(db_session *xorm.Session, 
 	return area_id_list
 }
 
-func (_ EngineerService) GetEngineerEventTypeIdList(db_session *xorm.Session, engineer_id int64) []int64 {
+func GetEngineerEventTypeIdList(db_session *xorm.Session, engineer_id int64) []int64 {
 	var event_type_list = make([]struct {
 		EventTypeId int64 `xorm:"'event_type_id'"`
 	}, 0)
@@ -56,7 +53,7 @@ func (_ EngineerService) GetEngineerEventTypeIdList(db_session *xorm.Session, en
 	return event_type_id_list
 }
 
-func (_ EngineerService) GetEngineerIsManager(db_session *xorm.Session, engineer_id int64) int {
+func GetEngineerIsManager(db_session *xorm.Session, engineer_id int64) int {
 	var manager_count struct {
 		ManagerCount int `xorm:"'manager_count'"`
 	}
@@ -70,7 +67,7 @@ func (_ EngineerService) GetEngineerIsManager(db_session *xorm.Session, engineer
 	}
 }
 
-func (_ EngineerService) GetIntListInThisNotInThat(this_list []int64, that_list []int64) []int64 {
+func GetIntListInThisNotInThat(this_list []int64, that_list []int64) []int64 {
 	result_list := make([]int64, 0)
 	for _, this_int := range this_list {
 		not_in_that := true
@@ -86,7 +83,7 @@ func (_ EngineerService) GetIntListInThisNotInThat(this_list []int64, that_list 
 	return result_list
 }
 
-func (_ EngineerService) AddEngineerToGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
+func AddEngineerToGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
 	if group_id_list == nil || len(group_id_list) == 0 {
 		return
 	}
@@ -100,7 +97,7 @@ func (_ EngineerService) AddEngineerToGroups(db_session *xorm.Session, engineer_
 	db_session.Insert(&egineer_group_setting_list)
 }
 
-func (_ EngineerService) RemoveEngineerFromGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
+func RemoveEngineerFromGroups(db_session *xorm.Session, engineer_id int64, group_id_list []int64) {
 	if group_id_list == nil || len(group_id_list) == 0 {
 		return
 	}
@@ -115,7 +112,7 @@ DELETE FROM itsm_engineer_group_setting WHERE engineer_id = ? AND group_id IN (%
 	db_session.Exec(sql, engineer_id)
 }
 
-func (_ EngineerService) AddEngineerToServiceAreas(db_session *xorm.Session, engineer_id int64, service_area_id_list []int64) {
+func AddEngineerToServiceAreas(db_session *xorm.Session, engineer_id int64, service_area_id_list []int64) {
 	if service_area_id_list == nil || len(service_area_id_list) == 0 {
 		return
 	}
@@ -129,7 +126,7 @@ func (_ EngineerService) AddEngineerToServiceAreas(db_session *xorm.Session, eng
 	db_session.Insert(&egineer_service_area_list)
 }
 
-func (_ EngineerService) RemoveEngineerFromServiceAreas(db_session *xorm.Session, engineer_id int64, service_area_id_list []int64) {
+func RemoveEngineerFromServiceAreas(db_session *xorm.Session, engineer_id int64, service_area_id_list []int64) {
 	if service_area_id_list == nil || len(service_area_id_list) == 0 {
 		return
 	}
@@ -144,7 +141,7 @@ DELETE FROM itsm_engineer_service_area WHERE engineer_id = ? AND area_id IN (%s)
 	db_session.Exec(sql, engineer_id)
 }
 
-func (_ EngineerService) AddEngineerToEventTypes(db_session *xorm.Session, engineer_id int64, event_type_id_list []int64) {
+func AddEngineerToEventTypes(db_session *xorm.Session, engineer_id int64, event_type_id_list []int64) {
 	if event_type_id_list == nil || len(event_type_id_list) == 0 {
 		return
 	}
@@ -158,7 +155,7 @@ func (_ EngineerService) AddEngineerToEventTypes(db_session *xorm.Session, engin
 	db_session.Insert(&egineer_event_type_list)
 }
 
-func (_ EngineerService) RemoveEngineerFromEventTypes(db_session *xorm.Session, engineer_id int64, event_type_id_list []int64) {
+func RemoveEngineerFromEventTypes(db_session *xorm.Session, engineer_id int64, event_type_id_list []int64) {
 	if event_type_id_list == nil || len(event_type_id_list) == 0 {
 		return
 	}
@@ -173,7 +170,7 @@ DELETE FROM itsm_engineer_event_type WHERE engineer_id = ? AND type_id IN (%s);
 	db_session.Exec(sql, engineer_id)
 }
 
-func (_ EngineerService) IsEngineerManager(db_session *xorm.Session, engineer_id int64) bool {
+func IsEngineerManager(db_session *xorm.Session, engineer_id int64) bool {
 	sql := `
 SELECT count(*) as count FROM itsm_engineer_manager WHERE engineer_id = ?
 `
@@ -185,13 +182,13 @@ SELECT count(*) as count FROM itsm_engineer_manager WHERE engineer_id = ?
 	return count_result.Count != 0
 }
 
-func (_ EngineerService) AddEngineerToManager(db_session *xorm.Session, engineer_id int64) {
+func AddEngineerToManager(db_session *xorm.Session, engineer_id int64) {
 	var engineer_manager itsm_models.EngineerManagerInfo
 	engineer_manager.EngineerId = engineer_id
 	db_session.Insert(&engineer_manager)
 }
 
-func (_ EngineerService) RemoveEngineerFromManager(db_session *xorm.Session, engineer_id int64) {
+func RemoveEngineerFromManager(db_session *xorm.Session, engineer_id int64) {
 	sql := `
 DELETE FROM itsm_engineer_manager WHERE engineer_id = ?
 `
