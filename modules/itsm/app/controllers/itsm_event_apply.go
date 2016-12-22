@@ -49,16 +49,17 @@ func (c ItsmEventApply) ListData() revel.Result {
 }
 
 type EngineerSelectItem struct {
-	Id int64 `xorm:"'id'" json:"id"`
+	Id       int64 `xorm:"'id'" json:"id"`
 	NickName string `xorm:"'nick_name'" json:"nick_name"`
 }
 
 type EventApplyDetailForm struct {
-	Event           models.EventInfo         `json:"event"`
-	ApplyUser       auth_models.UserInfo     `json:"apply_user"`
-	EventTypeList   []models.EventTypeInfo   `json:"event_type_list"`
-	ServiceAreaList []models.ServiceAreaInfo `json:"service_area_list"`
-	EngineerList    []EngineerSelectItem     `json:"engineer_list"`
+	Event               models.EventInfo                  `json:"event"`
+	ApplyUser           auth_models.UserInfo              `json:"apply_user"`
+	EventTypeList       []models.EventTypeInfo            `json:"event_type_list"`
+	ServiceAreaList     []models.ServiceAreaInfo          `json:"service_area_list"`
+	EngineerList        []EngineerSelectItem              `json:"engineer_list"`
+	ApplyDepartmentList []models.EventApplyDepartmentInfo `json:"apply_department_list"`
 }
 
 func (f *EventApplyDetailForm) IsCreate() bool {
@@ -120,9 +121,13 @@ func (c ItsmEventApply) DetailData() revel.Result {
 	_, err = db_session.Id(login_user_id).Get(&apply_user)
 	core.HandleError(err)
 
-	var engineer_select_item_list = make([]EngineerSelectItem,0)
+	var engineer_select_item_list = make([]EngineerSelectItem, 0)
 	sql := `SELECT u.id, u.nick_name from auth_user u WHERE u.id IN (SELECT e.user_id from itsm_engineer e)`
 	err = db_session.Sql(sql).Find(&engineer_select_item_list)
+	core.HandleError(err)
+
+	var apply_department_list = make([]models.EventApplyDepartmentInfo, 0)
+	err = db_session.Find(&apply_department_list);
 	core.HandleError(err)
 
 	var detail_form EventApplyDetailForm
@@ -131,6 +136,7 @@ func (c ItsmEventApply) DetailData() revel.Result {
 	detail_form.ServiceAreaList = service_area_list
 	detail_form.ApplyUser = apply_user
 	detail_form.EngineerList = engineer_select_item_list
+	detail_form.ApplyDepartmentList = apply_department_list
 
 	return c.RenderJson(detail_form)
 }

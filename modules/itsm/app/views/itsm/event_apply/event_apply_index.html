@@ -58,7 +58,11 @@
                                         <div class="form-group">
                                             <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">提报部门</label>
                                             <div class="col-xs-10">
-                                                <input id="apply_department_id" name="detail.event.apply_department_id" type="text" class="input-sm form-control" />
+                                                <select id="apply_department_id" name="detail.event.apply_department_id" class="input-sm form-control"  v-model.number="detail.event.apply_department_id">
+                                                    <template v-for="dept in detail.apply_department_list">
+                                                        <option :value="dept.id">{{dept.name}}</option>
+                                                    </template>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

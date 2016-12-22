@@ -33,7 +33,7 @@
        </div>
    </div>
     <div class="modal fade" id="eventApplyDepartmentDetailDialog">
-        <div class="modal-dialog" style="width: 680px;">
+        <div class="modal-dialog" style="width: 580px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
@@ -46,7 +46,7 @@
                                 <input id="event_apply_department_id" name="detail.apply_department.id" type="hidden" v-model.number="detail.apply_department.id"/>
                                 <input id="event_apply_department_version" name="detail.apply_department.version" type="hidden" v-model.number="detail.apply_department.version"/>
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
                                             <div class="col-xs-10">
@@ -57,11 +57,11 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="description" class="col-xs-2 control-label no-padding-right">描述</label>
                                             <div class="col-xs-10">
-                                                <input id="description" name="detail.apply_department.description" type="text" class="input-sm form-control" v-model="detail.apply_department.description"/>
+                                                <textarea id="description" name="detail.apply_department.description" rows="2" class="input-sm form-control" v-model="detail.apply_department.description"></textarea>
                                             </div>
                                         </div>
                                     </div>
