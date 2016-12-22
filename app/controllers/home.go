@@ -28,6 +28,9 @@ func (c Home) SyncDb() revel.Result {
 func (c Home) SyncDbPost() revel.Result {
 
 	model_list := make([]interface{}, 0)
+
+	model_list = append(model_list, &models.EntityCodeInfo{})
+
 	model_list = append(model_list, &auth_models.UserInfo{})
 	model_list = append(model_list, &auth_models.AdminInfo{})
 	model_list = append(model_list, &auth_models.GroupInfo{})

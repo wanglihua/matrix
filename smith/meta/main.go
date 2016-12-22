@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"matrix/core"
 	entity_models "matrix/modules/itsm/models"
+	"matrix/app/models"
 	smith_core "matrix/smith/core"
 	"os"
 	"path"
@@ -16,7 +17,7 @@ var module_lower_case = entity_models.ModuleLowerCase
 var module_chinese = entity_models.ModuleChinese
 var table_prefix = entity_models.TablePrefix
 var model_list = []interface{}{
-	entity_models.EntityCodeInfo{},
+	models.ConfigInfo{},
 }
 
 func main() {
