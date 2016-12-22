@@ -82,7 +82,7 @@
                                         <div class="form-group">
                                             <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">联系电话</label>
                                             <div class="col-xs-10">
-                                                <input id="event_contact" name="detail.event.contact" type="text" class="input-sm form-control" />
+                                                <input id="event_contact" name="detail.event.contact" type="text" class="input-sm form-control" v-model="detail.event.contact"/>
                                             </div>
                                         </div>
                                     </div>
@@ -197,16 +197,10 @@
                         },
                         {"mDataProp": "code", "title": "单号", "bSearchable": true},
                         {"mDataProp": "type_id", "title": "类型", "bSearchable": false},
-                        {"mDataProp": "priority_id", "title": "优先级", "bSearchable": false},
-                        {"mDataProp": "request_user_id", "title": "请求用户", "bSearchable": false},
-                        {"mDataProp": "engineer_id", "title": "工程师", "bSearchable": false},
-                        {"mDataProp": "area_id", "title": "服务区域", "bSearchable": false},
-                        {"mDataProp": "location", "title": "地点", "bSearchable": true},
+                        {"mDataProp": "create_time", "title": "提报时间", "bSearchable": false, "width": 120},
                         {"mDataProp": "description", "title": "描述", "bSearchable": true},
-                        {"mDataProp": "solution", "title": "解决方案", "bSearchable": true},
-                        {"mDataProp": "src_event_id", "title": "源事件", "bSearchable": false},
+                        {"mDataProp": "engineer_id", "title": "工程师", "bSearchable": false},
                         {"mDataProp": "status_id", "title": "状态", "bSearchable": false},
-                        {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
                         {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                     ]
                 }

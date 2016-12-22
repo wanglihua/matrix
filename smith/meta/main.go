@@ -16,7 +16,7 @@ var module_lower_case = entity_models.ModuleLowerCase
 var module_chinese = entity_models.ModuleChinese
 var table_prefix = entity_models.TablePrefix
 var model_list = []interface{}{
-	entity_models.EventApplyDepartmentInfo{},
+	entity_models.EntityCodeInfo{},
 }
 
 func main() {

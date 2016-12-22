@@ -11,6 +11,7 @@ type EventInfo struct {
 	PriorityId        int64                 `xorm:"bigint notnull 'priority_id'" json:"priority_id" smith:"verbose_name=优先级"`
 	ApplyDepartmentId int64                 `xorm:"bigint notnull 'apply_department_id'" json:"apply_department_id" smith:"verbose_name=提报部门"`
 	ApplyUserId       int64                 `xorm:"bigint notnull index 'apply_user_id'" json:"apply_user_id" smith:"verbose_name=提报用户"`
+	Contact           core.NullString       `xorm:"nvarchar(50) 'contact'" json:"contact" smith:"verbose_name=联系电话"`
 	EngineerId        core.NullInt          `xorm:"bigint index 'engineer_id'" json:"engineer_id" smith:"verbose_name=工程师"`
 	AreaId            int64                 `xorm:"bigint notnull index 'area_id'" json:"area_id" smith:"verbose_name=服务区域"`
 	EquipmentTypeId   core.NullInt          `xorm:"bigint null index 'equipment_type_id'" json:"equipment_type_id" smith:"verbose_name=设备类型"`
