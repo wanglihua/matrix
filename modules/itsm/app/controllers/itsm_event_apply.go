@@ -140,7 +140,7 @@ func (c ItsmEventApply) DetailData() revel.Result {
 	core.HandleError(err)
 
 	var apply_department_list = make([]models.EventApplyDepartmentInfo, 0)
-	err = db_session.Find(&apply_department_list);
+	err = db_session.Find(&apply_department_list)
 	core.HandleError(err)
 
 	var detail_form EventApplyDetailForm
@@ -212,7 +212,17 @@ func (c ItsmEventApply) Delete() revel.Result {
 	event_id_list := make([]int64, 0)
 	c.Params.Bind(&event_id_list, "id_list")
 
-	affected, err := db_session.In("id", event_id_list).Delete(new(models.EventInfo))
+	var event models.EventInfo
+
+	//只有提报状态的才可以删除
+	//SELECT count(*) FROM itsm_event WHERE id IN (1, 2, 3, 4) AND status_id <> 1000
+	count, err := db_session.In("id", event_id_list).Where("status_id <> ?", models.Event_Status_TBZ_Id).Count(&event)
+	core.HandleError(err)
+	if count != 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "数据删除失败，不能删除非提报状态的事件!"})
+	}
+
+	affected, err := db_session.In("id", event_id_list).Delete(&event)
 	core.HandleError(err)
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
