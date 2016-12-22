@@ -36,18 +36,18 @@ func (c ItsmEventApply) ListData() revel.Result {
 	/*
 		SELECT evt.*, egr.*, egru.*, es.* FROM itsm_event evt
 		  INNER JOIN itsm_event_type et on evt.type_id = et.id
-		  INNER JOIN itsm_engineer egr on evt.engineer_id = egr.id
-		  INNER JOIN auth_user egru on egr.user_id = egru.id
 		  INNER JOIN itsm_event_status es on evt.status_id = es.id
+		  LEFT OUTER JOIN itsm_engineer egr on evt.engineer_id = egr.id
+		  LEFT OUTER JOIN auth_user egru on egr.user_id = egru.id
 	 */
 
 	query := db_session.
 	Select("evt.*, et.*, egr.*, egru.*, es.*").
 		Table("itsm_event").Alias("evt").
 		Join("inner", []string{"itsm_event_type", "et"}, "evt.type_id = et.id").
-		Join("inner", []string{"itsm_engineer", "egr"}, "evt.engineer_id = egr.id").
-		Join("inner", []string{"auth_user", "egru"}, "egr.user_id = egru.id").
 		Join("inner", []string{"itsm_event_status", "es"}, "evt.status_id = es.id").
+		Join("left outer", []string{"itsm_engineer", "egr"}, "evt.engineer_id = egr.id").
+		Join("left outer", []string{"auth_user", "egru"}, "egr.user_id = egru.id").
 		Where(filter)
 
 	//query extra filter here

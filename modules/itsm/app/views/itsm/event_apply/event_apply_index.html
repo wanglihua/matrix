@@ -200,7 +200,12 @@
                         {"mDataProp": "evt.code", "title": "单号", "bSearchable": true, "width": 70},
                         {"mDataProp": "evt.create_time", "title": "提报时间", "bSearchable": false, "width": 120},
                         {"mDataProp": "et.type_name", "title": "类型", "bSearchable": false, "width": 120},
-                        {"mDataProp": "evt.description", "title": "描述", "bSearchable": true},
+                        {
+                            "mDataProp": "evt.description", "title": "描述", "bSearchable": true,
+                            "render": function (data, type, row) {
+                                return '<div style="width: 380px; overflow: hidden; text-overflow:ellipsis; white-space: nowrap;">' + data + '</div>';
+                            }
+                        },
                         {"mDataProp": "egru.nick_name", "title": "工程师", "bSearchable": false, "width": 90},
                         {"mDataProp": "es.status_name", "title": "状态", "bSearchable": false, "width": 70},
                         {"mDataProp": "evt.update_time", "title": "修改时间", "bSearchable": false, "width": 120}
