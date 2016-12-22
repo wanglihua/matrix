@@ -9,6 +9,8 @@ import (
 	"matrix/core"
 	"matrix/modules/itsm/models"
 	auth_models "matrix/modules/auth/models"
+	"matrix/modules/itsm/service/entity_code_service"
+	"fmt"
 )
 
 type ItsmEventApply struct {
@@ -19,11 +21,34 @@ func (c ItsmEventApply) Index() revel.Result {
 	return c.RenderTemplate("itsm/event_apply/event_apply_index.html")
 }
 
+type  EventView struct {
+	models.EventInfo        `xorm:"extends" json:"evt"`
+	models.EventTypeInfo    `xorm:"extends" json:"et"`
+	models.EngineerInfo     `xorm:"extends" json:"egr"`
+	auth_models.UserInfo    `xorm:"extends" json:"egru"`
+	models.EventStatusInfo  `xorm:"extends" json:"es"`
+}
+
 func (c ItsmEventApply) ListData() revel.Result {
 	db_session := c.DbSession
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
-	query := db_session.Where(filter)
+	/*
+		SELECT evt.*, egr.*, egru.*, es.* FROM itsm_event evt
+		  INNER JOIN itsm_event_type et on evt.type_id = et.id
+		  INNER JOIN itsm_engineer egr on evt.engineer_id = egr.id
+		  INNER JOIN auth_user egru on egr.user_id = egru.id
+		  INNER JOIN itsm_event_status es on evt.status_id = es.id
+	 */
+
+	query := db_session.
+	Select("evt.*, et.*, egr.*, egru.*, es.*").
+		Table("itsm_event").Alias("evt").
+		Join("inner", []string{"itsm_event_type", "et"}, "evt.type_id = et.id").
+		Join("inner", []string{"itsm_engineer", "egr"}, "evt.engineer_id = egr.id").
+		Join("inner", []string{"auth_user", "egru"}, "egr.user_id = egru.id").
+		Join("inner", []string{"itsm_event_status", "es"}, "evt.status_id = es.id").
+		Where(filter)
 
 	//query extra filter here
 
@@ -31,15 +56,15 @@ func (c ItsmEventApply) ListData() revel.Result {
 	if order != "" {
 		data_query = *data_query.OrderBy(order)
 	} else {
-		data_query = *data_query.Asc("id")
+		data_query = *data_query.Asc("evt.id")
 	}
 
-	event_list := make([]models.EventInfo, 0, limit)
+	event_list := make([]EventView, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&event_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.EventInfo))
+	count, err := count_query.Count(new(EventView))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -67,25 +92,13 @@ func (f *EventApplyDetailForm) IsCreate() bool {
 }
 
 func (f *EventApplyDetailForm) Valid(validation *revel.Validation) bool {
-	validation.Required(f.Event.Code).Message("编号不能为空！")
-	if f.Event.Code != "" {
-		validation.MinSize(f.Event.Code, 1).Message("编号长度不能小于1！")
-	}
-	if f.Event.Code != "" {
-		validation.MaxSize(f.Event.Code, 10).Message("编号长度不能大于10！")
-	}
-
 	validation.Required(f.Event.TypeId).Message("类型不能为空！")
-
-	validation.Required(f.Event.PriorityId).Message("优先级不能为空！")
-
+	validation.Required(f.Event.ApplyDepartmentId).Message("提报部门不能为空！")
 	validation.Required(f.Event.ApplyUserId).Message("提报用户不能为空！")
-
+	validation.Required(f.Event.Contact).Message("联系电话不能为空！")
 	validation.Required(f.Event.AreaId).Message("服务区域不能为空！")
-
 	validation.Required(f.Event.Location).Message("地点不能为空！")
-
-	validation.Required(f.Event.StatusId).Message("状态不能为空！")
+	validation.Required(f.Event.Description).Message("事件描述不能为空！")
 
 	return validation.HasErrors() == false
 }
@@ -152,11 +165,18 @@ func (c ItsmEventApply) Save() revel.Result {
 		return c.RenderJson(core.JsonResult{Success: false, Message: c.GetValidationErrorMessage()})
 	}
 
+	login_user := core.GetLoginUser(c.Session)
+	login_user_id := login_user.UserId
+
 	event_in_ui := detail_form.Event
 
 	var affected int64
 	if detail_form.IsCreate() {
-		//todo: 按规则生成 code
+		//按规则生成 code
+		serial := entity_code_service.GetNextSerial(db_session, "event")
+		event_in_ui.Code = fmt.Sprint(serial)
+		event_in_ui.StatusId = models.Event_Status_TBZ_Id //提报中
+
 		affected, err = db_session.Insert(&event_in_ui)
 		core.HandleError(err)
 	} else {
@@ -164,7 +184,15 @@ func (c ItsmEventApply) Save() revel.Result {
 		_, err := db_session.Id(event_in_ui.Id).Get(&event_in_db)
 		core.HandleError(err)
 
-		//todo: 更新数据库各字段
+		//更新数据库各字段
+		event_in_db.Code = event_in_ui.Code
+		event_in_db.ApplyDepartmentId = event_in_ui.ApplyDepartmentId
+		event_in_db.ApplyUserId = login_user_id
+		event_in_db.Contact = event_in_ui.Contact
+		event_in_db.TypeId = event_in_ui.TypeId
+		event_in_db.EngineerId = event_in_ui.EngineerId
+		event_in_db.AreaId = event_in_ui.AreaId
+		event_in_db.Location = event_in_ui.Location
 		event_in_db.Description = event_in_ui.Description
 
 		affected, err = db_session.Id(event_in_ui.Id).Update(&event_in_db)

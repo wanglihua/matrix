@@ -11,9 +11,9 @@ func GetNextSerial(db_session *xorm.Session, entity string) int64 {
 	has, err := db_session.Id(entity).Get(&entity_code)
 	core.HandleError(err)
 
-	var serial int64 = 1
+	var serial int64 = 100001 //起始是 100001，6 位数
 	if has == false {
-		_, err = db_session.Exec("INSERT INTO sys_entity_code (entity, serial) VALUES (?, 1)", entity)
+		_, err = db_session.Exec("INSERT INTO sys_entity_code (entity, serial) VALUES (?, 100001)", entity)
 		core.HandleError(err)
 	} else {
 		_, err = db_session.Exec("UPDATE sys_entity_code SET serial = serial + 1 WHERE entity = ?", entity)

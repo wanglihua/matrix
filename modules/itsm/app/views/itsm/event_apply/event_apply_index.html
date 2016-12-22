@@ -48,17 +48,18 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">事件单号</label>
+                                            <label for="event_code" class="col-xs-2 control-label no-padding-right">事件单号</label>
                                             <div class="col-xs-10">
-                                                <input id="event_code" name="detail.event.code" type="text" disabled="disabled" class="input-sm form-control" v-model="detail.event.code" />
+                                                <input name="detail.event.code" type="hidden" v-model="detail.event.code"/>
+                                                <input id="event_code" name="detail.event.code" type="text" disabled="disabled" class="input-sm form-control" v-model="detail.event.code"/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">提报部门</label>
+                                            <label for="apply_department_id" class="col-xs-2 control-label no-padding-right">提报部门</label>
                                             <div class="col-xs-10">
-                                                <select id="apply_department_id" name="detail.event.apply_department_id" class="input-sm form-control"  v-model.number="detail.event.apply_department_id">
+                                                <select id="apply_department_id" name="detail.event.apply_department_id" class="input-sm form-control" v-model.number="detail.event.apply_department_id">
                                                     <template v-for="dept in detail.apply_department_list">
                                                         <option :value="dept.id">{{dept.name}}</option>
                                                     </template>
@@ -71,7 +72,7 @@
                                 <div class="row">
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">提报用户</label>
+                                            <label for="apply_user_name" class="col-xs-2 control-label no-padding-right">提报用户</label>
                                             <div class="col-xs-10">
                                                 <input id="apply_user_id" name="detail.event.apply_user_id" type="hidden" v-model.number="detail.event.apply_user_id"/>
                                                 <input id="apply_user_name" name="detail.event.apply_user_name" type="text" disabled="disabled" class="input-sm form-control" v-model="detail.apply_user.nick_name"/>
@@ -80,7 +81,7 @@
                                     </div>
                                     <div class="col-xs-6">
                                         <div class="form-group">
-                                            <label for="apply_user_id" class="col-xs-2 control-label no-padding-right">联系电话</label>
+                                            <label for="event_contact" class="col-xs-2 control-label no-padding-right">联系电话</label>
                                             <div class="col-xs-10">
                                                 <input id="event_contact" name="detail.event.contact" type="text" class="input-sm form-control" v-model="detail.event.contact"/>
                                             </div>
@@ -106,6 +107,7 @@
                                             <label for="engineer_id" class="col-xs-2 control-label no-padding-right">工程师</label>
                                             <div class="col-xs-10">
                                                 <select id="engineer_id" name="detail.event.engineer_id" class="input-sm form-control" v-model.number="detail.event.engineer_id">
+                                                    <option value=""></option>
                                                     <template v-for="engineer in detail.engineer_list">
                                                         <option :value="engineer.id">{{engineer.nick_name}}</option>
                                                     </template>
@@ -182,10 +184,10 @@
                 '#eventList',
                 {
                     "sAjaxSource": '{%url "ItsmEventApply.ListData"%}',
-                    "aaSorting": [[1, "asc"]],
+                    "aaSorting": [[1, "desc"]],
                     "aoColumns": [
                         {
-                            "mDataProp": "id",
+                            "mDataProp": "evt.id",
                             "bSearchable": false,
                             "orderable": false,
                             "sClass": "center",
@@ -195,13 +197,13 @@
                                 return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                             }
                         },
-                        {"mDataProp": "code", "title": "单号", "bSearchable": true},
-                        {"mDataProp": "type_id", "title": "类型", "bSearchable": false},
-                        {"mDataProp": "create_time", "title": "提报时间", "bSearchable": false, "width": 120},
-                        {"mDataProp": "description", "title": "描述", "bSearchable": true},
-                        {"mDataProp": "engineer_id", "title": "工程师", "bSearchable": false},
-                        {"mDataProp": "status_id", "title": "状态", "bSearchable": false},
-                        {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                        {"mDataProp": "evt.code", "title": "单号", "bSearchable": true, "width": 70},
+                        {"mDataProp": "evt.create_time", "title": "提报时间", "bSearchable": false, "width": 120},
+                        {"mDataProp": "et.type_name", "title": "类型", "bSearchable": false, "width": 120},
+                        {"mDataProp": "evt.description", "title": "描述", "bSearchable": true},
+                        {"mDataProp": "egru.nick_name", "title": "工程师", "bSearchable": false, "width": 90},
+                        {"mDataProp": "es.status_name", "title": "状态", "bSearchable": false, "width": 70},
+                        {"mDataProp": "evt.update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                     ]
                 }
             );
@@ -240,17 +242,17 @@
                 showMask("提交中...");
                 var form = $("#eventDetailForm");
                 var valid = validate(form, {
-                    'detail.event.code': {
-                        required: true, minlength: 1, maxlength: 10
-                    },
                     'detail.event.type_id': {
                         required: true, digits: true
                     },
-                    'detail.event.priority_id': {
+                    'detail.event.apply_department_id': {
                         required: true, digits: true
                     },
                     'detail.event.request_user_id': {
                         required: true, digits: true
+                    },
+                    'detail.event.contact': {
+                        required: true
                     },
                     'detail.event.engineer_id': {
                         required: false, digits: true
@@ -262,16 +264,7 @@
                         required: true
                     },
                     'detail.event.description': {
-                        required: false
-                    },
-                    'detail.event.solution': {
-                        required: false
-                    },
-                    'detail.event.src_event_id': {
-                        required: false, digits: true
-                    },
-                    'detail.event.status_id': {
-                        required: true, digits: true
+                        required: true
                     }
                 });
 
