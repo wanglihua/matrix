@@ -17,6 +17,12 @@ type ItsmEventGrab struct {
 }
 
 func (c ItsmEventGrab) Index() revel.Result {
+	db_session := c.DbSession
+	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
+	if engineer_id == 0 {
+		return c.NotFound("您不是工程师，不能抢单！")
+	}
+
 	return c.RenderTemplate("itsm/event_grab/event_grab_index.html")
 }
 
@@ -28,6 +34,11 @@ type EventGrabView struct {
 
 func (c ItsmEventGrab) ListData() revel.Result {
 	db_session := c.DbSession
+
+	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
+	if engineer_id == 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "您不是工程师，不能抢单！"})
+	}
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	/*
@@ -80,6 +91,11 @@ type EventGrabDetailForm struct {
 func (c ItsmEventGrab) DetailData() revel.Result {
 	db_session := c.DbSession
 
+	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
+	if engineer_id == 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "您不是工程师，不能抢单！"})
+	}
+
 	var event_id int64
 	c.Params.Bind(&event_id, "id")
 
@@ -124,7 +140,6 @@ func (c ItsmEventGrab) Save() revel.Result {
 	core.HandleError(err)
 
 	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
-
 	if engineer_id == 0 {
 		return c.RenderJson(core.JsonResult{Success: false, Message: "您不是工程师，抢单失败！"})
 	}

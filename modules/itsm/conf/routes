@@ -95,7 +95,6 @@ GET  /itsm/event/process                  ItsmEventProcess.Index
 POST /itsm/event/process/data/list        ItsmEventProcess.ListData
 POST /itsm/event/process/data/detail      ItsmEventProcess.DetailData
 POST /itsm/event/process/save             ItsmEventProcess.Save
-POST /itsm/event/process/delete           ItsmEventProcess.Delete
 
 GET  /itsm/event/manage                   ItsmEventManage.Index
 POST /itsm/event/manage/data/list         ItsmEventManage.ListData

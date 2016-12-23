@@ -8,6 +8,7 @@ import (
 
 	"matrix/core"
 	"matrix/modules/itsm/models"
+	"matrix/modules/itsm/service/engineer_service"
 )
 
 type ItsmEventProcess struct {
@@ -15,6 +16,12 @@ type ItsmEventProcess struct {
 }
 
 func (c ItsmEventProcess) Index() revel.Result {
+	db_session := c.DbSession
+	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
+	if engineer_id == 0 {
+		return c.NotFound("您不是工程师，不能处理事件！")
+	}
+
 	return c.RenderTemplate("itsm/event_process/event_process_index.html")
 }
 
@@ -23,6 +30,11 @@ func (c ItsmEventProcess) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	query := db_session.Where(filter)
+
+	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
+	if engineer_id == 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "您不是工程师，不能处理事件！"})
+	}
 
 	//query extra filter here
 
@@ -82,6 +94,11 @@ func (f *EventProcessDetailForm) Valid(validation *revel.Validation) bool {
 func (c ItsmEventProcess) DetailData() revel.Result {
 	db_session := c.DbSession
 
+	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
+	if engineer_id == 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "您不是工程师，不能处理事件！"})
+	}
+
 	var event_id int64
 	c.Params.Bind(&event_id, "id")
 
@@ -102,6 +119,11 @@ func (c ItsmEventProcess) DetailData() revel.Result {
 
 func (c ItsmEventProcess) Save() revel.Result {
 	db_session := c.DbSession
+
+	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
+	if engineer_id == 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "您不是工程师，不能处理事件！"})
+	}
 
 	var detail_form EventProcessDetailForm
 	err := json.Unmarshal(c.GetRequestBody(), &detail_form)
@@ -127,16 +149,4 @@ func (c ItsmEventProcess) Save() revel.Result {
 	}
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
-}
-
-func (c ItsmEventProcess) Delete() revel.Result {
-	db_session := c.DbSession
-
-	event_id_list := make([]int64, 0)
-	c.Params.Bind(&event_id_list, "id_list")
-
-	affected, err := db_session.In("id", event_id_list).Delete(new(models.EventInfo))
-	core.HandleError(err)
-
-	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
