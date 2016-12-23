@@ -1,4 +1,6 @@
-* event grab, event log EventLogInfo中去掉 修改时间 和 Version
+* 事件提报中添加 按状态查询， 添加 各个状态的分颜色显示
+
+* 我要抢单 中加入实时刷新
 
 * web session 过期时间滑动
 * 工作日志 workdate的可空字段的处理方式，不仅仅是日期类的可空，所以数据类型都要考虑可空的问题
