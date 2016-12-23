@@ -52,6 +52,11 @@ func (c ItsmEventApply) ListData() revel.Result {
 
 	//query extra filter here
 
+	login_user := core.GetLoginUser(c.Session)
+	login_user_id := login_user.UserId
+	event_cols := models.EventCols
+	query = query.Where(fmt.Sprintf("evt.%s = ?", event_cols.ApplyUserId), login_user_id)
+
 	data_query := *query
 	if order != "" {
 		data_query = *data_query.OrderBy(order)
