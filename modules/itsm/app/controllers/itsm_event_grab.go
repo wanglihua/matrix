@@ -2,15 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 
 	"github.com/revel/revel"
 
-	"matrix/core"
-	"matrix/modules/itsm/models"
-	auth_models "matrix/modules/auth/models"
-	"matrix/modules/itsm/service/engineer_service"
 	"fmt"
+	"matrix/core"
+	auth_models "matrix/modules/auth/models"
+	"matrix/modules/itsm/models"
+	"matrix/modules/itsm/service/engineer_service"
 )
 
 type ItsmEventGrab struct {
@@ -21,10 +20,10 @@ func (c ItsmEventGrab) Index() revel.Result {
 	return c.RenderTemplate("itsm/event_grab/event_grab_index.html")
 }
 
-type  EventGrabView struct {
-	models.EventInfo        `xorm:"extends" json:"evt"`
-	models.EventTypeInfo    `xorm:"extends" json:"et"`
-	models.EventStatusInfo  `xorm:"extends" json:"es"`
+type EventGrabView struct {
+	models.EventInfo       `xorm:"extends" json:"evt"`
+	models.EventTypeInfo   `xorm:"extends" json:"et"`
+	models.EventStatusInfo `xorm:"extends" json:"es"`
 }
 
 func (c ItsmEventGrab) ListData() revel.Result {
@@ -35,7 +34,7 @@ func (c ItsmEventGrab) ListData() revel.Result {
 		SELECT evt.*, egr.*, egru.*, es.* FROM itsm_event evt
 		  INNER JOIN itsm_event_type et on evt.type_id = et.id
 		  INNER JOIN itsm_event_status es on evt.status_id = es.id
-	 */
+	*/
 
 	query := db_session.
 	Select("evt.*, et.*, es.*").
@@ -126,6 +125,10 @@ func (c ItsmEventGrab) Save() revel.Result {
 
 	engineer_id := engineer_service.GetLoginedEngineerId(c.Session, db_session)
 
+	if engineer_id == 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "您不是工程师，抢单失败！"})
+	}
+
 	event_in_ui := detail_form.Event
 
 	var event_in_db models.EventInfo
@@ -142,8 +145,8 @@ func (c ItsmEventGrab) Save() revel.Result {
 	core.HandleError(err)
 
 	if affected == 0 {
-		return c.RenderJson(core.JsonResult{Success: false, Message: "数据保存失败，请重试！"})
+		return c.RenderJson(core.JsonResult{Success: false, Message: "抢单失败，请重试！"})
 	}
 
-	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据保存成功!"})
+	return c.RenderJson(core.JsonResult{Success: true, Message: "抢单成功!"})
 }
