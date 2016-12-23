@@ -6,7 +6,26 @@ import (
 	"matrix/core"
 	itsm_models "matrix/modules/itsm/models"
 	"strings"
+	"github.com/revel/revel"
 )
+
+func GetLoginedEngineerId(web_session revel.Session, db_session *xorm.Session) int64 {
+	login_user := core.GetLoginUser(web_session)
+	login_user_id := login_user.UserId
+
+	//获得当前用户的 工程师Id
+	var engineer_id_result struct {
+		Id int64 `xorm:"'id'" json:"id"`
+	}
+	sql := `SELECT id FROM itsm_engineer WHERE user_id = ?`
+	has, err := db_session.Sql(sql, login_user_id).Get(&engineer_id_result)
+	core.HandleError(err)
+	if has {
+		return engineer_id_result.Id
+	} else {
+		return 0
+	}
+}
 
 func GetEngineerGroupIdList(db_session *xorm.Session, engineer_id int64) []int64 {
 	var group_list = make([]struct {

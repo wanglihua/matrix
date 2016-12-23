@@ -1,0 +1,278 @@
+{%header "事件提报" .%}
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="itsm-menu">ITSM</li>
+            <li class="active" data-menu="itsm-event_grab-menu">我要抢单</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList('#eventList')">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                </div>
+                <div>
+                    <table id="eventList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="eventDetailDialog">
+        <div class="modal-dialog" style="width: 880px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">事件抢单</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="eventDetailForm">
+                                <input id="event_id" name="detail.event.id" type="hidden" v-model.number="detail.event.id"/>
+                                <input id="event_version" name="detail.event.version" type="hidden" v-model.number="detail.event.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="event_code" class="col-xs-2 control-label no-padding-right">事件单号</label>
+                                            <div class="col-xs-10">
+                                                <input name="detail.event.code" type="hidden" v-model="detail.event.code"/>
+                                                <input id="event_code" name="detail.event.code" type="text" disabled="disabled" class="input-sm form-control" v-model="detail.event.code"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="apply_department_name" class="col-xs-2 control-label no-padding-right">提报部门</label>
+                                            <div class="col-xs-10">
+                                                <input id="apply_department_name" name="detail.event.apply_department_name" type="text" class="input-sm form-control" disabled="disabled" v-model.number="detail.apply_department.name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="apply_user_name" class="col-xs-2 control-label no-padding-right">提报用户</label>
+                                            <div class="col-xs-10">
+                                                <input id="apply_user_name" name="detail.event.apply_user_name" type="text" disabled="disabled" class="input-sm form-control" v-model="detail.apply_user.nick_name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="event_contact" class="col-xs-2 control-label no-padding-right">联系电话</label>
+                                            <div class="col-xs-10">
+                                                <input id="event_contact" name="detail.event.contact" type="text" class="input-sm form-control" disabled="disabled" v-model="detail.event.contact"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="type_name" class="col-xs-2 control-label no-padding-right">事件类型</label>
+                                            <div class="col-xs-10">
+                                                <input id="type_name" name="detail.event.type_name" type="text" class="input-sm form-control" disabled="disabled" v-model.number="detail.event_type.type_name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="engineer_nick_name" class="col-xs-2 control-label no-padding-right">工程师</label>
+                                            <div class="col-xs-10">
+                                                <input id="engineer_nick_name" name="detail.event.engineer_nick_name" class="input-sm form-control" disabled="disabled" value=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="area_name" class="col-xs-2 control-label no-padding-right">提报区域</label>
+                                            <div class="col-xs-10">
+                                                <input id="area_name" name="detail.event.area_name" class="input-sm form-control" disabled="disabled" v-model.number="detail.service_area.area_name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="location" class="col-xs-2 control-label no-padding-right">提报地点</label>
+                                            <div class="col-xs-10">
+                                                <input id="location" name="detail.event.location" type="text" class="input-sm form-control" disabled="disabled" v-model="detail.event.location"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="description" class="col-xs-1 control-label no-padding-right">事件描述</label>
+                                            <div class="col-xs-11">
+                                                <textarea id="description" name="detail.event.description" rows="5" class="input-sm form-control" disabled="disabled" v-model="detail.event.description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveEvent()">
+                        <i class="ace-icon fa fa-floppy-o"></i>抢单
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "event": {},
+                "apply_user": {},
+                "apply_department": {},
+                "event_type": [],
+                "service_area": []
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                '#eventList',
+                {
+                    "sAjaxSource": '{%url "ItsmEventGrab.ListData"%}',
+                    "aaSorting": [[1, "desc"]],
+                    "aoColumns": [
+                        {
+                            "mDataProp": "evt.id",
+                            "bSearchable": false,
+                            "orderable": false,
+                            "sClass": "center",
+                            "width": 50,
+                            "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                            "render": function (data, type, row) {
+                                return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                            }
+                        },
+                        {"mDataProp": "evt.code", "title": "单号", "bSearchable": true, "width": 70},
+                        {"mDataProp": "evt.create_time", "title": "提报时间", "bSearchable": false, "width": 120},
+                        {"mDataProp": "et.type_name", "title": "类型", "bSearchable": false, "width": 120},
+                        {
+                            "mDataProp": "evt.description", "title": "描述", "bSearchable": true,
+                            "render": function (data, type, row) {
+                                return '<div style="width: 380px; overflow: hidden; text-overflow:ellipsis; white-space: nowrap;">' + data + '</div>';
+                            }
+                        },
+                        {"mDataProp": "es.status_name", "title": "状态", "bSearchable": false, "width": 70},
+                        {"mDataProp": "evt.update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                    ]
+                }
+            );
+
+            $('#eventList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showEventDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#eventList');
+            },
+            showEventDetail: function (id) {
+                showMask("加载中...");
+                $("#eventDetailForm").clearValidation();
+                $.ajax({
+                        url: '{%url "ItsmEventGrab.DetailData" %}',
+                        type: "POST",
+                        data: {
+                            "id": id
+                        },
+                        success: function (result) {
+                            hideMask();
+                            if (result.success == false) {
+                                $.msg.error(result.message);
+                                return;
+                            }
+                            vm.detail = result;
+                            $('#eventDetailDialog').modal(modalOptions);
+                        }
+                    }
+                );
+            },
+            saveEvent: function () {
+                showMask("提交中...");
+                var form = $("#eventDetailForm");
+                var valid = validate(form, {
+                    'detail.event.type_id': {
+                        required: true, digits: true
+                    },
+                    'detail.event.apply_department_id': {
+                        required: true, digits: true
+                    },
+                    'detail.event.request_user_id': {
+                        required: true, digits: true
+                    },
+                    'detail.event.contact': {
+                        required: true
+                    },
+                    'detail.event.engineer_id': {
+                        required: false, digits: true
+                    },
+                    'detail.event.area_id': {
+                        required: true, digits: true
+                    },
+                    'detail.event.location': {
+                        required: true
+                    },
+                    'detail.event.description': {
+                        required: true
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                            url: '{%url "ItsmEventGrab.Save"%}',
+                            type: "POST",
+                            processData: false,
+                            contentType: 'application/json',
+                            data: JSON.stringify(vm.detail),
+                            success: function (data) {
+                                hideMask();
+                                if (data.success == false) {
+                                    $.msg.error(data.message);
+                                    //return;
+                                }
+                                else {
+                                    $.msg.show(data.message);
+                                    $('#eventDetailDialog').modal('hide');
+                                    vm.reloadList();
+                                    //return;
+                                }
+                            }
+                        }
+                    );
+                }
+            }
+        }
+    });
+</script>
+{%footer%}
+

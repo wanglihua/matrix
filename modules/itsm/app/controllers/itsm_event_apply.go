@@ -21,7 +21,7 @@ func (c ItsmEventApply) Index() revel.Result {
 	return c.RenderTemplate("itsm/event_apply/event_apply_index.html")
 }
 
-type  EventView struct {
+type  EventApplyView struct {
 	models.EventInfo        `xorm:"extends" json:"evt"`
 	models.EventTypeInfo    `xorm:"extends" json:"et"`
 	models.EngineerInfo     `xorm:"extends" json:"egr"`
@@ -59,12 +59,12 @@ func (c ItsmEventApply) ListData() revel.Result {
 		data_query = *data_query.Asc("evt.id")
 	}
 
-	event_list := make([]EventView, 0, limit)
+	event_list := make([]EventApplyView, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&event_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(EventView))
+	count, err := count_query.Count(new(EventApplyView))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -73,7 +73,7 @@ func (c ItsmEventApply) ListData() revel.Result {
 	})
 }
 
-type EngineerSelectItem struct {
+type EventApplyEngineerSelectItem struct {
 	Id       int64 `xorm:"'id'" json:"id"`
 	NickName string `xorm:"'nick_name'" json:"nick_name"`
 }
@@ -83,7 +83,7 @@ type EventApplyDetailForm struct {
 	ApplyUser           auth_models.UserInfo              `json:"apply_user"`
 	EventTypeList       []models.EventTypeInfo            `json:"event_type_list"`
 	ServiceAreaList     []models.ServiceAreaInfo          `json:"service_area_list"`
-	EngineerList        []EngineerSelectItem              `json:"engineer_list"`
+	EngineerList        []EventApplyEngineerSelectItem              `json:"engineer_list"`
 	ApplyDepartmentList []models.EventApplyDepartmentInfo `json:"apply_department_list"`
 }
 
@@ -134,7 +134,7 @@ func (c ItsmEventApply) DetailData() revel.Result {
 	_, err = db_session.Id(login_user_id).Get(&apply_user)
 	core.HandleError(err)
 
-	var engineer_select_item_list = make([]EngineerSelectItem, 0)
+	var engineer_select_item_list = make([]EventApplyEngineerSelectItem, 0)
 	sql := `SELECT u.id, u.nick_name from auth_user u WHERE u.id IN (SELECT e.user_id from itsm_engineer e)`
 	err = db_session.Sql(sql).Find(&engineer_select_item_list)
 	core.HandleError(err)

@@ -86,6 +86,11 @@ POST /itsm/event/apply/data/detail        ItsmEventApply.DetailData
 POST /itsm/event/apply/save               ItsmEventApply.Save
 POST /itsm/event/apply/delete             ItsmEventApply.Delete
 
+GET  /itsm/event/grab                     ItsmEventGrab.Index
+POST /itsm/event/grab/data/list           ItsmEventGrab.ListData
+POST /itsm/event/grab/data/detail         ItsmEventGrab.DetailData
+POST /itsm/event/grab/save                ItsmEventGrab.Save
+
 GET  /itsm/event/process                  ItsmEventProcess.Index
 POST /itsm/event/process/data/list        ItsmEventProcess.ListData
 POST /itsm/event/process/data/detail      ItsmEventProcess.DetailData

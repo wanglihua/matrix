@@ -30,6 +30,13 @@ func GetItsmMenu(db_session *xorm.Session, web_session revel.Session) string {
         </a>
         <b class="arrow"></b>
     </li>
+    <li id="itsm-event_grab-menu" class="">
+        <a href="/itsm/event/grab">
+            <i class="menu-icon fa fa-caret-right"></i>
+            我要抢单
+        </a>
+        <b class="arrow"></b>
+    </li>
     <li id="itsm-event_process-menu" class="">
         <a href="/itsm/event/process">
             <i class="menu-icon fa fa-caret-right"></i>
