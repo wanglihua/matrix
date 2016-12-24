@@ -3,41 +3,41 @@ package main
 const MAIN_TEMPLATE = `package main
 
 import (
-    "runtime/debug"
-    "reflect"
-    "github.com/revel/revel"{{range $k, $v := $.ImportPaths}}
-    {{$v}} "{{$k}}"{{end}}
-    "github.com/revel/revel/testing"
-    "path/filepath"
-    "os"
-    "log"
-    "{{.ImportPath}}/app"
+	"runtime/debug"
+	"reflect"
+	"github.com/revel/revel"{{range $k, $v := $.ImportPaths}}
+	{{$v}} "{{$k}}"{{end}}
+	"github.com/revel/revel/testing"
+	"path/filepath"
+	"os"
+	"log"
+	"{{.ImportPath}}/app"
 	"{{.ImportPath}}/core/lic"
-    "{{.ImportPath}}/db"
+	"{{.ImportPath}}/db"
 	"{{.ImportPath}}/core/winsvc"
-    "fmt"
-    "strconv"
+	"fmt"
+	"strconv"
 	"strings"
 )
 
 var (
 	service_action string = ""
-	runMode        string = "prod"
-	port           int = 0
-	importPath     string = "{{.ImportPath}}"
-	srcPath        string = ""
+	runMode     string = "prod"
+	port        int = 0
+	importPath  string = "{{.ImportPath}}"
+	srcPath     string = ""
 
-    // So compiler won't complain if the generated code doesn't reference reflect package...
-    _ = reflect.Invalid
+	// So compiler won't complain if the generated code doesn't reference reflect package...
+	_ = reflect.Invalid
 )
 
 func main() {
-    defer func() {
-        if err := recover(); err != nil {
-            errorDesc := fmt.Sprint(err)
-            revel.ERROR.Print(errorDesc, "\n", string(debug.Stack()))
-        }
-    }()
+	defer func() {
+		if err := recover(); err != nil {
+			errorDesc := fmt.Sprint(err)
+			revel.ERROR.Print(errorDesc, "\n", string(debug.Stack()))
+		}
+	}()
 
 	arg_len := len(os.Args)
 	if arg_len == 1 {
@@ -116,48 +116,48 @@ func show_cmd_usage() {
 }
 
 func run_web() {
-    currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-    if err != nil {
-        log.Fatal(err)
-    }
-    lic_file_path := currentDir + string(os.PathSeparator) + "app.lic"
+	currentDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	lic_file_path := currentDir + string(os.PathSeparator) + "app.lic"
 
-    if runMode == "prod" {
-        importPath = "{{.ImportPath}}"
-        srcPath = currentDir
-        lic_file_path = currentDir + string(os.PathSeparator) + "{{.ImportPath}}" + string(os.PathSeparator) + "app.lic"
-    }
+	if runMode == "prod" {
+		importPath = "{{.ImportPath}}"
+		srcPath = currentDir
+		lic_file_path = currentDir + string(os.PathSeparator) + "{{.ImportPath}}" + string(os.PathSeparator) + "app.lic"
+	}
 
-    lic.ValidAppLic(app.AppName, lic_file_path)
+	lic.ValidAppLic(app.AppName, lic_file_path)
 
-    revel.Init(runMode, importPath, srcPath)
-    revel.INFO.Println("Running revel server")
+	revel.Init(runMode, importPath, srcPath)
+	revel.INFO.Println("Running revel server")
 
-    {{range $i, $c := .Controllers}}
-    revel.RegisterController((*{{index $.ImportPaths .ImportPath}}.{{.StructName}})(nil),
-        []*revel.MethodType{
-            {{range .MethodSpecs}}&revel.MethodType{
-                Name: "{{.Name}}",
-                Args: []*revel.MethodArg{ {{range .Args}}
-                    &revel.MethodArg{Name: "{{.Name}}", Type: reflect.TypeOf((*{{index $.ImportPaths .ImportPath | .TypeExpr.TypeName}})(nil)) },{{end}}
-                },
-                RenderArgNames: map[int][]string{ {{range .RenderCalls}}
-                    {{.Line}}: []string{ {{range .Names}}
-                        "{{.}}",{{end}}
-                    },{{end}}
-                },
-            },
-            {{end}}
-        })
-    {{end}}
-    revel.DefaultValidationKeys = map[string]map[int]string{ {{range $path, $lines := .ValidationKeys}}
-        "{{$path}}": { {{range $line, $key := $lines}}
-            {{$line}}: "{{$key}}",{{end}}
-        },{{end}}
-    }
-    testing.TestSuites = []interface{}{ {{range .TestSuites}}
-        (*{{index $.ImportPaths .ImportPath}}.{{.StructName}})(nil),{{end}}
-    }
+	{{range $i, $c := .Controllers}}
+	revel.RegisterController((*{{index $.ImportPaths .ImportPath}}.{{.StructName}})(nil),
+		[]*revel.MethodType{
+			{{range .MethodSpecs}}&revel.MethodType{
+				Name: "{{.Name}}",
+				Args: []*revel.MethodArg{ {{range .Args}}
+					&revel.MethodArg{Name: "{{.Name}}", Type: reflect.TypeOf((*{{index $.ImportPaths .ImportPath | .TypeExpr.TypeName}})(nil)) },{{end}}
+				},
+				RenderArgNames: map[int][]string{ {{range .RenderCalls}}
+					{{.Line}}: []string{ {{range .Names}}
+						"{{.}}",{{end}}
+					},{{end}}
+				},
+			},
+			{{end}}
+		})
+	{{end}}
+	revel.DefaultValidationKeys = map[string]map[int]string{ {{range $path, $lines := .ValidationKeys}}
+		"{{$path}}": { {{range $line, $key := $lines}}
+			{{$line}}: "{{$key}}",{{end}}
+		},{{end}}
+	}
+	testing.TestSuites = []interface{}{ {{range .TestSuites}}
+		(*{{index $.ImportPaths .ImportPath}}.{{.StructName}})(nil),{{end}}
+	}
 
 	db.InitDatabase()
 
