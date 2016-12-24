@@ -250,7 +250,7 @@ func (c ItsmEventApply) Delete() revel.Result {
 		return c.RenderJson(core.JsonResult{Success: false, Message: "数据删除失败，不能删除非提报状态的事件!"})
 	}
 
-	//只有提报状态的才可以删除
+	//只有提报状态的才可以删除，其它状态的事件只能取消
 	//SELECT count(*) FROM itsm_event WHERE id IN (1, 2, 3, 4) AND status_id <> 1000
 	count, err = db_session.
 	In("id", event_id_list).
