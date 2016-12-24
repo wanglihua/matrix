@@ -52,6 +52,7 @@ func (c ItsmEventApply) ListData() revel.Result {
 
 	//query extra filter here
 
+	//只能查看自己提报的事件
 	login_user := core.GetLoginUser(c.Session)
 	login_user_id := login_user.UserId
 	event_cols := models.EventCols
@@ -114,12 +115,20 @@ func (c ItsmEventApply) DetailData() revel.Result {
 	var event_id int64
 	c.Params.Bind(&event_id, "id")
 
+	//当前登录人
+	login_user := core.GetLoginUser(c.Session)
+	login_user_id := login_user.UserId
+
 	var event models.EventInfo
 	if event_id != 0 {
 		has, err := db_session.Id(event_id).Get(&event)
 		core.HandleError(err)
 		if has == false {
 			return c.RenderJson(core.JsonResult{Success: false, Message: "指定的事件不存在！"})
+		}
+
+		if event.ApplyUserId != login_user_id {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "当前事件不是您提报的！"})
 		}
 	}
 
@@ -131,8 +140,6 @@ func (c ItsmEventApply) DetailData() revel.Result {
 	err = db_session.Find(&service_area_list)
 	core.HandleError(err)
 
-	login_user := core.GetLoginUser(c.Session)
-	login_user_id := login_user.UserId
 	event.ApplyUserId = login_user_id
 
 	var apply_user auth_models.UserInfo
@@ -179,6 +186,8 @@ func (c ItsmEventApply) Save() revel.Result {
 	if detail_form.IsCreate() {
 		//按规则生成 code
 		serial := entity_code_service.GetNextSerial(db_session, "event")
+
+		event_in_ui.ApplyUserId = login_user_id
 		event_in_ui.Code = fmt.Sprint(serial)
 		event_in_ui.StatusId = models.Event_Status_TBZ_Id //提报中
 
@@ -189,10 +198,18 @@ func (c ItsmEventApply) Save() revel.Result {
 		_, err := db_session.Id(event_in_ui.Id).Get(&event_in_db)
 		core.HandleError(err)
 
-		//更新数据库各字段
-		event_in_db.Code = event_in_ui.Code
+		//检查是不是当前登录用户提报的事件
+		if event_in_db.ApplyUserId != login_user_id {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "当前事件不是您提报的，不能修改！"})
+		}
+
+		//检查是不是提报状态的事件，只有提报状态的事件才可以修改
+		if event_in_db.StatusId != models.Event_Status_TBZ_Id {
+			return c.RenderJson(core.JsonResult{Success: false, Message: "当前事件不是提报状态，不能修改！"})
+		}
+
+		//更新数据库各字段，界面上的修改值
 		event_in_db.ApplyDepartmentId = event_in_ui.ApplyDepartmentId
-		event_in_db.ApplyUserId = login_user_id
 		event_in_db.Contact = event_in_ui.Contact
 		event_in_db.TypeId = event_in_ui.TypeId
 		event_in_db.EngineerId = event_in_ui.EngineerId
@@ -219,9 +236,26 @@ func (c ItsmEventApply) Delete() revel.Result {
 
 	var event models.EventInfo
 
+	login_user := core.GetLoginUser(c.Session)
+	login_user_id := login_user.UserId
+
+	//只有自己提报的事件才能删除
+	//SELECT count(*) FROM itsm_event WHERE id IN (1, 2, 3, 4) AND AND apply_user_id <> 1000
+	count, err := db_session.
+	In("id", event_id_list).
+		Where("apply_user_id <> ?", login_user_id).
+		Count(&event)
+	core.HandleError(err)
+	if count != 0 {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "数据删除失败，不能删除非提报状态的事件!"})
+	}
+
 	//只有提报状态的才可以删除
 	//SELECT count(*) FROM itsm_event WHERE id IN (1, 2, 3, 4) AND status_id <> 1000
-	count, err := db_session.In("id", event_id_list).Where("status_id <> ?", models.Event_Status_TBZ_Id).Count(&event)
+	count, err = db_session.
+	In("id", event_id_list).
+		Where("status_id <> ?", models.Event_Status_TBZ_Id).
+		Count(&event)
 	core.HandleError(err)
 	if count != 0 {
 		return c.RenderJson(core.JsonResult{Success: false, Message: "数据删除失败，不能删除非提报状态的事件!"})
