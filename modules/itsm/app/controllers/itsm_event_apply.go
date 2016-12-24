@@ -88,7 +88,7 @@ type EventApplyDetailForm struct {
 	ApplyUser           auth_models.UserInfo              `json:"apply_user"`
 	EventTypeList       []models.EventTypeInfo            `json:"event_type_list"`
 	ServiceAreaList     []models.ServiceAreaInfo          `json:"service_area_list"`
-	EngineerList        []EventApplyEngineerSelectItem              `json:"engineer_list"`
+	EngineerList        []EventApplyEngineerSelectItem    `json:"engineer_list"`
 	ApplyDepartmentList []models.EventApplyDepartmentInfo `json:"apply_department_list"`
 }
 

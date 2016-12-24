@@ -146,13 +146,21 @@ func (c ItsmEventGrab) Save() revel.Result {
 
 	event_in_ui := detail_form.Event
 
+	var event_in_db models.EventInfo
+	_, err = db_session.Id(event_in_ui.Id).Get(&event_in_db)
+	core.HandleError(err)
+
+	if event_in_db.StatusId != models.Event_Status_TBZ_Id {
+		return c.RenderJson(core.JsonResult{Success: false, Message: "当前事件不是提报状态，不能抢单！"})
+	}
+
 	//更新工程师字段和事件状态字段
-	event_in_ui.EngineerId = core.NewNullInt(engineer_id, true)
-	event_in_ui.StatusId = models.Event_Status_YPG_Id // 已派工
+	event_in_db.EngineerId = core.NewNullInt(engineer_id, true)
+	event_in_db.StatusId = models.Event_Status_YPG_Id // 已派工
 
 	var affected int64
 	event_cols := models.EventCols
-	affected, err = db_session.Id(event_in_ui.Id).Cols(event_cols.EngineerId, event_cols.StatusId).Update(&event_in_ui)
+	affected, err = db_session.Id(event_in_ui.Id).Cols(event_cols.EngineerId, event_cols.StatusId).Update(&event_in_db)
 	core.HandleError(err)
 
 	if affected == 0 {
