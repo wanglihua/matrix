@@ -119,7 +119,7 @@
                                         <div class="form-group">
                                             <label for="description" class="col-xs-1 control-label no-padding-right">事件描述</label>
                                             <div class="col-xs-11">
-                                                <textarea id="description" name="detail.event.description" rows="5" class="input-sm form-control" disabled="disabled" v-model="detail.event.description"></textarea>
+                                                <textarea id="description" name="detail.event.description" rows="3" class="input-sm form-control" disabled="disabled" v-model="detail.event.description"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -218,32 +218,7 @@
             saveEvent: function () {
                 showMask("提交中...");
                 var form = $("#eventDetailForm");
-                var valid = validate(form, {
-                    'detail.event.type_id': {
-                        required: true, digits: true
-                    },
-                    'detail.event.apply_department_id': {
-                        required: true, digits: true
-                    },
-                    'detail.event.request_user_id': {
-                        required: true, digits: true
-                    },
-                    'detail.event.contact': {
-                        required: true
-                    },
-                    'detail.event.engineer_id': {
-                        required: false, digits: true
-                    },
-                    'detail.event.area_id': {
-                        required: true, digits: true
-                    },
-                    'detail.event.location': {
-                        required: true
-                    },
-                    'detail.event.description': {
-                        required: true
-                    }
-                });
+                var valid = validate(form, {});
 
                 if (!valid) {
                     hideMask();

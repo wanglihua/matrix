@@ -34,7 +34,7 @@ func (c ItsmEventApply) ListData() revel.Result {
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
 	/*
-		SELECT evt.*, egr.*, egru.*, es.* FROM itsm_event evt
+		SELECT evt.*, et*, egr.*, egru.*, es.* FROM itsm_event evt
 		  INNER JOIN itsm_event_type et on evt.type_id = et.id
 		  INNER JOIN itsm_event_status es on evt.status_id = es.id
 		  LEFT OUTER JOIN itsm_engineer egr on evt.engineer_id = egr.id
