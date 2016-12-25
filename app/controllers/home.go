@@ -77,8 +77,8 @@ func (c Home) SyncDbPost() revel.Result {
 	model_list = append(model_list, &itsm_models.ApplicationTypeInfo{})
 	model_list = append(model_list, &itsm_models.ApplicationInfo{})
 
-	model_list = append(model_list, &erp_models.BrandInfo{})
 	model_list = append(model_list, &erp_models.StatusInfo{})
+	model_list = append(model_list, &erp_models.BrandInfo{})
 
 	err := db.Engine.Sync2(model_list...)
 	core.HandleError(err)
