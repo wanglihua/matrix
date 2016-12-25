@@ -193,6 +193,7 @@ func GetHeader(title string, db_session *xorm.Session, web_session revel.Session
         <ul class="nav nav-list">
 `)
 
+	header_buffer.WriteString(menu.GetErpMenu(db_session, web_session))
 	header_buffer.WriteString(menu.GetInventoryMenu(db_session, web_session))
 	header_buffer.WriteString(menu.GetOaMenu(db_session, web_session))
 	header_buffer.WriteString(menu.GetItsmMenu(db_session, web_session))

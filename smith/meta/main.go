@@ -4,20 +4,19 @@ import (
 	"bytes"
 	"fmt"
 	"matrix/core"
-	entity_models "matrix/modules/itsm/models"
-	"matrix/app/models"
+	"matrix/modules/erp/models"
 	smith_core "matrix/smith/core"
 	"os"
 	"path"
 )
 //var output_base_dir = "/home/wanglihua/gopath/src/matrix"
 var output_base_dir = "z:/GoPath/src/matrix"
-var module_title_name = entity_models.ModuleTitleName
-var module_lower_case = entity_models.ModuleLowerCase
-var module_chinese = entity_models.ModuleChinese
-var table_prefix = entity_models.TablePrefix
+var module_title_name = models.ModuleTitleName
+var module_lower_case = models.ModuleLowerCase
+var module_chinese = models.ModuleChinese
+var table_prefix = models.TablePrefix
 var model_list = []interface{}{
-	models.ConfigInfo{},
+	models.BrandInfo{},
 }
 
 func main() {

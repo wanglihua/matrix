@@ -4,6 +4,7 @@ import (
 	"matrix/app/models"
 	"matrix/core"
 	"matrix/db"
+	erp_models "matrix/modules/erp/models"
 	auth_models "matrix/modules/auth/models"
 	inventory_models "matrix/modules/inventory/models"
 	itsm_models "matrix/modules/itsm/models"
@@ -75,6 +76,8 @@ func (c Home) SyncDbPost() revel.Result {
 	model_list = append(model_list, &itsm_models.ApplicationStatusInfo{})
 	model_list = append(model_list, &itsm_models.ApplicationTypeInfo{})
 	model_list = append(model_list, &itsm_models.ApplicationInfo{})
+
+	model_list = append(model_list, &erp_models.BrandInfo{})
 
 	err := db.Engine.Sync2(model_list...)
 	core.HandleError(err)

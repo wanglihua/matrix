@@ -1,0 +1,5 @@
+GET  /erp/brand                    ErpBrand.Index
+POST /erp/brand/data/list          ErpBrand.ListData
+POST /erp/brand/data/detail        ErpBrand.DetailData
+POST /erp/brand/save               ErpBrand.Save
+POST /erp/brand/delete             ErpBrand.Delete

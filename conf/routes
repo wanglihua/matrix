@@ -4,6 +4,7 @@ module:auth
 module:wechat
 module:weixin
 module:inventory
+module:erp
 module:itsm
 module:oa
 module:jobs
