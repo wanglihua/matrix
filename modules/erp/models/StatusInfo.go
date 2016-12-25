@@ -21,11 +21,11 @@ type StatusInfo struct {
 }
 
 func (e StatusInfo) TableName() string {
-	return TablePrefix + "brand"
+	return TablePrefix + "status"
 }
 
 func (e StatusInfo) ModelDesc() string {
-	return "verbose_name=品牌,entity_json=brand,route=brand"
+	return "verbose_name=状态,entity_json=status,route=status"
 }
 
 func (e StatusInfo) InitData(db_session *xorm.Session) {

@@ -15,6 +15,7 @@ sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 install command:
 mysqld --initialize --console
 mysqld install mysql --defaults-file=d:/mysql/my.ini
+# mysqld -remove mysql
 mysql -u root -p
 set password for 'root'@'localhost'=password('root');
 flush privileges;
