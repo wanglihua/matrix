@@ -78,66 +78,18 @@ func (c Home) SyncDbPost() revel.Result {
 	model_list = append(model_list, &itsm_models.ApplicationInfo{})
 
 	model_list = append(model_list, &erp_models.BrandInfo{})
+	model_list = append(model_list, &erp_models.StatusInfo{})
 
 	err := db.Engine.Sync2(model_list...)
 	core.HandleError(err)
 
-	session := c.DbSession
-	user := new(auth_models.UserInfo)
-	user.LoginName = "admin"
-	user.NickName = "管理员"
-	user.Password = core.EncryptPassword("111111")
-	session.Insert(user)
-
-	admin := new(auth_models.AdminInfo)
-	admin.UserId = user.Id
-	session.Insert(admin)
-
-	//event status insert begin
-
-	event_status := new(itsm_models.EventStatusInfo)
-	event_status.Id = itsm_models.Event_Status_TBZ_Id
-	event_status.Name = "提报中"
-	event_status.Desc = core.NewNullString("提报中", true)
-	session.Insert(event_status)
-
-	event_status = new(itsm_models.EventStatusInfo)
-	event_status.Id = itsm_models.Event_Status_YPG_Id
-	event_status.Name = "已派工"
-	event_status.Desc = core.NewNullString("已派工", true)
-	session.Insert(event_status)
-
-	event_status = new(itsm_models.EventStatusInfo)
-	event_status.Id = itsm_models.Event_Status_YJS_Id
-	event_status.Name = "已接受"
-	event_status.Desc = core.NewNullString("已接受", true)
-	session.Insert(event_status)
-
-	event_status = new(itsm_models.EventStatusInfo)
-	event_status.Id = itsm_models.Event_Status_CLZ_Id
-	event_status.Name = "处理中"
-	event_status.Desc = core.NewNullString("处理中", true)
-	session.Insert(event_status)
-
-	event_status = new(itsm_models.EventStatusInfo)
-	event_status.Id = itsm_models.Event_Status_YWC_Id
-	event_status.Name = "已完成"
-	event_status.Desc = core.NewNullString("已完成", true)
-	session.Insert(event_status)
-
-	event_status = new(itsm_models.EventStatusInfo)
-	event_status.Id = itsm_models.Event_Status_YPJ_Id
-	event_status.Name = "已评价"
-	event_status.Desc = core.NewNullString("已评价", true)
-	session.Insert(event_status)
-
-	event_status = new(itsm_models.EventStatusInfo)
-	event_status.Id = itsm_models.Event_Status_YQC_Id
-	event_status.Name = "已取消"
-	event_status.Desc = core.NewNullString("已取消", true)
-	session.Insert(event_status)
-
-	//event status insert end
+	//执行数据初始化
+	db_session := c.DbSession
+	for _, model := range model_list {
+		if table_initer, ok := model.(core.TableDataIniter); ok {
+			table_initer.InitData(db_session)
+		}
+	}
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: "数据库同步成功!"})
 }

@@ -2,6 +2,7 @@ package models
 
 import (
 	"matrix/core"
+	"github.com/go-xorm/xorm"
 )
 
 //提报中
@@ -40,4 +41,48 @@ func (e EventStatusInfo) TableName() string {
 
 func (e EventStatusInfo) ModelDesc() string {
 	return "verbose_name=事件状态,entity_json=status,route=event/status"
+}
+
+func (e EventStatusInfo) InitData(db_session *xorm.Session) {
+	event_status := new(EventStatusInfo)
+	event_status.Id = Event_Status_TBZ_Id
+	event_status.Name = "提报中"
+	event_status.Desc = core.NewNullString("提报中", true)
+	db_session.Insert(event_status)
+
+	event_status = new(EventStatusInfo)
+	event_status.Id = Event_Status_YPG_Id
+	event_status.Name = "已派工"
+	event_status.Desc = core.NewNullString("已派工", true)
+	db_session.Insert(event_status)
+
+	event_status = new(EventStatusInfo)
+	event_status.Id = Event_Status_YJS_Id
+	event_status.Name = "已接受"
+	event_status.Desc = core.NewNullString("已接受", true)
+	db_session.Insert(event_status)
+
+	event_status = new(EventStatusInfo)
+	event_status.Id = Event_Status_CLZ_Id
+	event_status.Name = "处理中"
+	event_status.Desc = core.NewNullString("处理中", true)
+	db_session.Insert(event_status)
+
+	event_status = new(EventStatusInfo)
+	event_status.Id = Event_Status_YWC_Id
+	event_status.Name = "已完成"
+	event_status.Desc = core.NewNullString("已完成", true)
+	db_session.Insert(event_status)
+
+	event_status = new(EventStatusInfo)
+	event_status.Id = Event_Status_YPJ_Id
+	event_status.Name = "已评价"
+	event_status.Desc = core.NewNullString("已评价", true)
+	db_session.Insert(event_status)
+
+	event_status = new(EventStatusInfo)
+	event_status.Id = Event_Status_YQC_Id
+	event_status.Name = "已取消"
+	event_status.Desc = core.NewNullString("已取消", true)
+	db_session.Insert(event_status)
 }

@@ -75,7 +75,7 @@ func (f *BrandDetailForm) Valid(validation *revel.Validation) bool {
 		validation.MinSize(f.Brand.Address.String, 2).Message("地址长度不能小于2！")
 	}
 	if f.Brand.Address.Valid == true {
-		validation.MaxSize(f.Brand.Address.String, 100).Message("地址长度不能大于100！")
+		validation.MaxSize(f.Brand.Address.String, 200).Message("地址长度不能大于100！")
 	}
 
 	if f.Brand.Phone.Valid == true {
