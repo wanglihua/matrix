@@ -1,0 +1,283 @@
+{%header "供应商" .%}
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="erp-menu">ERP</li>
+            <li class="active" data-menu="erp-supplier-menu">供应商</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList('#supplierList')">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-success btn-sm" @click="showSupplierDetail(0)">
+                        <i class="ace-icon fa fa-plus"></i>
+                        新增
+                    </button>
+                    <button class="btn btn-danger btn-sm" @click="deleteSupplier()">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                        删除
+                    </button>
+                </div>
+                <div>
+                    <table id="supplierList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="supplierDetailDialog">
+        <div class="modal-dialog" style="width: 480px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">供应商详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="supplierDetailForm">
+                                <input id="supplier_id" name="detail.supplier.id" type="hidden" v-model.number="detail.supplier.id"/>
+                                <input id="supplier_version" name="detail.supplier.version" type="hidden" v-model.number="detail.supplier.version"/>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                            <div class="col-xs-10">
+                                                <input id="name" name="detail.supplier.name" type="text" class="input-sm form-control" v-model="detail.supplier.name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="contact" class="col-xs-2 control-label no-padding-right">联系人</label>
+                                            <div class="col-xs-10">
+                                                <input id="contact" name="detail.supplier.contact" type="text" class="input-sm form-control" v-model="detail.supplier.contact"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="phone" class="col-xs-2 control-label no-padding-right">电话</label>
+                                            <div class="col-xs-10">
+                                                <input id="phone" name="detail.supplier.phone" type="text" class="input-sm form-control" v-model="detail.supplier.phone"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="contact_info" class="col-xs-2 control-label no-padding-right">联系方式</label>
+                                            <div class="col-xs-10">
+                                                <textarea id="contact_info" name="detail.supplier.contact_info" rows="2" class="input-sm form-control" v-model="detail.supplier.contact_info"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="address" class="col-xs-2 control-label no-padding-right">地址</label>
+                                            <div class="col-xs-10">
+                                                <textarea id="address" name="detail.supplier.address" rows="2" class="input-sm form-control" v-model="detail.supplier.address"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="desc" class="col-xs-2 control-label no-padding-right">描述</label>
+                                            <div class="col-xs-10">
+                                                <textarea id="desc" name="detail.supplier.desc" rows="2" class="input-sm form-control" v-model="detail.supplier.desc"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveSupplier()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "supplier": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                '#supplierList',
+                {
+                    "sAjaxSource": '{%url "ErpSupplier.ListData"%}',
+                    "aaSorting": [[1, "asc"]],
+                    "aoColumns": [
+                        {
+                            "mDataProp": "id",
+                            "bSearchable": false,
+                            "orderable": false,
+                            "sClass": "center",
+                            "width": 50,
+                            "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                            "render": function (data, type, row) {
+                                return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                            }
+                        },
+                        {"mDataProp": "name", "title": "名称", "bSearchable": true, "width": 120},
+                        {"mDataProp": "contact", "title": "联系人", "bSearchable": true, "width": 90},
+                        {"mDataProp": "phone", "title": "电话", "bSearchable": true, "width": 140},
+                        {"mDataProp": "contact_info", "title": "联系方式", "bSearchable": true, "width": 200},
+                        {"mDataProp": "address", "title": "地址", "bSearchable": true, "width": 200},
+                        {"mDataProp": "desc", "title": "描述", "bSearchable": true},
+                        {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                        {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                    ]
+                }
+            );
+
+            $('#supplierList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showSupplierDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#supplierList');
+            },
+            showSupplierDetail: function (id) {
+                showMask("加载中...");
+                $("#supplierDetailForm").clearValidation();
+                $.ajax({
+                        url: '{%url "ErpSupplier.DetailData" %}',
+                        type: "POST",
+                        data: {
+                            "id": id
+                        },
+                        success: function (result) {
+                            hideMask();
+                            if (result.success == false) {
+                                $.msg.error(result.message);
+                                return;
+                            }
+                            vm.detail = result;
+                            $('#supplierDetailDialog').modal(modalOptions);
+                        }
+                    }
+                );
+            },
+            saveSupplier: function () {
+                showMask("提交中...");
+                var form = $("#supplierDetailForm");
+                var valid = validate(form, {
+                    'detail.supplier.name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.supplier.contact': {
+                        required: false, minlength: 2, maxlength: 100
+                    },
+                    'detail.supplier.contact_info': {
+                        required: false, maxlength: 500
+                    },
+                    'detail.supplier.address': {
+                        required: false, minlength: 2, maxlength: 200
+                    },
+                    'detail.supplier.phone': {
+                        required: false, minlength: 2, maxlength: 100
+                    },
+                    'detail.supplier.desc': {
+                        required: false, maxlength: 500
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                            url: '{%url "ErpSupplier.Save"%}',
+                            type: "POST",
+                            processData: false,
+                            contentType: 'application/json',
+                            data: JSON.stringify(vm.detail),
+                            success: function (data) {
+                                hideMask();
+                                if (data.success == false) {
+                                    $.msg.error(data.message);
+                                    //return;
+                                }
+                                else {
+                                    $.msg.show(data.message);
+                                    $('#supplierDetailDialog').modal('hide');
+                                    vm.reloadList();
+                                    //return;
+                                }
+                            }
+                        }
+                    );
+                }
+            },
+            deleteSupplier: function () {
+                var id_list = [];
+                $('#supplierList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                        url: '{%url "ErpSupplier.Delete"%}',
+                        type: "POST",
+                        data: {"id_list": id_list},
+                        success: function (data) {
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                            }
+                            vm.reloadList();
+                        }
+                    });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+
