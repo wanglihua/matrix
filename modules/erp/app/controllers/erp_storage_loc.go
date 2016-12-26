@@ -1,4 +1,3 @@
-
 package controllers
 
 import (
@@ -18,11 +17,27 @@ func (c ErpStorageLoc) Index() revel.Result {
 	return c.RenderTemplate("erp/storage_loc/storage_loc_index.html")
 }
 
+type ErpStorageLocView struct {
+	models.StorageLocInfo `xorm:"extends" json:"l"`
+	models.StockInfo      `xorm:"extends" json:"s"`
+}
+
 func (c ErpStorageLoc) ListData() revel.Result {
 	db_session := c.DbSession
 
 	filter, order, offset, limit := core.GetGridRequestParam(c.Request)
-	query := db_session.Where(filter)
+
+	/*
+		SELECT l.*, s.*
+		FROM erp_storage_loc l
+		    INNER JOIN erp_stock s ON l.stock_id = s.id
+	*/
+
+	query := db_session.
+	Select("l.*, s.*").
+		Table("erp_storage_loc").Alias("l").
+		Join("INNER", []string{"erp_stock", "s"}, "l.stock_id = s.id").
+		Where(filter)
 
 	//query extra filter here
 
@@ -30,15 +45,15 @@ func (c ErpStorageLoc) ListData() revel.Result {
 	if order != "" {
 		data_query = *data_query.OrderBy(order)
 	} else {
-		data_query = *data_query.Asc("id")
+		data_query = *data_query.Asc("l.id")
 	}
 
-	storage_loc_list := make([]models.StorageLocInfo, 0, limit)
+	storage_loc_list := make([]ErpStorageLocView, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&storage_loc_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(models.StorageLocInfo))
+	count, err := count_query.Count(new(ErpStorageLocView))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
@@ -49,13 +64,14 @@ func (c ErpStorageLoc) ListData() revel.Result {
 
 type StorageLocDetailForm struct {
 	StorageLoc models.StorageLocInfo `json:"storage_loc"`
+	StockList  []models.StockInfo    `json:"stock_list"`
 }
 
 func (f *StorageLocDetailForm) IsCreate() bool {
 	return f.StorageLoc.Id == 0
 }
 
-func (f *StorageLocDetailForm) Valid(validation *revel.Validation) bool { 
+func (f *StorageLocDetailForm) Valid(validation *revel.Validation) bool {
 	validation.Required(f.StorageLoc.StockId).Message("仓库不能为空！")
 
 	validation.Required(f.StorageLoc.Name).Message("名称不能为空！")
@@ -98,8 +114,13 @@ func (c ErpStorageLoc) DetailData() revel.Result {
 		}
 	}
 
+	var stock_list = make([]models.StockInfo, 0)
+	err := db_session.Find(&stock_list)
+	core.HandleError(err)
+
 	var detail_form StorageLocDetailForm
 	detail_form.StorageLoc = storage_loc
+	detail_form.StockList = stock_list
 
 	return c.RenderJson(detail_form)
 }
@@ -118,10 +139,10 @@ func (c ErpStorageLoc) Save() revel.Result {
 	storage_loc := detail_form.StorageLoc
 
 	var affected int64
-	if detail_form.IsCreate() { 
+	if detail_form.IsCreate() {
 		affected, err = db_session.Insert(&storage_loc)
 		core.HandleError(err)
-	} else { 
+	} else {
 		affected, err = db_session.Id(storage_loc.Id).Update(&storage_loc)
 		core.HandleError(err)
 
@@ -144,4 +165,3 @@ func (c ErpStorageLoc) Delete() revel.Result {
 
 	return c.RenderJson(core.JsonResult{Success: true, Message: strconv.FormatInt(affected, 10) + "条数据删除成功!"})
 }
-
