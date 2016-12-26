@@ -39,6 +39,14 @@ func GetErpMenu(db_session *xorm.Session, web_session revel.Session) string {
             <b class="arrow"></b>
         </li>
 
+        <li id="erp-storageloc-menu" class="">
+            <a href="/erp/storage/loc">
+                <i class="menu-icon fa fa-caret-right"></i>
+                仓位
+            </a>
+            <b class="arrow"></b>
+        </li>
+
     </ul>
 </li>
 `)

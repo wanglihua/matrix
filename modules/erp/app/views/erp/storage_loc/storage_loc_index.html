@@ -1,0 +1,264 @@
+{%header "仓位" .%}
+<div id="page">
+   <div class="breadcrumbs" id="breadcrumbs">
+       <ul class="breadcrumb">
+           <li>
+               <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+           </li>
+           <li class="parent" data-menu="erp-menu">ERP</li>
+           <li class="active" data-menu="erp-storageloc-menu">仓位</li>
+       </ul>
+   </div>
+   <div class="page-content">
+       <div class="row">
+           <div class="col-xs-12" style="padding: 0;">
+               <div class="gridToolBar clearfix">
+                   <button class="btn btn-primary btn-sm" @click="reloadList('#storageLocList')">
+                       <i class="ace-icon fa fa-refresh"></i>
+                       刷新
+                   </button>
+                   <button class="btn btn-success btn-sm" @click="showStorageLocDetail(0)">
+                       <i class="ace-icon fa fa-plus"></i>
+                       新增
+                   </button>
+                   <button class="btn btn-danger btn-sm" @click="deleteStorageLoc()">
+                       <i class="ace-icon fa fa-trash-o"></i>
+                       删除
+                   </button>
+               </div>
+               <div>
+                   <table id="storageLocList" class="table table-striped table-bordered table-hover"></table>
+               </div>
+           </div>
+       </div>
+   </div>
+    <div class="modal fade" id="storageLocDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">仓位详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="storageLocDetailForm">
+                                <input id="storage_loc_id" name="detail.storage_loc.id" type="hidden" v-model.number="detail.storage_loc.id"/>
+                                <input id="storage_loc_version" name="detail.storage_loc.version" type="hidden" v-model.number="detail.storage_loc.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="stock_id" class="col-xs-2 control-label no-padding-right">仓库</label>
+                                            <div class="col-xs-10">
+                                                <input id="stock_id" name="detail.storage_loc.stock_id" type="text" class="input-sm form-control" v-model.number="detail.storage_loc.stock_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                            <div class="col-xs-10">
+                                                <input id="name" name="detail.storage_loc.name" type="text" class="input-sm form-control" v-model="detail.storage_loc.name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="desc" class="col-xs-2 control-label no-padding-right">描述</label>
+                                            <div class="col-xs-10">
+                                                <input id="desc" name="detail.storage_loc.desc" type="text" class="input-sm form-control" v-model="detail.storage_loc.desc"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="x_axes" class="col-xs-2 control-label no-padding-right">X轴坐标</label>
+                                            <div class="col-xs-10">
+                                                <input id="x_axes" name="detail.storage_loc.x_axes" type="text" class="input-sm form-control" v-model="detail.storage_loc.x_axes"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="y_axes" class="col-xs-2 control-label no-padding-right">Y轴坐标</label>
+                                            <div class="col-xs-10">
+                                                <input id="y_axes" name="detail.storage_loc.y_axes" type="text" class="input-sm form-control" v-model="detail.storage_loc.y_axes"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveStorageLoc()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "storage_loc": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                    '#storageLocList',
+                    {
+                        "sAjaxSource": '{%url "ErpStorageLoc.ListData"%}',
+                        "aaSorting": [[1, "asc"]],
+                        "aoColumns": [
+                            {
+                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                                "render": function (data, type, row) {
+                                    return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                                }
+                            },
+                            {"mDataProp": "stock_id", "title": "仓库", "bSearchable": false },
+                            {"mDataProp": "name", "title": "名称", "bSearchable": true },
+                            {"mDataProp": "desc", "title": "描述", "bSearchable": true },
+                            {"mDataProp": "x_axes", "title": "X轴坐标", "bSearchable": true },
+                            {"mDataProp": "y_axes", "title": "Y轴坐标", "bSearchable": true },
+                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                        ]
+                   }
+            );
+
+            $('#storageLocList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showStorageLocDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#storageLocList');
+            },
+            showStorageLocDetail: function (id) {
+                showMask("加载中...");
+                $("#storageLocDetailForm").clearValidation();
+                $.ajax({
+                           url: '{%url "ErpStorageLoc.DetailData" %}',
+                           type: "POST",
+                           data: {
+                               "id": id
+                           },
+                           success: function (result) {
+                               hideMask();
+                               if (result.success == false) {
+                                   $.msg.error(result.message);
+                                   return;
+                               }
+                               vm.detail = result;
+                               $('#storageLocDetailDialog').modal(modalOptions);
+                           }
+                       }
+                );
+            },
+            saveStorageLoc: function () {
+                showMask("提交中...");
+                var form = $("#storageLocDetailForm");
+                var valid = validate(form, {  
+                    'detail.storage_loc.stock_id': {
+                        required: true, digits: true
+                    },
+                    'detail.storage_loc.name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.storage_loc.desc': {
+                        required: false, maxlength: 500
+                    },
+                    'detail.storage_loc.x_axes': {
+                        required: true, maxlength: 100
+                    },
+                    'detail.storage_loc.y_axes': {
+                        required: true, maxlength: 100
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                               url: '{%url "ErpStorageLoc.Save"%}',
+                               type: "POST",
+                               processData: false,
+                               contentType: 'application/json',
+                               data: JSON.stringify(vm.detail),
+                               success: function (data) {
+                                   hideMask();
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       //return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                       $('#storageLocDetailDialog').modal('hide');
+                                       vm.reloadList();
+                                       //return;
+                                   }
+                               }
+                           }
+                    );
+                }
+            },
+            deleteStorageLoc: function () {
+                var id_list = [];
+                $('#storageLocList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                               url: '{%url "ErpStorageLoc.Delete"%}',
+                               type: "POST",
+                               data: {"id_list": id_list},
+                               success: function (data) {
+                                   if (data.success == false) {
+                                       $.msg.error(data.message);
+                                       return;
+                                   }
+                                   else {
+                                       $.msg.show(data.message);
+                                   }
+                                   vm.reloadList();
+                               }
+                           });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+
