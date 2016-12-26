@@ -17,7 +17,7 @@ var module_lower_case = models.ModuleLowerCase
 var module_chinese = models.ModuleChinese
 var table_prefix = models.TablePrefix
 var model_list = []interface{}{
-	models.BrandInfo{},
+	models.StockInfo{},
 }
 
 /*

@@ -1,0 +1,282 @@
+{%header "仓库" .%}
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="erp-menu">ERP</li>
+            <li class="active" data-menu="erp-stock-menu">仓库</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList('#stockList')">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-success btn-sm" @click="showStockDetail(0)">
+                        <i class="ace-icon fa fa-plus"></i>
+                        新增
+                    </button>
+                    <button class="btn btn-danger btn-sm" @click="deleteStock()">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                        删除
+                    </button>
+                </div>
+                <div>
+                    <table id="stockList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="stockDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">仓库详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="stockDetailForm">
+                                <input id="stock_id" name="detail.stock.id" type="hidden" v-model.number="detail.stock.id"/>
+                                <input id="stock_version" name="detail.stock.version" type="hidden" v-model.number="detail.stock.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                            <div class="col-xs-10">
+                                                <input id="name" name="detail.stock.name" type="text" class="input-sm form-control" v-model="detail.stock.name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="short_name" class="col-xs-2 control-label no-padding-right">简称</label>
+                                            <div class="col-xs-10">
+                                                <input id="short_name" name="detail.stock.short_name" type="text" class="input-sm form-control" v-model="detail.stock.short_name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="contact" class="col-xs-2 control-label no-padding-right">联系人</label>
+                                            <div class="col-xs-10">
+                                                <input id="contact" name="detail.stock.contact" type="text" class="input-sm form-control" v-model="detail.stock.contact"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="address" class="col-xs-2 control-label no-padding-right">地址</label>
+                                            <div class="col-xs-10">
+                                                <input id="address" name="detail.stock.address" type="text" class="input-sm form-control" v-model="detail.stock.address"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="phone" class="col-xs-2 control-label no-padding-right">电话</label>
+                                            <div class="col-xs-10">
+                                                <input id="phone" name="detail.stock.phone" type="text" class="input-sm form-control" v-model="detail.stock.phone"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="status_id" class="col-xs-2 control-label no-padding-right">状态</label>
+                                            <div class="col-xs-10">
+                                                <select id="status_id" name="detail.stock.status_id" class="input-sm form-control" v-model.number="detail.stock.status_id">
+                                                    <template v-for="status in detail.status_list">
+                                                        <option :value="status.id">{{status.name}}</option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveStock()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "stock": {},
+                "status_list": []
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                '#stockList',
+                {
+                    "sAjaxSource": '{%url "ErpStock.ListData"%}',
+                    "aaSorting": [[1, "asc"]],
+                    "aoColumns": [
+                        {
+                            "mDataProp": "stock.id",
+                            "bSearchable": false,
+                            "orderable": false,
+                            "sClass": "center",
+                            "width": 50,
+                            "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                            "render": function (data, type, row) {
+                                return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                            }
+                        },
+                        {"mDataProp": "stock.name", "title": "名称", "bSearchable": true, "width": 130},
+                        {"mDataProp": "stock.short_name", "title": "简称", "bSearchable": true, "width": 90},
+                        {"mDataProp": "stock.contact", "title": "联系人", "bSearchable": true, "width": 90},
+                        {"mDataProp": "stock.address", "title": "地址", "bSearchable": true},
+                        {"mDataProp": "stock.phone", "title": "电话", "bSearchable": true, "width": 140},
+                        {"mDataProp": "status.name", "title": "状态", "bSearchable": true, "width": 80},
+                        {"mDataProp": "stock.create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                        {"mDataProp": "stock.update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                    ]
+                }
+            );
+
+            $('#stockList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showStockDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#stockList');
+            },
+            showStockDetail: function (id) {
+                showMask("加载中...");
+                $("#stockDetailForm").clearValidation();
+                $.ajax({
+                        url: '{%url "ErpStock.DetailData" %}',
+                        type: "POST",
+                        data: {
+                            "id": id
+                        },
+                        success: function (result) {
+                            hideMask();
+                            if (result.success == false) {
+                                $.msg.error(result.message);
+                                return;
+                            }
+                            vm.detail = result;
+                            $('#stockDetailDialog').modal(modalOptions);
+                        }
+                    }
+                );
+            },
+            saveStock: function () {
+                showMask("提交中...");
+                var form = $("#stockDetailForm");
+                var valid = validate(form, {
+                    'detail.stock.name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.stock.short_name': {
+                        required: false, minlength: 2, maxlength: 100
+                    },
+                    'detail.stock.contact': {
+                        required: false, minlength: 2, maxlength: 100
+                    },
+                    'detail.stock.address': {
+                        required: false, minlength: 2, maxlength: 200
+                    },
+                    'detail.stock.phone': {
+                        required: false, minlength: 2, maxlength: 100
+                    },
+                    'detail.stock.status_id': {
+                        required: true, digits: true
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                            url: '{%url "ErpStock.Save"%}',
+                            type: "POST",
+                            processData: false,
+                            contentType: 'application/json',
+                            data: JSON.stringify(vm.detail),
+                            success: function (data) {
+                                hideMask();
+                                if (data.success == false) {
+                                    $.msg.error(data.message);
+                                    //return;
+                                }
+                                else {
+                                    $.msg.show(data.message);
+                                    $('#stockDetailDialog').modal('hide');
+                                    vm.reloadList();
+                                    //return;
+                                }
+                            }
+                        }
+                    );
+                }
+            },
+            deleteStock: function () {
+                var id_list = [];
+                $('#stockList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                        url: '{%url "ErpStock.Delete"%}',
+                        type: "POST",
+                        data: {"id_list": id_list},
+                        success: function (data) {
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                            }
+                            vm.reloadList();
+                        }
+                    });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+

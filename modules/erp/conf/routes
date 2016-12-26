@@ -3,3 +3,10 @@ POST /erp/brand/data/list          ErpBrand.ListData
 POST /erp/brand/data/detail        ErpBrand.DetailData
 POST /erp/brand/save               ErpBrand.Save
 POST /erp/brand/delete             ErpBrand.Delete
+
+
+GET  /erp/stock                    ErpStock.Index
+POST /erp/stock/data/list          ErpStock.ListData
+POST /erp/stock/data/detail        ErpStock.DetailData
+POST /erp/stock/save               ErpStock.Save
+POST /erp/stock/delete             ErpStock.Delete

@@ -8,10 +8,16 @@ import (
 const (
 	// STATUS_TYPE_STOCK 仓库状态
 	STATUS_TYPE_STOCK = 1
+
+	// 仓库状态 正常
+	STOCK_STATUS_ENABLED = 1
+
+	// 仓库状态 停用
+	STOCK_STATUS_DISABLED = 2
 )
 
 type StatusInfo struct {
-	Id         int64                 `xorm:"bigint notnull pk autoincr 'id'" json:"id"`
+	Id         int64                 `xorm:"bigint notnull pk 'id'" json:"id"`
 	Type       int64                 `xorm:"bigint notnull index 'type'" json:"type" smith:"verbose_name=类型"`
 	Name       string                `xorm:"nvarchar(200) notnull index 'name'" json:"name" smith:"verbose_name=名称,min=2,max=100"`
 	Desc       core.NullString       `xorm:"nvarchar(500) 'desc'" json:"desc" smith:"verbose_name=描述,min=2,max=400"`
@@ -32,12 +38,14 @@ func (e StatusInfo) InitData(db_session *xorm.Session) {
 	//仓库状态
 
 	status := new(StatusInfo)
+	status.Id = STOCK_STATUS_ENABLED
 	status.Type = STATUS_TYPE_STOCK
 	status.Name = "正常"
 	status.Desc =  core.NewNullString("仓库状态 正常", true)
 	db_session.Insert(status)
 
 	status = new(StatusInfo)
+	status.Id = STOCK_STATUS_DISABLED
 	status.Type = STATUS_TYPE_STOCK
 	status.Name = "停用"
 	status.Desc =  core.NewNullString("仓库状态 停用", true)
