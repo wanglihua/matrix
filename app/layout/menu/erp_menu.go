@@ -17,7 +17,7 @@ func GetErpMenu(db_session *xorm.Session, web_session revel.Session) string {
 <li id="erp-menu" class="">
     <a href="#" class="dropdown-toggle">
         <i class="menu-icon fa fa-bar-chart-o"></i>
-        <span class="menu-text">ERP</span>
+        <span class="menu-text">电商ERP</span>
         <b class="arrow fa fa-angle-down"></b>
     </a>
     <b class="arrow"></b>
