@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+//功能没完成
 func main() {
 	root_dir := "/home/wanglihua/gopath/src/matrix/modules/itsm"
 	filepath.Walk(root_dir, func(path string, info os.FileInfo, err error) error {

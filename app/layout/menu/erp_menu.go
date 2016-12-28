@@ -63,6 +63,22 @@ func GetErpMenu(db_session *xorm.Session, web_session revel.Session) string {
             <b class="arrow"></b>
         </li>
 
+        <li id="erp-eubgoodstype-menu" class="">
+            <a href="/erp/eub/goods/type">
+                <i class="menu-icon fa fa-caret-right"></i>
+                EUB物品类型
+            </a>
+            <b class="arrow"></b>
+        </li>
+
+        <li id="erp-eubinsurancetype-menu" class="">
+            <a href="/erp/eub/insurance/type">
+                <i class="menu-icon fa fa-caret-right"></i>
+                EUB保险类型
+            </a>
+            <b class="arrow"></b>
+        </li>
+
     </ul>
 </li>
 `)

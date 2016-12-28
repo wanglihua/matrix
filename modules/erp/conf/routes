@@ -30,3 +30,16 @@ POST /erp/exchange/rate/data/list          ErpExchangeRate.ListData
 POST /erp/exchange/rate/data/detail        ErpExchangeRate.DetailData
 POST /erp/exchange/rate/save               ErpExchangeRate.Save
 POST /erp/exchange/rate/delete             ErpExchangeRate.Delete
+
+
+GET  /erp/eub/goods/type                    ErpEubGoodsType.Index
+POST /erp/eub/goods/type/data/list          ErpEubGoodsType.ListData
+POST /erp/eub/goods/type/data/detail        ErpEubGoodsType.DetailData
+POST /erp/eub/goods/type/save               ErpEubGoodsType.Save
+POST /erp/eub/goods/type/delete             ErpEubGoodsType.Delete
+
+GET  /erp/eub/insurance/type                    ErpEubInsuranceType.Index
+POST /erp/eub/insurance/type/data/list          ErpEubInsuranceType.ListData
+POST /erp/eub/insurance/type/data/detail        ErpEubInsuranceType.DetailData
+POST /erp/eub/insurance/type/save               ErpEubInsuranceType.Save
+POST /erp/eub/insurance/type/delete             ErpEubInsuranceType.Delete
