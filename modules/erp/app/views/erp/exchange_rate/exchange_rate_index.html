@@ -1,78 +1,93 @@
-{%header "设备" .%}
+{%header "货币汇率" .%}
 <div id="page">
    <div class="breadcrumbs" id="breadcrumbs">
        <ul class="breadcrumb">
            <li>
                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
            </li>
-           <li class="parent" data-menu="itsm-menu">ITSM</li>
-           <li class="active" data-menu="itsm-equipment-menu">设备</li>
+           <li class="parent" data-menu="erp-menu">ERP</li>
+           <li class="active" data-menu="erp-exchangerate-menu">货币汇率</li>
        </ul>
    </div>
    <div class="page-content">
        <div class="row">
            <div class="col-xs-12" style="padding: 0;">
                <div class="gridToolBar clearfix">
-                   <button class="btn btn-primary btn-sm" @click="reloadList('#equipmentList')">
+                   <button class="btn btn-primary btn-sm" @click="reloadList('#exchangeRateList')">
                        <i class="ace-icon fa fa-refresh"></i>
                        刷新
                    </button>
-                   <button class="btn btn-success btn-sm" @click="showEquipmentDetail(0)">
+                   <button class="btn btn-success btn-sm" @click="showExchangeRateDetail(0)">
                        <i class="ace-icon fa fa-plus"></i>
                        新增
                    </button>
-                   <button class="btn btn-danger btn-sm" @click="deleteEquipment()">
+                   <button class="btn btn-danger btn-sm" @click="deleteExchangeRate()">
                        <i class="ace-icon fa fa-trash-o"></i>
                        删除
                    </button>
                </div>
                <div>
-                   <table id="equipmentList" class="table table-striped table-bordered table-hover"></table>
+                   <table id="exchangeRateList" class="table table-striped table-bordered table-hover"></table>
                </div>
            </div>
        </div>
    </div>
-    <div class="modal fade" id="equipmentDetailDialog">
-        <div class="modal-dialog" style="width: 680px;">
+    <div class="modal fade" id="exchangeRateDetailDialog">
+        <div class="modal-dialog" style="width: 480px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
-                    <h4 class="modal-title">设备详细</h4>
+                    <h4 class="modal-title">货币汇率详细</h4>
                 </div>
                 <div class="modal-body clearfix">
                     <div class="row">
                         <div class="col-xs-12">
-                            <form class="form-horizontal" role="form" id="equipmentDetailForm">
-                                <input id="equipment_id" name="detail.equipment.id" type="hidden" v-model.number="detail.equipment.id"/>
-                                <input id="equipment_version" name="detail.equipment.version" type="hidden" v-model.number="detail.equipment.version"/>
+                            <form class="form-horizontal" role="form" id="exchangeRateDetailForm">
+                                <input id="exchange_rate_id" name="detail.exchange_rate.id" type="hidden" v-model.number="detail.exchange_rate.id"/>
+                                <input id="exchange_rate_version" name="detail.exchange_rate.version" type="hidden" v-model.number="detail.exchange_rate.version"/>
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
-                                            <label for="code" class="col-xs-2 control-label no-padding-right">编码</label>
+                                            <label for="code" class="col-xs-2 control-label no-padding-right">符号</label>
                                             <div class="col-xs-10">
-                                                <input id="code" name="detail.equipment.code" type="text" class="input-sm form-control" v-model="detail.equipment.code"/>
+                                                <input id="code" name="detail.exchange_rate.code" type="text" class="input-sm form-control" v-model="detail.exchange_rate.code"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
                                             <div class="col-xs-10">
-                                                <input id="name" name="detail.equipment.name" type="text" class="input-sm form-control" v-model="detail.equipment.name"/>
+                                                <input id="name" name="detail.exchange_rate.name" type="text" class="input-sm form-control" v-model="detail.exchange_rate.name"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <label for="rate" class="col-xs-2 control-label no-padding-right">汇率</label>
+                                            <div class="col-xs-10">
+                                                <input id="rate" name="detail.exchange_rate.rate" type="text" class="input-sm form-control" v-model.number="detail.exchange_rate.rate"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="status_id" class="col-xs-2 control-label no-padding-right">状态</label>
                                             <div class="col-xs-10">
-                                                <input id="status_id" name="detail.equipment.status_id" type="text" class="input-sm form-control" v-model.number="detail.equipment.status_id"/>
+                                                <select id="status_id" name="detail.exchange_rate.status_id" class="input-sm form-control" v-model.number="detail.exchange_rate.status_id">
+                                                    <template v-for="status in detail.status_list">
+                                                        <option :value="status.id">{{status.name}}</option>
+                                                    </template>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -83,7 +98,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-sm" @click="saveEquipment()">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveExchangeRate()">
                         <i class="ace-icon fa fa-floppy-o"></i>保存
                     </button>
                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
@@ -99,46 +114,47 @@
         el: "#page",
         data: {
             "detail": {
-                "equipment": {}
+                "exchange_rate": {}
             }
         },
         mounted: function () {
             initDataTable(
-                    '#equipmentList',
+                    '#exchangeRateList',
                     {
-                        "sAjaxSource": '{%url "ItsmEquipment.ListData"%}',
+                        "sAjaxSource": '{%url "ErpExchangeRate.ListData"%}',
                         "aaSorting": [[1, "asc"]],
                         "aoColumns": [
                             {
-                                "mDataProp": "id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
+                                "mDataProp": "r.id", "bSearchable": false, "orderable": false, "sClass": "center", "width": 50,
                                 "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
                                 "render": function (data, type, row) {
                                     return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                                 }
                             },
-                            {"mDataProp": "code", "title": "编码", "bSearchable": true },
-                            {"mDataProp": "name", "title": "名称", "bSearchable": true },
-                            {"mDataProp": "status_id", "title": "状态", "bSearchable": true },
-                            {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
-                            {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
+                            {"mDataProp": "r.code", "title": "符号", "bSearchable": true , "width": 90},
+                            {"mDataProp": "r.name", "title": "名称", "bSearchable": true , "width": 180},
+                            {"mDataProp": "r.rate", "title": "汇率", "bSearchable": false },
+                            {"mDataProp": "s.name", "title": "状态", "bSearchable": true , "width": 80},
+                            {"mDataProp": "r.create_time", "title": "创建时间", "bSearchable": false, "width": 120 },
+                            {"mDataProp": "r.update_time", "title": "修改时间", "bSearchable": false, "width": 120 }
                         ]
                    }
             );
 
-            $('#equipmentList tbody').on('dblclick', 'tr', function () {
+            $('#exchangeRateList tbody').on('dblclick', 'tr', function () {
                 var id = $(this).find('td:first-child input:checkbox').val();
-                vm.showEquipmentDetail(id);
+                vm.showExchangeRateDetail(id);
             });
         },
         methods: {
             reloadList: function () {
-                reloadList('#equipmentList');
+                reloadList('#exchangeRateList');
             },
-            showEquipmentDetail: function (id) {
+            showExchangeRateDetail: function (id) {
                 showMask("加载中...");
-                $("#equipmentDetailForm").clearValidation();
+                $("#exchangeRateDetailForm").clearValidation();
                 $.ajax({
-                           url: '{%url "ItsmEquipment.DetailData" %}',
+                           url: '{%url "ErpExchangeRate.DetailData" %}',
                            type: "POST",
                            data: {
                                "id": id
@@ -150,22 +166,25 @@
                                    return;
                                }
                                vm.detail = result;
-                               $('#equipmentDetailDialog').modal(modalOptions);
+                               $('#exchangeRateDetailDialog').modal(modalOptions);
                            }
                        }
                 );
             },
-            saveEquipment: function () {
+            saveExchangeRate: function () {
                 showMask("提交中...");
-                var form = $("#equipmentDetailForm");
+                var form = $("#exchangeRateDetailForm");
                 var valid = validate(form, {  
-                    'detail.equipment.code': {
-                        required: true, minlength: 2, maxlength: 20
+                    'detail.exchange_rate.code': {
+                        required: true, minlength: 1, maxlength: 10
                     },
-                    'detail.equipment.name': {
-                        required: true, minlength: 2, maxlength: 20
+                    'detail.exchange_rate.name': {
+                        required: true, minlength: 1, maxlength: 20
                     },
-                    'detail.equipment.status_id': {
+                    'detail.exchange_rate.rate': {
+                        required: true, number: true
+                    },
+                    'detail.exchange_rate.status_id': {
                         required: true, digits: true
                     }
                 });
@@ -174,7 +193,7 @@
                     hideMask();
                 } else {
                     $.ajax({
-                               url: '{%url "ItsmEquipment.Save"%}',
+                               url: '{%url "ErpExchangeRate.Save"%}',
                                type: "POST",
                                processData: false,
                                contentType: 'application/json',
@@ -187,7 +206,7 @@
                                    }
                                    else {
                                        $.msg.show(data.message);
-                                       $('#equipmentDetailDialog').modal('hide');
+                                       $('#exchangeRateDetailDialog').modal('hide');
                                        vm.reloadList();
                                        //return;
                                    }
@@ -196,9 +215,9 @@
                     );
                 }
             },
-            deleteEquipment: function () {
+            deleteExchangeRate: function () {
                 var id_list = [];
-                $('#equipmentList tbody tr>td:first-child input:checkbox').each(function () {
+                $('#exchangeRateList tbody tr>td:first-child input:checkbox').each(function () {
                     if (this.checked) {
                         id_list.push($(this).val());
                     }
@@ -211,7 +230,7 @@
 
                 $.msg.confirm("确认要删除吗？", function () {
                     $.ajax({
-                               url: '{%url "ItsmEquipment.Delete"%}',
+                               url: '{%url "ErpExchangeRate.Delete"%}',
                                type: "POST",
                                data: {"id_list": id_list},
                                success: function (data) {

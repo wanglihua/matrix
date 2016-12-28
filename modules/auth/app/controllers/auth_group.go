@@ -16,7 +16,7 @@ func (c AuthGroup) Index() revel.Result {
 	return c.RenderTemplate("auth/group/group_index.html")
 }
 
-type GroupView struct {
+type GroupViewItem struct {
 	models.GroupInfo `xorm:"extends"`
 	UserCount        int `xorm:"bigint 'user_count'" json:"user_count"`
 }
@@ -36,13 +36,13 @@ func (c AuthGroup) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("id")
 	}
 
-	groupList := make([]GroupView, 0, limit)
+	groupList := make([]GroupViewItem, 0, limit)
 	//groupList := make([]models.Group, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&groupList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(GroupView))
+	count, err := countQuery.Count(new(GroupViewItem))
 	//count, err := countQuery.Count(new(models.Group))
 	core.HandleError(err)
 

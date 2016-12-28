@@ -21,7 +21,7 @@ func (c AuthGroupUser) Index() revel.Result {
 	return c.RenderTemplate("auth/groupuser/groupuser_index.html")
 }
 
-type GroupUserView struct {
+type GroupUserViewItem struct {
 	models.GroupUserInfo `xorm:"extends" json:"gu"`
 	models.GroupInfo     `xorm:"extends" json:"g"`
 	models.UserInfo      `xorm:"extends" json:"u"`
@@ -51,12 +51,12 @@ func (c AuthGroupUser) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("gu.add_time")
 	}
 
-	groupUserList := make([]GroupUserView, 0, limit)
+	groupUserList := make([]GroupUserViewItem, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&groupUserList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(GroupUserView))
+	count, err := countQuery.Count(new(GroupUserViewItem))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{

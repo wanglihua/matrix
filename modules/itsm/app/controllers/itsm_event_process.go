@@ -24,7 +24,7 @@ func (c ItsmEventProcess) Index() revel.Result {
 	return c.RenderTemplate("itsm/event_process/event_process_index.html")
 }
 
-type EventProcessView struct {
+type EventProcessViewItem struct {
 	models.EventInfo       `xorm:"extends" json:"evt"`
 	models.EventTypeInfo   `xorm:"extends" json:"et"`
 	auth_models.UserInfo   `xorm:"extends" json:"eu"`
@@ -67,12 +67,12 @@ func (c ItsmEventProcess) ListData() revel.Result {
 		data_query = *data_query.Asc("evt.id")
 	}
 
-	event_list := make([]EventProcessView, 0, limit)
+	event_list := make([]EventProcessViewItem, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&event_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(EventProcessView))
+	count, err := count_query.Count(new(EventProcessViewItem))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{

@@ -17,7 +17,7 @@ func (c ErpStorageLoc) Index() revel.Result {
 	return c.RenderTemplate("erp/storage_loc/storage_loc_index.html")
 }
 
-type ErpStorageLocView struct {
+type ErpStorageLocViewItem struct {
 	models.StorageLocInfo `xorm:"extends" json:"l"`
 	models.StockInfo      `xorm:"extends" json:"s"`
 }
@@ -48,12 +48,12 @@ func (c ErpStorageLoc) ListData() revel.Result {
 		data_query = *data_query.Asc("l.id")
 	}
 
-	storage_loc_list := make([]ErpStorageLocView, 0, limit)
+	storage_loc_list := make([]ErpStorageLocViewItem, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&storage_loc_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(ErpStorageLocView))
+	count, err := count_query.Count(new(ErpStorageLocViewItem))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{

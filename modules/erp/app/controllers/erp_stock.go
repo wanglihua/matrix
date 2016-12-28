@@ -18,7 +18,7 @@ func (c ErpStock) Index() revel.Result {
 	return c.RenderTemplate("erp/stock/stock_index.html")
 }
 
-type ErpStockView struct {
+type ErpStockViewItem struct {
 	models.StockInfo  `xorm:"extends" json:"stock"`
 	models.StatusInfo `xorm:"extends" json:"status"`
 }
@@ -48,12 +48,12 @@ func (c ErpStock) ListData() revel.Result {
 		data_query = *data_query.Asc("stock.id")
 	}
 
-	stock_list := make([]ErpStockView, 0, limit)
+	stock_list := make([]ErpStockViewItem, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&stock_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(ErpStockView))
+	count, err := count_query.Count(new(ErpStockViewItem))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{

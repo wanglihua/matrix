@@ -6,14 +6,32 @@ import (
 )
 
 const (
+
+	//状态类型 begin
+
 	// STATUS_TYPE_STOCK 仓库状态
-	STATUS_TYPE_STOCK = 1
+	STATUS_TYPE_STOCK = 100
+
+	// STATUS_TYPE_STOCK 仓库状态
+	STATUS_TYPE_EXCHANGE_RATE = 200
+
+	//状态类型 end
+
+	//状态 id begin
 
 	// 仓库状态 正常
-	STOCK_STATUS_ENABLED = 1
+	STOCK_STATUS_ENABLED = 100
 
 	// 仓库状态 停用
-	STOCK_STATUS_DISABLED = 2
+	STOCK_STATUS_DISABLED = 200
+
+	// 货币汇率状态 正常
+	EXCHANGE_RATE_STATUS_ENABLED = 300
+
+	// 货币汇率状态 停用
+	EXCHANGE_RATE_STATUS_DISABLED = 400
+
+	//状态 id end
 )
 
 type StatusInfo struct {
@@ -49,5 +67,22 @@ func (e StatusInfo) InitData(db_session *xorm.Session) {
 	status.Type = STATUS_TYPE_STOCK
 	status.Name = "停用"
 	status.Desc =  core.NewNullString("仓库状态 停用", true)
+	db_session.Insert(status)
+
+
+	//货币汇率状态
+
+	status = new(StatusInfo)
+	status.Id = EXCHANGE_RATE_STATUS_ENABLED
+	status.Type = STATUS_TYPE_EXCHANGE_RATE
+	status.Name = "正常"
+	status.Desc =  core.NewNullString("货币汇率状态 正常", true)
+	db_session.Insert(status)
+
+	status = new(StatusInfo)
+	status.Id = EXCHANGE_RATE_STATUS_DISABLED
+	status.Type = STATUS_TYPE_EXCHANGE_RATE
+	status.Name = "停用"
+	status.Desc =  core.NewNullString("货币汇率状态 停用", true)
 	db_session.Insert(status)
 }

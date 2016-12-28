@@ -55,6 +55,14 @@ func GetErpMenu(db_session *xorm.Session, web_session revel.Session) string {
             <b class="arrow"></b>
         </li>
 
+        <li id="erp-exchangerate-menu" class="">
+            <a href="/erp/exchange/rate">
+                <i class="menu-icon fa fa-caret-right"></i>
+                货币汇率
+            </a>
+            <b class="arrow"></b>
+        </li>
+
     </ul>
 </li>
 `)

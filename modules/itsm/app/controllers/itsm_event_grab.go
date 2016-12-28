@@ -26,7 +26,7 @@ func (c ItsmEventGrab) Index() revel.Result {
 	return c.RenderTemplate("itsm/event_grab/event_grab_index.html")
 }
 
-type EventGrabView struct {
+type EventGrabViewItem struct {
 	models.EventInfo       `xorm:"extends" json:"evt"`
 	models.EventTypeInfo   `xorm:"extends" json:"et"`
 	models.EventStatusInfo `xorm:"extends" json:"es"`
@@ -66,12 +66,12 @@ func (c ItsmEventGrab) ListData() revel.Result {
 		data_query = *data_query.Asc("evt.id")
 	}
 
-	event_list := make([]EventGrabView, 0, limit)
+	event_list := make([]EventGrabViewItem, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&event_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(EventGrabView))
+	count, err := count_query.Count(new(EventGrabViewItem))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{

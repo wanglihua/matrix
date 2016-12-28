@@ -16,7 +16,7 @@ func (c AuthAdmin) Index() revel.Result {
 	return c.RenderTemplate("auth/admin/admin_index.html")
 }
 
-type AdminView struct {
+type AdminViewItem struct {
 	models.AdminInfo `xorm:"extends" json:"a"`
 	models.UserInfo  `xorm:"extends" json:"u"`
 }
@@ -40,12 +40,12 @@ func (c AuthAdmin) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("a.id")
 	}
 
-	adminList := make([]AdminView, 0, limit)
+	adminList := make([]AdminViewItem, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&adminList)
 	core.HandleError(err)
 
 	countQuery := *query
-	count, err := countQuery.Count(new(AdminView))
+	count, err := countQuery.Count(new(AdminViewItem))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{

@@ -16,7 +16,7 @@ func (c OaWorklogAdmin) Index() revel.Result {
 	return c.RenderTemplate("oa/worklog_admin/worklog_admin_index.html")
 }
 
-type WorklogAdminView struct {
+type WorklogAdminViewItem struct {
 	models.WorklogInfo  `xorm:"extends" json:"l"`
 	authModels.UserInfo `xorm:"extends" json:"u"`
 }
@@ -40,7 +40,7 @@ func (c OaWorklogAdmin) ListData() revel.Result {
 		dataQuery = *dataQuery.Asc("l.id")
 	}
 
-	worklogAdminViewList := make([]WorklogAdminView, 0, limit)
+	worklogAdminViewList := make([]WorklogAdminViewItem, 0, limit)
 	err := dataQuery.Limit(limit, offset).Find(&worklogAdminViewList)
 	core.HandleError(err)
 

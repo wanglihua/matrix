@@ -20,7 +20,7 @@ func (c ItsmEngineer) Index() revel.Result {
 	return c.RenderTemplate("itsm/engineer/engineer_index.html")
 }
 
-type EngineerView struct {
+type EngineerViewItem struct {
 	auth_models.UserInfo `xorm:"extends" json:"u"`
 	models.EngineerInfo  `xorm:"extends" json:"e"`
 }
@@ -44,12 +44,12 @@ func (c ItsmEngineer) ListData() revel.Result {
 		data_query = *data_query.Asc("e.id")
 	}
 
-	engineer_list := make([]EngineerView, 0, limit)
+	engineer_list := make([]EngineerViewItem, 0, limit)
 	err := data_query.Limit(limit, offset).Find(&engineer_list)
 	core.HandleError(err)
 
 	count_query := *query
-	count, err := count_query.Count(new(EngineerView))
+	count, err := count_query.Count(new(EngineerViewItem))
 	core.HandleError(err)
 
 	return c.RenderJson(core.GridResult{
