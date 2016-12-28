@@ -16,21 +16,17 @@ POST /erp/storage/loc/data/detail  ErpStorageLoc.DetailData
 POST /erp/storage/loc/save         ErpStorageLoc.Save
 POST /erp/storage/loc/delete       ErpStorageLoc.Delete
 
-
-
 GET  /erp/supplier                    ErpSupplier.Index
 POST /erp/supplier/data/list          ErpSupplier.ListData
 POST /erp/supplier/data/detail        ErpSupplier.DetailData
 POST /erp/supplier/save               ErpSupplier.Save
 POST /erp/supplier/delete             ErpSupplier.Delete
 
-
 GET  /erp/exchange/rate                    ErpExchangeRate.Index
 POST /erp/exchange/rate/data/list          ErpExchangeRate.ListData
 POST /erp/exchange/rate/data/detail        ErpExchangeRate.DetailData
 POST /erp/exchange/rate/save               ErpExchangeRate.Save
 POST /erp/exchange/rate/delete             ErpExchangeRate.Delete
-
 
 GET  /erp/eub/goods/type                    ErpEubGoodsType.Index
 POST /erp/eub/goods/type/data/list          ErpEubGoodsType.ListData
@@ -43,3 +39,4 @@ POST /erp/eub/insurance/type/data/list          ErpEubInsuranceType.ListData
 POST /erp/eub/insurance/type/data/detail        ErpEubInsuranceType.DetailData
 POST /erp/eub/insurance/type/save               ErpEubInsuranceType.Save
 POST /erp/eub/insurance/type/delete             ErpEubInsuranceType.Delete
+
