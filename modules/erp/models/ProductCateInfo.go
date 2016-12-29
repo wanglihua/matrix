@@ -22,5 +22,5 @@ func (e ProductCateInfo) TableName() string {
 }
 
 func (e ProductCateInfo) ModelDesc() string {
-	return "verbose_name=仓库,entity_json=product_cate,route=product/cate"
+	return "verbose_name=商品目录,entity_json=product_cate,route=product/cate"
 }

@@ -40,3 +40,10 @@ POST /erp/eub/insurance/type/data/detail        ErpEubInsuranceType.DetailData
 POST /erp/eub/insurance/type/save               ErpEubInsuranceType.Save
 POST /erp/eub/insurance/type/delete             ErpEubInsuranceType.Delete
 
+
+
+GET  /erp/product/cate                    ErpProductCate.Index
+POST /erp/product/cate/data/list          ErpProductCate.ListData
+POST /erp/product/cate/data/detail        ErpProductCate.DetailData
+POST /erp/product/cate/save               ErpProductCate.Save
+POST /erp/product/cate/delete             ErpProductCate.Delete

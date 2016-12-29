@@ -1,0 +1,283 @@
+{%header "商品目录" .%}
+<div id="page">
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <a href='{%url "Home.Index"%}'><i class="ace-icon fa fa-home home-icon"></i></a>
+            </li>
+            <li class="parent" data-menu="erp-menu">ERP</li>
+            <li class="active" data-menu="erp-productcate-menu">商品目录</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12" style="padding: 0;">
+                <div class="gridToolBar clearfix">
+                    <button class="btn btn-primary btn-sm" @click="reloadList('#productCateList')">
+                        <i class="ace-icon fa fa-refresh"></i>
+                        刷新
+                    </button>
+                    <button class="btn btn-success btn-sm" @click="showProductCateDetail(0)">
+                        <i class="ace-icon fa fa-plus"></i>
+                        新增
+                    </button>
+                    <button class="btn btn-danger btn-sm" @click="deleteProductCate()">
+                        <i class="ace-icon fa fa-trash-o"></i>
+                        删除
+                    </button>
+                </div>
+                <div>
+                    <table id="productCateList" class="table table-striped table-bordered table-hover"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="productCateDetailDialog">
+        <div class="modal-dialog" style="width: 680px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
+                    <h4 class="modal-title">商品目录详细</h4>
+                </div>
+                <div class="modal-body clearfix">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <form class="form-horizontal" role="form" id="productCateDetailForm">
+                                <input id="product_cate_id" name="detail.product_cate.id" type="hidden" v-model.number="detail.product_cate.id"/>
+                                <input id="product_cate_version" name="detail.product_cate.version" type="hidden" v-model.number="detail.product_cate.version"/>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
+                                            <div class="col-xs-10">
+                                                <input id="name" name="detail.product_cate.name" type="text" class="input-sm form-control" v-model="detail.product_cate.name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="english_name" class="col-xs-2 control-label no-padding-right">英文名</label>
+                                            <div class="col-xs-10">
+                                                <input id="english_name" name="detail.product_cate.english_name" type="text" class="input-sm form-control" v-model="detail.product_cate.english_name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="desc" class="col-xs-2 control-label no-padding-right">描述</label>
+                                            <div class="col-xs-10">
+                                                <input id="desc" name="detail.product_cate.desc" type="text" class="input-sm form-control" v-model="detail.product_cate.desc"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="hs_code" class="col-xs-2 control-label no-padding-right">报关编码</label>
+                                            <div class="col-xs-10">
+                                                <input id="hs_code" name="detail.product_cate.hs_code" type="text" class="input-sm form-control" v-model="detail.product_cate.hs_code"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="parent_id" class="col-xs-2 control-label no-padding-right">父目录</label>
+                                            <div class="col-xs-10">
+                                                <input id="parent_id" name="detail.product_cate.parent_id" type="text" class="input-sm form-control" v-model.number="detail.product_cate.parent_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <div class="form-group">
+                                            <label for="status_id" class="col-xs-2 control-label no-padding-right">状态</label>
+                                            <div class="col-xs-10">
+                                                <input id="status_id" name="detail.product_cate.status_id" type="text" class="input-sm form-control" v-model.number="detail.product_cate.status_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" @click="saveProductCate()">
+                        <i class="ace-icon fa fa-floppy-o"></i>保存
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                        <i class="ace-icon fa fa-times"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var vm = new Vue({
+        el: "#page",
+        data: {
+            "detail": {
+                "product_cate": {}
+            }
+        },
+        mounted: function () {
+            initDataTable(
+                '#productCateList',
+                {
+                    "sAjaxSource": '{%url "ErpProductCate.ListData"%}',
+                    "aaSorting": [[1, "asc"]],
+                    "aoColumns": [
+                        {
+                            "mDataProp": "id",
+                            "bSearchable": false,
+                            "orderable": false,
+                            "sClass": "center",
+                            "width": 50,
+                            "title": '<input type="checkbox" class="ace checkall"/><span class="lbl"></span>',
+                            "render": function (data, type, row) {
+                                return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
+                            }
+                        },
+                        {"mDataProp": "name", "title": "名称", "bSearchable": true, "width": 130},
+                        {"mDataProp": "english_name", "title": "英文名", "bSearchable": true, "width": 130},
+                        {"mDataProp": "parent_id", "title": "父目录", "bSearchable": true, "width": 130},
+                        {"mDataProp": "desc", "title": "描述", "bSearchable": true},
+                        {"mDataProp": "hs_code", "title": "报关编码", "bSearchable": true, "width": 130},
+                        {"mDataProp": "status_id", "title": "状态", "bSearchable": true, "width": 80},
+                        {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                        {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                    ]
+                }
+            );
+
+            $('#productCateList tbody').on('dblclick', 'tr', function () {
+                var id = $(this).find('td:first-child input:checkbox').val();
+                vm.showProductCateDetail(id);
+            });
+        },
+        methods: {
+            reloadList: function () {
+                reloadList('#productCateList');
+            },
+            showProductCateDetail: function (id) {
+                showMask("加载中...");
+                $("#productCateDetailForm").clearValidation();
+                $.ajax({
+                        url: '{%url "ErpProductCate.DetailData" %}',
+                        type: "POST",
+                        data: {
+                            "id": id
+                        },
+                        success: function (result) {
+                            hideMask();
+                            if (result.success == false) {
+                                $.msg.error(result.message);
+                                return;
+                            }
+                            vm.detail = result;
+                            $('#productCateDetailDialog').modal(modalOptions);
+                        }
+                    }
+                );
+            },
+            saveProductCate: function () {
+                showMask("提交中...");
+                var form = $("#productCateDetailForm");
+                var valid = validate(form, {
+                    'detail.product_cate.name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.product_cate.english_name': {
+                        required: true, minlength: 2, maxlength: 100
+                    },
+                    'detail.product_cate.desc': {
+                        required: false, maxlength: 500
+                    },
+                    'detail.product_cate.hs_code': {
+                        required: false, minlength: 2, maxlength: 20
+                    },
+                    'detail.product_cate.parent_id': {
+                        required: false, digits: true
+                    },
+                    'detail.product_cate.status_id': {
+                        required: true, digits: true
+                    }
+                });
+
+                if (!valid) {
+                    hideMask();
+                } else {
+                    $.ajax({
+                            url: '{%url "ErpProductCate.Save"%}',
+                            type: "POST",
+                            processData: false,
+                            contentType: 'application/json',
+                            data: JSON.stringify(vm.detail),
+                            success: function (data) {
+                                hideMask();
+                                if (data.success == false) {
+                                    $.msg.error(data.message);
+                                    //return;
+                                }
+                                else {
+                                    $.msg.show(data.message);
+                                    $('#productCateDetailDialog').modal('hide');
+                                    vm.reloadList();
+                                    //return;
+                                }
+                            }
+                        }
+                    );
+                }
+            },
+            deleteProductCate: function () {
+                var id_list = [];
+                $('#productCateList tbody tr>td:first-child input:checkbox').each(function () {
+                    if (this.checked) {
+                        id_list.push($(this).val());
+                    }
+                });
+
+                if (id_list.length == 0) {
+                    $.msg.alert("请选择数据！");
+                    return;
+                }
+
+                $.msg.confirm("确认要删除吗？", function () {
+                    $.ajax({
+                        url: '{%url "ErpProductCate.Delete"%}',
+                        type: "POST",
+                        data: {"id_list": id_list},
+                        success: function (data) {
+                            if (data.success == false) {
+                                $.msg.error(data.message);
+                                return;
+                            }
+                            else {
+                                $.msg.show(data.message);
+                            }
+                            vm.reloadList();
+                        }
+                    });
+                });
+            }
+        }
+    });
+</script>
+{%footer%}
+
