@@ -15,21 +15,24 @@ const (
 	// STATUS_TYPE_STOCK 仓库状态
 	STATUS_TYPE_EXCHANGE_RATE = 200
 
+	// STATUS_TYPE_PRODUCT_CATE 商品目录状态
+	STATUS_TYPE_PRODUCT_CATE = 300
+
 	//状态类型 end
 
 	//状态 id begin
 
-	// 仓库状态 正常
+	// 仓库状态 正常 停用
 	STOCK_STATUS_ENABLED = 100
-
-	// 仓库状态 停用
 	STOCK_STATUS_DISABLED = 200
 
-	// 货币汇率状态 正常
+	// 货币汇率状态 正常 停用
 	EXCHANGE_RATE_STATUS_ENABLED = 300
-
-	// 货币汇率状态 停用
 	EXCHANGE_RATE_STATUS_DISABLED = 400
+
+	// 商品目录 正常 停用
+	PRODUCT_CATE_STATUS_ENABLED = 500
+	PRODUCT_CATE_STATUS_DISABLED = 600
 
 	//状态 id end
 )
@@ -84,5 +87,21 @@ func (e StatusInfo) InitData(db_session *xorm.Session) {
 	status.Type = STATUS_TYPE_EXCHANGE_RATE
 	status.Name = "停用"
 	status.Desc =  core.NewNullString("货币汇率状态 停用", true)
+	db_session.Insert(status)
+
+	//商品目录状态
+
+	status = new(StatusInfo)
+	status.Id = PRODUCT_CATE_STATUS_ENABLED
+	status.Type = STATUS_TYPE_PRODUCT_CATE
+	status.Name = "正常"
+	status.Desc =  core.NewNullString("商品目录状态 正常", true)
+	db_session.Insert(status)
+
+	status = new(StatusInfo)
+	status.Id = PRODUCT_CATE_STATUS_DISABLED
+	status.Type = STATUS_TYPE_PRODUCT_CATE
+	status.Name = "停用"
+	status.Desc =  core.NewNullString("商品目录状态 停用", true)
 	db_session.Insert(status)
 }

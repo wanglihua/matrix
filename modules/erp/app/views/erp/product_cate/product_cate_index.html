@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="modal fade" id="productCateDetailDialog">
-        <div class="modal-dialog" style="width: 680px;">
+        <div class="modal-dialog" style="width: 480px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="True">&times;</button>
@@ -46,7 +46,7 @@
                                 <input id="product_cate_id" name="detail.product_cate.id" type="hidden" v-model.number="detail.product_cate.id"/>
                                 <input id="product_cate_version" name="detail.product_cate.version" type="hidden" v-model.number="detail.product_cate.version"/>
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="name" class="col-xs-2 control-label no-padding-right">名称</label>
                                             <div class="col-xs-10">
@@ -57,7 +57,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="english_name" class="col-xs-2 control-label no-padding-right">英文名</label>
                                             <div class="col-xs-10">
@@ -68,18 +68,18 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="desc" class="col-xs-2 control-label no-padding-right">描述</label>
                                             <div class="col-xs-10">
-                                                <input id="desc" name="detail.product_cate.desc" type="text" class="input-sm form-control" v-model="detail.product_cate.desc"/>
+                                                <textarea id="desc" name="detail.product_cate.desc" rows="2" class="input-sm form-control" v-model="detail.product_cate.desc"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="hs_code" class="col-xs-2 control-label no-padding-right">报关编码</label>
                                             <div class="col-xs-10">
@@ -90,22 +90,31 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="parent_id" class="col-xs-2 control-label no-padding-right">父目录</label>
                                             <div class="col-xs-10">
-                                                <input id="parent_id" name="detail.product_cate.parent_id" type="text" class="input-sm form-control" v-model.number="detail.product_cate.parent_id"/>
+                                                <select id="parent_id" name="detail.product_cate.parent_id" class="input-sm form-control" v-model.number="detail.product_cate.parent_id">
+                                                    <option value=""></option>
+                                                    <template v-for="parent_cate in detail.parent_cate_list">
+                                                        <option :value="parent_cate.id">{{parent_cate.name}}</option>
+                                                    </template>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-12">
                                         <div class="form-group">
                                             <label for="status_id" class="col-xs-2 control-label no-padding-right">状态</label>
                                             <div class="col-xs-10">
-                                                <input id="status_id" name="detail.product_cate.status_id" type="text" class="input-sm form-control" v-model.number="detail.product_cate.status_id"/>
+                                                <select id="status_id" name="detail.product_cate.status_id" class="input-sm form-control" v-model.number="detail.product_cate.status_id">
+                                                    <template v-for="status in detail.status_list">
+                                                        <option :value="status.id">{{status.name}}</option>
+                                                    </template>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -132,7 +141,9 @@
         el: "#page",
         data: {
             "detail": {
-                "product_cate": {}
+                "product_cate": {},
+                "parent_cate_list": [],
+                "status_list": []
             }
         },
         mounted: function () {
@@ -143,7 +154,7 @@
                     "aaSorting": [[1, "asc"]],
                     "aoColumns": [
                         {
-                            "mDataProp": "id",
+                            "mDataProp": "c.id",
                             "bSearchable": false,
                             "orderable": false,
                             "sClass": "center",
@@ -153,14 +164,14 @@
                                 return '<input type="checkbox" class="ace" value="' + data + '"/><span class="lbl"></span>';
                             }
                         },
-                        {"mDataProp": "name", "title": "名称", "bSearchable": true, "width": 130},
-                        {"mDataProp": "english_name", "title": "英文名", "bSearchable": true, "width": 130},
-                        {"mDataProp": "parent_id", "title": "父目录", "bSearchable": true, "width": 130},
-                        {"mDataProp": "desc", "title": "描述", "bSearchable": true},
-                        {"mDataProp": "hs_code", "title": "报关编码", "bSearchable": true, "width": 130},
-                        {"mDataProp": "status_id", "title": "状态", "bSearchable": true, "width": 80},
-                        {"mDataProp": "create_time", "title": "创建时间", "bSearchable": false, "width": 120},
-                        {"mDataProp": "update_time", "title": "修改时间", "bSearchable": false, "width": 120}
+                        {"mDataProp": "c.name", "title": "名称", "bSearchable": true, "width": 130},
+                        {"mDataProp": "c.english_name", "title": "英文名", "bSearchable": true, "width": 130},
+                        {"mDataProp": "p.name", "title": "父目录", "bSearchable": true, "width": 130},
+                        {"mDataProp": "c.hs_code", "title": "报关编码", "bSearchable": true, "width": 130},
+                        {"mDataProp": "c.desc", "title": "描述", "bSearchable": true},
+                        {"mDataProp": "s.name", "title": "状态", "bSearchable": true, "width": 80},
+                        {"mDataProp": "c.create_time", "title": "创建时间", "bSearchable": false, "width": 120},
+                        {"mDataProp": "c.update_time", "title": "修改时间", "bSearchable": false, "width": 120}
                     ]
                 }
             );
